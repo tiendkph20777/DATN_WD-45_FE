@@ -9,12 +9,21 @@ import ProductEdit from "../views/admin/Product/ProductEdit";
 import { ProductDetailView } from "../views/admin/ProductDetail";
 import ProductDetailAdd from "../views/admin/ProductDetail/ProductDetailAdd";
 import ProductProductEdit from "../views/admin/ProductDetail/ProductDetailEdit";
+import Index from "../views/client/home/Index";
+import IndexProduct from "../views/client/product/Index";
+import HomeClient from "../views/client/Home";
+import IndexAdmin from "../views/admin";
+import IndexAbout from "../views/client/about/IndexAbout";
 
 const routes: RouteObject[] = [
     {
         path: '/admin',
         element: <Dashboard />,
         children: [
+            {
+                index: true,
+                element: <IndexAdmin />
+            },
             {
                 path: 'category', element: <RoleView />
             },
@@ -46,6 +55,24 @@ const routes: RouteObject[] = [
             },
         ],
     },
+    {
+        path: '/',
+        element: <HomeClient />,
+        children: [
+            {
+                index: true,
+                element: <Index />
+            },
+            {
+                path: 'product',
+                element: <IndexProduct />
+            },
+            {
+                path: 'about',
+                element: <IndexAbout />
+            }
+        ]
+    }
 ];
 
 export default routes;
