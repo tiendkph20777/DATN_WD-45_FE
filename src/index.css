@@ -8,6 +8,10 @@
 @import "../public/AdminTemplate/src/assets/libs/simplebar/dist/simplebar.css";
 @import "../public/AdminTemplate/src/assets/css/icons/tabler-icons/tabler-icons.css";
 
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
 :root,
 [data-bs-theme=light] {
     --bs-blue: #5D87FF;

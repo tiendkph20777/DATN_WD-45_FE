@@ -4,7 +4,7 @@ import { IProducts } from "../types/product.service";
 const productAPI = createApi({
     reducerPath: "product",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:3000"
+        baseUrl: "http://localhost:8080/api"
     }),
     endpoints: builder => ({
         fetchProduct: builder.query<IProducts[], void>({
