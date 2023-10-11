@@ -5,7 +5,7 @@ export const store = configureStore({
   reducer: {
     "products": productAPI.reducer
   },
-  middleware: defaultMiddleware => defaultMiddleware().concat(productAPI.middleware)
+  middleware: fetchMiddleware => fetchMiddleware().concat(productAPI.middleware)
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

@@ -12,8 +12,9 @@ import ProductProductEdit from "../views/admin/ProductDetail/ProductDetailEdit";
 import Index from "../views/client/home/Index";
 import IndexProduct from "../views/client/product/Index";
 import HomeClient from "../views/client/Home";
-import IndexAdmin from "../views/admin";
 import IndexAbout from "../views/client/about/IndexAbout";
+import IndexAdmin from "../views/admin/Index";
+import { CommentView } from "../views/admin/Comment";
 
 const routes: RouteObject[] = [
     {
@@ -52,6 +53,10 @@ const routes: RouteObject[] = [
             },
             {
                 path: 'product/detail/:id/edit', element: <ProductProductEdit />
+            },
+            // Comment
+            {
+                path: 'comment', element: <CommentView />
             },
         ],
     },
