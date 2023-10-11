@@ -12,9 +12,13 @@ import ProductProductEdit from "../views/admin/ProductDetail/ProductDetailEdit";
 import Index from "../views/client/home/Index";
 import IndexProduct from "../views/client/product/Index";
 import HomeClient from "../views/client/Home";
-import IndexAbout from "../views/client/about/IndexAbout";
-import IndexAdmin from "../views/admin/Index";
 import { CommentView } from "../views/admin/Comment";
+import IndexAdmin from "../views/admin/Index";
+import IndexAbout from "../views/client/about/IndexAbout";
+import Signin from "../views/client/user/Signin";
+import Signup from "../views/client/user/Signup";
+import UserView from "../views/admin/User/UserView";
+import UserUpdate from "../views/admin/User/UserUpdate";
 
 const routes: RouteObject[] = [
     {
@@ -58,6 +62,13 @@ const routes: RouteObject[] = [
             {
                 path: 'comment', element: <CommentView />
             },
+            //user
+            {
+                path: "user", element: <UserView />
+            },
+            {
+                path: "user/:id/edit", element: <UserUpdate />
+            }
         ],
     },
     {
@@ -77,7 +88,15 @@ const routes: RouteObject[] = [
                 element: <IndexAbout />
             }
         ]
-    }
+    },
+    {
+        path: '/signin',
+        element: <Signin />
+    },
+    {
+        path: '/signup',
+        element: <Signup />
+    },
 ];
 
 export default routes;
