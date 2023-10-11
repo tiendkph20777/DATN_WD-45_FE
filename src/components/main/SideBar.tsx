@@ -82,7 +82,7 @@ const SideBar = (props: Props) => {
                         <span className="hide-menu">Người Dùng</span>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="category_blog.html" aria-expanded="false">
+                        <a className="sidebar-link" href="admin/user" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>

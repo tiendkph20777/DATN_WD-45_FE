@@ -71,7 +71,7 @@ const TheHeader = (props: Props) => {
                                     <span className="count-cart">15</span>
                                 </a>
                                 <a className="btn btn-signin btn-primary m-2 btn-hover-secondery text-capitalize"
-                                    href="../../AdminTemplate/src/html/authentication-login.html">Đăng Nhập</a>
+                                    href="/signin">Đăng Nhập</a>
                             </div>
                         </div>
                     </nav>
