@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { IAuth } from '../../../types/user.service'
 import { useSignUpMutation } from '../../../services/user.service'
 import axios from 'axios'
 
 const Signup = () => {
     const [createUserSignup, { isLoading, isError }] = useSignUpMutation()
-
+    const navigate = useNavigate()
     const {
         register,
         handleSubmit,
@@ -33,38 +33,38 @@ const Signup = () => {
             } else {
                 console.log("đăng nhập thành công 🎉🎉🎉")
                 localStorage.setItem("user", JSON.stringify(response.data))
-                // console.log(response)
-                // navigate("/")
+                console.log(response)
+                navigate("/")
             }
         } catch (error) {
             console.error('Sign in failed:', error);
         }
     }
 
-    const handleImageUpload = async (event) => {
-        const file = event.target.files[0];
+    // const handleImageUpload = async (event) => {
+    //     const file = event.target.files[0];
 
-        // Tạo formData để đính kèm tệp
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'YOUR_UPLOAD_PRESET'); // Thay YOUR_UPLOAD_PRESET bằng upload preset của bạn
+    //     // Tạo formData để đính kèm tệp
+    //     const formData = new FormData();
+    //     formData.append('file', file);
+    //     formData.append('upload_preset', 'YOUR_UPLOAD_PRESET'); // Thay YOUR_UPLOAD_PRESET bằng upload preset của bạn
 
-        try {
-            const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                auth: {
-                    username: cloudinaryConfig.apiKey,
-                    password: cloudinaryConfig.apiSecret,
-                }
-            });
-            console.log('File uploaded to Cloudinary. Public ID:', response.data.public_id);
-        } catch (error) {
-            console.error('Error uploading file to Cloudinary:', error);
-        }
-    };
+    //     try {
+    //         const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, formData, {
+    //             headers: {
+    //                 'Content-Type': 'multipart/form-data',
+    //                 'X-Requested-With': 'XMLHttpRequest',
+    //             },
+    //             auth: {
+    //                 username: cloudinaryConfig.apiKey,
+    //                 password: cloudinaryConfig.apiSecret,
+    //             }
+    //         });
+    //         console.log('File uploaded to Cloudinary. Public ID:', response.data.public_id);
+    //     } catch (error) {
+    //         console.error('Error uploading file to Cloudinary:', error);
+    //     }
+    // };
 
 
     return (
@@ -84,10 +84,10 @@ const Signup = () => {
                             <div className="card-body">
                                 {/* <h3 className="card-title text-center fs-2 mb-4">Sing up to continue shopping for shoes </h3> */}
                                 <form onSubmit={handleSubmit(submitSignup)}>
-                                    <div className="mb-3" style={{}}>
+                                    {/* <div className="mb-3" style={{}}>
                                         <label htmlFor="image" className="form-label" style={{ float: "left", lineHeight: "30px", padding: "10px" }}>Thêm ảnh đại diện</label>
                                         <input type="file" className="form-control" id="image" placeholder="Image" accept="image/*" onChange={handleImageUpload} style={{ width: "50%" }} />
-                                    </div>
+                                    </div> */}
                                     <div className="mb-3" style={{ float: "left" }}>
                                         {/* <label htmlFor="fullName" className="form-label">Full name</label> */}
                                         <input type="text" className="form-control" style={{ width: "120%" }} id="fullName" placeholder="Nhập full name" {...register("fullName", { required: true })} />
@@ -98,23 +98,23 @@ const Signup = () => {
                                     </div>
                                     <div style={{ clear: "both" }}></div>
                                     <div className="mb-3">
-                                        {/* <label htmlFor="gender" className="form-label">Address</label> */}
+                                        <label htmlFor="gender" className="form-label">Address</label>
                                         <input type="text" className="form-control" id="gender" placeholder="Nhập address" {...register("gender", { required: true })} />
                                     </div>
                                     <div className="mb-3">
-                                        {/* <label htmlFor="email" className="form-label">Email</label> */}
+                                        <label htmlFor="email" className="form-label">Email</label>
                                         <input type="email" className="form-control" id="email" placeholder="Nhập email" {...register("email", { required: true })} />
                                     </div>
                                     <div className="mb-3">
-                                        {/* <label htmlFor="password" className="form-label">Password</label> */}
+                                        <label htmlFor="password" className="form-label">Password</label>
                                         <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("password", { required: true })} />
                                     </div>
                                     <div className="mb-3">
-                                        {/* <label htmlFor="password" className="form-label">ConfirPassword</label> */}
+                                        <label htmlFor="password" className="form-label">ConfirPassword</label>
                                         <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("confirmPassword", { required: true })} />
                                     </div>
                                     <div>
-                                        {/* <input type="checkbox" /> <label htmlFor=""> Remeber me</label> */}
+                                        <input type="checkbox" /> <label htmlFor=""> Remeber me</label>
                                         <span style={{ float: "right" }}>Already have an account? Login <Link to={"/signin"}>here</Link></span>
                                     </div>
                                     <div className="text-center">

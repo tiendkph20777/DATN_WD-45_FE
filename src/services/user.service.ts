@@ -25,7 +25,7 @@ const authAPI = createApi({
         fetchUser: builder.query<IAuth[], void>({
             query: () => "/user",
         }),
-        fetchOneUser: builder.query<IAuth[], string | number>({
+        fetchOneUser: builder.query<any, string | number>({
             query: (_id) => ({
                 url: `/user/${_id}`,
                 method: "GET",
@@ -36,9 +36,9 @@ const authAPI = createApi({
                 url: `/user/${_id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["user"]
+            invalidatesTags: ["user"], // Chỉ invalidates dữ liệu người dùng, không invalidates dữ liệu sản phẩm
         }),
-        updateUser: builder.mutation<void, IAuth>({
+        updateUser: builder.mutation<void, any>({
             query: product => ({
                 url: `/user/${product._id}/update`,
                 method: 'PUT',
