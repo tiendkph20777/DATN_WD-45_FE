@@ -3,9 +3,14 @@ import { useForm } from 'react-hook-form'
 const CommentView = () => {
     const { data: dataCmt } = useFetchCommentQuery();
     const { handleSubmit, register } = useForm<any>()
+    const [Product_Add] = useAddCommentMutation()
     const onSubmit = (data: any) => {
-        console.log(data)
-        useAddCommentMutation(data)
+        const { accessToKen: token }: any = JSON.parse(localStorage.getItem('user')!);
+        const CurrentValue = {
+            data,
+            token
+        }
+        Product_Add(CurrentValue)
     }
     return (
         <div className="">

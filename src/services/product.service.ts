@@ -51,12 +51,18 @@ const productAPI = createApi({
                 method: "DELETE"
             }),
         }),
-        addComment: builder.mutation<void, Partial<any>>({
-            query: comment => ({
-                url: `/comment/add`,
-                method: "POST",
-                body: comment
-            }),
+        addComment: builder.mutation({
+            query: ({ token, data }) => {
+                return {
+                    url: `/comment/add`,
+                    method: "POST",
+                    body: data,
+                    headers: {
+                        "content-type": "application/json",
+                        'authorization': `Bearer ${token}`
+                    }
+                }
+            },
         }),
         updateComment: builder.mutation<void, any>({
             query: comment => ({
