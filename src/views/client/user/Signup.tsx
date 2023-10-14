@@ -75,42 +75,60 @@ const Signup = () => {
                         src="https://i.pinimg.com/736x/85/50/7e/85507e032ba4276637784e04bf2510ad--nike.jpg"
                         alt="Hình ảnh"
                         className="img-fluid"
-                        style={{ height: '680px', width: '100%' }}
+                        style={{ height: 'cove', width: 'cove' }}
                     />
                 </div>
                 <div className="col-lg-6 col-md-12">
                     <div className="container">
                         <div className="card">
                             <div className="card-body">
-                                {/* <h3 className="card-title text-center fs-2 mb-4">Sing up to continue shopping for shoes </h3> */}
+                                <h3 className="card-title text-center fs-2 mb-4">Sing up to continue shopping for shoes </h3>
                                 <form onSubmit={handleSubmit(submitSignup)}>
                                     {/* <div className="mb-3" style={{}}>
                                         <label htmlFor="image" className="form-label" style={{ float: "left", lineHeight: "30px", padding: "10px" }}>Thêm ảnh đại diện</label>
                                         <input type="file" className="form-control" id="image" placeholder="Image" accept="image/*" onChange={handleImageUpload} style={{ width: "50%" }} />
                                     </div> */}
-                                    <div className="mb-3" style={{ float: "left" }}>
-                                        {/* <label htmlFor="fullName" className="form-label">Full name</label> */}
-                                        <input type="text" className="form-control" style={{ width: "120%" }} id="fullName" placeholder="Nhập full name" {...register("fullName", { required: true })} />
-                                    </div>
-                                    <div className="mb-3" style={{ float: "right" }}>
-                                        {/* <label htmlFor="username" className="form-label">Last name</label> */}
-                                        <input type="text" className="form-control" style={{ width: "100%" }} id="username" placeholder="Nhập lase name" {...register("userName", { required: true })} />
-                                    </div>
-                                    <div style={{ clear: "both" }}></div>
                                     <div className="mb-3">
-                                        <label htmlFor="gender" className="form-label">Address</label>
+                                        <label htmlFor="fullName" className="form-label">
+                                            Full name
+                                            {errors.fullName && <span className="error-message" style={{ color: "red" }}> - Full name is required</span>}
+                                        </label>
+                                        <input type="text" className="form-control" id="fullName" placeholder="Nhập full name" {...register("fullName", { required: true })} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="userName" className="form-label">
+                                            Last name
+                                            {errors.userName && <span className="error-message" style={{ color: "red" }}> - Last name is required</span>}
+                                        </label>
+                                        <input type="text" className="form-control" id="userName" placeholder="Nhập last name" {...register("userName", { required: true })} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="gender" className="form-label">
+                                            Address
+                                            {errors.gender && <span className="error-message" style={{ color: "red" }}> - Address is required</span>}
+                                        </label>
                                         <input type="text" className="form-control" id="gender" placeholder="Nhập address" {...register("gender", { required: true })} />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="email" className="form-label">Email</label>
+                                        <label htmlFor="email" className="form-label">
+                                            Email
+                                            {errors.email && <span className="error-message" style={{ color: "red" }}> - Last name is required</span>}
+
+                                        </label>
                                         <input type="email" className="form-control" id="email" placeholder="Nhập email" {...register("email", { required: true })} />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="password" className="form-label">Password</label>
+                                        <label htmlFor="password" className="form-label">
+                                            Password
+                                            {errors.password && <span className="error-message" style={{ color: "red" }}> - Password is required</span>}
+                                        </label>
                                         <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("password", { required: true })} />
                                     </div>
                                     <div className="mb-3">
-                                        <label htmlFor="password" className="form-label">ConfirPassword</label>
+                                        <label htmlFor="password" className="form-label">
+                                            ConfirPassword
+                                            {errors.confirmPassword && <span className="error-message" style={{ color: "red" }}> - ConfirPassword is required</span>}
+                                        </label>
                                         <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("confirmPassword", { required: true })} />
                                     </div>
                                     <div>

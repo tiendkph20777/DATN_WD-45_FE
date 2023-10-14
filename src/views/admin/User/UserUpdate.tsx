@@ -6,7 +6,7 @@ import { useFetchOneUserQuery } from '../../../services/user.service';
 const YourFormComponent = () => {
     const { id } = useParams();
     const { data } = useFetchOneUserQuery(id);
-    const { control, handleSubmit, setValue } = useForm();
+    const { control, handleSubmit, setValue, errors } = useForm();
 
     useEffect(() => {
         // Đặt dữ liệu từ API vào form khi nó đã được lấy
