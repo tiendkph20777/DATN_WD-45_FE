@@ -101,7 +101,7 @@ const App: React.FC = () => {
             render: (record: DataType) => (
                 <span>
                     <Button type='primary' >
-                        <Link to={record.key + '/update'}>
+                        <Link to={record.key + '/edit'}>
                             <EditOutlined /> Update
                         </Link>
                     </Button>
@@ -127,11 +127,6 @@ const App: React.FC = () => {
         <div style={{ paddingTop: "10%" }}>
             <div>
                 <Search placeholder="Search product" value={searchText} onChange={(e) => onSearch(e.target.value)} enterButton />
-                <Button type="primary" style={{ backgroundColor: 'green', margin: '10px' }}>
-                    <Link to={'/admin/products/add'}>
-                        <EditOutlined />Add Product
-                    </Link>
-                </Button>
                 <Table
                     columns={columns}
                     expandable={{
