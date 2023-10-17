@@ -1,134 +1,206 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import { useFetchOneUserQuery } from '../../../services/user.service';
+import { useFetchOneUserQuery, useUpdateUserMutation } from '../../../services/user.service';
+import { Button, Form } from 'antd';
+import Input from 'antd/es/input/Input';
+// import bcrypt from "bcryptjs";
 
 const YourFormComponent = () => {
     const { id } = useParams();
     const { data } = useFetchOneUserQuery(id);
     const { control, handleSubmit, setValue, errors } = useForm();
+    const [updateUser] = useUpdateUserMutation()
+
+    if (!id) {
+        console.error('Id is undefined or null.');
+        return null;
+    }
 
     useEffect(() => {
-        // Đặt dữ liệu từ API vào form khi nó đã được lấy
         if (data) {
+            // setValue('_id', id);
             setValue('email', data.email);
-            setValue('password', data.password);
-            setValue('confirmPassword', data.confirmPassword);
+            // setValue('password', data.password);
             setValue('userName', data.userName);
             setValue('fullName', data.fullName);
             setValue('gender', data.gender);
         }
     }, [data, setValue]);
 
-    const onSubmit = (formData) => {
-        // Xử lý submit form (ví dụ: gửi dữ liệu lên server)
-        console.log('Submitted data:', formData);
-    };
+    const onSubmit = (user) => {
 
-    const styles = {
-        container: {
-            width: '400px',
-            margin: '0 auto',
-            padding: '20px',
-            border: '1px solid #ccc',
-            borderRadius: '5px',
-            backgroundColor: '#f9f9f9',
-        },
-        heading: {
-            marginBottom: '10px',
-        },
-        inputGroup: {
-            marginBottom: '10px',
-        },
-        label: {
-            display: 'block',
-            marginBottom: '5px',
-        },
-        input: {
-            width: '100%',
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '3px',
-            boxSizing: 'border-box',
-        },
-        button: {
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '3px',
-            backgroundColor: '#3498db',
-            color: '#fff',
-            cursor: 'pointer',
-        },
+        console.log(user);
+
+        updateUser(user);
+
     };
 
     return (
-        <div style={styles.container}>
-            <h1 style={styles.heading}>Form Title</h1>
+        <div style={{ width: "70%", paddingLeft: "10%", paddingTop: "5%" }}>
+            <h1 style={{}}>Update User</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Username</label>
+                <Form.Item
+                    label="Username"
+                    name="userName"
+                    rules={[{ required: true, message: 'Please input your username!' }]}
+                >
                     <Controller
                         name="userName"
                         control={control}
-                        defaultValue={data?.userName || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Username" />}
+                        defaultValue={data?.username || ''}
+                        render={({ field }) => <Input {...field} placeholder="Username" />}
                     />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Full Name</label>
+                </Form.Item>
+                <Form.Item
+                    label="fullName"
+                    name="fullName"
+                    rules={[{ required: true, message: 'Please input your fullName!' }]}
+                >
                     <Controller
                         name="fullName"
                         control={control}
                         defaultValue={data?.fullName || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Full Name" />}
+                        render={({ field }) => <Input {...field} placeholder="fullName" />}
                     />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Email</label>
+                </Form.Item>
+                <Form.Item
+                    label="email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
+                >
                     <Controller
                         name="email"
                         control={control}
                         defaultValue={data?.email || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Email" />}
+                        render={({ field }) => <Input {...field} placeholder="email" />}
                     />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Password</label>
-                    <Controller
-                        name="password"
-                        control={control}
-                        defaultValue={data?.password || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Password" />}
-                    />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Confirm Password</label>
-                    <Controller
-                        name="confirmPassword"
-                        control={control}
-                        defaultValue={data?.confirmPassword || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Confirm Password" />}
-                    />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Gender</label>
+                </Form.Item>
+                <Form.Item
+                    label="gender"
+                    name="gender"
+                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                >
                     <Controller
                         name="gender"
                         control={control}
                         defaultValue={data?.gender || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Gender" />}
+                        render={({ field }) => <Input {...field} placeholder="gender" />}
                     />
-                </div>
+                </Form.Item>
+                {/* <Form.Item
+                    label="password"
+                    name="password"
+                    rules={[{ required: true, message: 'Please input your password!' }]}
+                >
+                    <Controller
+                        name="password"
+                        control={control}
+                        defaultValue={data?.password || ''}
+                        render={({ field }) => <Input {...field} placeholder="password" />}
+                    />
+                </Form.Item> */}
 
-                <button type="submit" style={styles.button}>Submit</button>
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
             </form>
         </div>
     );
 };
 
 export default YourFormComponent;
+
+
+// import React from 'react';
+// import { useForm } from 'react-hook-form';
+// import { yupResolver } from '@hookform/resolvers/yup';
+// import * as yup from 'yup';
+// import { useFetchOneUserQuery, useUpdateUserMutation } from '../../../services/user.service';
+// import { useParams } from 'react-router-dom';
+
+// const schema = yup.object().shape({
+//     fullName: yup.string().required('Họ và tên không được bỏ trống'),
+//     userName: yup.string().required('Tên người dùng không được bỏ trống'),
+//     email: yup.string().email('Email không hợp lệ').required('Email không được bỏ trống'),
+//     gender: yup.string().required('Giới tính không được bỏ trống'),
+// });
+
+// const UserUpdateForm = () => {
+//     const { id } = useParams()
+//     const { register, handleSubmit, setValue, errors } = useForm({
+//         resolver: yupResolver(schema),
+//     });
+//     const { data: user, error, isLoading } = useFetchOneUserQuery(id);
+//     const [updateUser] = useUpdateUserMutation();
+
+//     console.log(user)
+
+//     const onSubmit = async (formData) => {
+//         try {
+//             console.log(formData)
+//             await updateUser({ _id: id, ...formData });
+//             // Xử lý thành công, ví dụ: hiển thị thông báo thành công
+//         } catch (error) {
+//             // Xử lý lỗi, ví dụ: hiển thị thông báo lỗi
+//         }
+//     };
+
+//     if (isLoading) {
+//         return <div>Đang tải...</div>;
+//     }
+
+//     if (error) {
+//         return <div>Lỗi: {error.message}</div>;
+//     }
+
+//     return (
+//         <form onSubmit={handleSubmit(onSubmit)}>
+//             <label>
+//                 Họ và tên:
+//                 <input
+//                     type="text"
+//                     defaultValue={user?.fullName}
+//                     {...register('fullName')}
+//                 />
+//                 {/* <span style={{ color: 'red' }}>{errors.fullName?.message}</span> */}
+//             </label>
+
+//             <label>
+//                 Tên người dùng:
+//                 <input
+//                     type="text"
+//                     defaultValue={user?.userName}
+//                     {...register('userName')}
+//                 />
+//                 {/* <span style={{ color: 'red' }}>{errors.userName?.message}</span> */}
+//             </label>
+
+//             <label>
+//                 Email:
+//                 <input
+//                     type="email"
+//                     defaultValue={user?.email}
+//                     {...register('email')}
+//                 />
+//                 {/* <span style={{ color: 'red' }}>{errors.email?.message}</span> */}
+//             </label>
+
+//             <label>
+//                 Giới tính:
+//                 <select defaultValue={user?.gender} {...register('gender')}>
+//                     <option value="male">Nam</option>
+//                     <option value="female">Nữ</option>
+//                     <option value="other">Khác</option>
+//                 </select>
+//                 {/* <span style={{ color: 'red' }}>{errors.gender?.message}</span> */}
+//             </label>
+
+//             <button type="submit">Cập nhật thông tin</button>
+//         </form>
+//     );
+// };
+
+// export default UserUpdateForm;

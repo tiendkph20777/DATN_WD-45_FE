@@ -36,7 +36,7 @@ const App: React.FC = () => {
                 key: item._id,
                 userName: item.userName,
                 fullName: item.fullName,
-                image: item.image,
+                // image: item.image,
                 email: item.email,
                 gender: item.gender,
             }));
@@ -48,7 +48,15 @@ const App: React.FC = () => {
         const filteredData = user?.filter((item) =>
             item.userName.toLowerCase().includes(value.toLowerCase())
         );
-        setSearchResult(filteredData || []);
+        const filteredDataFullname = user?.filter((item) =>
+            item.fullName.toLowerCase().includes(value.toLowerCase())
+        );
+        const filteredDataEmail = user?.filter((item) =>
+            item.email.toLowerCase().includes(value.toLowerCase())
+        );
+        setSearchResult(filteredData);
+
+
         setSearchText(value);
     };
 

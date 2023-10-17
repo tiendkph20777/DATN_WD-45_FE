@@ -5,7 +5,7 @@ type Props = {}
 const TopSideBar = (props: Props) => {
     return (
         <div><header className="app-header">
-            <nav className="navbar navbar-expand-lg navbar-light">
+            <nav className="navbar navbar-expand-lg navbar-light" >
                 <ul className="navbar-nav">
                     <li className="nav-item d-block d-xl-none">
                         <a className="nav-link sidebartoggler nav-icon-hover" id="headerCollapse"

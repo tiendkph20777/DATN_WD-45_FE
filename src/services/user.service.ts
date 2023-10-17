@@ -39,10 +39,10 @@ const authAPI = createApi({
             invalidatesTags: ["user"], // Chỉ invalidates dữ liệu người dùng, không invalidates dữ liệu sản phẩm
         }),
         updateUser: builder.mutation<void, any>({
-            query: product => ({
-                url: `/user/${product._id}/update`,
+            query: user => ({
+                url: `/user/${user._id}/update`,
                 method: 'PUT',
-                body: product
+                body: user
             }),
         }),
     }),
