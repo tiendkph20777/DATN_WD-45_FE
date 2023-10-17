@@ -8,7 +8,9 @@ import Input from 'antd/es/input/Input';
 
 const YourFormComponent = () => {
     const { id } = useParams();
+    // console.log(id);
     const { data } = useFetchOneUserQuery(id);
+    console.log(data);
     const { control, handleSubmit, setValue, errors } = useForm();
     const [updateUser] = useUpdateUserMutation()
 
@@ -19,7 +21,7 @@ const YourFormComponent = () => {
 
     useEffect(() => {
         if (data) {
-            // setValue('_id', id);
+            setValue('_id', data._id);
             setValue('email', data.email);
             // setValue('password', data.password);
             setValue('userName', data.userName);
@@ -40,6 +42,19 @@ const YourFormComponent = () => {
         <div style={{ width: "70%", paddingLeft: "10%", paddingTop: "5%" }}>
             <h1 style={{}}>Update User</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
+
+                <Form.Item
+                    label="Username"
+                    name="_id"
+                    rules={[{ required: true, message: 'Please input your id!' }]}
+                >
+                    <Controller
+                        name="_id"
+                        control={control}
+                        defaultValue={data?._id || ''}
+                        render={({ field }) => <Input {...field} placeholder="id" />}
+                    />
+                </Form.Item>
                 <Form.Item
                     label="Username"
                     name="userName"
