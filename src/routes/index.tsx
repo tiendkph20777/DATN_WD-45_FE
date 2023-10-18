@@ -35,7 +35,7 @@ const routes: RouteObject[] = [
                 path: 'category/add', element: <CategoryAdd />
             },
             {
-                path: 'category/:id/edit', element: <CategoryEdit />
+                path: 'category/:idBrand/edit', element: <CategoryEdit />
             },
             // Product
             {
@@ -45,7 +45,7 @@ const routes: RouteObject[] = [
                 path: 'product/add', element: <ProductAdd />
             },
             {
-                path: 'product/:id/edit', element: <ProductEdit />
+                path: 'product/:idProduct/edit', element: <ProductEdit />
             },
             // Product Detail
             {
