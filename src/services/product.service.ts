@@ -7,41 +7,38 @@ const productAPI = createApi({
         baseUrl: "http://localhost:8080/api"
     }),
     endpoints: builder => ({
-        fetchProduct: builder.query<IProducts[], void>({
-            query: () => "/products",
+        getProducts: builder.query<IProducts[], void>({
+            query: () => `/product`,
         }),
-        getProduct: builder.query<{ product: IProducts | null }, number>({
-            query: id => ({
-                url: `/products/${id}`,
-                method: "GET",
-            }),
+        getProductById: builder.query<IProducts, number | string>({
+            query: (id) => `/product/${id}`
         }),
-        removeProduct: builder.mutation<void, number>({
-            query: id => ({
-                url: `/products/${id}`,
+        removeProduct: builder.mutation<IProducts, number | string>({
+            query: (id) => ({
+                url: `/product/${id}`,
                 method: "DELETE"
             }),
         }),
         addProduct: builder.mutation<void, Partial<IProducts>>({
             query: product => ({
-                url: `products`,
+                url: `product/add`,
                 method: "POST",
                 body: product
             }),
         }),
-        updateProduct: builder.mutation<void, IProducts>({
-            query: product => ({
-                url: `products/${product.id}`,
+        updateProduct: builder.mutation<IProducts, IProducts>({
+            query: (product) => ({
+                url: `/product/${product._id}/update`,
                 method: "PUT",
                 body: product
-            }),
+            })
         }),
     }),
 });
 
 export const {
-    useFetchProductQuery,
-    useGetProductQuery,
+    useGetProductsQuery,
+    useGetProductByIdQuery,
     useRemoveProductMutation,
     useAddProductMutation,
     useUpdateProductMutation
