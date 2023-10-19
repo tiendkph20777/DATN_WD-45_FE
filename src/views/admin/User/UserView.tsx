@@ -5,8 +5,8 @@ import { IAuth } from '../../../types/user.service';
 import Search from 'antd/es/input/Search';
 import { Link } from 'react-router-dom';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import { useFetchOneRoleQuery, useFetchRoleQuery } from '../../../services/role.service';
 
-// const { Column, ColumnGroup } = Table;
 
 interface DataType {
     key: React.Key;
@@ -28,6 +28,9 @@ const App: React.FC = () => {
     const [searchResult, setSearchResult] = useState<DataType[]>([]);
     const { data: user, isLoading, isFetching } = useFetchUserQuery();
     const [removeUserMutation] = useRemoveUserMutation()
+    const { data: roles } = useFetchRoleQuery()
+    // console.log("role:", user)
+
 
     useEffect(() => {
         if (!isFetching) {
@@ -36,7 +39,7 @@ const App: React.FC = () => {
                 key: item._id,
                 userName: item.userName,
                 fullName: item.fullName,
-                // image: item.image,
+                role: roles?.find(role => role?._id === item?.role_id)?.name,
                 email: item.email,
                 gender: item.gender,
             }));
@@ -46,18 +49,15 @@ const App: React.FC = () => {
 
     const onSearch = (value: string) => {
         const filteredData = user?.filter((item) =>
-            item.userName.toLowerCase().includes(value.toLowerCase())
+            isValueInFields(value?.toLowerCase(), [item.email.toLowerCase()])
         );
-        const filteredDataFullname = user?.filter((item) =>
-            item.fullName.toLowerCase().includes(value.toLowerCase())
-        );
-        const filteredDataEmail = user?.filter((item) =>
-            item.email.toLowerCase().includes(value.toLowerCase())
-        );
+
         setSearchResult(filteredData);
-
-
         setSearchText(value);
+    };
+
+    const isValueInFields = (value: string, fields: string[]) => {
+        return fields.some(field => field.includes(value));
     };
 
     // remove
@@ -69,7 +69,7 @@ const App: React.FC = () => {
                 message: 'Remove',
                 description: (
                     <span>
-                        Product <b>{user?.find((item) => item._id === id)?.userName}</b> removed successfully!
+                        Product <b>{user?.find((item) => item?._id === id)?.userName}</b> removed successfully!
                     </span>
                 ),
             });
@@ -82,7 +82,6 @@ const App: React.FC = () => {
         }
     };
 
-    // If data is loading, you can display a loading indicator or handle loading state accordingly
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -93,15 +92,7 @@ const App: React.FC = () => {
         { title: 'Full Name', dataIndex: 'fullName', key: 'fullName' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
         { title: 'Address', dataIndex: 'gender', key: 'gender' },
-
-        // {
-        //     title: 'Image',
-        //     dataIndex: 'image',
-        //     key: 'image',
-        //     render: (image: string) => <img src={image} alt="Product image" width={100} />,
-        // },
-        // { title: 'Category', dataIndex: 'categoryId', key: 'categoryId' },
-
+        { title: 'Role', dataIndex: 'role', key: 'role', },
         {
             title: 'Action',
             dataIndex: '',

@@ -2,12 +2,13 @@ import React, { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { IAuth } from '../../../types/user.service'
-import { useSignUpMutation } from '../../../services/user.service'
-import axios from 'axios'
+import { useFetchUserQuery, useSignUpMutation } from '../../../services/user.service'
+import { message as messageApi } from 'antd';
 
 const Signup = () => {
     const [createUserSignup, { isLoading, isError }] = useSignUpMutation()
     const navigate = useNavigate()
+    const { data: users } = useFetchUserQuery()
     const {
         register,
         handleSubmit,
@@ -23,18 +24,40 @@ const Signup = () => {
     const submitSignup = async (formData: IAuth) => {
         try {
             const response = await createUserSignup(formData);
-            // console.log(response.data.message)
-
             if (response.error) {
                 console.log(response.error.data.message);
                 const element = document.getElementById('loi');
-                element.innerHTML = '<p style="color: red;">' + response.error.data.message + '</p>';
-                // element.innerHTML = response.error.data.message
+                messageApi.open({
+                    type: 'error',
+                    content: response.error.data.message,
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '15vh',
+                        fontSize: "20px",
+                        lineHeight: "100px"
+                    },
+                });
+                // element.innerHTML = '<p style="color: red;">' + response.error.data.message + '</p>';
             } else {
-                console.log("đăng nhập thành công 🎉🎉🎉")
-                localStorage.setItem("user", JSON.stringify(response.data))
-                console.log(response)
-                navigate("/")
+                const isEmailExist = users?.some((user) => user.email.toLowerCase() === formData.email.toLowerCase());
+                if (isEmailExist) {
+                    messageApi.open({
+                        type: 'error',
+                        content: "Email đã tồn tại vui lòng nhập email khác!!!",
+                        className: 'custom-class',
+                        style: {
+                            marginTop: '15vh',
+                            fontSize: "20px",
+                            lineHeight: "100px"
+                        },
+                    });
+                } else {
+                    console.log("đăng nhập thành công 🎉🎉🎉")
+                    localStorage.setItem("user", JSON.stringify(response.data))
+                    messageApi.info('Hello,chào mừng bạn mới hãy mua sắm với chúng tôi nào 🎉🎉🎉');
+                    // console.log(response)
+                    navigate("/")
+                }
             }
         } catch (error) {
             console.error('Sign in failed:', error);
@@ -82,7 +105,8 @@ const Signup = () => {
                     <div className="container">
                         <div className="card">
                             <div className="card-body">
-                                <h3 className="card-title text-center fs-2 mb-4">Sing up to continue shopping for shoes </h3>
+                                {/* <h3 className="card-title text-center fs-2 mb-4">Sing up to continue shopping for shoes </h3> */}
+                                <h3 className="card-title text-center fs-2 mb-4">Sing up    </h3>
                                 <form onSubmit={handleSubmit(submitSignup)}>
                                     {/* <div className="mb-3" style={{}}>
                                         <label htmlFor="image" className="form-label" style={{ float: "left", lineHeight: "30px", padding: "10px" }}>Thêm ảnh đại diện</label>

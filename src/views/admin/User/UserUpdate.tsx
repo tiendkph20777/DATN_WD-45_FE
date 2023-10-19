@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { useFetchOneUserQuery, useUpdateUserMutation } from '../../../services/user.service';
 import { Button, Form } from 'antd';
@@ -8,9 +8,9 @@ import Input from 'antd/es/input/Input';
 
 const YourFormComponent = () => {
     const { id } = useParams();
-    // console.log(id);
+    const navigate = useNavigate();
     const { data } = useFetchOneUserQuery(id);
-    console.log(data);
+    // console.log(data);
     const { control, handleSubmit, setValue, errors } = useForm();
     const [updateUser] = useUpdateUserMutation()
 
@@ -30,12 +30,10 @@ const YourFormComponent = () => {
         }
     }, [data, setValue]);
 
-    const onSubmit = (user) => {
-
-        console.log(user);
-
+    const onSubmit = (user: any) => {
+        // console.log(user);
         updateUser(user);
-
+        navigate("/admin/user");
     };
 
     return (

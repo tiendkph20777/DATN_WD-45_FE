@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFetchUserQuery, useSignInMutation } from '../../../services/user.service';
 import { IAuth } from '../../../types/user.service';
+import { message as messageApi } from 'antd';
 
 const Signin = () => {
-
     const navigate = useNavigate();
     const [createUser, { isLoading }] = useSignInMutation();
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -19,18 +19,23 @@ const Signin = () => {
     const onSubmit = async (formData: IAuth) => {
         try {
             const response = await createUser(formData);
-
             if (response.error) {
-                const errorField = response.error.field; // Assuming you have a 'field' property in the error response
-                const errorMessage = response.error.message;
+                const element = document.getElementById('loi');
+                messageApi.open({
+                    type: 'error',
+                    content: response.error.data.message,
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '15vh',
+                        fontSize: "20px",
+                        lineHeight: "100px"
+                    },
+                });
+                // element.innerHTML = '<p style="color: red;">' + response.error.data.message + '</p>';
             } else {
                 console.log('Đăng nhập thành công 🎉🎉🎉');
                 localStorage.setItem('user', JSON.stringify(response.data));
-                // console.log(response);
-                setShowConfirmation(true);  // Show confirmation message
-                setTimeout(() => {
-                    setShowConfirmation(false);  // Hide confirmation message after 3 seconds
-                }, 3000);
+                messageApi.info('Hello,chào mừng bạn quay trở lại 🎉🎉🎉');
                 navigate("/");
             }
         } catch (error) {
