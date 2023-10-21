@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IProducts } from "../types/product.service";
+const { accessToKen: token }: any = JSON.parse(localStorage.getItem('user')!);
 
 const productAPI = createApi({
     reducerPath: "products",
@@ -45,14 +46,20 @@ const productAPI = createApi({
                 method: "GET",
             }),
         }),
-        removeComment: builder.mutation<void, number>({
-            query: id => ({
-                url: `/comment/${id}`,
-                method: "DELETE"
-            }),
+        removeComment: builder.mutation<void, any>({
+            query: ({ id }) => {
+                return {
+                    url: `/comment/${id}`,
+                    method: "DELETE",
+                    headers: {
+                        "content-type": "application/json",
+                        'authorization': `Bearer ${token}`
+                    }
+                }
+            }
         }),
         addComment: builder.mutation({
-            query: ({ token, data }) => {
+            query: ({ data }) => {
                 return {
                     url: `/comment/add`,
                     method: "POST",

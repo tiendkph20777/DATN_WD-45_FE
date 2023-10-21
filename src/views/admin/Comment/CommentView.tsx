@@ -1,96 +1,144 @@
-import { useFetchCommentQuery, useAddCommentMutation, } from "../../../services/product.service";
-import { useForm } from 'react-hook-form'
-const CommentView = () => {
-    const { data: dataCmt } = useFetchCommentQuery();
-    const { handleSubmit, register } = useForm<any>()
-    const [Product_Add] = useAddCommentMutation()
-    const onSubmit = (data: any) => {
-        const { accessToKen: token }: any = JSON.parse(localStorage.getItem('user')!);
-        const CurrentValue = {
-            data,
-            token
-        }
-        Product_Add(CurrentValue)
-    }
-    return (
-        <div className="">
-            <div className="row">
-                <div className="col-lg-12 d-flex align-items-stretch">
-                    <div className="card w-100">
-                        <div className="card-body mt-5">
-                            <h5 className="card-title mb-4">Bình Luận</h5>
-                            <div className="table-responsive">
-                                <table className="table text-nowrap mb-0 align-middle table-hover">
-                                    <thead className="text-dark fs-4">
-                                        <tr>
-                                            <th className="border-bottom-0">
-                                                <div className="mb-0">Id</div>
-                                            </th>
-                                            <th className="border-bottom-0">
-                                                <div className="mb-0">Người dùng</div>
-                                            </th>
-                                            <th className="border-bottom-0">
-                                                <div className="mb-0">Bình luận</div>
-                                            </th>
-                                            <th className="border-bottom-0">
-                                                <div className="mb-0">Đánh giá</div>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dataCmt?.map((item: any, index: any) => {
-                                            return (
-                                                <tr key={item._id}>
-                                                    <td className="border-bottom-0">
-                                                        <div className=" mb-0">{index + 1}</div>
-                                                    </td>
-                                                    <td className="border-bottom-0">
-                                                        <div className=" mb-1">{item.id_user}</div>
-                                                    </td>
-                                                    <td className="border-bottom-0">
-                                                        <div className=" mb-1">{item.content}</div>
-                                                    </td>
-                                                    <td className="border-bottom-0 d-flex align-items-center">
-                                                        <div className=" mb-1">{item.rate}</div>
-                                                        <div className="d-flex text-left" role="group">
-                                                            <button className="col btn w-100 btn-danger m-1"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#confirmDeleteModal"
-                                                                value="">Xóa</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleSubmit(onSubmit)} className="form-floating" >
-                            <textarea className="form-control"
-                                placeholder="Leave a comment here"
-                                {...register("content", { required: true, minLength: 10 })} />
-                            <input
-                                type="number"
-                                className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
-                                placeholder="Enter Price"
-                                {...register("rate", { required: true, maxLength: 10 })}
-                            />
-
-                            <label {...register("id_product", { value: "651610aa3279db7882ab8e5a" })}>Comments</label>
-                            <button
-                                type="submit"
-                                className="btn btn-primary"
-                                {...register("id_user", { value: "6514af515a3dc5d11ebaea17" })}>
-                                Binh Luan
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div >
-    )
+import { useEffect, useState } from 'react';
+import { InputNumber, Select, Table } from 'antd';
+import { Button, Input, Popconfirm } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { CloseOutlined } from '@ant-design/icons';
+import { useFetchCommentQuery, useFetchProductQuery, useRemoveCommentMutation } from "../../../services/product.service";
+import { useFetchUserQuery } from '../../../services/user.service';
+interface DataType {
+    _id: string;
+    content: string;
+    id_product: string;
+    id_user: string;
+    rate: number;
 }
+export default function CommentView() {
 
-export default CommentView
+    const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
+    const [searchResult, setSearchResult] = useState<DataType[]>([]);
+    const { data: dataCmt } = useFetchCommentQuery();
+    const [Product_Remove] = useRemoveCommentMutation();
+    const { data: dataPro } = useFetchProductQuery();
+    const { data: dataUser } = useFetchUserQuery();
+    const { Search } = Input;
+    useEffect(() => {
+        if (dataCmt) {
+            const updatedDataSource = dataCmt.map(
+                ({ _id, content, id_product, id_user, rate }: DataType) => ({
+                    _id,
+                    content,
+                    id_product,
+                    id_user,
+                    rate,
+                })
+            );
+            setDataSourceToRender(updatedDataSource);
+        }
+    }, [dataCmt]);
+
+    const onSearch = (value: string | number) => {
+        let filteredData = dataSourceToRender;
+        filteredData = filteredData.filter((item) => {
+            return (
+                item.id_product == value || item.id_user == value || item.rate == value
+            );
+        }
+        );
+        if (filteredData.length == 0) {
+            alert('Không có bình luận nào cả!');
+        }
+        setSearchResult(filteredData);
+    };
+
+    const columns: ColumnsType<DataType> = [
+        {
+            title: 'Người dùng',
+            dataIndex: 'id_user',
+            key: 'id_user'
+        },
+        {
+            title: 'Sản phẩm',
+            dataIndex: 'id_product',
+            key: 'id_product'
+        },
+        {
+            title: 'Đánh giá',
+            dataIndex: 'rate',
+            key: 'rate'
+        },
+        {
+            title: "",
+            key: 'x',
+            render: ({ _id: id }: any) => {
+                return (
+                    <Popconfirm
+                        title="Delete the task"
+                        description="Are you sure to delete this product ?"
+                        onConfirm={() => Product_Remove({ id })}
+                        okText="Yes"
+                        cancelText="No"
+                    >
+                        <Button
+                            type="primary"
+                            style={{
+                                backgroundColor: "red",
+                                margin: "4px",
+                                minWidth: "4em",
+                            }}
+                        >
+                            <CloseOutlined />
+                        </Button>
+                    </Popconfirm>
+                );
+            },
+        }
+    ];
+    return (
+        <div className='pt-6'>
+            <Search
+                placeholder="Tìm kiếm"
+                onSearch={onSearch}
+                style={{ width: 200 }} />
+
+            <Select
+                style={{ width: 200, marginBottom: 8 }}
+                placeholder="Chọn sản phẩm"
+                onChange={onSearch}
+                options={dataPro?.map((item) => (
+                    {
+                        value: item._id,
+                        label: item.name
+                    }
+                ))} />
+            <Select
+                style={{ width: 200, marginBottom: 8 }}
+                placeholder="Chọn người dùng"
+                onChange={onSearch}
+                options={dataUser?.map((item) => (
+                    {
+                        value: item._id,
+                        label: item.name
+                    }
+                ))} />
+            <Select
+                style={{ width: 200, marginBottom: 8 }}
+                placeholder="Chọn đánh giá"
+                onChange={onSearch}
+                options={[
+                    { value: 1, label: 1 },
+                    { value: 2, label: 2 },
+                    { value: 3, label: 3 },
+                    { value: 4, label: 4 },
+                    { value: 5, label: 5 },
+                ]} />
+            <Table
+                columns={columns}
+                expandable={{
+                    expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.content}</p>
+                }}
+                dataSource={searchResult.length > 0 ? searchResult : dataSourceToRender}
+                pagination={{ pageSize: 7, showQuickJumper: true }} />
+        </div>
+
+    );
+}

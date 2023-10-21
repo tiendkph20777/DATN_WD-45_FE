@@ -9123,6 +9123,8 @@ fieldset:disabled .btn {
   padding-bottom: 3rem !important;
 }
 
+
+
 .pt-0 {
   padding-top: 0 !important;
 }
@@ -9145,6 +9147,11 @@ fieldset:disabled .btn {
 
 .pt-5 {
   padding-top: 3rem !important;
+}
+
+.pt-6 {
+  padding-top: 5rem !important;
+  padding-bottom: 5rem !important;
 }
 
 .pe-0 {
