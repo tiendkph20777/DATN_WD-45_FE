@@ -11,7 +11,7 @@ const Dashboard = (props: Props) => {
             data-sidebar-position="fixed" data-header-position="fixed">
             <SideBar />
             <div className="body-wrapper" style={{ height: "100vh" }}>
-                <TopSideBar />
+                {/* <TopSideBar /> */}
                 <Outlet />
             </div>
         </div >

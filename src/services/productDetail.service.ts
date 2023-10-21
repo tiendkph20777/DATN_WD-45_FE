@@ -6,7 +6,7 @@ const productAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080",
   }),
-  tagTypes: ["product"],
+  tagTypes: ["Product"],
   endpoints: (builder) => ({
     getProducts: builder.query<IProduct[], void>({
       query: () => `api/productdetail`,
@@ -28,6 +28,7 @@ const productAPI = createApi({
         url: `api/productdetail/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: ["Product"],
     }),
 
     addProducts: builder.mutation<IProduct, IProduct>({
@@ -40,10 +41,11 @@ const productAPI = createApi({
 
     updateProducts: builder.mutation<IProduct, IProduct>({
       query: (product) => ({
-        url: `api/productdetail/${product._id}/update`,
+        url: `api/productdetail/${product.id}/update`,
         method: "PUT",
         body: product,
       }),
+      invalidatesTags: ["Product"],
     }),
   }),
 });
