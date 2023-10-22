@@ -12,7 +12,7 @@ const Product = () => {
                         <div className="row">
                             <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
                                 <div className="card product-main">
-                                    <a href="#" className="d-block overflow-hidden no-underline">
+                                    <a href="/product/1/detail" className="d-block overflow-hidden no-underline">
                                         <div className="position-relative product-image overflow-hidden">
                                             <img src="/src/assets/images/products/1900327270_main.jpg" alt="" width="100%" height="auto" className=" inset-0 object-cover" />
                                             <div className="product-hot" />
@@ -330,9 +330,9 @@ const Product = () => {
                                     </a>
                                 </div>
                             </div>
-                            {/* </div> */}
                         </div>
                     </div>
+
                 </section>
                 <section className="our-team position-relative pt-5">
                     <div className="container">

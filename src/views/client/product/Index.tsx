@@ -4,7 +4,6 @@ import Banner from '../home/Banner'
 const Index = () => {
     return (
         <div>
-            <Banner></Banner>
             <section className="our-team position-relative">
                 <div className="container">
                     <div className="row ourteam-row position-relative">
