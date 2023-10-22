@@ -1,131 +1,112 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
-import { useFetchOneUserQuery } from '../../../services/user.service';
+import { useFetchOneUserQuery, useUpdateUserMutation } from '../../../services/user.service';
+import { Button, Form } from 'antd';
+import Input from 'antd/es/input/Input';
 
 const YourFormComponent = () => {
-    const { id } = useParams();
+    const { id }: any = useParams();
+    const navigate = useNavigate();
     const { data } = useFetchOneUserQuery(id);
-    const { control, handleSubmit, setValue, errors } = useForm();
+    const { control, handleSubmit, setValue } = useForm();
+    const [updateUser] = useUpdateUserMutation();
+
+    if (!id) {
+        console.error('Id is undefined or null.');
+        return null;
+    }
 
     useEffect(() => {
-        // Đặt dữ liệu từ API vào form khi nó đã được lấy
         if (data) {
+            setValue('_id', data._id);
             setValue('email', data.email);
-            setValue('password', data.password);
-            setValue('confirmPassword', data.confirmPassword);
             setValue('userName', data.userName);
             setValue('fullName', data.fullName);
             setValue('gender', data.gender);
         }
     }, [data, setValue]);
 
-    const onSubmit = (formData) => {
-        // Xử lý submit form (ví dụ: gửi dữ liệu lên server)
-        console.log('Submitted data:', formData);
-    };
-
-    const styles = {
-        container: {
-            width: '400px',
-            margin: '0 auto',
-            padding: '20px',
-            border: '1px solid #ccc',
-            borderRadius: '5px',
-            backgroundColor: '#f9f9f9',
-        },
-        heading: {
-            marginBottom: '10px',
-        },
-        inputGroup: {
-            marginBottom: '10px',
-        },
-        label: {
-            display: 'block',
-            marginBottom: '5px',
-        },
-        input: {
-            width: '100%',
-            padding: '10px',
-            border: '1px solid #ccc',
-            borderRadius: '3px',
-            boxSizing: 'border-box',
-        },
-        button: {
-            padding: '10px 20px',
-            border: 'none',
-            borderRadius: '3px',
-            backgroundColor: '#3498db',
-            color: '#fff',
-            cursor: 'pointer',
-        },
+    const onSubmit = async (user: any) => {
+        try {
+            await updateUser(user);
+            navigate("/admin/user");
+        } catch (error) {
+            console.error('Failed to update user', error);
+        }
     };
 
     return (
-        <div style={styles.container}>
-            <h1 style={styles.heading}>Form Title</h1>
+        <div style={{ width: "70%", paddingLeft: "10%", paddingTop: "5%" }}>
+            <h1 style={{}}>Update User</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Username</label>
+                <Form.Item
+                    label="Username"
+                    name="_id"
+                    rules={[{ required: true, message: 'Please input your id!' }]}
+                    style={{ display: 'none' }}
+                >
+                    <Controller
+                        name="_id"
+                        control={control}
+                        defaultValue={data?._id || ''}
+                        render={({ field }) => <Input {...field} placeholder="id" />}
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Username"
+                    name="userName"
+                    rules={[{ required: true, message: 'Please input your username!' }]}
+                >
                     <Controller
                         name="userName"
                         control={control}
-                        defaultValue={data?.userName || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Username" />}
+                        defaultValue={data?.username || ''}
+                        render={({ field }) => <Input {...field} placeholder="Username" />}
                     />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Full Name</label>
+                </Form.Item>
+                <Form.Item
+                    label="fullName"
+                    name="fullName"
+                    rules={[{ required: true, message: 'Please input your fullName!' }]}
+                >
                     <Controller
                         name="fullName"
                         control={control}
                         defaultValue={data?.fullName || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Full Name" />}
+                        render={({ field }) => <Input {...field} placeholder="fullName" />}
                     />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Email</label>
+                </Form.Item>
+                <Form.Item
+                    label="email"
+                    name="email"
+                    rules={[{ required: true, message: 'Please input your email!' }]}
+                >
                     <Controller
                         name="email"
                         control={control}
                         defaultValue={data?.email || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Email" />}
+                        render={({ field }) => <Input {...field} placeholder="email" />}
                     />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Password</label>
-                    <Controller
-                        name="password"
-                        control={control}
-                        defaultValue={data?.password || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Password" />}
-                    />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Confirm Password</label>
-                    <Controller
-                        name="confirmPassword"
-                        control={control}
-                        defaultValue={data?.confirmPassword || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Confirm Password" />}
-                    />
-                </div>
-
-                <div style={styles.inputGroup}>
-                    <label style={styles.label}>Gender</label>
+                </Form.Item>
+                <Form.Item
+                    label="gender"
+                    name="gender"
+                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                >
                     <Controller
                         name="gender"
                         control={control}
                         defaultValue={data?.gender || ''}
-                        render={({ field }) => <input {...field} style={styles.input} placeholder="Gender" />}
+                        render={({ field }) => <Input {...field} placeholder="gender" />}
                     />
-                </div>
+                </Form.Item>
 
-                <button type="submit" style={styles.button}>Submit</button>
+                <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
             </form>
         </div>
     );
