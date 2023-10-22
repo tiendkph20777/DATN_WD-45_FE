@@ -334,9 +334,9 @@ const Product = () => {
                     </div>
 
                 </section>
-                <section className="our-team position-relative pt-5">
+                <section className="our-team position-relative pt-2">
                     <div className="container">
-                        <h5 className="fs-7 section-subheading text-uppercase text-center fw-500">Giày</h5>
+                        <h5 className="fs-5 section-subheading text-uppercase text-center fw-500" style={{ paddingBottom: "30px" }}>Giày</h5>
                         <div className="fs-2 section-heading pb-5 text-uppercase fw-bold text-center">
                             Sản phẩm nổi bật
                         </div>
@@ -664,10 +664,10 @@ const Product = () => {
                             {/* </div> */}
                         </div>
                     </div></section>
-                <section className="awasome-feature position-relative pt-5">
+                <section className="awasome-feature position-relative pt-2">
                     <div className="container">
-                        <h5 className="fs-7 section-subheading text-uppercase fw-500 text-center">Đặc Quyền Độc Quyền</h5>
-                        <div className="fs-2 section-heading text-uppercase fw-bold text-center">
+                        <h5 className="fs-5 section-subheading text-uppercase fw-500 text-center" style={{ paddingBottom: "20px" }}>Đặc Quyền Độc Quyền</h5>
+                        <div className="fs-3 section-heading text-uppercase fw-bold text-center" style={{ lineHeight: "50px" }}>
                             Hãy cùng tôi khám phá những ưu đãi độc quyền chỉ có tại <div className="text-logo">ShiftOes</div>
                         </div>
                         <div className="row d-flex justify-content-center">

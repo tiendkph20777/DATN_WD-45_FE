@@ -96,12 +96,12 @@ const routes: RouteObject[] = [
                 element: <CheckOut />
             },
             {
-                path:'blog',
+                path: 'blog',
                 element: <Blog />
             },
             {
-                path:'blogDetail',
-                element: <BlogDetail/>
+                path: 'blogDetail',
+                element: <BlogDetail />
             }
         ]
     },

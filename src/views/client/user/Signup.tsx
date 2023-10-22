@@ -53,7 +53,6 @@ const Signup = () => {
     const submitSignup = async (formData: IAuth) => {
         try {
             const response = await createUserSignup({ ...formData, image });
-            // Handle success or error response from your API
             if (response.error) {
                 console.log(response.error.data.message);
                 messageApi.open({
@@ -61,9 +60,9 @@ const Signup = () => {
                     content: response.error.data.message,
                     className: 'custom-class',
                     style: {
-                        marginTop: '15vh',
+                        marginTop: '0',
                         fontSize: "20px",
-                        lineHeight: "100px"
+                        lineHeight: "50px"
                     },
                 });
             } else {
@@ -74,9 +73,9 @@ const Signup = () => {
                         content: "Email đã tồn tại vui lòng nhập email khác!!!",
                         className: 'custom-class',
                         style: {
-                            marginTop: '15vh',
+                            marginTop: '0',
                             fontSize: "20px",
-                            lineHeight: "100px"
+                            lineHeight: "50px"
                         },
                     });
                 } else {
@@ -101,26 +100,39 @@ const Signup = () => {
         }
     };
 
-
-
     return (
-        <div className="">
-            <div className="row">
-                <div className="col-lg-6 col-md-12" style={{ marginLeft: '%', height: "cove" }}>
-                    <img
-                        src="https://i.pinimg.com/736x/85/50/7e/85507e032ba4276637784e04bf2510ad--nike.jpg"
-                        alt="Hình ảnh"
-                        className="img-fluid"
-                        style={{ height: 'cove', width: 'cove' }}
-                    />
-                </div>
-                <div className="col-lg-6 col-md-12">
-                    <div className="container">
-                        <div className="card">
-                            <div className="card-body">
-                                <h3 className="card-title text-center fs-2 mb-4">Sing up</h3>
-                                <form onSubmit={handleSubmit(submitSignup)}>
-                                    <div className="" style={{ display: "flex", justifyContent: "space-between" }}>
+        <div>
+            <section className="login_box_area section_gap">
+                <div className="">
+                    <div className="row">
+                        <div className="col-lg-6">
+                            <div className="login_box_img">
+                                <img className="img-fluid" src="https://we25.vn/media/uploads/2016/08/converse-chuck-ii-shield-hi-white-trainers.jpg" alt="" />
+                                <div className="hover">
+                                    <h4>New to our website?</h4>
+                                    <p>
+                                        There are advances being made in science and technology everyday,
+                                        and a good example of this is the
+                                    </p>
+                                    <Link className="primary-btn" to={"/signin"}>Create an Account</Link>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="login_form_inner" style={{ padding: 5 }}>
+                                <h3 className='m-3'>Sign up to enter</h3>
+                                <form
+                                    className="row login_form"
+                                    action="contact_process.php"
+                                    method="post"
+                                    id="contactForm"
+                                    // noValidate="novalidate"
+                                    onSubmit={handleSubmit(submitSignup)}
+                                >
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.image && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className=" col-md-11 " style={{ display: "flex", justifyContent: "space-between" }}>
                                         <div className="form-group mb-3" style={{ width: "50%" }}>
                                             <label htmlFor="project-image">Thêm ảnh đại diện cho bạn </label>
                                             <input
@@ -134,64 +146,98 @@ const Signup = () => {
                                             {uploading ? (
                                                 <p>Đang tải lên...</p>
                                             ) : image ? (
-                                                <p><img style={{ width: "100px", height: "100px", textAlign: "center", borderRadius: "50%" }} src={image} alt="" /></p>
+                                                <p><img style={{ width: "100px", height: "80px", textAlign: "center", borderRadius: "50%" }} src={image} alt="" /></p>
                                             ) : null}
                                         </div>
                                     </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between" }}>
-                                        <div className="mb-3" style={{ width: "45%" }}>
-                                            <label htmlFor="fullName" className="form-label">
-                                                Full name
-                                                {errors.fullName && <span className="error-message" style={{ color: "red" }}> *</span>}
-                                            </label>
-                                            <input type="text" className="form-control" id="fullName" placeholder="Nhập full name" {...register("fullName", { required: true })} />
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.fullName && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="fullName"
+                                            placeholder="Nhập full name"
+                                            {...register("fullName", { required: true })}
+                                        />
+                                    </div>
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.userName && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="userName"
+                                            placeholder="Nhập last name"
+                                            {...register("userName",
+                                                { required: true })}
+                                        />
+                                    </div>
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.gender && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-11 form-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="gender"
+                                            placeholder="Nhập address"
+                                            {...register("gender",
+                                                { required: true })}
+                                        />
+                                    </div>
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.email && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-11 form-group mb-3">
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            id="username"
+                                            placeholder="Nhập email người dùng"
+                                            {...register("email")}
+                                        />
+                                    </div>
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.password && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-3">
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            placeholder="Nhập mật khẩu"
+                                            {...register('password')}
+                                        />
+                                    </div>
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.confirmPassword && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-4">
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            placeholder="Nhập lại mật khẩu"
+                                            {...register("confirmPassword",
+                                                { required: true })}
+                                        />
+                                    </div>
+                                    <label htmlFor="" className='col-md-1'></label>
+                                    <div className="col-md-11 form-group mb-2">
+                                        <div className="creat_account">
+                                            <input type="checkbox" id="f-option2" name="selector" />
+                                            <label htmlFor="f-option2">Keep me logged in</label>
                                         </div>
-                                        <div className="mb-3" style={{ width: "45%" }}>
-                                            <label htmlFor="userName" className="form-label">
-                                                Last name
-                                                {errors.userName && <span className="error-message" style={{ color: "red" }}> *</span>}
-                                            </label>
-                                            <input type="text" className="form-control" id="userName" placeholder="Nhập last name" {...register("userName", { required: true })} />
-                                        </div>
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="gender" className="form-label">
-                                            Address
-                                            {errors.gender && <span className="error-message" style={{ color: "red" }}> *</span>}
-                                        </label>
-                                        <input type="text" className="form-control" id="gender" placeholder="Nhập address" {...register("gender", { required: true })} />
-                                    </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="email" className="form-label">
-                                            Email
-                                            {errors.email && <span className="error-message" style={{ color: "red" }}> *</span>}
-
-                                        </label>
-                                        <input type="email" className="form-control" id="email" placeholder="Nhập email" {...register("email", { required: true })} />
-                                    </div>
-                                    <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
-                                        <div className="mb-3" style={{ width: "45%" }}>
-                                            <label htmlFor="password" className="form-label">
-                                                Password
-                                                {errors.password && <span className="error-message" style={{ color: "red" }}> *</span>}
-                                            </label>
-                                            <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("password", { required: true })} />
-                                        </div>
-                                        <div className="mb-3" style={{ width: "45%" }}>
-                                            <label htmlFor="password" className="form-label">
-                                                ConfirPassword
-                                                {errors.confirmPassword && <span className="error-message" style={{ color: "red" }}> *</span>}
-                                            </label>
-                                            <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("confirmPassword", { required: true })} />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <input type="checkbox" /> <label htmlFor=""> Remeber me</label>
-                                        <span style={{ float: "right" }}>Already have an account? Login <Link to={"/signin"}>here</Link></span>
-                                    </div>
-                                    <div className="text-center">
-                                        <p id='loi'></p>
-                                        <button type="submit" className="btn btn-primary">Sing up</button>
+                                    <label htmlFor="" className='col-md-1'></label>
+                                    <div className="col-md-11 form-group mb-2">
+                                        <button type="submit" value="submit" className="primary-btn">
+                                            Sign up
+                                        </button>
+                                        <a href="#">Forgot Password?</a>
                                     </div>
                                     <div className='text-center'>
                                         <p style={{ marginBottom: "-5px" }}>or</p>
@@ -203,7 +249,7 @@ const Signup = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     )
 }

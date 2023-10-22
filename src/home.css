@@ -1130,7 +1130,7 @@ progress {
   .container-md,
   .container-sm,
   .container {
-    max-width: 1320px;
+    max-width: 1120px;
   }
 }
 
@@ -13984,7 +13984,7 @@ fieldset:disabled .btn {
 }
 
 .section-subheading {
-  color: #5f3920;
+  color: #5f3920; 
 }
 
 .fw-500 {
@@ -21464,6 +21464,7 @@ label {
 
 .login_box_area .login_box_img img {
   width: 100%;
+  height: 100vh;
 }
 
 .login_box_area .login_box_img:before {
@@ -21523,7 +21524,6 @@ label {
 }
 
 .login_form_inner .login_form {
-  max-width: 385px;
   margin: auto;
 }
 
