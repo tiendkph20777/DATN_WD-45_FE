@@ -1,8 +1,29 @@
-import React from 'react'
-
+import React, { useEffect } from 'react'
 type Props = {}
 
 const TheHeader = (props: Props) => {
+    useEffect(() => {
+        // Sử dụng sự kiện cuộn trong React để thêm hoặc loại bỏ lớp "sticky" cho tiêu đề.
+        const handleScroll = () => {
+            const header = document.querySelector('header');
+            if (header) {
+                if (window.scrollY > 50) {
+                    header.classList.add('sticky');
+                } else {
+                    header.classList.remove('sticky');
+                }
+            }
+        };
+
+        // Gắn sự kiện cuộn vào cửa sổ.
+        window.addEventListener('scroll', handleScroll);
+
+        // Xoá sự kiện cuộn khi component bị hủy.
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+
+    }, []);
     return (
         <div>
             <header className="main-header position-fixed w-100">
@@ -13,7 +34,7 @@ const TheHeader = (props: Props) => {
                             <i className="ti ti-menu-2"></i>
                         </a>
                         <div className="logo">
-                            <a className="navbar-brand py-0 me-0" href="#"><img src="/src/assets/images/logo.png" width="auto"
+                            <a className="navbar-brand py-0 me-0" href="/"><img src="/src/assets/images/logo.png" width="auto"
                                 height="70px" alt="" /></a>
                         </div>
                         <a className="d-inline-block d-lg-block d-xl-none d-xxl-none nav-toggler text-decoration-none text-capitalize mr-5"
@@ -32,7 +53,7 @@ const TheHeader = (props: Props) => {
                                 box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
                                 border-radius: 100px;
                                 background: #fff;
-                                margin-left: 28px;
+                                margin-left: 2em;
                                 }
                                 .form-search input {
                                 margin-left: 10px;
@@ -49,9 +70,7 @@ const TheHeader = (props: Props) => {
 
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav mx-auto">
-                                <li className="nav-item">
-                                    <a className="nav-link" aria-current="page" href="/">Trang Chủ</a>
-                                </li>
+
                                 <li className="nav-item">
                                     <a className="nav-link" href="/product">Sản Phẩm</a>
                                 </li>
@@ -66,8 +85,8 @@ const TheHeader = (props: Props) => {
                                 </li>
                             </ul>
                             <div className="d-flex align-items-center">
-                                <a href="#" className="cart">
-                                    <img src="../assets/images/cart.svg" alt="" className="cart-icon" />
+                                <a href="/cart" className="cart">
+                                    <img src="/src/assets/images/cart.svg" alt="" className="cart-icon" />
                                     <span className="count-cart">15</span>
                                 </a>
                                 <a className="btn btn-signin btn-primary m-2 btn-hover-secondery text-capitalize"
@@ -82,7 +101,7 @@ const TheHeader = (props: Props) => {
                     <div className="offcanvas-header">
                         <div className="logo">
                             <a className="navbar-brand py-0 me-0" href="#"><img width="100%" height="auto"
-                                src="../assets/images/logo.png" alt="" /></a>
+                                src="" alt="" /></a>
                         </div>
                         <button type="button" className="btn-close text-reset  ms-auto" data-bs-dismiss="offcanvas"
                             aria-label="Close"><i className="ti ti-x"></i></button>
@@ -115,6 +134,7 @@ const TheHeader = (props: Props) => {
                 </div>
             </header>
         </div>
+
     )
 }
 

@@ -3,14 +3,16 @@ import { configureStore } from '@reduxjs/toolkit'
 import brandAPI from './services/brand.service'
 import productAPI from './services/product.service'
 import authAPI from './services/user.service'
+import roleAPI from './services/role.service'
 
 export const store = configureStore({
   reducer: {
     "product": productAPI.reducer,
     "brand": brandAPI.reducer,
     "auth": authAPI.reducer,
+    "role": roleAPI.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware),
 
 })
 

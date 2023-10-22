@@ -3,9 +3,9 @@ import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFetchUserQuery, useSignInMutation } from '../../../services/user.service';
 import { IAuth } from '../../../types/user.service';
+import { message as messageApi } from 'antd';
 
 const Signin = () => {
-
     const navigate = useNavigate();
     const [createUser, { isLoading }] = useSignInMutation();
     const [showConfirmation, setShowConfirmation] = useState(false);
@@ -19,18 +19,31 @@ const Signin = () => {
     const onSubmit = async (formData: IAuth) => {
         try {
             const response = await createUser(formData);
-
             if (response.error) {
-                const errorField = response.error.field; // Assuming you have a 'field' property in the error response
-                const errorMessage = response.error.message;
+                const element = document.getElementById('loi');
+                messageApi.open({
+                    type: 'error',
+                    content: response.error.data.message,
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
             } else {
-                console.log('Đăng nhập thành công 🎉🎉🎉');
+                // console.log('Đăng nhập thành công 🎉🎉🎉');
                 localStorage.setItem('user', JSON.stringify(response.data));
-                // console.log(response);
-                setShowConfirmation(true);  // Show confirmation message
-                setTimeout(() => {
-                    setShowConfirmation(false);  // Hide confirmation message after 3 seconds
-                }, 3000);
+                messageApi.info({
+                    type: 'error',
+                    content: "Hello,chào mừng bạn quay trở lại 🎉🎉🎉",
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
                 navigate("/");
             }
         } catch (error) {
@@ -96,56 +109,3 @@ const Signin = () => {
 
 export default Signin
 
-
-
-
-// import React from 'react';
-// import axios from 'axios';
-
-
-
-
-// const UploadImage = () => {
-//     const uploadFiles = async (files) => {
-//         if (files) {
-//             const CLOUD_NAME = "dwipssyox";
-//             const PRESET_NAME = "file-image-cv";
-//             const POLDER_NAME = "ECMA";
-//             const urls = [];
-//             const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-
-//             const formData = new FormData();
-//             formData.append("upload_preset", PRESET_NAME);
-//             formData.append("folder", POLDER_NAME);
-
-//             for (const file of files) {
-//                 formData.append("file", file);
-//                 const response = await axios.post(api, formData, {
-//                     headers: {
-//                         "content-type": "multipart/form-data",
-//                     },
-//                 });
-//                 urls.push(response.data.secure_url);
-//             }
-//             console.log("url :", urls);
-//             return urls;
-//         }
-//     };
-
-//     return (
-//         <div className="container">
-//             <h1>cập nhật sản phẩm</h1>
-//             <form action="" id="form-add">
-//                 <div className="form-group mb-3">
-//                     <label >image sản phẩm</label>
-//                     <input type="file" id="project-image" className="form-control" />
-//                 </div>
-//                 <div className="form-group">
-//                     <button className="btn btn-primary mb-50">thêm</button>
-//                 </div>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default UploadImage;

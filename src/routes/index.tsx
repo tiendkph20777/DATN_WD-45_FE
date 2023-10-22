@@ -18,6 +18,9 @@ import Signin from "../views/client/user/Signin";
 import Signup from "../views/client/user/Signup";
 import UserView from "../views/admin/User/UserView";
 import UserUpdate from "../views/admin/User/UserUpdate";
+import ProductDetail from "../views/client/product/ProductDetail";
+import Cart from "../views/client/home/Cart";
+import CheckOut from "../views/client/home/CheckOut";
 
 const routes: RouteObject[] = [
     {
@@ -79,8 +82,16 @@ const routes: RouteObject[] = [
                 element: <IndexProduct />
             },
             {
-                path: 'about',
-                element: <IndexAbout />
+                path: 'product/1/detail',
+                element: <ProductDetail />
+            },
+            {
+                path: 'cart',
+                element: <Cart />
+            },
+            {
+                path: 'checkout',
+                element: <CheckOut />
             }
         ]
     },
