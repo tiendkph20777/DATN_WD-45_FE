@@ -21,6 +21,8 @@ import UserUpdate from "../views/admin/User/UserUpdate";
 import ProductDetail from "../views/client/product/ProductDetail";
 import Cart from "../views/client/home/Cart";
 import CheckOut from "../views/client/home/CheckOut";
+import Blog from "../views/client/home/Blog";
+import BlogDetail from "../views/client/home/BlogDetail";
 
 const routes: RouteObject[] = [
     {
@@ -92,6 +94,14 @@ const routes: RouteObject[] = [
             {
                 path: 'checkout',
                 element: <CheckOut />
+            },
+            {
+                path:'blog',
+                element: <Blog />
+            },
+            {
+                path:'blogDetail',
+                element: <BlogDetail/>
             }
         ]
     },
