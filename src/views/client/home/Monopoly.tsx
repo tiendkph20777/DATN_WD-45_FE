@@ -9,8 +9,8 @@ const Monopoly = () => {
                 {/*--------------------------*/}
                 <section className="our-team position-relative">
                     <div className="container">
-                        <h5 className="fs-7 section-subheading text-uppercase text-center fw-500">Tin Tức</h5>
-                        <div className="fs-2 section-heading text-uppercase fw-bold text-center">
+                        <h5 className="fs-5 section-subheading text-uppercase text-center fw-500" style={{ padding: "30px" }}>Tin Tức</h5>
+                        <div className="fs-2 section-heading text-uppercase fw-bold text-center" style={{ marginBottom: "50px" }}>
                             Tin Tức Mới Nhất
                         </div>
                         <div className="row">
@@ -77,8 +77,8 @@ const Monopoly = () => {
                 <div className="container">
                     <div className="row">
                         <div className="col-xxl-6 col-xl-6 col-lg-6 col-12">
-                            <h5 className="fs-7 section-subheading text-uppercase fw-500">Liên Hệ Ngay</h5>
-                            <div className="fs-2 section-heading text-uppercase fw-bold">
+                            <h5 className="fs-5 section-subheading text-uppercase fw-500" style={{ paddingBottom: "10px" }}>Liên Hệ Ngay</h5>
+                            <div className="fs-2 section-heading text-uppercase fw-bold" style={{ lineHeight: "90px" }}>
                                 Bạn gặp vấn đề?<br /> Liên hệ ngay với chúng tôi tại đây
                             </div>
                         </div>

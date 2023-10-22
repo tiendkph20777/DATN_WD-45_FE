@@ -32,7 +32,7 @@ const Signin = () => {
                     },
                 });
             } else {
-                // console.log('Đăng nhập thành công 🎉🎉🎉');
+                console.log('Đăng nhập thành công 🎉🎉🎉');
                 localStorage.setItem('user', JSON.stringify(response.data));
                 messageApi.info({
                     type: 'error',
@@ -51,41 +51,63 @@ const Signin = () => {
         }
     };
     return (
-        <div className="" >
-            <div className="row">
-                < div className="col-lg-6 col-md-12" style={{ marginLeft: '%', height: "cove" }}>
-                    <img
-                        src="https://i.pinimg.com/736x/85/50/7e/85507e032ba4276637784e04bf2510ad--nike.jpg"
-                        alt="Hình ảnh"
-                        className="img-fluid"
-                        style={{ height: '670px', width: '100%' }}
-                    />
-                </div >
-                <div className="col-lg-6 col-md-12">
-                    <div className="container mt-5">
-                        <div className="card">
-                            <div className="card-body">
-                                <h3 className="card-title text-center fs-2 mb-4">Log in to continue shopping for shoes </h3>
-                                <form onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="mb-3">
-                                        <label htmlFor="username" className="form-label">
-                                            Email {errors.email && <span style={{ color: "red" }}> - Email is required</span>}
-                                        </label>
-                                        <input type="email" className="form-control" id="username" placeholder="Nhập tên người dùng" {...register("email", { required: true })} />
+        <div>
+            <section className="login_box_area section_gap">
+                <div className="">
+                    <div className="row">
+                        <div className="col-lg-6">
+                            <div className="login_box_img">
+                                <img className="img-fluid" src="https://we25.vn/media/uploads/2016/08/converse-chuck-ii-shield-hi-white-trainers.jpg" alt="" />
+                                <div className="hover">
+                                    <h4>New to our website?</h4>
+                                    <p>
+                                        There are advances being made in science and technology everyday,
+                                        and a good example of this is the
+                                    </p>
+                                    <Link className="primary-btn" to={"/signup"}>Create an Account</Link>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="login_form_inner container">
+                                <h3>Log in to enter</h3>
+                                <form
+                                    className="row login_form"
+                                    action="contact_process.php"
+                                    method="post"
+                                    id="contactForm"
+                                    // noValidate="novalidate"
+                                    onSubmit={handleSubmit(onSubmit)}
+                                >
+                                    <div className="col-md-12 form-group">
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            id="username"
+                                            placeholder="Nhập email người dùng"
+                                            {...register("email")}
+                                        />
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="password" className="form-label">
-                                            Mật khẩu {errors.password && <span style={{ color: "red" }}> - Password is required</span>}
-                                        </label>
-                                        <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register('password', { required: true })} />
+                                    <div className="col-md-12 form-group">
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            placeholder="Nhập mật khẩu"
+                                            {...register('password')}
+                                        />
                                     </div>
-                                    <div>
-                                        <input type="checkbox" /> <label htmlFor=""> Remeber me</label>
-                                        <span style={{ float: "right" }}>Don't have an account? Signup <Link to={"/signup"}>here</Link></span>
+                                    <div className="col-md-12 form-group">
+                                        <div className="creat_account">
+                                            <input type="checkbox" id="f-option2" name="selector" />
+                                            <label htmlFor="f-option2">Keep me logged in</label>
+                                        </div>
                                     </div>
-                                    <div className="text-center mt-2 ">
-                                        <span id='loi'></span>
-                                        <button type="submit" className="btn btn-primary">Log in</button>
+                                    <div className="col-md-12 form-group">
+                                        <button type="submit" value="submit" className="primary-btn">
+                                            Log In
+                                        </button>
+                                        <a href="#">Forgot Password?</a>
                                     </div>
                                     <div className='text-center'>
                                         <p style={{ marginBottom: "-5px" }}>or</p>
@@ -93,19 +115,13 @@ const Signin = () => {
                                         <Link to={''}><svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 488 512"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" /></svg></Link>
                                     </div>
                                 </form>
-                                {showConfirmation && (
-                                    <div className="confirmation-message" style={{ "display": "block", "position": "fixed", "top": "50%", "left": "50%", "transform": "translate(-50%, -50%)", "padding": "20px", "backgroundColor": "#28a745", "color": "#fff", "fontSize": "1.2rem", "borderRadius": "5px", "boxShadow": "0 0 10px rgba(0, 0, 0, 0.2)", "zIndex": "9999" }}>
-                                        Sign up successful! Redirecting in 3 seconds...
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
                 </div>
-            </div >
-        </div >
+            </section>
+        </div>
     )
 }
 
 export default Signin
-

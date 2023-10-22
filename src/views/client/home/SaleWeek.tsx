@@ -8,10 +8,10 @@ const SaleWeek = () => {
                     <div className="fs-2 section-heading text-uppercase fw-bold text-center">
                         Giảm Giá Tuần Này
                     </div>
-                    <h5 className="fs-7 section-subheading text-uppercase text-center fw-500">Thương Hiệu</h5>
+                    <h5 className="fs-7 section-subheading text-uppercase text-center fw-500" style={{ paddingTop: "50px" }}>Thương Hiệu</h5>
                     <div className="row ourteam-row position-relative container">
                         <div className="row ">
-                            <div className="col-xxl-2 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                            <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2">
                                 <div className="card">
                                     <a href="#" className="d-block overflow-hidden no-underline m-2">
                                         <div className="position-relative overflow-hidden">
@@ -20,7 +20,7 @@ const SaleWeek = () => {
                                     </a>
                                 </div>
                             </div>
-                            <div className="col-xxl-2 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                            <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2">
                                 <div className="card">
                                     <a href="#" className="d-block overflow-hidden no-underline">
                                         <div className="position-relative overflow-hidden m-2">
@@ -29,7 +29,7 @@ const SaleWeek = () => {
                                     </a>
                                 </div>
                             </div>
-                            <div className="col-xxl-2 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                            <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2">
                                 <div className="card">
                                     <a href="#" className="d-block overflow-hidden no-underline">
                                         <div className="position-relative overflow-hidden m-2">
@@ -38,7 +38,7 @@ const SaleWeek = () => {
                                     </a>
                                 </div>
                             </div>
-                            <div className="col-xxl-2 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                            <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2">
                                 <div className="card">
                                     <a href="#" className="d-block overflow-hidden no-underline">
                                         <div className="position-relative overflow-hidden m-2">
@@ -47,7 +47,7 @@ const SaleWeek = () => {
                                     </a>
                                 </div>
                             </div>
-                            <div className="col-xxl-2 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                            <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2">
                                 <div className="card">
                                     <a href="#" className="d-block overflow-hidden no-underline">
                                         <div className="position-relative overflow-hidden m-2">
@@ -56,7 +56,7 @@ const SaleWeek = () => {
                                     </a>
                                 </div>
                             </div>
-                            <div className="col-xxl-2 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                            <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2">
                                 <div className="card">
                                     <a href="#" className="d-block overflow-hidden no-underline">
                                         <div className="position-relative overflow-hidden m-2">

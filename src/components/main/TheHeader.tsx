@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-type Props = {}
+import { Link } from 'react-router-dom';
 
-const TheHeader = (props: Props) => {
+const TheHeader = () => {
     useEffect(() => {
         // Sử dụng sự kiện cuộn trong React để thêm hoặc loại bỏ lớp "sticky" cho tiêu đề.
         const handleScroll = () => {
@@ -27,7 +27,7 @@ const TheHeader = (props: Props) => {
     return (
         <div>
             <header className="main-header position-fixed w-100">
-                <div className="container">
+                <div className="" style={{ paddingLeft: "5%", paddingRight: "5%" }}>
                     <nav className="navbar navbar-expand-xl py-0">
                         <a className="d-inline-block d-lg-block d-xl-none d-xxl-none  nav-toggler text-decoration-none"
                             data-bs-toggle="offcanvas" href="#offcanvasExample" aria-controls="offcanvasExample">
@@ -70,27 +70,30 @@ const TheHeader = (props: Props) => {
 
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul className="navbar-nav mx-auto">
-
                                 <li className="nav-item">
-                                    <a className="nav-link" href="/product">Sản Phẩm</a>
+                                    <Link to="/" className='nav-link'>Home</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link" href="/about">Giới Thiệu</a>
+                                    <Link to="/product" className='nav-link'>Sản Phẩm</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link" href="#">Tin Tức</a>
+                                    <Link to="#" className='nav-link'>Giới Thiệu</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <a className="nav-link" href="contact.html">Liên Hệ</a>
+                                    <Link to="#" className='nav-link'>Tin Tức</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link to="#" className='nav-link'>Liên Hệ</Link>
                                 </li>
                             </ul>
                             <div className="d-flex align-items-center">
-                                <a href="/cart" className="cart">
+                                <Link to={"/cart"} className="cart">
                                     <img src="/src/assets/images/cart.svg" alt="" className="cart-icon" />
                                     <span className="count-cart">15</span>
-                                </a>
-                                <a className="btn btn-signin btn-primary m-2 btn-hover-secondery text-capitalize"
-                                    href="/signin">Đăng Nhập</a>
+                                </Link>
+                                <Link className="btn btn-signin btn-primary m-2 btn-hover-secondery text-capitalize"
+                                    to="/signin">Đăng Nhập
+                                </Link>
                             </div>
                         </div>
                     </nav>
