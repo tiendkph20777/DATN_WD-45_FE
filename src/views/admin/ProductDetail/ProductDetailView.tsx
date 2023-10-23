@@ -1,112 +1,297 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  Popconfirm,
+  Button,
+  Select,
+  Alert,
+  Input,
+  notification,
+} from "antd";
+import { IProduct } from "../types/product";
+import { Link } from "react-router-dom";
+import {
+  SearchOutlined,
+  CloseOutlined,
+  EditOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 
-type Props = {}
+import {
+  useGetProductsQuery,
+  useRemoveProductsMutation,
+  useGetProductQuery,
+} from "../../../services/productDetail.service";
 
-const ProductDetailView = (props: Props) => {
-    return (
-        <div className="container" >
-            <div className="row">
-                <div className="col-lg-12 d-flex align-items-stretch">
-                    <div className="card w-100">
-                        <div className="card-body mt-5" style={{ height: "100vh" }}>
-                            <h5 className="card-title fw-semibold mb-4">Danh Mục</h5>
-                            <a className="text-white"
-                                href="/admin/category/add"><button type="button" className="btn btn-success m-1">Thêm</button></a>
-                            <div className="col-lg-12 d-flex align-items-stretch">
-                                <form action="" className="row w-100">
-                                    <div className="mt-2 col-4">
-                                        <select id="disabledSelect" className="form-select ">
-                                            <option selected>Tìm theo danh mục</option>
-                                            <option>Nike</option>
-                                            <option>Nike</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="mt-2 col-4">
-                                        <select id="disabledSelect" className="form-select ">
-                                            <option selected>Tìm theo kích cỡ</option>
-                                            <option>Tất cả</option>
-                                            <option>39</option>
-                                            <option>40</option>
-                                            <option>41</option>
-                                            <option>42</option>
-                                        </select>
-                                    </div>
-                                    <div className="mt-2 col-4">
-                                        <select id="disabledSelect" className="form-select ">
-                                            <option selected>Tìm theo màu sắc</option>
-                                            <option>Tất cả</option>
-                                            <option>Xanh</option>
-                                            <option>Đỏ</option>
-                                        </select>
-                                    </div>
-                                    <div className="mt-2 col-4">
-                                        <input type="text" id="" className="w-100 form-control"
-                                            placeholder="Nhập tên sản phẩm cần tìm" />
-                                    </div>
-                                    <button type="submit" className="col-8 p-2 btn btn-secondary mt-2">Tìm kiếm</button>
-                                </form>
-                            </div>
-                            <div className="table-responsive">
-                                <table className="table text-nowrap mb-0 align-middle">
-                                    <thead className="text-dark fs-4">
-                                        <tr className="text-uppercase">
-                                            <th className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-0">Id</h6>
-                                            </th>
-                                            <th className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-0">Tên Sản Phẩm</h6>
-                                            </th>
-                                            <th className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-0">Kích cỡ</h6>
-                                            </th>
-                                            <th className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-0">Số lượng</h6>
-                                            </th>
-                                            <th className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-0">Hành Động</h6>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-0">1</h6>
-                                            </td>
-                                            <td className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-1">N358</h6>
-                                                <small className='bg-dark p-1 rounded-1 text-light'>Nike 03</small>
-                                            </td>
-                                            <td className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-1">35</h6>
-                                            </td>
-                                            <td className="border-bottom-0">
-                                                <h6 className="fw-semibold mb-1">10</h6>
-                                            </td>
-
-                                            <td className="border-bottom-0">
-                                                <div className="d-flex text-left" role="group">
-                                                    <a href="" className="m-2">
-                                                        <button className="btn w-100 btn-secondary m-1">Sửa</button>
-                                                    </a>
-                                                    <form className="m-2" id="deleteForm" action="" method="post">
-                                                        <button className="col btn w-100 btn-danger m-1"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#confirmDeleteModal"
-                                                            value="">Xóa</button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
+interface DataType {
+  key: React.Key;
+  size: number;
+  color: string;
+  quantity: number;
+  id_product: string; // Change from id_product to match your data structure
 }
 
-export default ProductDetailView
+const { Option } = Select;
+
+const Dashboard = (props: Props) => {
+  const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
+  const [selectedColor, setSelectedColor] = useState<string | undefined>(
+    undefined
+  );
+  const [selectedSize, setSelectedSize] = useState<string | undefined>(
+    undefined
+  );
+  const [searchProductId, setSearchProductId] = useState<string | undefined>(
+    undefined
+  );
+  const [uniqueSizes, setUniqueSizes] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState<DataType[]>([]);
+  const [showNoProductsAlert, setShowNoProductsAlert] = useState(false);
+  const { data: product } = useGetProductQuery();
+  const { data: productData } = useGetProductsQuery();
+  const [removeProduct] = useRemoveProductsMutation();
+
+  const confirm = async (id) => {
+    try {
+      // Gọi API xóa sản phẩm bất đồng bộ
+      await removeProduct(id);
+
+      // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
+      const updatedData = dataSourceToRender.filter((item) => item.key !== id);
+      setDataSourceToRender(updatedData);
+
+      // Hiển thị thông báo thành công
+      notification.success({
+        message: "Success",
+        description: "Xóa sản phẩm thành công!",
+      });
+    } catch (error) {
+      // Xử lý lỗi nếu cần
+      console.error("Error deleting product", error);
+    }
+  };
+
+  useEffect(() => {
+    if (productData) {
+      const updatedDataSource = productData.map(
+        ({ _id, size, color, quantity, id_product }: IProduct) => ({
+          key: _id,
+          size,
+          color,
+          quantity,
+          id_product: product?.find((role) => role?._id === id_product)?.name,
+        })
+      );
+      setDataSourceToRender(updatedDataSource);
+
+      const updatedUniqueSizes = Array.from(
+        new Set(updatedDataSource.map((item) => item.size))
+      );
+      setUniqueSizes(updatedUniqueSizes);
+    }
+  }, [productData]);
+
+  const onSearch = (e) => {
+    const inputValue = e.target.value;
+    setSearchProductId(inputValue);
+
+    let filteredData = dataSourceToRender;
+
+    if (selectedColor) {
+      filteredData = filteredData.filter((item) =>
+        item.color.toLowerCase().includes(selectedColor.toLowerCase())
+      );
+    }
+
+    if (selectedSize) {
+      filteredData = filteredData.filter(
+        (item) => item.size === parseInt(selectedSize)
+      );
+    }
+
+    if (searchProductId) {
+      filteredData = filteredData.filter((item) =>
+        item.id_product.toLowerCase().includes(searchProductId.toLowerCase())
+      );
+    }
+
+    setSearchResult(filteredData);
+    setShowNoProductsAlert(filteredData.length === 0);
+  };  
+
+  const resetSearch = () => {
+    setSelectedColor(undefined);
+    setSelectedSize(undefined);
+    setSearchProductId(undefined);
+    setSearchResult([]);
+    setSearchText("");
+    setShowNoProductsAlert(false);
+  };
+
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "id_product",
+      key: "id_product",
+    },
+    {
+      title: "Size",
+      dataIndex: "size",
+      key: "size",
+      render: (size) => {
+        if (typeof size === "number") {
+          return size;
+        } else if (typeof size === "string" && !isNaN(Number(size))) {
+          return Number(size);
+        }
+        return size;
+      },
+    },
+    {
+      title: "Color",
+      dataIndex: "color",
+      key: "color",
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: ({ key: id }: any) => {
+        return (
+          <>
+            <div>
+              <Popconfirm
+                title="Delete the task"
+                description="Are you sure to delete this product ?"
+                onConfirm={() => confirm(id)}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "red",
+                    margin: "4px",
+                    minWidth: "4em",
+                  }}
+                >
+                  <CloseOutlined />
+                </Button>
+              </Popconfirm>
+
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "blue",
+                  margin: "4px",
+                  minWidth: "4em",
+                }}
+              >
+                <Link to={`${id}/edit`} >
+                  <EditOutlined />
+                </Link>
+              </Button>
+            </div>
+          </>
+        );
+      },
+    },
+  ];
+
+  return (
+    <div>
+      {showNoProductsAlert && (
+        <Alert message="Không tìm thấy sản phẩm" type="info" showIcon style={{
+          marginTop: "20px", backgroundColor:"red"}}  />
+      )}
+
+      <div className="search-bar">
+        <Input
+          placeholder="Tìm kiếm sản phẩm"
+          value={searchProductId}
+          onChange={(e) => setSearchProductId(e.target.value)} // ấn để tìm kiếm
+          // onChange={onSearch} // tìm kiếm luôn
+        />
+        <Select
+          style={{ width: 200, marginRight: 8 }}
+          placeholder="Chọn Màu"
+          value={selectedColor}
+          onChange={(value) => setSelectedColor(value)}
+          style={{ marginBottom: "20px", marginTop: "40px" }}
+        >
+          <Option value={undefined}>All Color</Option>
+          {dataSourceToRender && dataSourceToRender.length > 0 ? (
+            dataSourceToRender.map((item) => (
+              <Option key={item.color} value={item.color}>
+                {item.color}
+              </Option>
+            ))
+          ) : (
+            <Option value={undefined}>No colors available</Option>
+          )}
+        </Select>
+        <Select
+          style={{ width: 200, marginRight: 8 }}
+          placeholder="Chọn Kích Thước"
+          value={selectedSize}
+          onChange={(value) => setSelectedSize(value)}
+        >
+          <Option value={undefined}>Tất cả kích thước</Option>
+          {uniqueSizes.map((size) => (
+            <Option key={size} value={size}>
+              {size}
+            </Option>
+          ))}
+        </Select>
+        <Button
+          type="primary"
+          icon={<SearchOutlined />}
+          onClick={onSearch}
+          style={{ backgroundColor: "#33CCFF" }}
+        >
+          Tìm Kiếm
+        </Button>
+        
+        <Button
+          type="primary"
+          icon={<CloseOutlined />}
+          onClick={resetSearch}
+          style={{ backgroundColor: "#33CCFF" }}
+        >
+          Reset
+        </Button>
+        <Button
+          type="primary"
+          style={{
+            backgroundColor: "blue",
+            margin: "4px",
+            minWidth: "4em",
+          }}
+        >
+          <Link to={`add`}>
+            <PlusOutlined />
+          </Link>
+        </Button>
+        
+      </div>
+      <Table
+        columns={columns}
+        expandable={{
+          expandedRowRender: (record) => (
+            <p style={{ margin: 0 }}>{record.description}</p>
+          ),
+          rowExpandable: (record) => record.name !== "Not Expandable",
+        }}
+        dataSource={searchResult.length > 0 ? searchResult : dataSourceToRender}
+        pagination={{ pageSize: 5, showQuickJumper: true }}
+      />
+    </div>
+  );
+};
+
+export default Dashboard;
