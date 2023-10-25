@@ -10,7 +10,7 @@ const productAPI = createApi({
         getProducts: builder.query<IProducts[], void>({
             query: () => `/product`,
         }),
-        getProductById: builder.query<IProducts, number | string>({
+        getProductById: builder.query<IProducts, any>({
             query: (id) => `/product/${id}`
         }),
         removeProduct: builder.mutation<IProducts, number | string>({

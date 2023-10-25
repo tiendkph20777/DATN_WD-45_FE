@@ -3,7 +3,9 @@ export interface IProducts {
     _id: string | number;
     name: string,
     brand_id: string,
-    images: string,
+    images: any,
     price: number,
-    price_sale: number | string,
+    price_sale: number,
+    content: string,
+    description: string
 }
