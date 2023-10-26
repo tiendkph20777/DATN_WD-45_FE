@@ -1,91 +1,129 @@
-import React from 'react'
+import React, { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useGetProductByIdQuery } from "../../../services/product.service";
+import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 
 const ProductDetail = () => {
-    return (
-        <div>
-            <div className="product_image_area">
-                <div className="container">
-                    <div className="row s_product_inner">
-                        <div className="col-lg-5 offset-lg-1">
-                            {/* <div className="s_Product_carousel"> */}
-                            <div className="single-prd-item">
-                                <img className="img-fluid" src="https://media.gq.com/photos/63e2b84fc3e6ea31f7c7dd30/3:2/w_1686,h_1124,c_limit/best-shoe-brands-nike-asics-celine.jpg" alt="" />
-                            </div>
-                            <div className="image-carosell d-flex p-2">
-                                <div className="single-prd-item col-3 p-2">
-                                    <img className="img-fluid" src="https://media.gq.com/photos/63e2b84fc3e6ea31f7c7dd30/3:2/w_1686,h_1124,c_limit/best-shoe-brands-nike-asics-celine.jpg" alt="" />
-                                </div>
-                                <div className="single-prd-item col-3 p-2">
-                                    <img className="img-fluid" src="https://media.gq.com/photos/63e2b84fc3e6ea31f7c7dd30/3:2/w_1686,h_1124,c_limit/best-shoe-brands-nike-asics-celine.jpg" alt="" />
-                                </div>
-                                <div className="single-prd-item col-3 p-2">
-                                    <img className="img-fluid" src="https://media.gq.com/photos/63e2b84fc3e6ea31f7c7dd30/3:2/w_1686,h_1124,c_limit/best-shoe-brands-nike-asics-celine.jpg" alt="" />
-                                </div>
-                                <div className="single-prd-item col-3 p-2">
-                                    <img className="img-fluid" src="https://media.gq.com/photos/63e2b84fc3e6ea31f7c7dd30/3:2/w_1686,h_1124,c_limit/best-shoe-brands-nike-asics-celine.jpg" alt="" />
-                                </div>
+  const { id } = useParams<{ id: string }>();
+  const { data: productDataProduct } = useGetProductByIdQuery(id || "");
+  const { data: productDataProductDetail } = useGetAllProductsDetailQuery();
 
-                            </div>
-                            {/* </div> */}
-                        </div>
-                        <div className="col-lg-5 offset-lg-1">
-                            <div className="s_product_text">
-                                <h3>Adidas Ultra Boost 20</h3>
-                                <h2>1.499.999 <span>VND</span></h2>
+  // Lấy danh sách kích cỡ và màu sắc từ dữ liệu chi tiết sản phẩm
+  const sizes = productDataProductDetail?.map((detail) => detail.size) || [];
+  const colors = productDataProductDetail?.map((detail) => detail.color) || [];
+  const quantity =
+    productDataProductDetail?.map((detail) => detail.quantity) || [];
 
-                                <ul className="list">
-                                    <li><a className="active" href="#"><span>Danh Mục</span> : Household</a></li>
-                                    <li> <i>Sự Kết Hợp Hoàn Hảo Giữa Thể Thao và Thời Trang</i></li>
-                                </ul>
-                                <p className='description-product'>Giày Adidas Ultra Boost 20 là một sản phẩm giày thể thao cao cấp, đem lại sự kết hợp hoàn hảo giữa hiệu suất thể thao và phong cách thời trang. Được ra mắt bởi thương hiệu nổi tiếng Adidas, đây là một sản phẩm giày đáng chú ý dành cho những người yêu thể thao và thời trang.</p>
+  // Sử dụng state để lưu trữ giá trị màu sắc được chọn và tên màu đã chọn
+  const [selectedColor, setSelectedColor] = useState("");
+  const [selectedColorName, setSelectedColorName] = useState(""); // Thêm state cho tên màu
 
-                                <div className="product-detail d-flex">
-                                    <div className="product-size w-25">
-                                        <p>Kích Cỡ</p>
-                                        <select className='product-detail-size' name="" id="">
-                                            <option value="">A</option>
-                                            <option value="">B</option>
-                                            <option value="">C</option>
-                                        </select>
-                                    </div>
-                                    <div className="product__filter-item  w-75">
-                                        <p>Màu Sắc</p>
-                                        <div className="product-color-main d-flex">
-                                            <div className="filter__form-item">
-                                                <input type="radio" id="productBand1" name="productBand" value="adidas" />
-                                                <label className="productColor-red" for="productBand1"></label>
-                                            </div>
-                                            <div className="filter__form-item">
-                                                <input type="radio" id="productBand2" name="productBand" value="converse" />
-                                                <label className="productColor-blue" for="productBand2"></label>
-                                            </div>
-                                            <div className="filter__form-item">
-                                                <input type="radio" id="productBand3" name="productBand" value="mlb" />
-                                                <label className="productColor-black" for="productBand3"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="product_count">
-                                    <label className='quantity'>Số Lượng:</label>
-                                    <input type="number" minLength={1} maxLength={999} />
-                                </div>
-                                <div className="product_count m-4">
-                                    <label className='quantity'>Số lượng trong kho:</label>
-                                    <input type="number" disabled value={9} minLength={1} maxLength={999} />
-                                </div>
+  // Hàm xử lý khi người dùng thay đổi màu sắc
+  const handleColorChange = (event) => {
+    const selectedColor = event.target.value;
+    setSelectedColor(selectedColor);
 
-                                <div className="card_area d-flex align-items-center">
-                                    <a className="primary-btn" href="#">Add to Cart</a>
+    // Tìm tên màu tương ứng với màu đã chọn
+    const selectedColorDetail = productDataProductDetail?.find(
+      (detail) => detail.color === selectedColor
+    );
+    if (selectedColorDetail) {
+      setSelectedColorName(selectedColorDetail.colorName);
+    }
+  };
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  return (
+    <div>
+      <div className="product_image_area">
+        <div className="container">
+          <div className="row s_product_inner">
+            <div className="col-lg-5 offset-lg-1">
+              <div className="single-prd-item">
+                <img
+                  className="img-fluid"
+                  src={productDataProduct?.image}
+                  alt="Product"
+                />
+              </div>
+              <div className="image-carosell d-flex p-2">
+                {/* Other product images */}
+              </div>
             </div>
+            <div className="col-lg-5 offset-lg-1">
+              <div className="s_product_text">
+                <h3>{productDataProduct?.name}</h3>
+                <h2>
+                  {productDataProduct?.price} <span>VND</span>
+                </h2>
+                <del>
+                  <h4>
+                    {productDataProduct?.price} <span>VND</span>
+                  </h4>{" "}
+                </del>
+                <ul className="list">
+                  <li>
+                    <a className="active" href="#">
+                      <span>Danh Mục</span> {productDataProduct?.category}
+                    </a>
+                  </li>
+                  <li>
+                    <i>Sự Kết Hợp Hoàn Hảo Giữa Thể Thao và Thời Trang</i>
+                  </li>
+                </ul>
+                <p className="description-product">
+                  {productDataProduct?.description}
+                </p>
+                <div className="product-detail d-flex">
+                  <div className="product-size w-25">
+                    <p>Kích Cỡ</p>
+                    <select className="product-detail-size" name="" id="">
+                      {sizes.map((size, index) => (
+                        <option key={index} value={size}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="product__filter-item w-75">
+                    <p>Màu Sắc</p>
+                    <select className="product-detail-size" name="" id="">
+                      {colors.map((colors, index) => (
+                        <option key={index} value={colors}>
+                          {colors}
+                        </option>
+                      ))}
+                    </select>
+                    {selectedColorName && (
+                      <span>Tên màu: {selectedColorName}</span>
+                    )}
+                  </div>
+                </div>
+                <div className="product_count">
+                  <label className="quantity">Số Lượng:</label>
+                  <input type="number" minLength={1} maxLength={999} />
+                </div>
+                <div className="product_count m-4">
+                  <label className="quantity">Số lượng trong kho:</label>
+                  <input
+                    type="number"
+                    disabled
+                    value={productDataProduct?.quantity}
+                    minLength={1}
+                    maxLength={999}
+                  />
+                </div>
+                <div className="card_area d-flex align-items-center">
+                  <a className="primary-btn" href="#">
+                    Add to Cart
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    )
-}
+      </div>
+    </div>
+  );
+};
 
-export default ProductDetail
+export default ProductDetail;
