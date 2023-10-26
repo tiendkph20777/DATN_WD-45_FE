@@ -18,9 +18,9 @@ import {
 } from "@ant-design/icons";
 
 import {
-  useGetProductsQuery,
-  useRemoveProductsMutation,
-  useGetProductQuery,
+  useGetProductDetailQuery,
+  useGetAllProductsDetailQuery,
+  useRemoveProductsDetailMutation
 } from "../../../services/productDetail.service";
 
 interface DataType {
@@ -28,7 +28,7 @@ interface DataType {
   size: number;
   color: string;
   quantity: number;
-  id_product: string; // Change from id_product to match your data structure
+  product_id: string; // Change from id_product to match your data structure
 }
 
 const { Option } = Select;
@@ -48,9 +48,9 @@ const Dashboard = (props: Props) => {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState<DataType[]>([]);
   const [showNoProductsAlert, setShowNoProductsAlert] = useState(false);
-  const { data: product } = useGetProductQuery();
-  const { data: productData } = useGetProductsQuery();
-  const [removeProduct] = useRemoveProductsMutation();
+  const { data: product } = useGetProductDetailQuery();
+  const { data: productData } = useGetAllProductsDetailQuery();
+  const [removeProduct] = useRemoveProductsDetailMutation();
 
   const confirm = async (id) => {
     try {
@@ -75,12 +75,12 @@ const Dashboard = (props: Props) => {
   useEffect(() => {
     if (productData) {
       const updatedDataSource = productData.map(
-        ({ _id, size, color, quantity, id_product }: IProduct) => ({
+        ({ _id, size, color, quantity, product_id }: IProduct) => ({
           key: _id,
           size,
           color,
           quantity,
-          id_product: product?.find((role) => role?._id === id_product)?.name,
+          product_id: product?.find((role) => role?._id === product_id)?.name,
         })
       );
       setDataSourceToRender(updatedDataSource);
@@ -112,7 +112,7 @@ const Dashboard = (props: Props) => {
 
     if (searchProductId) {
       filteredData = filteredData.filter((item) =>
-        item.id_product.toLowerCase().includes(searchProductId.toLowerCase())
+        item.product_id.toLowerCase().includes(searchProductId.toLowerCase())
       );
     }
 
@@ -132,8 +132,8 @@ const Dashboard = (props: Props) => {
   const columns = [
     {
       title: "Name",
-      dataIndex: "id_product",
-      key: "id_product",
+      dataIndex: "product_id",
+      key: "product_id",
     },
     {
       title: "Size",
@@ -204,13 +204,13 @@ const Dashboard = (props: Props) => {
   ];
 
   return (
-    <div>
+    <div style={{paddingTop:"100px"}}>
       {showNoProductsAlert && (
         <Alert message="Không tìm thấy sản phẩm" type="info" showIcon style={{
           marginTop: "20px", backgroundColor:"red"}}  />
       )}
 
-      <div className="search-bar">
+      <div className="search-bar" style={{paddingTop:"100px"}}>
         <Input
           placeholder="Tìm kiếm sản phẩm"
           value={searchProductId}

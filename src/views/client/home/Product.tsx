@@ -1,3 +1,4 @@
+
 import { useGetBrandsQuery } from '../../../services/brand.service';
 import { useGetProductsQuery } from '../../../services/product.service';
 import { IProducts } from '../../../types/product.service';
@@ -241,3 +242,4 @@ const Product = () => {
 }
 
 export default Product
+
