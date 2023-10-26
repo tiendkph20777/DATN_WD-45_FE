@@ -68,7 +68,7 @@ const Product = () => {
                                             <div className="card product-main">
                                                 <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                                     <div className="position-relative product-image overflow-hidden">
-                                                        <img src={item.images[0]} alt="" width="100%" height="auto" className=" inset-0 object-cover" />
+                                                        <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                                     </div>
                                                     <div className="bg-white content-product w-100 p-2">
                                                         <div className="product-detail pt-2 row text-center">
@@ -78,7 +78,6 @@ const Product = () => {
                                                                 <div className="col-3 m-1 product-color color-1" />
                                                                 <div className="col-3 m-1 product-color color-2" />
                                                                 <div className="col-3 m-1 product-color color-3" />
-                                                                {/* <div class="col-3 m-1 product-color color-4"></div> */}
                                                             </div>
                                                         </div>
                                                         <div className="product-vendor">{brandName}</div>
@@ -124,7 +123,7 @@ const Product = () => {
                                     <div className="card product-main">
                                         <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                             <div className="position-relative product-image overflow-hidden">
-                                                <img src={item.images[0]} alt="" width="100%" height="auto" className=" inset-0 object-cover" />
+                                                <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                                 <div className="product-hot" />
                                                 {/* <div class="product-category"></div> */}
                                             </div>
@@ -189,9 +188,8 @@ const Product = () => {
                                     <div className="card product-main">
                                         <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                             <div className="position-relative product-image overflow-hidden">
-                                                <img src={item.images[0]} alt="" width="100%" height="auto" className=" inset-0 object-cover" />
+                                                <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                                 <div className="product-hot" />
-                                                {/* <div class="product-category"></div> */}
                                             </div>
                                             <div className="bg-white content-product w-100 p-2">
                                                 <div className="product-detail p-2 row text-center">
