@@ -1,7 +1,32 @@
-import React from 'react'
-import Banner from '../home/Banner'
-
+import { useGetBrandsQuery } from '../../../services/brand.service';
+import { useGetProductsQuery } from '../../../services/product.service';
+import { IProducts } from '../../../types/product.service';
+import { useEffect, useState } from 'react';
 const Index = () => {
+    const { data: productData } = useGetProductsQuery();
+    const { data: brandData } = useGetBrandsQuery();
+    const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
+    const [searchResult, setSearchResult] = useState<IProducts[]>([]);
+    useEffect(() => {
+        if (productData) {
+            const updatedDataSource = productData.map(({ ...IProducts }) => ({ ...IProducts }));
+            setDataSourceToRender(updatedDataSource);
+        }
+    }, [productData]);
+
+    const onSearch = (value: string | number) => {
+        let filteredData = dataSourceToRender;
+        filteredData = filteredData.filter((item) => {
+            return (
+                item.id_product == value || item.id_user == value || item.rate == value
+            );
+        }
+        );
+        if (filteredData.length == 0) {
+            alert('Không có bình luận nào cả!');
+        }
+        setSearchResult(filteredData);
+    };
     return (
         <div>
             <section className="our-team position-relative">
@@ -18,13 +43,16 @@ const Index = () => {
                                                 <input type="text" id="disabledTextInput" className="form-control" placeholder="Tên sản phẩm" />
                                             </div>
                                             <div className="mb-3">
-                                                <label htmlFor="disabledSelect" className="form-label">Chọn Danh Mục</label>
+                                                <label htmlFor="disabledSelect" className="form-label">Chọn thương hiệu</label>
                                                 <select id="disabledSelect" className="form-select">
-                                                    <option selected disabled>Chọn danh mục tại đây</option>
-                                                    <option>Giày</option>
-                                                    <option>Áo</option>
-                                                    <option>Túi xách</option>
-                                                    <option>Phụ kiện</option>
+                                                    <option selected disabled>Chọn thương hiệu</option>
+                                                    {brandData?.map((item) => {
+                                                        return (
+                                                            <option>{item.name}</option>
+                                                        )
+                                                    })
+                                                    }
+
                                                 </select>
                                             </div>
                                             <div className="mb-3">
@@ -125,254 +153,65 @@ const Index = () => {
                                             <input type="range" className="form-range" id="priceRange" min={0} max={20000000} />
                                             Khoảng giá từ 0 đến <span id="priceValue" />
                                         </fieldset>
-                                    </form></div>
-                                <button type="submit" className="btn btn-primary">Tìm kiếm</button>
+                                        <button type="submit" className="btn btn-primary">Tìm kiếm</button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         <div className="row col-xxl-9 border-2 col-xl-9 col-lg-9 col-sm-12 col-12 p-2">
-                            <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
-                                <div className="card product-main">
-                                    <a href="#" className="d-block overflow-hidden no-underline">
-                                        <div className="position-relative product-image overflow-hidden">
-                                            <img src="/src/assets/images/products/1900327270_main.jpg" alt="" width="100%" height="auto" className=" inset-0 object-cover" />
-                                            {/* <div class="product-sale-30"></div> */}
-                                            <div className="product-hot" />
-                                            {/* <div class="product-category"></div> */}
-                                        </div>
-                                        <div className="product-detail p-2 row text-center">
-                                            <div className="col-6 d-flex">
-                                            </div>
-                                            <div className="col-6 row justify-content-end">
-                                                <div className="col-3 m-1 product-color color-1" />
-                                                <div className="col-3 m-1 product-color color-2" />
-                                                <div className="col-3 m-1 product-color color-3" />
-                                                {/* <div class="col-3 m-1 product-color color-4"></div> */}
-                                            </div>
-                                        </div>
-                                        <div className="bg-white content-product w-100 p-2">
-                                            <div className="product-vendor">Nike</div>
-                                            <h4 className="product-name">
-                                                1 Nike ACG "Air Mada" shoes aa 
-                                            </h4>
-                                            <div className="product-price row">
-                                                <strong className="col-12">18.000.000đ</strong>
-                                                <div className="d-flex">
-                                                    <del className="price-del">23.000.000đ</del>
-                                                    <span className="product-discount">-20%</span>
+                            {dataSourceToRender?.map((item) => {
+                                const brandName = brandData?.find((brand: any) => brand._id == item.brand_id)?.name
+                                const discount = Math.round(100 - (item.price_sale / item.price * 100))
+                                return (
+                                    <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
+                                        <div className="card product-main">
+                                            <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
+                                                <div className="position-relative product-image overflow-hidden">
+                                                    <img src={item.images[0]} alt="" width="100%" height="auto" className=" inset-0 object-cover" />
+                                                    {/* <div class="product-sale-30"></div> */}
+                                                    <div className="product-hot" />
+                                                    {/* <div class="product-category"></div> */}
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="product-action pt-5 row text-center justify-content-center">
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
-                                            </div>
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
-                                <div className="card product-main">
-                                    <a href="#" className="d-block overflow-hidden no-underline">
-                                        <div className="position-relative product-image overflow-hidden">
-                                            <img src="/src/assets/images/products/1900327270_main.jpg" alt="" width="100%" height="auto" className=" inset-0 object-cover" />
-                                            <div className="product-sale-30" />
-                                            {/* <div class="product-category"></div> */}
-                                        </div>
-                                        <div className="product-detail p-2 row text-center">
-                                            <div className="col-6 d-flex">
-                                            </div>
-                                            <div className="col-6 row justify-content-end">
-                                                <div className="col-3 m-1 product-color color-1" />
-                                                <div className="col-3 m-1 product-color color-2" />
-                                                <div className="col-3 m-1 product-color color-3" />
-                                                {/* <div class="col-3 m-1 product-color color-4"></div> */}
-                                            </div>
-                                        </div>
-                                        <div className="bg-white content-product w-100 p-2">
-                                            <div className="product-vendor">Nike</div>
-                                            <h4 className="product-name">
-                                                1 Nike ACG "Air Mada" shoes
-                                            </h4>
-                                            <div className="product-price row">
-                                                <strong className="col-12">18.000.000đ</strong>
-                                                <div className="d-flex">
-                                                    <del className="price-del">23.000.000đ</del>
-                                                    <span className="product-discount">-20%</span>
+                                                <div className="product-detail p-2 row text-center">
+                                                    <div className="col-6 d-flex">
+                                                    </div>
+                                                    <div className="col-6 row justify-content-end">
+                                                        <div className="col-3 m-1 product-color color-1" />
+                                                        <div className="col-3 m-1 product-color color-2" />
+                                                        <div className="col-3 m-1 product-color color-3" />
+                                                        {/* <div class="col-3 m-1 product-color color-4"></div> */}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="product-action pt-5 row text-center justify-content-center">
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
-                                            </div>
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
-                                <div className="card product-main">
-                                    <a href="#" className="d-block overflow-hidden no-underline">
-                                        <div className="position-relative product-image overflow-hidden">
-                                            <img src="/src/assets/images/products/1900327270_main.jpg" alt="" width="100%" height="auto" className=" inset-0 object-cover" />
-                                            {/* <div class="product-sale-30"></div> */}
-                                            <div className="product-hot" />
-                                            <div className="product-new" />
-                                            {/* <div class="product-category"></div> */}
-                                        </div>
-                                        <div className="product-detail p-2 row text-center">
-                                            <div className="col-6 d-flex">
-                                            </div>
-                                            <div className="col-6 row justify-content-end">
-                                                <div className="col-3 m-1 product-color color-1" />
-                                                <div className="col-3 m-1 product-color color-2" />
-                                                <div className="col-3 m-1 product-color color-3" />
-                                                {/* <div class="col-3 m-1 product-color color-4"></div> */}
-                                            </div>
-                                        </div>
-                                        <div className="bg-white content-product w-100 p-2">
-                                            <div className="product-vendor">Nike</div>
-                                            <h4 className="product-name">
-                                                1 Nike ACG "Air Mada" shoes 
-                                            </h4>
-                                            <div className="product-price row">
-                                                <strong className="col-12">18.000.000đ</strong>
-                                                <div className="d-flex">
-                                                    <del className="price-del">23.000.000đ</del>
-                                                    <span className="product-discount">-20%</span>
+                                                <div className="bg-white content-product w-100 p-2">
+                                                    <div className="product-vendor">{brandName}</div>
+                                                    <h4 className="product-name">
+                                                        {item.name}
+                                                    </h4>
+                                                    {item.price_sale > 0 ? (
+                                                        <div className="product-price row">
+                                                            <strong className="col-12">{item.price_sale}đ</strong>
+                                                            <div className="d-flex">
+                                                                <del className="price-del">{item.price}đ</del>
+                                                                <span className="product-discount">-{discount}%</span>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="product-price row">
+                                                            <strong className="col-12">{item.price}đ</strong>
+                                                        </div>
+                                                    )}
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div className="product-action pt-5 row text-center justify-content-center">
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
-                                            </div>
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
-                                <div className="card product-main">
-                                    <a href="#" className="d-block overflow-hidden no-underline">
-                                        <div className="position-relative product-image overflow-hidden">
-                                            <img src="/src/assets/images/products/1900327270_main.jpg" alt="" width="100%" height="auto" className=" inset-0 object-cover" />
-                                            {/* <div class="product-sale-30"></div> */}
-                                            {/* <div class="product-category"></div> */}
-                                        </div>
-                                        <div className="product-detail p-2 row text-center">
-                                            <div className="col-6 d-flex">
-                                            </div>
-                                            <div className="col-6 row justify-content-end">
-                                                <div className="col-3 m-1 product-color color-1" />
-                                                <div className="col-3 m-1 product-color color-2" />
-                                                <div className="col-3 m-1 product-color color-3" />
-                                                {/* <div class="col-3 m-1 product-color color-4"></div> */}
-                                            </div>
-                                        </div>
-                                        <div className="bg-white content-product w-100 p-2">
-                                            <div className="product-vendor">Nike</div>
-                                            <h4 className="product-name">
-                                                1 Nike ACG "Air Mada" shoes
-                                            </h4>
-                                            <div className="product-price row">
-                                                <strong className="col-12">18.000.000đ</strong>
-                                                <div className="d-flex">
-                                                    <del className="price-del">23.000.000đ</del>
-                                                    <span className="product-discount">-20%</span>
+                                                <div className="product-action pt-5 row text-center justify-content-center">
+                                                    <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
+                                                    </div>
+                                                    <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </a>
                                         </div>
-                                        <div className="product-action pt-5 row text-center justify-content-center">
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
-                                            </div>
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
-                                <div className="card product-main">
-                                    <a href="#" className="d-block overflow-hidden no-underline">
-                                        <div className="position-relative product-image overflow-hidden">
-                                            <img src="/src/assets/images/products/1900327270_main.jpg" alt="" width="100%" height="auto" className=" inset-0 object-cover" />
-                                            {/* <div class="product-sale-30"></div> */}
-                                            {/* <div class="product-category"></div> */}
-                                        </div>
-                                        <div className="product-detail p-2 row text-center">
-                                            <div className="col-6 d-flex">
-                                            </div>
-                                            <div className="col-6 row justify-content-end">
-                                                <div className="col-3 m-1 product-color color-1" />
-                                                <div className="col-3 m-1 product-color color-2" />
-                                                <div className="col-3 m-1 product-color color-3" />
-                                                {/* <div class="col-3 m-1 product-color color-4"></div> */}
-                                            </div>
-                                        </div>
-                                        <div className="bg-white content-product w-100 p-2">
-                                            <div className="product-vendor">Nike</div>
-                                            <h4 className="product-name">
-                                                1 Nike ACG "Air Mada" shoes
-                                            </h4>
-                                            <div className="product-price row">
-                                                <strong className="col-12">18.000.000đ</strong>
-                                                <div className="d-flex">
-                                                    <del className="price-del">23.000.000đ</del>
-                                                    <span className="product-discount">-20%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="product-action pt-5 row text-center justify-content-center">
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
-                                            </div>
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                            <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
-                                <div className="card product-main">
-                                    <a href="#" className="d-block overflow-hidden no-underline">
-                                        <div className="position-relative product-image overflow-hidden">
-                                            <img src="/src/assets/images/products/1900327270_main.jpg" alt="" width="100%" height="auto" className=" inset-0 object-cover" />
-                                            {/* <div class="product-sale-30"></div> */}
-                                            {/* <div class="product-category"></div> */}
-                                        </div>
-                                        <div className="product-detail p-2 row text-center">
-                                            <div className="col-6 d-flex">
-                                            </div>
-                                            <div className="col-6 row justify-content-end">
-                                                <div className="col-3 m-1 product-color color-1" />
-                                                <div className="col-3 m-1 product-color color-2" />
-                                                <div className="col-3 m-1 product-color color-3" />
-                                                {/* <div class="col-3 m-1 product-color color-4"></div> */}
-                                            </div>
-                                        </div>
-                                        <div className="bg-white content-product w-100 p-2">
-                                            <div className="product-vendor">Nike</div>
-                                            <h4 className="product-name">
-                                                1 Nike ACG "Air Mada" shoes
-                                            </h4>
-                                            <div className="product-price row">
-                                                <strong className="col-12">18.000.000đ</strong>
-                                                <div className="d-flex">
-                                                    <del className="price-del">23.000.000đ</del>
-                                                    <span className="product-discount">-20%</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="product-action pt-5 row text-center justify-content-center">
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
-                                            </div>
-                                            <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
+                                    </div>
+                                )
+                            })}
                             {/* </div> */}
                         </div>
                     </div>

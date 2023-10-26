@@ -1,8 +1,8 @@
 import React from 'react'
 import Banner from './Banner'
-import SaleWeek from './SaleWeek'
-import Product from './Product'
 import Monopoly from './Monopoly'
+import Product from './Product'
+import Discover from './Discover'
 
 const Index = () => {
     return (
@@ -10,12 +10,10 @@ const Index = () => {
             {/* Banner */}
             <Banner></Banner>
             {/*  */}
-            {/* Sale week */}
-            <SaleWeek></SaleWeek>
-            {/*  */}
             {/* product */}
             <Product></Product>
             {/*  */}
+            <Discover></Discover>
             {/* Độc quyền */}
             <Monopoly></Monopoly>
             {/*  */}

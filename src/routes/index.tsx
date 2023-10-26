@@ -84,7 +84,8 @@ const routes: RouteObject[] = [
                 element: <IndexProduct />
             },
             {
-                path: 'product/:id/detail',
+                path: 'product/:_id/detail',
+
                 element: <ProductDetail />
             },
             {

@@ -5,7 +5,7 @@ import {
   useGetProductDetailByIdQuery,
   useUpdateProductsDetailMutation,
 } from "../../../services/productDetail.service";
-import { IProduct } from "../../../types/product";
+import { IProductDetail } from "../../../types/product";
 
 type FieldType = {
   _id?: string;
@@ -20,13 +20,27 @@ const ProductProductEdit = () => {
   // console.log(idProduct)
 
   const { data: productData } = useGetProductDetailByIdQuery(idProduct || "");
-  // console.log(productData)
-  console.log(productData)
+  console.log(idProduct);
+  console.log(productData);
 
   const [updateProduct] = useUpdateProductsDetailMutation();
 
   const navigate = useNavigate();
-  const onFinish = (values: IProduct) => {
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (productData) {
+      form.setFieldsValue({
+        _id: productData?.productDetail._id,
+        size: productData?.productDetail.size,
+        quantity: productData?.productDetail.quantity,
+        product_id: productData?.productDetail.product_id,
+        color: productData?.productDetail.color,
+      });
+    }
+  }, [productData,form]);
+
+  const onFinish = (values: IProductDetail) => {
     console.log(values);
 
     updateProduct({ ...values, id: idProduct })
@@ -43,26 +57,7 @@ const ProductProductEdit = () => {
         console.error("Error in promise:", error);
       });
   };
-  const [form] = Form.useForm();
-  // console.log(idProduct)
 
-  // if (productData && productData.idProduct) {
-  //   console.log(productData.idProduct);
-  // } else {
-  //   console.log("productData or id is undefined");
-  // }
-
-  useEffect(() => {
-    if (productData) {
-      form.setFieldsValue({
-        _id: productData?._id,
-        size: productData.size,
-        quantity: productData.quantity,
-        product_id: productData.product_id,
-        color: productData.color,
-      });
-    }
-  }, [productData, form]);
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
@@ -82,7 +77,7 @@ const ProductProductEdit = () => {
         autoComplete="off"
       >
         <Form.Item<FieldType> label="id" name="_id">
-          <Input type="string" disabled />
+          <Input disabled />
         </Form.Item>
 
         <Form.Item<FieldType>
