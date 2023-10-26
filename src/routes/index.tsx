@@ -60,7 +60,7 @@ const routes: RouteObject[] = [
                 path: 'product/detail/add', element: <ProductDetailAdd />
             },
             {
-                path: 'product/detail/:id/edit', element: <ProductProductEdit />
+                path: 'product/detail/:idProduct/edit', element: <ProductProductEdit />
             },
             //user
             {
@@ -85,6 +85,7 @@ const routes: RouteObject[] = [
             },
             {
                 path: 'product/:_id/detail',
+
                 element: <ProductDetail />
             },
             {
