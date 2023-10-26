@@ -3,7 +3,7 @@ import { IProducts } from "../types/product.service";
 const { accessToKen: token }: any = JSON.parse(localStorage.getItem('user')!);
 
 const productAPI = createApi({
-    reducerPath: "products",
+    reducerPath: "product",
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8080/api"
     }),
@@ -58,7 +58,8 @@ const productAPI = createApi({
             }
         }),
         addComment: builder.mutation({
-            query: ({ data }) => {
+            query: (data) => {
+                console.log(data)
                 return {
                     url: `/comment/add`,
                     method: "POST",

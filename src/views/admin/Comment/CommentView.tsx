@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { InputNumber, Select, Table } from 'antd';
+import { Select, Table } from 'antd';
 import { Button, Input, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { CloseOutlined } from '@ant-design/icons';
-import { useFetchCommentQuery, useFetchProductQuery, useRemoveCommentMutation } from "../../../services/product.service";
+import { useFetchCommentQuery, useGetProductsQuery, useRemoveCommentMutation } from "../../../services/product.service";
 import { useFetchUserQuery } from '../../../services/user.service';
 interface DataType {
     _id: string;
@@ -18,7 +18,7 @@ export default function CommentView() {
     const [searchResult, setSearchResult] = useState<DataType[]>([]);
     const { data: dataCmt } = useFetchCommentQuery();
     const [Product_Remove] = useRemoveCommentMutation();
-    const { data: dataPro } = useFetchProductQuery();
+    const { data: dataPro } = useGetProductsQuery();
     const { data: dataUser } = useFetchUserQuery();
     const { Search } = Input;
     useEffect(() => {
@@ -27,9 +27,9 @@ export default function CommentView() {
                 ({ _id, content, id_product, id_user, rate }: DataType) => ({
                     _id,
                     content,
-                    id_product,
-                    id_user,
                     rate,
+                    id_product: dataPro?.find((role) => role?._id === id_product)?.name,
+                    id_user: dataUser?.find((role) => role?._id === id_user)?.fullName
                 })
             );
             setDataSourceToRender(updatedDataSource);
@@ -117,7 +117,7 @@ export default function CommentView() {
                 options={dataUser?.map((item) => (
                     {
                         value: item._id,
-                        label: item.name
+                        label: item.fullName
                     }
                 ))} />
             <Select
