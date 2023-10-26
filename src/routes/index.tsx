@@ -23,6 +23,7 @@ import Cart from "../views/client/home/Cart";
 import CheckOut from "../views/client/home/CheckOut";
 import Blog from "../views/client/home/Blog";
 import BlogDetail from "../views/client/home/BlogDetail";
+import Profile from "../views/client/profile/Profile";
 
 const routes: RouteObject[] = [
     {
@@ -102,7 +103,11 @@ const routes: RouteObject[] = [
             {
                 path: 'blogDetail',
                 element: <BlogDetail />
-            }
+            },
+            {
+                path: 'profile',
+                element: <Profile />
+            },
         ]
     },
     {

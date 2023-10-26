@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import { useFetchOneRoleQuery } from '../../services/role.service';
+import { useFetchOneUserQuery } from '../../services/user.service';
 
 const TheHeader = () => {
     useEffect(() => {
@@ -24,6 +26,96 @@ const TheHeader = () => {
         };
 
     }, []);
+
+    const navigate = useNavigate()
+    const storedStatus = JSON.parse(localStorage.getItem('user')!)
+    const isLoggedIn1 = !!storedStatus;
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isRoles, setIRole] = useState(false)
+    const handleLogout = () => {
+        localStorage.removeItem('user');
+        navigate('/signin');
+    };
+
+    // const [roleid, setroleid] = useState()
+    const id = storedStatus?.user._id
+    const { data: user } = useFetchOneUserQuery(id)
+    const idrole = user?.role_id
+    const { data: role } = useFetchOneRoleQuery(idrole)
+
+    useEffect(() => {
+        if (role?.name === 'Admin') {
+            setIRole(true)
+        } else {
+            setIRole(false)
+        }
+    }, [])
+    useEffect(() => {
+        if (isLoggedIn1 === true) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+    }, [])
+
+    // const navigate = useNavigate();
+    // const storedStatus = JSON.parse(localStorage.getItem('user') || '{}');
+    // const isLoggedIn1 = !!storedStatus;
+    // const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // const [isRoles, setIRole] = useState(false);
+
+    // const handleLogout = () => {
+    //     localStorage.removeItem('user');
+    //     navigate('/signin');
+    // };
+    // useEffect(() => {
+    //     // Use a loading state to track when data is being fetched
+    //     let isLoading = true;
+
+    //     const id = storedStatus?.user?._id;
+
+    //     if (id) {
+    //         // Fetch user data
+    //         useFetchOneUserQuery(id).then(({ data: user }: any) => {
+    //             // Once data is fetched, update the state
+    //             setIsLoggedIn(true);
+    //             isLoading = false;
+
+    //             const idrole = user?.role_id;
+
+    //             if (idrole) {
+    //                 // Fetch role data
+    //                 useFetchOneRoleQuery(idrole).then(({ data: role }) => {
+    //                     if (role?.name === 'Admin') {
+    //                         setIRole(true);
+    //                     } else {
+    //                         setIRole(false);
+    //                     }
+    //                 });
+    //             }
+    //         });
+    //     } else {
+    //         isLoading = false;
+    //     }
+
+    //     // Cleanup and handle unmounting
+    //     return () => {
+    //         // Ensure you cancel any pending API requests if the component unmounts
+    //         if (isLoading) {
+    //             // Cancel the ongoing requests or perform any cleanup needed
+    //         }
+    //     };
+    // }, []);
+
+    // useEffect(() => {
+    //     if (isLoggedIn1 === true) {
+    //         setIsLoggedIn(true);
+    //     } else {
+    //         setIsLoggedIn(false);
+    //     }
+    // }, []);
+
+
     return (
         <div>
             <header className="main-header position-fixed w-100">
@@ -48,24 +140,24 @@ const TheHeader = () => {
                         </form>
                         <style>
                             {`
-                                .form-search {
-                                padding: 15px 10px;
-                                box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-                                border-radius: 100px;
-                                background: #fff;
-                                margin-left: 2em;
-                                }
-                                .form-search input {
-                                margin-left: 10px;
-                                width: 100%;
-                                border: none;
-                                outline: none;
-                                line-height: 20px;
-                                }
-                                .form-search i {
-                                line-height: 20px;
-                                }
-                            `}
+                                    .form-search {
+                                    padding: 15px 10px;
+                                    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+                                    border-radius: 100px;
+                                    background: #fff;
+                                    margin-left: 2em;
+                                    }
+                                    .form-search input {
+                                    margin-left: 10px;
+                                    width: 100%;
+                                    border: none;
+                                    outline: none;
+                                    line-height: 20px;
+                                    }
+                                    .form-search i {
+                                    line-height: 20px;
+                                    }
+                                `}
                         </style>
 
                         <div className="collapse navbar-collapse" id="navbarSupportedContent">
@@ -79,9 +171,9 @@ const TheHeader = () => {
                                 <li className="nav-item">
                                     <Link to="#" className='nav-link'>Giới Thiệu</Link>
                                 </li>
-                                <li className="nav-item">
+                                {/* <li className="nav-item">
                                     <Link to="#" className='nav-link'>Tin Tức</Link>
-                                </li>
+                                </li> */}
                                 <li className="nav-item">
                                     <Link to="#" className='nav-link'>Liên Hệ</Link>
                                 </li>
@@ -91,9 +183,26 @@ const TheHeader = () => {
                                     <img src="/src/assets/images/cart.svg" alt="" className="cart-icon" />
                                     <span className="count-cart">15</span>
                                 </Link>
-                                <Link className="btn btn-signin btn-primary m-2 btn-hover-secondery text-capitalize"
-                                    to="/signin">Đăng Nhập
-                                </Link>
+                                <div className="login d-block align-items-center" id="sing">
+                                    {isLoggedIn ? (
+                                        <div className="dropdown">
+                                            <button className="btn btn1">{storedStatus?.user?.userName}</button>
+                                            <div className="dropdown-content" style={{ width: "100px", borderRadius: "10px" }}>
+                                                <Link to="/profile" className='link1'>Profile</Link>
+                                                {isRoles ? (
+                                                    <Link to="/admin" className='link1'>Admin</Link>
+
+                                                ) : (
+                                                    <span></span>
+                                                    // <Link to="/admin" className='link1'></Link>
+                                                )}
+                                                <button onClick={handleLogout} className='link1-btn'>Đăng xuất</button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <Link to="/signin" className='nav-link '><button className="btn btn-primary">Đăng nhập</button></Link>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </nav>
@@ -130,14 +239,14 @@ const TheHeader = () => {
                                 <a className="nav-link" href="#">Liên Hệ</a>
                             </li>
                         </ul>
-                        <div className="login d-block align-items-center">
-                            <a className="btn btn-primary text-capitalize w-100" href="#">Đăng Nhập</a>
+                        <div className="login d-block align-items-center" id='sing'>
+                            <a className="btn btn-primary text-capitalize w-100" href="#" >Đăng Nhập</a>
                         </div>
                     </div>
                 </div>
             </header>
+            <style dangerouslySetInnerHTML={{ __html: "\n/* Style The Dropdown Button */\n.dropbtn {\n  background-color: #4CAF50;\n  color: white;\n  padding: 16px;\n  font-size: 16px;\n  border: none;\n  cursor: pointer;\n}\n\n/* The container <div> - needed to position the dropdown content */\n.dropdown {\n  position: relative;\n  display: inline-block;\n}\n\n/* Dropdown Content (Hidden by Default) */\n.dropdown-content {\n  display: none;\n  position: absolute;\n  background-color: #f9f9f9;\n  min-width: 160px;\n  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);\n  z-index: 1;\n}\n\n/* Links inside the dropdown */\n.dropdown-content a {\n  color: black;\n  padding: 12px 16px;\n  text-decoration: none;\n  display: block;\n}\n\n/* Change color of dropdown links on hover */\n.dropdown-content a:hover {background-color: #f1f1f1}\n\n/* Show the dropdown menu on hover */\n.dropdown:hover .dropdown-content {\n  display: block;\n}\n\n/* Change the background color of the dropdown button when the dropdown content is shown */\n.dropdown:hover .dropbtn {\n  background-color: #3e8e41;\n}\n" }} />
         </div>
-
     )
 }
 

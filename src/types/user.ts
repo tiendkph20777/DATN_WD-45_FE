@@ -6,6 +6,7 @@ export interface IAuth {
     userName: string;
     fullName: string;
     gender: string;
+    address: string;
     image: string;
     role_id: string;
 }

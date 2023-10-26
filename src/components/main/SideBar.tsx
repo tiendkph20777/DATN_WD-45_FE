@@ -1,15 +1,15 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-type Props = {}
 
-const SideBar = (props: Props) => {
+const SideBar = () => {
     return (
         <aside className="left-sidebar">
             {/* <!-- Sidebar scroll--> */}
             <div className="brand-logo d-flex align-items-center justify-content-between">
-                <a href="/" className="text-nowrap logo-img">
+                <Link to="/" className="text-nowrap logo-img">
                     <img src="" width="180" alt="" />
-                </a>
+                </Link>
                 <div className="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                     <i className="ti ti-x fs-8"></i>
                 </div>
@@ -22,92 +22,100 @@ const SideBar = (props: Props) => {
                         <span className="hide-menu">Home</span>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="#" aria-expanded="false">
+                        <Link className="sidebar-link" to="/" aria-expanded="false">
+                            <span>
+                                <i className="ti ti-layout-dashboard"></i>
+                            </span>
+                            <span className="hide-menu">Back To Home</span>
+                        </Link>
+                    </li>
+                    <li className="sidebar-item">
+                        <Link className="sidebar-link" to="/admin" aria-expanded="false">
                             <span>
                                 <i className="ti ti-layout-dashboard"></i>
                             </span>
                             <span className="hide-menu">Tổng Quan</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-small-cap">
                         <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span className="hide-menu">Sản Phẩm</span>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="/admin/product/detail" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/product/detail" aria-expanded="false">
                             <span>
                                 <i className="ti ti-alert-circle"></i>
                             </span>
                             <span className="hide-menu">Quản lí chi tiết sản phẩm</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="/admin/product" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/product" aria-expanded="false">
                             <span>
                                 <i className="ti ti-alert-circle"></i>
                             </span>
                             <span className="hide-menu">Quản lí sản phẩm</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="/admin/category" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/category" aria-expanded="false">
                             <span>
                                 <i className="ti ti-article"></i>
                             </span>
                             <span className="hide-menu">Danh Mục sản phẩm</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-small-cap">
                         <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span className="hide-menu">Đơn Hàng</span>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="order_management.html" aria-expanded="false">
+                        <Link className="sidebar-link" to="#" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
                             <span className="hide-menu">Quản Lý Đơn Hàng</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="order_management.html" aria-expanded="false">
+                        <Link className="sidebar-link" to="#" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
                             <span className="hide-menu">Lịch Sử Đơn Hàng</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-small-cap">
                         <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span className="hide-menu">Người Dùng</span>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="admin/user" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/user" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
-                            <span className="hide-menu">Phân Quyền</span>
-                        </a>
+                            <span className="hide-menu">User</span>
+                        </Link>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="blog.html" aria-expanded="false">
+                        <Link className="sidebar-link" to="#" aria-expanded="false">
                             <span>
                                 <i className="ti ti-aperture"></i>
                             </span>
                             <span className="hide-menu">Danh Sách</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="nav-small-cap">
                         <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span className="hide-menu">Lịch Sử Giao Dịch</span>
                     </li>
                     <li className="sidebar-item">
-                        <a className="sidebar-link" href="history.html" aria-expanded="false">
+                        <Link className="sidebar-link" to="#" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
                             <span className="hide-menu">Lịch Sử Nhận Hoa Hồng</span>
-                        </a>
+                        </Link>
                     </li>
                 </ul>
             </nav>

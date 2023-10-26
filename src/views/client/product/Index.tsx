@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Banner from '../home/Banner'
+import Modal from '../profile/Model';
 
 const Index = () => {
+
     return (
         <div>
             <section className="our-team position-relative">
@@ -14,6 +16,7 @@ const Index = () => {
                                     <form>
                                         <fieldset>
                                             <legend>Tìm kiếm</legend>
+
                                             <div className="mb-3">
                                                 <input type="text" id="disabledTextInput" className="form-control" placeholder="Tên sản phẩm" />
                                             </div>
