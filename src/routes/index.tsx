@@ -23,6 +23,9 @@ import Cart from "../views/client/home/Cart";
 import CheckOut from "../views/client/home/CheckOut";
 import Blog from "../views/client/home/Blog";
 import BlogDetail from "../views/client/home/BlogDetail";
+import { VoucherView } from "../views/admin/Voucher";
+import VoucherAdd from "../views/admin/Voucher/VoucherAdd";
+import VoucherEdit from "../views/admin/Voucher/VoucherEdit";
 
 const routes: RouteObject[] = [
     {
@@ -68,7 +71,17 @@ const routes: RouteObject[] = [
             },
             {
                 path: "user/:id/edit", element: <UserUpdate />
-            }
+            },
+            //voucher
+            {
+                path: 'voucher', element: <VoucherView />
+            },
+            {
+                path: 'voucher/add', element: <VoucherAdd />
+            },
+            {
+                path: 'voucher/:id/edit', element: <VoucherEdit />
+            },
         ],
     },
     {
