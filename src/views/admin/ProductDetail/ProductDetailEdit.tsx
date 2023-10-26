@@ -1,30 +1,49 @@
 import { useEffect } from "react";
-import { Button, Checkbox, Form, Input, Select,notification } from "antd";
+import { Button, Checkbox, Form, Input, Select, notification } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  useGetProductByIdQuery,
-  useUpdateProductsMutation,
-  useGetProductQuery
+  useGetProductDetailByIdQuery,
+  useUpdateProductsDetailMutation,
 } from "../../../services/productDetail.service";
-import { IProduct } from "../../../types/product";
+import { IProductDetail } from "../../../types/product";
 
 type FieldType = {
+  _id?: string;
   size?: number;
-  id_product?: string;
+  product_id?: string;
   quantity?: number;
   color?: string;
 };
 
 const ProductProductEdit = () => {
-  const { id } = useParams<{ id: string }>();
-  const { data: productData } = useGetProductByIdQuery(id || "");
-  const [updateProduct] = useUpdateProductsMutation();
+  const { idProduct } = useParams<{ idProduct: string }>();
+  // console.log(idProduct)
+
+  const { data: productData } = useGetProductDetailByIdQuery(idProduct || "");
+  console.log(idProduct);
+  console.log(productData);
+
+  const [updateProduct] = useUpdateProductsDetailMutation();
 
   const navigate = useNavigate();
-  const onFinish = (values: IProduct) => {
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    if (productData) {
+      form.setFieldsValue({
+        _id: productData?.productDetail._id,
+        size: productData?.productDetail.size,
+        quantity: productData?.productDetail.quantity,
+        product_id: productData?.productDetail.product_id,
+        color: productData?.productDetail.color,
+      });
+    }
+  }, [productData,form]);
+
+  const onFinish = (values: IProductDetail) => {
     console.log(values);
 
-    updateProduct({ ...values, id: id })
+    updateProduct({ ...values, id: idProduct })
       .unwrap()
       .then(() => {
         notification.success({
@@ -32,34 +51,20 @@ const ProductProductEdit = () => {
           description: "Sửa Sản Phẩm Thành Công!",
         });
         navigate("/admin/product/detail");
-        window.location.reload()
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error in promise:", error);
       });
   };
-  const [form] = Form.useForm();
-  // console.log(idProduct);
-  // console.log(productData);
 
-  useEffect(() => {
-    if (productData) {
-      form.setFieldsValue({
-        _id: productData._id,
-        size: productData.size,
-        quantity: productData.quantity,
-        id_product: productData.id_product,
-        color: productData.color,
-      });
-    }
-  }, [productData, form]);
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
   };
 
   return (
     <div>
-      <h1>Update Sản Phẩm</h1>
+      <h1 style={{ paddingTop: "100px" }}>Update Sản Phẩm</h1>
       <Form
         name="basic"
         form={form}
@@ -71,11 +76,8 @@ const ProductProductEdit = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item<FieldType>
-          label="id"
-          name="_id"
-        >
-          <Input type="string" disabled />
+        <Form.Item<FieldType> label="id" name="_id">
+          <Input disabled />
         </Form.Item>
 
         <Form.Item<FieldType>
@@ -92,10 +94,7 @@ const ProductProductEdit = () => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          label="id_product"
-          name="id_product"
-        >
+        <Form.Item label="product_id" name="product_id">
           <Input disabled />
         </Form.Item>
         <Form.Item

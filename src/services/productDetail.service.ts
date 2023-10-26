@@ -1,37 +1,36 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IProduct } from "../types/product";
+import { IProductDetail } from "../types/product";
 
 const productAPIDetall = createApi({
   reducerPath: "products",
   baseQuery: fetchBaseQuery({
     baseUrl: "http://localhost:8080",
   }),
-  tagTypes: ["Product"],
+  tagTypes: ["ProductDetail"],
   endpoints: (builder) => ({
-    getProducts: builder.query<IProduct[], void>({
+    getAllProductsDetail: builder.query<IProductDetail[], void>({
       query: () => `api/productdetail`,
-      providerTags: ["Product"],
+      providerTags: ["ProductDetail"],
     }),
 
-    getProduct: builder.query<IProduct[], void>({
+    getProductDetail: builder.query<IProduct[], void>({
       query: () => `api/product`,
-      providerTags: ["Product"],
+      providerTags: ["ProductDetail"],
+    }),
+    getProductDetailById: builder.query<IProductDetail, number | string>({
+      query: (id: any) => `api/productdetail/${id}/detail`,
+      providerTags: ["ProductDetail"],
     }),
 
-    getProductById: builder.query<IProduct, number>({
-      query: (id: any) => `api/productdetail/${id}`,
-      providerTags: ["Product"],
-    }),
-
-    removeProducts: builder.mutation<void, number>({
+    removeProductsDetail: builder.mutation<void, number>({
       query: (id) => ({
         url: `api/productdetail/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: ["ProductDetail"],
     }),
 
-    addProducts: builder.mutation<IProduct, IProduct>({
+    addProductsDetail: builder.mutation<IProductDetail, IProductDetail>({
       query: (product) => ({
         url: `api/productdetail/add`,
         method: "POST",
@@ -39,26 +38,24 @@ const productAPIDetall = createApi({
       }),
     }),
 
-    updateProducts: builder.mutation<IProduct, IProduct>({
+    updateProductsDetail: builder.mutation<IProductDetail, IProductDetail>({
       query: (product) => ({
-        url: `api/productdetail/${product.id}/update`,
+        url: `api/productdetail/${product._id}/detail/update`,
         method: "PUT",
         body: product,
       }),
-      invalidatesTags: ["Product"],
+      invalidatesTags: ["ProductDetail"],
     }),
   }),
 });
 
 export const {
-  useGetProductsQuery,
-  useGetProductByIdQuery,
-  useRemoveProductsMutation,
-  useAddProductsMutation,
-  useUpdateProductsMutation,
-  useGetProductQuery,
+  useGetAllProductsDetailQuery,
+  useGetProductDetailByIdQuery,
+  useRemoveProductsDetailMutation,
+  useAddProductsDetailMutation,
+  useUpdateProductsDetailMutation,
+  useGetProductDetailQuery,
 } = productAPIDetall;
-
 export const productReducer = productAPIDetall.reducer;
-
 export default productAPIDetall;

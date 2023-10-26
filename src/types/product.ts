@@ -1,9 +1,9 @@
-export interface IProduct {
+export interface IProductDetail {
     _id?: string;
     name?: string;
     size?: number;
     color?: string;
-    id_product?: string;
+    product_id?: string;
     quantity?: number;
     
 }

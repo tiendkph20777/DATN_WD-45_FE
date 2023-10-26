@@ -1,22 +1,22 @@
 import { Button, Form, Input, notification } from "antd";
-import { IProduct } from "../../../types/product";
+import { IProductDetail } from "../../../types/product";
 import { useNavigate } from "react-router-dom";
-import { useAddProductsMutation } from "../../../services/productDetail.service";
+import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
 
 
 type FieldType = {
   name?: string;
   size?: number;
-  id_product?: string;
+  product_id?: string;
   quantity?: number;
   color?: string;
 };
 
 const ProductAdd = () => {
-  const [addProduct] = useAddProductsMutation();
+  const [addProduct] = useAddProductsDetailMutation();
   const navigate = useNavigate();
 
-  const onFinish = (values: IProduct) => {
+  const onFinish = (values: IProductDetail) => {
     addProduct(values)
       .unwrap()
       .then(() => {
@@ -36,8 +36,8 @@ const ProductAdd = () => {
   };
 
   return (
-    <div>
-      <h1>Add Sản Phẩm</h1>
+    <div >
+      <h1 style={{paddingTop:"200px"}}>Add Sản Phẩm</h1>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -63,8 +63,8 @@ const ProductAdd = () => {
           <Input />
         </Form.Item>
         <Form.Item
-          label="id_product"
-          name="id_product"
+          label="product_id"
+          name="product_id"
           rules={[{ required: true, message: "Nhập id Product" }]}
         >
           <Input />
