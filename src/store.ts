@@ -1,13 +1,24 @@
+
 import { configureStore } from '@reduxjs/toolkit'
+import brandAPI from './services/brand.service'
 import productAPI from './services/product.service'
 import authAPI from './services/user.service'
+import roleAPI from './services/role.service'
+import productAPIDetall from './services/productDetail.service'
+import voucherAPI from './services/voucher.service'
 
 export const store = configureStore({
   reducer: {
-    "products": productAPI.reducer,
+    "product": productAPI.reducer,
+    "brand": brandAPI.reducer,
     "auth": authAPI.reducer,
+    "role": roleAPI.reducer,
+    "products": productAPIDetall.reducer,
+    "voucher": voucherAPI.reducer
   },
-  middleware: (defaultMiddleware) => defaultMiddleware().concat(productAPI.middleware, authAPI.middleware),
+
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware, productAPIDetall.middleware, voucherAPI.middleware),
+
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

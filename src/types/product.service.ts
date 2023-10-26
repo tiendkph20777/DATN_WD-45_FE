@@ -1,12 +1,11 @@
 export interface IProducts {
+    [x: string]: any;
     _id: string | number;
     name: string,
+    brand_id: string,
+    images: any,
     price: number,
-    des: string
-}
-export interface IComment {
-    id: string | number;
-    name: string,
-    price: number,
-    des: string
+    price_sale: number,
+    content: string,
+    description: string
 }

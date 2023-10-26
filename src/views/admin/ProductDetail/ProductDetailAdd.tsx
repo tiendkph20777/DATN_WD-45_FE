@@ -1,37 +1,89 @@
-import React from 'react'
+import { Button, Form, Input, notification } from "antd";
+import { IProductDetail } from "../../../types/product";
+import { useNavigate } from "react-router-dom";
+import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
 
-type Props = {}
 
-const ProductDetailAdd = (props: Props) => {
-    return (
-        <div className="container-fluid">
-            <div className="row">
-                <div className="card-body">
-                    <h5 className="card-title fw-semibold mb-4">Thêm Danh Mục</h5>
-                    <form action="" method="post">
-                        <div className="card">
-                            <div className="card-body">
-                                <div className="mb-3">
-                                    <label htmlFor="exampleInputEmail1" className="form-label">Tên</label>
-                                    <input type="text" name="name" value="" className="form-control"
-                                        id="exampleInputEmail1" />
-                                    <div id="emailHelp" className="form-text text-danger"></div>
-                                </div>
-                                <div className="mb-3">
-                                    <label htmlFor="exampleInputPassword1" className="form-label">Ảnh</label>
-                                    <input type="file" name="" id="" className="w-100 form-control p-2" />
-                                    <div id="emailHelp" className="form-text text-danger"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="button" className="btn btn-dark m-2"><a className="text-white" href="/admin/category">Danh
-                            Sách</a></button>
-                        <button type="submit" className="btn btn-primary m-2">Thêm</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    )
-}
+type FieldType = {
+  name?: string;
+  size?: number;
+  product_id?: string;
+  quantity?: number;
+  color?: string;
+};
 
-export default ProductDetailAdd
+const ProductAdd = () => {
+  const [addProduct] = useAddProductsDetailMutation();
+  const navigate = useNavigate();
+
+  const onFinish = (values: IProductDetail) => {
+    addProduct(values)
+      .unwrap()
+      .then(() => {
+        notification.success({
+          message: "Success",
+          description: "Thêm Sản Phẩm Thành Công!",
+        });
+        navigate("/admin/product/detail");
+      })
+      .catch((error) => {
+        console.error("Error adding product:", error);
+      });
+  };
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
+  };
+
+  return (
+    <div >
+      <h1 style={{paddingTop:"200px"}}>Add Sản Phẩm</h1>
+      <Form
+        name="basic"
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
+        style={{ maxWidth: 600 }}
+        initialValues={{ remember: true }}
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
+        autoComplete="off"
+      >
+        <Form.Item<FieldType>
+          label="Size"
+          name="size"
+          rules={[{ required: true, message: "Nhập Size Sản Phẩm" }]}
+        >
+          <Input type="number" />
+        </Form.Item>
+        <Form.Item
+          label="quantity"
+          name="quantity"
+          rules={[{ required: true, message: "Nhập Số Lượng Sản Phẩm" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="product_id"
+          name="product_id"
+          rules={[{ required: true, message: "Nhập id Product" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Color"
+          name="color"
+          rules={[{ required: true, message: "Nhập màu sản phẩm" }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+          <Button type="primary" htmlType="submit" style={{ backgroundColor: "blue" }}>
+            Add New Product
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
+  );
+};
+
+export default ProductAdd;

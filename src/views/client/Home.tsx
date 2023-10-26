@@ -9,6 +9,7 @@ const HomeClient = () => {
     return (
         <div>
             <TheHeader></TheHeader>
+            <div className='space'></div>
             <Outlet />
             <TheFooter></TheFooter>
         </div>

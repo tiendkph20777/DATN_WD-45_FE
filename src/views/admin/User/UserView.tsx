@@ -5,8 +5,8 @@ import { IAuth } from '../../../types/user.service';
 import Search from 'antd/es/input/Search';
 import { Link } from 'react-router-dom';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import { useFetchOneRoleQuery, useFetchRoleQuery } from '../../../services/role.service';
 
-// const { Column, ColumnGroup } = Table;
 
 interface DataType {
     key: React.Key;
@@ -17,64 +17,75 @@ interface DataType {
     tags: string[];
 }
 
-const confirm = (e: React.MouseEvent<HTMLElement>) => {
-    // console.log(e);
-    message.success('Click on Yes');
-};
-
 
 const App: React.FC = () => {
     const [searchText, setSearchText] = useState('');
-    const [searchResult, setSearchResult] = useState<DataType[]>([]);
     const { data: user, isLoading, isFetching } = useFetchUserQuery();
     const [removeUserMutation] = useRemoveUserMutation()
+    const { data: roles } = useFetchRoleQuery()
+    const [searchResult, setSearchResult] = useState([]);
+
 
     useEffect(() => {
-        if (!isFetching) {
-            // Data is fetched and available
-            const data = user?.map((item) => ({
-                key: item._id,
-                userName: item.userName,
-                fullName: item.fullName,
-                image: item.image,
-                email: item.email,
-                gender: item.gender,
-            }));
-            setSearchResult(data || []);
-        }
-    }, [user, isFetching]);
+        const fetchData = async () => {
+            if (!isFetching) {
+                const userData = user || [];
+                const rolesData = roles || [];
+                const data: any = await Promise.all(
+                    userData.map(async (item) => {
+                        const roleName = rolesData.find(role => role?._id === item?.role_id)?.name;
+                        return {
+                            key: item._id,
+                            userName: item.userName,
+                            fullName: item.fullName,
+                            role: roleName,
+                            email: item.email,
+                            gender: item.gender,
+                            image: item.image,
+                        };
+                    })
+                );
+                setSearchResult(data);
+            }
+        };
+        fetchData();
+    }, [user, isFetching, roles]);
 
     const onSearch = (value: string) => {
-        const filteredData = user?.filter((item) =>
-            item.userName.toLowerCase().includes(value.toLowerCase())
+        const filteredData: any = user?.filter((item) =>
+            isValueInFields(value?.toLowerCase(), [item.email.toLowerCase()])
         );
-        setSearchResult(filteredData || []);
+
+        setSearchResult(filteredData);
         setSearchText(value);
     };
 
+    const isValueInFields = (value: string, fields: string[]) => {
+        return fields.some(field => field.includes(value));
+    };
+
     // remove
-    const removeProduct = async (id: number) => {
-        // console.log(id);
+    const removeProduct = async (id: string) => {
         try {
             await removeUserMutation(id);
             notification.success({
                 message: 'Remove',
                 description: (
                     <span>
-                        Product <b>{user?.find((item) => item._id === id)?.userName}</b> removed successfully!
+                        Sản phẩm <b>{user?.find((item) => item?._id === id)?.userName}</b> đã được xóa thành công!
                     </span>
                 ),
             });
+            setSearchResult(searchResult.filter((item: any) => item.key !== id));
         } catch (error) {
-            console.error('Failed to remove product', error);
+            console.error('Lỗi khi xóa sản phẩm', error);
             notification.error({
-                message: 'Remove',
-                description: 'Failed to remove product. Please try again later.',
+                message: 'Xóa',
+                description: 'Không thể xóa sản phẩm. Vui lòng thử lại sau.',
             });
         }
     };
 
-    // If data is loading, you can display a loading indicator or handle loading state accordingly
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -85,23 +96,21 @@ const App: React.FC = () => {
         { title: 'Full Name', dataIndex: 'fullName', key: 'fullName' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
         { title: 'Address', dataIndex: 'gender', key: 'gender' },
-
-        // {
-        //     title: 'Image',
-        //     dataIndex: 'image',
-        //     key: 'image',
-        //     render: (image: string) => <img src={image} alt="Product image" width={100} />,
-        // },
-        // { title: 'Category', dataIndex: 'categoryId', key: 'categoryId' },
-
+        { title: 'Role', dataIndex: 'role', key: 'role', },
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            key: 'image',
+            render: (image: any) => <img src={image} alt="" style={{ maxWidth: '100px' }} />,
+        },
         {
             title: 'Action',
             dataIndex: '',
             key: 'action',
-            render: (record: DataType) => (
+            render: (record: any) => (
                 <span>
                     <Button type='primary' >
-                        <Link to={record.key + '/update'}>
+                        <Link to={record.key + '/edit'}>
                             <EditOutlined /> Update
                         </Link>
                     </Button>
@@ -126,17 +135,12 @@ const App: React.FC = () => {
     return (
         <div style={{ paddingTop: "10%" }}>
             <div>
-                <Search placeholder="Search product" value={searchText} onChange={(e) => onSearch(e.target.value)} enterButton />
-                <Button type="primary" style={{ backgroundColor: 'green', margin: '10px' }}>
-                    <Link to={'/admin/products/add'}>
-                        <EditOutlined />Add Product
-                    </Link>
-                </Button>
+                <Search placeholder="Search email user" value={searchText} onChange={(e) => onSearch(e.target.value)} enterButton />
                 <Table
                     columns={columns}
                     expandable={{
-                        expandedRowRender: (record: DataType) => <p style={{ margin: 0 }}>{record.description}</p>,
-                        rowExpandable: (record: DataType) => record.firstName !== 'Not Expandable',
+                        expandedRowRender: (record: any) => <p style={{ margin: 0 }}>{record.description}</p>,
+                        rowExpandable: (record: any) => record.firstName !== 'Not Expandable',
                     }}
                     dataSource={searchResult.length > 0 ? searchResult : []}
                     pagination={{ pageSize: 5, showQuickJumper: true }}

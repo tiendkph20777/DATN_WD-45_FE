@@ -2,22 +2,22 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IAuth } from "../types/user.service";
 
 const authAPI = createApi({
-    reducerPath: "auth", // Reducer path for authentication
+    reducerPath: "auth", // 
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:8080/api", // Adjust the base URL for your authentication endpoints
+        baseUrl: "http://localhost:8080/api",
     }),
     tagTypes: ["user"],
     endpoints: (builder) => ({
         signIn: builder.mutation<void, Partial<IAuth>>({
             query: auth => ({
-                url: "/signin", // Adjust the endpoint for sign in
+                url: "/signin",
                 method: "POST",
                 body: auth,
             }),
         }),
         signUp: builder.mutation<void, Partial<IAuth>>({
             query: auth => ({
-                url: "/signup", // Adjust the endpoint for sign up
+                url: "/signup",
                 method: "POST",
                 body: auth,
             }),
@@ -25,7 +25,7 @@ const authAPI = createApi({
         fetchUser: builder.query<IAuth[], void>({
             query: () => "/user",
         }),
-        fetchOneUser: builder.query<IAuth[], string | number>({
+        fetchOneUser: builder.query<any, string | number>({
             query: (_id) => ({
                 url: `/user/${_id}`,
                 method: "GET",
@@ -36,14 +36,15 @@ const authAPI = createApi({
                 url: `/user/${_id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["user"]
+            invalidatesTags: ["user"],
         }),
-        updateUser: builder.mutation<void, IAuth>({
-            query: product => ({
-                url: `/user/${product._id}/update`,
+        updateUser: builder.mutation<void, any>({
+            query: (user) => ({
+                url: `/user/${user._id}/update`,
                 method: 'PUT',
-                body: product
+                body: user
             }),
+            invalidatesTags: ["user"],
         }),
     }),
 });

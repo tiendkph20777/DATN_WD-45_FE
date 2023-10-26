@@ -19,6 +19,14 @@ import Signin from "../views/client/user/Signin";
 import Signup from "../views/client/user/Signup";
 import UserView from "../views/admin/User/UserView";
 import UserUpdate from "../views/admin/User/UserUpdate";
+import ProductDetail from "../views/client/product/ProductDetail";
+import Cart from "../views/client/home/Cart";
+import CheckOut from "../views/client/home/CheckOut";
+import Blog from "../views/client/home/Blog";
+import BlogDetail from "../views/client/home/BlogDetail";
+import { VoucherView } from "../views/admin/Voucher";
+import VoucherAdd from "../views/admin/Voucher/VoucherAdd";
+import VoucherEdit from "../views/admin/Voucher/VoucherEdit";
 
 const routes: RouteObject[] = [
     {
@@ -36,7 +44,7 @@ const routes: RouteObject[] = [
                 path: 'category/add', element: <CategoryAdd />
             },
             {
-                path: 'category/:id/edit', element: <CategoryEdit />
+                path: 'category/:idBrand/edit', element: <CategoryEdit />
             },
             // Product
             {
@@ -46,7 +54,7 @@ const routes: RouteObject[] = [
                 path: 'product/add', element: <ProductAdd />
             },
             {
-                path: 'product/:id/edit', element: <ProductEdit />
+                path: 'product/:idProduct/edit', element: <ProductEdit />
             },
             // Product Detail
             {
@@ -56,7 +64,7 @@ const routes: RouteObject[] = [
                 path: 'product/detail/add', element: <ProductDetailAdd />
             },
             {
-                path: 'product/detail/:id/edit', element: <ProductProductEdit />
+                path: 'product/detail/:idProduct/edit', element: <ProductProductEdit />
             },
             // Comment
             {
@@ -68,7 +76,17 @@ const routes: RouteObject[] = [
             },
             {
                 path: "user/:id/edit", element: <UserUpdate />
-            }
+            },
+            //voucher
+            {
+                path: 'voucher', element: <VoucherView />
+            },
+            {
+                path: 'voucher/add', element: <VoucherAdd />
+            },
+            {
+                path: 'voucher/:id/edit', element: <VoucherEdit />
+            },
         ],
     },
     {
@@ -84,8 +102,25 @@ const routes: RouteObject[] = [
                 element: <IndexProduct />
             },
             {
-                path: 'about',
-                element: <IndexAbout />
+                path: 'product/:_id/detail',
+
+                element: <ProductDetail />
+            },
+            {
+                path: 'cart',
+                element: <Cart />
+            },
+            {
+                path: 'checkout',
+                element: <CheckOut />
+            },
+            {
+                path: 'blog',
+                element: <Blog />
+            },
+            {
+                path: 'blogDetail',
+                element: <BlogDetail />
             }
         ]
     },

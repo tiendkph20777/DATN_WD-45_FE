@@ -8,34 +8,33 @@ const productAPI = createApi({
         baseUrl: "http://localhost:8080/api"
     }),
     endpoints: builder => ({
-        fetchProduct: builder.query<IProducts[], void>({
-            query: () => "/product",
+
+        getProducts: builder.query<IProducts[], void>({
+            query: () => `/product`,
         }),
-        getProduct: builder.query<{ product: IProducts | null }, number>({
-            query: id => ({
-                url: `/product/${id}`,
-                method: "GET",
-            }),
+        getProductById: builder.query<IProducts, any>({
+            query: (id) => `/product/${id}`
         }),
-        removeProduct: builder.mutation<void, number>({
-            query: id => ({
+        removeProduct: builder.mutation<IProducts, number | string>({
+            query: (id) => ({
                 url: `/product/${id}`,
                 method: "DELETE"
             }),
         }),
         addProduct: builder.mutation<void, Partial<IProducts>>({
             query: product => ({
-                url: `/product`,
+                url: `product/add`,
                 method: "POST",
                 body: product
             }),
         }),
-        updateProduct: builder.mutation<void, IProducts>({
-            query: product => ({
-                url: `/product/${product.id}`,
+
+        updateProduct: builder.mutation<IProducts, IProducts>({
+            query: (product) => ({
+                url: `/product/${product._id}/update`,
                 method: "PUT",
                 body: product
-            }),
+            })
         }),
         fetchComment: builder.query<any, void>({
             query: () => "/comment",
@@ -89,8 +88,8 @@ const productAPI = createApi({
 
 
 export const {
-    useFetchProductQuery,
-    useGetProductQuery,
+    useGetProductsQuery,
+    useGetProductByIdQuery,
     useRemoveProductMutation,
     useAddProductMutation,
     useUpdateProductMutation,

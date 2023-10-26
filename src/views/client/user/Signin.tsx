@@ -1,77 +1,113 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFetchUserQuery, useSignInMutation } from '../../../services/user.service';
 import { IAuth } from '../../../types/user.service';
+import { message as messageApi } from 'antd';
 
 const Signin = () => {
-
-    const navigate = useNavigate()
-    const [createUsser, { isLoading, isError }] = useSignInMutation()
+    const navigate = useNavigate();
+    const [createUser, { isLoading }] = useSignInMutation();
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<IAuth>()
+    } = useForm<IAuth>();
 
     const onSubmit = async (formData: IAuth) => {
         try {
-            const response = await createUsser(formData);
-
-            if (response.error && response.error.status === 401) {
-                console.error('Invalid credentials or account does not exist');
-                // Handle invalid credentials or non-existing account error
+            const response = await createUser(formData);
+            if (response.error) {
+                const element = document.getElementById('loi');
+                messageApi.open({
+                    type: 'error',
+                    content: response.error.data.message,
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
             } else {
-                if (response.error) {
-                    const element = document.getElementById('loi');
-                    element.innerHTML = '<p style="color: red;">' + response.error.data.message + '</p>';
-                    console.log("Tên đăng nhập hoặc mật khẩu sai 😭😭😭")
-                } else {
-                    console.log("đăng nhập thành công 🎉🎉🎉")
-                    localStorage.setItem("user", JSON.stringify(response.data))
-                    console.log(response)
-                    navigate("/")
-                }
+                console.log('Đăng nhập thành công 🎉🎉🎉');
+                localStorage.setItem('user', JSON.stringify(response.data));
+                messageApi.info({
+                    type: 'error',
+                    content: "Hello,chào mừng bạn quay trở lại 🎉🎉🎉",
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
+                navigate("/");
             }
         } catch (error) {
             console.error('Sign in failed:', error);
         }
-
-    }
-
+    };
     return (
-        <div className="" >
-            <div className="row">
-                < div className="col-lg-6 col-md-12" style={{ marginLeft: '%', height: "cove" }}>
-                    <img
-                        src="https://i.pinimg.com/736x/85/50/7e/85507e032ba4276637784e04bf2510ad--nike.jpg"
-                        alt="Hình ảnh"
-                        className="img-fluid"
-                        style={{ height: '680px', width: '100%' }}
-                    />
-                </div >
-                <div className="col-lg-6 col-md-12">
-                    <div className="container mt-5">
-                        <div className="card">
-                            <div className="card-body">
-                                <h3 className="card-title text-center fs-2 mb-4">Log in to continue shopping for shoes </h3>
-                                <form onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="mb-3">
-                                        <label htmlFor="username" className="form-label">Email</label>
-                                        <input type="email" className="form-control" id="username" placeholder="Nhập tên người dùng" {...register("email", { required: true })} />
+        <div>
+            <section className="login_box_area section_gap">
+                <div className="">
+                    <div className="row">
+                        <div className="col-lg-6">
+                            <div className="login_box_img">
+                                <img className="img-fluid" src="https://we25.vn/media/uploads/2016/08/converse-chuck-ii-shield-hi-white-trainers.jpg" alt="" />
+                                <div className="hover">
+                                    <h4>New to our website?</h4>
+                                    <p>
+                                        There are advances being made in science and technology everyday,
+                                        and a good example of this is the
+                                    </p>
+                                    <Link className="primary-btn" to={"/signup"}>Create an Account</Link>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="login_form_inner container">
+                                <h3>Log in to enter</h3>
+                                <form
+                                    className="row login_form"
+                                    action="contact_process.php"
+                                    method="post"
+                                    id="contactForm"
+                                    // noValidate="novalidate"
+                                    onSubmit={handleSubmit(onSubmit)}
+                                >
+                                    <div className="col-md-12 form-group">
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            id="username"
+                                            placeholder="Nhập email người dùng"
+                                            {...register("email")}
+                                        />
                                     </div>
-                                    <div className="mb-3">
-                                        <label htmlFor="password" className="form-label">Mật khẩu</label>
-                                        <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register('password', { required: true })} />
+                                    <div className="col-md-12 form-group">
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            placeholder="Nhập mật khẩu"
+                                            {...register('password')}
+                                        />
                                     </div>
-                                    <div>
-                                        <input type="checkbox" /> <label htmlFor=""> Remeber me</label>
-                                        <span style={{ float: "right" }}>Don't have an account? Signup <Link to={"/signup"}>here</Link></span>
+                                    <div className="col-md-12 form-group">
+                                        <div className="creat_account">
+                                            <input type="checkbox" id="f-option2" name="selector" />
+                                            <label htmlFor="f-option2">Keep me logged in</label>
+                                        </div>
                                     </div>
-                                    <div className="text-center mt-2 ">
-                                        <span id='loi'></span>
-                                        <button type="submit" className="btn btn-primary">Log in</button>
+                                    <div className="col-md-12 form-group">
+                                        <button type="submit" value="submit" className="primary-btn">
+                                            Log In
+                                        </button>
+                                        <a href="#">Forgot Password?</a>
                                     </div>
                                     <div className='text-center'>
                                         <p style={{ marginBottom: "-5px" }}>or</p>
@@ -83,63 +119,9 @@ const Signin = () => {
                         </div>
                     </div>
                 </div>
-            </div >
-        </div >
+            </section>
+        </div>
     )
 }
 
 export default Signin
-
-
-
-
-// import React from 'react';
-// import axios from 'axios';
-
-
-
-
-// const UploadImage = () => {
-//     const uploadFiles = async (files) => {
-//         if (files) {
-//             const CLOUD_NAME = "dwipssyox";
-//             const PRESET_NAME = "file-image-cv";
-//             const POLDER_NAME = "ECMA";
-//             const urls = [];
-//             const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
-
-//             const formData = new FormData();
-//             formData.append("upload_preset", PRESET_NAME);
-//             formData.append("folder", POLDER_NAME);
-
-//             for (const file of files) {
-//                 formData.append("file", file);
-//                 const response = await axios.post(api, formData, {
-//                     headers: {
-//                         "content-type": "multipart/form-data",
-//                     },
-//                 });
-//                 urls.push(response.data.secure_url);
-//             }
-//             console.log("url :", urls);
-//             return urls;
-//         }
-//     };
-
-//     return (
-//         <div className="container">
-//             <h1>cập nhật sản phẩm</h1>
-//             <form action="" id="form-add">
-//                 <div className="form-group mb-3">
-//                     <label >image sản phẩm</label>
-//                     <input type="file" id="project-image" className="form-control" />
-//                 </div>
-//                 <div className="form-group">
-//                     <button className="btn btn-primary mb-50">thêm</button>
-//                 </div>
-//             </form>
-//         </div>
-//     );
-// };
-
-// export default UploadImage;

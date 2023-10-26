@@ -1,125 +1,243 @@
-import React, { useEffect, useRef } from 'react'
-import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
-import { IAuth } from '../../../types/user.service'
-import { useSignUpMutation } from '../../../services/user.service'
-import axios from 'axios'
+import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { Link, useNavigate } from 'react-router-dom';
+import { IAuth } from '../../../types/user.service';
+import { useFetchUserQuery, useSignUpMutation } from '../../../services/user.service';
+import { message as messageApi } from 'antd';
+import axios from 'axios';
 
 const Signup = () => {
-    const [createUserSignup, { isLoading, isError }] = useSignUpMutation()
-
+    const [createUserSignup, { isLoading, isError }] = useSignUpMutation();
+    const navigate = useNavigate();
+    const { data: users } = useFetchUserQuery();
     const {
         register,
         handleSubmit,
         formState: { errors }
-    } = useForm<IAuth>()
+    } = useForm<IAuth>();
 
-    const cloudinaryConfig = {
-        cloudName: 'dwipssyox',
-        apiKey: '294931296355453',
-        apiSecret: 'jB6_ZmbxpJWoqZLndzjjPDbxPSI',
+    const [image, setImageUrl] = useState('');
+    const [uploading, setUploading] = useState(false);
+
+    const handleImageUpload = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setUploading(true);
+            const CLOUD_NAME = 'dwipssyox';
+            const PRESET_NAME = 'file-image-cv';
+            const POLDER_NAME = 'DATN';
+            const api = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+            const formData = new FormData();
+            formData.append('upload_preset', PRESET_NAME);
+            formData.append('folder', POLDER_NAME);
+            formData.append('file', file);
+
+            try {
+                const response = await axios.post(api, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                const imageUrl = response.data.secure_url;
+                setImageUrl(imageUrl);
+                setUploading(false);
+            } catch (error) {
+                console.error('Lỗi khi tải lên ảnh lên Cloudinary:', error);
+                setUploading(false);
+            }
+        }
     };
 
     const submitSignup = async (formData: IAuth) => {
         try {
-            const response = await createUserSignup(formData);
-            // console.log(response.data.message)
-
+            const response = await createUserSignup({ ...formData, image });
             if (response.error) {
                 console.log(response.error.data.message);
-                const element = document.getElementById('loi');
-                element.innerHTML = '<p style="color: red;">' + response.error.data.message + '</p>';
-                // element.innerHTML = response.error.data.message
+                messageApi.open({
+                    type: 'error',
+                    content: response.error.data.message,
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
             } else {
-                console.log("đăng nhập thành công 🎉🎉🎉")
-                localStorage.setItem("user", JSON.stringify(response.data))
-                // console.log(response)
-                // navigate("/")
+                const isEmailExist = users?.some((user) => user.email.toLowerCase() === formData.email.toLowerCase());
+                if (isEmailExist) {
+                    messageApi.open({
+                        type: 'error',
+                        content: "Email đã tồn tại vui lòng nhập email khác!!!",
+                        className: 'custom-class',
+                        style: {
+                            marginTop: '0',
+                            fontSize: "20px",
+                            lineHeight: "50px"
+                        },
+                    });
+                } else {
+                    console.log("đăng ký thành công 🎉🎉🎉")
+                    localStorage.setItem("user", JSON.stringify(response.data))
+                    console.log(response)
+                    messageApi.info({
+                        type: 'error',
+                        content: "Hello,chào mừng bạn mới hãy mua sắm với chúng tôi nào 🎉🎉🎉",
+                        className: 'custom-class',
+                        style: {
+                            marginTop: '0',
+                            fontSize: "20px",
+                            lineHeight: "50px"
+                        },
+                    });
+                    navigate("/")
+                }
             }
         } catch (error) {
-            console.error('Sign in failed:', error);
-        }
-    }
-
-    const handleImageUpload = async (event) => {
-        const file = event.target.files[0];
-
-        // Tạo formData để đính kèm tệp
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('upload_preset', 'YOUR_UPLOAD_PRESET'); // Thay YOUR_UPLOAD_PRESET bằng upload preset của bạn
-
-        try {
-            const response = await axios.post(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    'X-Requested-With': 'XMLHttpRequest',
-                },
-                auth: {
-                    username: cloudinaryConfig.apiKey,
-                    password: cloudinaryConfig.apiSecret,
-                }
-            });
-            console.log('File uploaded to Cloudinary. Public ID:', response.data.public_id);
-        } catch (error) {
-            console.error('Error uploading file to Cloudinary:', error);
+            console.error('Sign up failed:', error);
         }
     };
 
-
     return (
-        <div className="">
-            <div className="row">
-                <div className="col-lg-6 col-md-12" style={{ marginLeft: '%', height: "cove" }}>
-                    <img
-                        src="https://i.pinimg.com/736x/85/50/7e/85507e032ba4276637784e04bf2510ad--nike.jpg"
-                        alt="Hình ảnh"
-                        className="img-fluid"
-                        style={{ height: '680px', width: '100%' }}
-                    />
-                </div>
-                <div className="col-lg-6 col-md-12">
-                    <div className="container">
-                        <div className="card">
-                            <div className="card-body">
-                                {/* <h3 className="card-title text-center fs-2 mb-4">Sing up to continue shopping for shoes </h3> */}
-                                <form onSubmit={handleSubmit(submitSignup)}>
-                                    <div className="mb-3" style={{}}>
-                                        <label htmlFor="image" className="form-label" style={{ float: "left", lineHeight: "30px", padding: "10px" }}>Thêm ảnh đại diện</label>
-                                        <input type="file" className="form-control" id="image" placeholder="Image" accept="image/*" onChange={handleImageUpload} style={{ width: "50%" }} />
+        <div>
+            <section className="login_box_area section_gap">
+                <div className="">
+                    <div className="row">
+                        <div className="col-lg-6">
+                            <div className="login_box_img">
+                                <img className="img-fluid" src="https://we25.vn/media/uploads/2016/08/converse-chuck-ii-shield-hi-white-trainers.jpg" alt="" />
+                                <div className="hover">
+                                    <h4>New to our website?</h4>
+                                    <p>
+                                        There are advances being made in science and technology everyday,
+                                        and a good example of this is the
+                                    </p>
+                                    <Link className="primary-btn" to={"/signin"}>Create an Account</Link>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="login_form_inner" style={{ padding: 5 }}>
+                                <h3 className='m-3'>Sign up to enter</h3>
+                                <form
+                                    className="row login_form"
+                                    action="contact_process.php"
+                                    method="post"
+                                    id="contactForm"
+                                    // noValidate="novalidate"
+                                    onSubmit={handleSubmit(submitSignup)}
+                                >
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.image && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className=" col-md-11 " style={{ display: "flex", justifyContent: "space-between" }}>
+                                        <div className="form-group mb-3" style={{ width: "50%" }}>
+                                            <label htmlFor="project-image">Thêm ảnh đại diện cho bạn </label>
+                                            <input
+                                                type="file"
+                                                id="project-image"
+                                                className="form-control"
+                                                onChange={handleImageUpload}
+                                            />
+                                        </div>
+                                        <div style={{ width: "50%", textAlign: "center" }}>
+                                            {uploading ? (
+                                                <p>Đang tải lên...</p>
+                                            ) : image ? (
+                                                <p><img style={{ width: "100px", height: "80px", textAlign: "center", borderRadius: "50%" }} src={image} alt="" /></p>
+                                            ) : null}
+                                        </div>
                                     </div>
-                                    <div className="mb-3" style={{ float: "left" }}>
-                                        {/* <label htmlFor="fullName" className="form-label">Full name</label> */}
-                                        <input type="text" className="form-control" style={{ width: "120%" }} id="fullName" placeholder="Nhập full name" {...register("fullName", { required: true })} />
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.fullName && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="fullName"
+                                            placeholder="Nhập full name"
+                                            {...register("fullName", { required: true })}
+                                        />
                                     </div>
-                                    <div className="mb-3" style={{ float: "right" }}>
-                                        {/* <label htmlFor="username" className="form-label">Last name</label> */}
-                                        <input type="text" className="form-control" style={{ width: "100%" }} id="username" placeholder="Nhập lase name" {...register("userName", { required: true })} />
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.userName && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="userName"
+                                            placeholder="Nhập last name"
+                                            {...register("userName",
+                                                { required: true })}
+                                        />
                                     </div>
-                                    <div style={{ clear: "both" }}></div>
-                                    <div className="mb-3">
-                                        {/* <label htmlFor="gender" className="form-label">Address</label> */}
-                                        <input type="text" className="form-control" id="gender" placeholder="Nhập address" {...register("gender", { required: true })} />
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.gender && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-11 form-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="gender"
+                                            placeholder="Nhập address"
+                                            {...register("gender",
+                                                { required: true })}
+                                        />
                                     </div>
-                                    <div className="mb-3">
-                                        {/* <label htmlFor="email" className="form-label">Email</label> */}
-                                        <input type="email" className="form-control" id="email" placeholder="Nhập email" {...register("email", { required: true })} />
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.email && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-11 form-group mb-3">
+                                        <input
+                                            type="email"
+                                            className="form-control"
+                                            id="username"
+                                            placeholder="Nhập email người dùng"
+                                            {...register("email")}
+                                        />
                                     </div>
-                                    <div className="mb-3">
-                                        {/* <label htmlFor="password" className="form-label">Password</label> */}
-                                        <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("password", { required: true })} />
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.password && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-3">
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            placeholder="Nhập mật khẩu"
+                                            {...register('password')}
+                                        />
                                     </div>
-                                    <div className="mb-3">
-                                        {/* <label htmlFor="password" className="form-label">ConfirPassword</label> */}
-                                        <input type="password" className="form-control" id="password" placeholder="Nhập mật khẩu" {...register("confirmPassword", { required: true })} />
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.confirmPassword && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    </label>
+                                    <div className="col-md-5 form-group mb-4">
+                                        <input
+                                            type="password"
+                                            className="form-control"
+                                            id="password"
+                                            placeholder="Nhập lại mật khẩu"
+                                            {...register("confirmPassword",
+                                                { required: true })}
+                                        />
                                     </div>
-                                    <div>
-                                        {/* <input type="checkbox" /> <label htmlFor=""> Remeber me</label> */}
-                                        <span style={{ float: "right" }}>Already have an account? Login <Link to={"/signin"}>here</Link></span>
+                                    <label htmlFor="" className='col-md-1'></label>
+                                    <div className="col-md-11 form-group mb-2">
+                                        <div className="creat_account">
+                                            <input type="checkbox" id="f-option2" name="selector" />
+                                            <label htmlFor="f-option2">Keep me logged in</label>
+                                        </div>
                                     </div>
-                                    <div className="text-center">
-                                        <p id='loi'></p>
-                                        <button type="submit" className="btn btn-primary">Sing up</button>
+                                    <label htmlFor="" className='col-md-1'></label>
+                                    <div className="col-md-11 form-group mb-2">
+                                        <button type="submit" value="submit" className="primary-btn">
+                                            Sign up
+                                        </button>
+                                        <a href="#">Forgot Password?</a>
                                     </div>
                                     <div className='text-center'>
                                         <p style={{ marginBottom: "-5px" }}>or</p>
@@ -131,7 +249,7 @@ const Signup = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     )
 }
