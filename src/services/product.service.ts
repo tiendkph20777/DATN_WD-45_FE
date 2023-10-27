@@ -4,6 +4,7 @@ const { accessToKen: token }: any = JSON.parse(localStorage.getItem('user')!);
 
 const productAPI = createApi({
     reducerPath: "product",
+    tagTypes: ["Product"],
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8080/api"
     }),
@@ -14,12 +15,14 @@ const productAPI = createApi({
         }),
         getProductById: builder.query<IProducts, any>({
             query: (id) => `/product/${id}`
+
         }),
         removeProduct: builder.mutation<IProducts, number | string>({
             query: (id) => ({
-                url: `/product/${id}`,
+                url: `product/${id}`,
                 method: "DELETE"
             }),
+            invalidatesTags: ["Product"]
         }),
         addProduct: builder.mutation<void, Partial<IProducts>>({
             query: product => ({
@@ -27,6 +30,7 @@ const productAPI = createApi({
                 method: "POST",
                 body: product
             }),
+
         }),
 
         updateProduct: builder.mutation<IProducts, IProducts>({
@@ -34,7 +38,8 @@ const productAPI = createApi({
                 url: `/product/${product._id}/update`,
                 method: "PUT",
                 body: product
-            })
+            }),
+            invalidatesTags: ["Product"]
         }),
         fetchComment: builder.query<any, void>({
             query: () => "/comment",

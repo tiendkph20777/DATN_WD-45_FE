@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useGetProductByIdQuery, useUpdateProductMutation } from '../../../services/product.service';
 // import { UploadOutlined } from '@ant-design/icons';
 import {
@@ -9,10 +9,13 @@ import {
     Space,
     Input,
     message,
+    notification,
 } from 'antd';
 import { useGetBrandsQuery } from '../../../services/brand.service';
 
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import TextArea from 'antd/es/input/TextArea';
+import { IProducts } from '../../../types/product.service';
 
 const { Option } = Select;
 
@@ -27,37 +30,74 @@ type FieldType = {
     price_sale?: number | string;
     images?: string;
     price?: number;
+    description?: string;
+    content?: string,
 };
 const ProductAdd: React.FC = () => {
     const [form] = Form.useForm();
     const [updateProduct] = useUpdateProductMutation();
-    const [messageApi, contextHolder] = message.useMessage();
+    const [, contextHolder] = message.useMessage();
     const { idProduct } = useParams<{ idProduct: string }>();
     const { data: productData } = useGetProductByIdQuery(idProduct || "");
+    const [, setImage] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
-        form.setFieldsValue(productData);
-
-    }, [productData]);
+        if (productData) {
+            form.setFieldsValue({
+                _id: productData._id,
+                name: productData.name,
+                brand_id: productData.brand_id,
+                price_sale: productData.price_sale,
+                images: productData.images,
+                price: productData.price,
+                description: productData.description,
+                content: productData.content,
+            });
+        }
+    }, [productData, form]);
     // const [brands, setBrands] = useState<any[]>([]);
     // const [brandId, setBrandId] = useState<number | string | undefined>(undefined);
     const { data: categories } = useGetBrandsQuery();
 
-    const onFinish = (values: any) => {
+    const onFinish = (values: IProducts) => {
         updateProduct({ ...values, _id: idProduct })
             .unwrap()
-            .then(() =>
-                messageApi.open({
-                    type: 'success',
-                    content: 'Cập nhật sản phẩm thành công',
-                })
-            );
+            .then(() => {
+                notification.success({
+                    message: "Success",
+                    description: "Sửa Sản Phẩm Thành Công!",
+                });
+                navigate("/admin/product");
+                window.location.reload()
+            })
+            .catch((error) => {
+                console.error("Error adding product:", error);
+            });
 
     };
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
+    // Preview image
+    const inputFile: any = document.getElementById("file-input");
+    const previewImage: any = document.getElementById("preview-image");
+
+    inputFile?.addEventListener("change", function () {
+        const file = inputFile.files[0];
+        const reader = new FileReader();
+
+        reader?.addEventListener("load", function () {
+            previewImage.src = reader.result;
+        });
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            previewImage.src = "";
+        }
+    });
     return (
         <div className="container-fluid">
             <div className="row">
@@ -117,7 +157,7 @@ const ProductAdd: React.FC = () => {
 
                         </Form.Item>
                         <Form.Item<FieldType>
-                            label="Mã giảm giá"
+                            label="Giảm giá"
                             name="price_sale"
                             rules={[
                                 { required: true, message: 'Please input your product!' },
@@ -127,26 +167,37 @@ const ProductAdd: React.FC = () => {
                             <Input />
                         </Form.Item>
 
-                        <Form.Item
-                            label="Image"
-                            name="images"
+                        <Form.Item label="Ảnh" name="images" valuePropName="file">
+                            <div>
+                                <div className="image-upload">
+                                    <label htmlFor="file-input">
+                                        <i className="bx bx-image-add"></i>
+                                    </label>
+                                    <input
+                                        id="file-input"
+                                        type="file"
+                                        onChange={(e: any) => setImage(e.target.files[0])}
+                                    />
+                                </div>
+                                <img src={productData?.images} alt="" id="preview-image"></img>
+                            </div>
+                        </Form.Item>
+                        <Form.Item<FieldType>
+                            label="Mô tả sản phẩm"
+                            name="description"
                             rules={[
-                                { required: true, message: 'Please input your image!' },
-                                {
-                                    validator: (_, value) => {
-                                        const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-                                        if (urlRegex.test(value)) {
-                                            return Promise.resolve();
-                                        }
-                                        return Promise.reject('Image must be a valid URL.');
-                                    }
-                                }
+                                { required: true, message: 'Please input your product!' },
+                                { min: 3, message: "ít nhất 3 ký tự" },
                             ]}
-
                         >
                             <Input />
                         </Form.Item>
+                        <Form.Item label="Nội dung" name="content" rules={[
+                            { required: true, message: 'Please input your product!' },
 
+                        ]}>
+                            <TextArea rows={4} />
+                        </Form.Item>
                         <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
                             <Space>
                                 <Button type="primary" htmlType="submit">

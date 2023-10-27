@@ -2,8 +2,11 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { useFetchOneUserQuery, useUpdateUserMutation } from '../../../services/user.service';
-import { Button, Form } from 'antd';
+import { Button, Form, Select } from 'antd';
 import Input from 'antd/es/input/Input';
+import { message as messageApi } from 'antd';
+import MenuItem from 'antd/es/menu/MenuItem';
+
 
 const YourFormComponent = () => {
     const { id }: any = useParams();
@@ -24,13 +27,43 @@ const YourFormComponent = () => {
             setValue('userName', data.userName);
             setValue('fullName', data.fullName);
             setValue('gender', data.gender);
+            setValue('address', data.address);
+            setValue('password', data.password);
         }
     }, [data, setValue]);
-
+    // console.log(data)
     const onSubmit = async (user: any) => {
         try {
-            await updateUser(user);
-            navigate("/admin/user");
+            const response = await updateUser(user);
+            if (response.error) {
+                messageApi.open({
+                    type: 'error',
+                    content: "Bạn không có quyền thực hiện chức năng này 😈😈😈",
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
+            } else {
+                // console.log('Đăng nhập thành công 🎉🎉🎉');
+                localStorage.setItem('user', JSON.stringify(response.data));
+                messageApi.info({
+                    type: 'error',
+                    content: "Cập nhật sản phẩm thành công 🎉🎉🎉",
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
+                navigate("/admin/user");
+            }
+            // await updateUser(user);
+            // // console.log(user)
+            // navigate("/admin/user");
         } catch (error) {
             console.error('Failed to update user', error);
         }
@@ -95,10 +128,26 @@ const YourFormComponent = () => {
                     rules={[{ required: true, message: 'Please input your gender!' }]}
                 >
                     <Controller
+                        render={({ field }) => (
+                            <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
+                                <MenuItem value={"Men"}>Men</MenuItem>
+                                <MenuItem value={"Women"}>Women</MenuItem>
+                            </Select>
+                        )}
                         name="gender"
                         control={control}
-                        defaultValue={data?.gender || ''}
-                        render={({ field }) => <Input {...field} placeholder="gender" />}
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Address"
+                    name="address"
+                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                >
+                    <Controller
+                        name="address"
+                        control={control}
+                        defaultValue={data?.address || ''}
+                        render={({ field }) => <Input {...field} placeholder="address" />}
                     />
                 </Form.Item>
 

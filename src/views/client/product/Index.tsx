@@ -1,7 +1,9 @@
+import React, { useEffect, useState } from 'react'
+import Banner from '../home/Banner'
+// import Modal from '../profile/Model';
 import { useGetBrandsQuery } from '../../../services/brand.service';
 import { useGetProductsQuery } from '../../../services/product.service';
 import { IProducts } from '../../../types/product.service';
-import { useEffect, useState } from 'react';
 const Index = () => {
     const { data: productData } = useGetProductsQuery();
     const { data: brandData } = useGetBrandsQuery();
@@ -39,6 +41,7 @@ const Index = () => {
                                     <form>
                                         <fieldset>
                                             <legend>Tìm kiếm</legend>
+
                                             <div className="mb-3">
                                                 <input type="text" id="disabledTextInput" className="form-control" placeholder="Tên sản phẩm" />
                                             </div>
@@ -221,5 +224,4 @@ const Index = () => {
         </div>
     )
 }
-
 export default Index
