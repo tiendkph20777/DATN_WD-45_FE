@@ -108,8 +108,13 @@ const ProductView = () => {
                 const brand = brands?.find((brand) => brand._id === brandId);
                 return brand ? brand.name : '';
 
-            },
-
+            }
+        },
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            key: 'image',
+            render: (image: string) => <img src={image} alt="image" width={100} />,
         },
 
         {
@@ -147,6 +152,12 @@ const ProductView = () => {
             render: ({ key: id }: any) => {
                 return (
                     <>
+                        <Link to={`/admin/product/${id}/edit`}>
+                            <Button>
+                                Sửa
+                            </Button>
+                        </Link>
+                        <Button onClick={() => handleDelete(id)} type='primary' danger className='ml-2'> Xóa</Button>
                         <div>
                             <Popconfirm
                                 title="Delete the task"

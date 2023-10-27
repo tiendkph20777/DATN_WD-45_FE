@@ -1,6 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IBrands } from "../types/brand.service";
 
+const data = JSON.parse(localStorage.getItem('user')!);
+const token = data?.accessToKen;
+
 const brandAPI = createApi({
     reducerPath: "brand",
     baseQuery: fetchBaseQuery({
@@ -23,7 +26,11 @@ const brandAPI = createApi({
             query: (brand) => ({
                 url: `/brand/add`,
                 method: "POST",
-                body: brand
+                body: brand,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
         }),
         updateBrand: builder.mutation<IBrands, IBrands>({

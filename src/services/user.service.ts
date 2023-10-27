@@ -27,6 +27,18 @@ const authAPI = createApi({
             }),
             invalidatesTags: ["User"],
         }),
+        createUser: builder.mutation<void, Partial<IAuth>>({
+            query: (user) => ({
+                url: "/user/add/staff",
+                method: "POST",
+                body: user,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
+            }),
+            invalidatesTags: ["User"],
+        }),
         fetchUser: builder.query<IAuth[], void>({
             query: () => "/user",
             providesTags: ["User"]
@@ -64,6 +76,6 @@ const authAPI = createApi({
     }),
 });
 
-export const { useSignInMutation, useSignUpMutation, useFetchUserQuery, useFetchOneUserQuery, useRemoveUserMutation, useUpdateUserMutation } = authAPI;
+export const { useSignInMutation, useSignUpMutation, useFetchUserQuery, useFetchOneUserQuery, useRemoveUserMutation, useUpdateUserMutation, useCreateUserMutation } = authAPI;
 
 export default authAPI;

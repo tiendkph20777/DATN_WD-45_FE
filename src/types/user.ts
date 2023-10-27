@@ -9,5 +9,6 @@ export interface IAuth {
     gender: string;
     address: string;
     image: string;
+    tel: number;
     role_id: string;
 }
