@@ -210,11 +210,11 @@ const App: React.FC = () => {
             key: 'action',
             render: (record: any) => (
                 <span>
-                    <Button type='primary' >
-                        <Link to={record.key + '/edit'}>
+                    <Link to={record.key + '/edit'}>
+                        <Button type='primary' >
                             <EditOutlined /> Update
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
                     <Popconfirm
                         title="Are you sure to remove this item?"
                         onConfirm={() => {
