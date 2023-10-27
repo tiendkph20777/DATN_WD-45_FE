@@ -60,9 +60,9 @@ const ProductView: React.FC = () => {
         },
         {
             title: 'Image',
-            dataIndex: 'images',
-            key: 'images',
-            render: (image: string) => <img src={image} alt="Product image" width={100} />,
+            dataIndex: 'image',
+            key: 'image',
+            render: (image: string) => <img src={image} alt="image" width={100} />,
 
         },
 
@@ -78,10 +78,11 @@ const ProductView: React.FC = () => {
             render: ({ key: id }: { key: number | string }) => {
                 return (
                     <>
-
-                        <Button>
-                            <Link to={`/admin/product/${id}/edit`}>Sửa</Link>
-                        </Button>
+                        <Link to={`/admin/product/${id}/edit`}>
+                            <Button>
+                                Sửa
+                            </Button>
+                        </Link>
                         <Button onClick={() => handleDelete(id)} type='primary' danger className='ml-2'> Xóa</Button>
                     </>
                 )

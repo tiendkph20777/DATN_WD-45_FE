@@ -27,6 +27,7 @@ import Profile from "../views/client/profile/Profile";
 import { VoucherView } from "../views/admin/Voucher";
 import VoucherAdd from "../views/admin/Voucher/VoucherAdd";
 import VoucherEdit from "../views/admin/Voucher/VoucherEdit";
+import UserAdd from "../views/admin/User/UserAdd";
 
 const routes: RouteObject[] = [
     {
@@ -72,6 +73,9 @@ const routes: RouteObject[] = [
             },
             {
                 path: "user/:id/edit", element: <UserUpdate />
+            },
+            {
+                path: "user/add", element: <UserAdd />
             },
             //voucher
             {

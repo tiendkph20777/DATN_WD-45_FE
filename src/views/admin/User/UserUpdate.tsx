@@ -29,12 +29,14 @@ const YourFormComponent = () => {
             setValue('gender', data.gender);
             setValue('address', data.address);
             setValue('password', data.password);
+            setValue('tel', data.tel);
         }
     }, [data, setValue]);
     // console.log(data)
     const onSubmit = async (user: any) => {
         try {
             const response = await updateUser(user);
+            // console.log(response)
             if (response.error) {
                 messageApi.open({
                     type: 'error',
@@ -48,10 +50,9 @@ const YourFormComponent = () => {
                 });
             } else {
                 // console.log('Đăng nhập thành công 🎉🎉🎉');
-                localStorage.setItem('user', JSON.stringify(response.data));
                 messageApi.info({
                     type: 'error',
-                    content: "Cập nhật sản phẩm thành công 🎉🎉🎉",
+                    content: "Cập nhật user thành công 🎉🎉🎉",
                     className: 'custom-class',
                     style: {
                         marginTop: '0',
@@ -61,16 +62,13 @@ const YourFormComponent = () => {
                 });
                 navigate("/admin/user");
             }
-            // await updateUser(user);
-            // // console.log(user)
-            // navigate("/admin/user");
         } catch (error) {
             console.error('Failed to update user', error);
         }
     };
 
     return (
-        <div style={{ width: "70%", paddingLeft: "10%", paddingTop: "5%" }}>
+        <div style={{ width: "70%", paddingLeft: "10%", paddingTop: "100px" }}>
             <h1 style={{}}>Update User</h1>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Form.Item
@@ -136,6 +134,18 @@ const YourFormComponent = () => {
                         )}
                         name="gender"
                         control={control}
+                    />
+                </Form.Item>
+                <Form.Item
+                    label="Phone"
+                    name="tel"
+                    rules={[{ required: true, message: 'Please input your username!' }]}
+                >
+                    <Controller
+                        name="tel"
+                        control={control}
+                        defaultValue={data?.tel || ''}
+                        render={({ field }) => <Input {...field} placeholder="tel" />}
                     />
                 </Form.Item>
                 <Form.Item

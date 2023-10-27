@@ -92,6 +92,7 @@ const App: React.FC = () => {
                             email: item.email,
                             gender: item.gender,
                             address: item.address,
+                            tel: item.tel,
                             image: item.image,
                         };
                     })
@@ -128,16 +129,29 @@ const App: React.FC = () => {
     // remove
     const removeProduct = async (id: string) => {
         try {
-            await removeUserMutation(id);
-            notification.success({
-                message: 'Remove',
-                description: (
-                    <span>
-                        Người dùng <b>{user?.find((item) => item?._id === id)?.userName}</b> đã được xóa thành công!
-                    </span>
-                ),
-            });
-            setSearchResult(searchResult.filter((item: any) => item.key !== id));
+            const response = await removeUserMutation(id);
+            if (response.error) {
+                messageApi.open({
+                    type: 'error',
+                    content: "Bạn không có quyền thực hiện chức năng này 😈😈😈",
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "20px",
+                        lineHeight: "50px"
+                    },
+                });
+            } else {
+                notification.success({
+                    message: 'Remove',
+                    description: (
+                        <span>
+                            Người dùng <b>{user?.find((item) => item?._id === id)?.userName}</b> đã được xóa thành công!
+                        </span>
+                    ),
+                });
+                setSearchResult(searchResult.filter((item: any) => item.key !== id));
+            }
         } catch (error) {
             console.error('Lỗi khi xóa sản phẩm', error);
             notification.error({
@@ -157,13 +171,13 @@ const App: React.FC = () => {
         { title: 'Full Name', dataIndex: 'fullName', key: 'fullName' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
         { title: 'Gender', dataIndex: 'gender', key: 'gender' },
-        { title: 'Address', dataIndex: 'address', key: 'address' },
+        { title: 'Phone', dataIndex: 'tel', key: 'tel' },
         {
             title: 'Role',
             dataIndex: 'role',
             key: 'role',
             render: (role: any, record: any) => (
-                <div style={{ width: "170px" }}>
+                <div style={{ width: "" }}>
                     {rowStates[record.key] ? (
                         <span>
                             <form action="" onSubmit={handleSubmit(onSubmit)} className='row'>
@@ -189,10 +203,12 @@ const App: React.FC = () => {
                         </span>
                     ) : (
                         <span className='row'>
-                            <span className='col-7'>{role}</span>
-                            <Button type='primary' onClick={() => handleButtonClick(record.key)} className='col-5'>
-                                Setting
+                            <Button className=''>
+                                <span className='col-12'>{role}</span>
                             </Button>
+                            {/* <Button type='primary' onClick={() => handleButtonClick(record.key)} className='col-5'>
+                                Setting
+                            </Button> */}
                         </span>
                     )}
                 </div>
@@ -205,7 +221,7 @@ const App: React.FC = () => {
             render: (image: any) => <img src={image} alt="" style={{ maxWidth: '100px' }} />,
         },
         {
-            title: 'Action',
+            title: <p><Link to={"add"}><Button type='primary'>Add New User</Button></Link></p>,
             dataIndex: '',
             key: 'action',
             render: (record: any) => (
@@ -245,7 +261,7 @@ const App: React.FC = () => {
                 <Table
                     columns={columns}
                     expandable={{
-                        expandedRowRender: (record: any) => <p style={{ margin: 0 }}>{record.description}</p>,
+                        expandedRowRender: (record: any) => <p style={{ margin: 0 }}>{record.address}</p>,
                         rowExpandable: (record: any) => record.firstName !== 'Not Expandable',
                     }}
                     dataSource={searchResult.length > 0 ? searchResult : []}
