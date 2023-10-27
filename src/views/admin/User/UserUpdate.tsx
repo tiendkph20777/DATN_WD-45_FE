@@ -2,9 +2,10 @@ import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { useFetchOneUserQuery, useUpdateUserMutation } from '../../../services/user.service';
-import { Button, Form } from 'antd';
+import { Button, Form, Select } from 'antd';
 import Input from 'antd/es/input/Input';
 import { message as messageApi } from 'antd';
+import MenuItem from 'antd/es/menu/MenuItem';
 
 
 const YourFormComponent = () => {
@@ -127,10 +128,14 @@ const YourFormComponent = () => {
                     rules={[{ required: true, message: 'Please input your gender!' }]}
                 >
                     <Controller
+                        render={({ field }) => (
+                            <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
+                                <MenuItem value={"Men"}>Men</MenuItem>
+                                <MenuItem value={"Women"}>Women</MenuItem>
+                            </Select>
+                        )}
                         name="gender"
                         control={control}
-                        defaultValue={data?.gender || ''}
-                        render={({ field }) => <Input {...field} placeholder="gender" />}
                     />
                 </Form.Item>
                 <Form.Item

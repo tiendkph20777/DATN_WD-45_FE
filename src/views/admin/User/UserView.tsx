@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Popconfirm, Select, Space, Table, Tag, message, notification } from 'antd';
-import { useFetchUserQuery, useRemoveUserMutation } from '../../../services/user.service';
-import { IAuth } from '../../../types/user';
+import { Button, Popconfirm, Select, Table, notification } from 'antd';
+import { useFetchUserQuery, useRemoveUserMutation, useUpdateUserMutation } from '../../../services/user.service';
 import Search from 'antd/es/input/Search';
 import { Link } from 'react-router-dom';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
-import { useFetchOneRoleQuery, useFetchRoleQuery, useUpdateRoleMutation } from '../../../services/role.service';
+import { useFetchRoleQuery } from '../../../services/role.service';
 import { Controller, useForm } from 'react-hook-form';
 import MenuItem from 'antd/es/menu/MenuItem';
 import { message as messageApi } from 'antd';
@@ -19,7 +18,7 @@ const App: React.FC = () => {
     const [removeUserMutation] = useRemoveUserMutation()
     const { data: roles } = useFetchRoleQuery()
     const [searchResult, setSearchResult] = useState([]);
-    const [updateUsser] = useUpdateRoleMutation()
+    const [updateUsser] = useUpdateUserMutation()
 
 
     // update role
@@ -33,33 +32,29 @@ const App: React.FC = () => {
         }));
     };
 
-    useEffect(() => {
-        if (searchResult) {
-            setValue('_id', searchResult?._id);
-            setValue('email', searchResult?.email);
-            setValue('userName', searchResult?.userName);
-            setValue('fullName', searchResult?.fullName);
-            setValue('gender', searchResult?.gender);
-            setValue('address', searchResult?.address);
-            setValue('password', searchResult?.password);
-            setValue('aboutme', searchResult?.aboutme);
-        }
-    }, [searchResult, setValue])
 
 
-    // const onSubmit = (information: any) => {
-    //     console.log(information)
-    //     // console.log(information);
-    //     // localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
-    //     // setTimeout(() => {
-    //     //     window.location.reload();
-    //     // }, 0);
-    //     // updateUser(information)
-    // }
-    const onSubmit = (data: any) => {
-        const selectedGender = data;
-        console.log('Dữ liệu đã lấy:', data);
-        // updateUsser(selectedGender)
+    // useEffect(() => {
+    //     if (searchResult) {
+    //         setValue('_id', searchResult?._id);
+    //         setValue('email', searchResult?.email);
+    //         setValue('userName', searchResult?.userName);
+    //         setValue('fullName', searchResult?.fullName);
+    //         setValue('gender', searchResult?.gender);
+    //         setValue('address', searchResult?.address);
+    //         setValue('password', searchResult?.password);
+    //         setValue('aboutme', searchResult?.aboutme);
+    //     }
+    // }, [searchResult, setValue])
+
+    const onSubmit = (roledata: any) => {
+        const selectedGender = roledata.role;
+        console.log('Dữ liệu đã lấy:', selectedGender);
+        localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
+        // setTimeout(() => {
+        //     window.location.reload();
+        // }, 0);
+        updateUsser(selectedGender)
     };
 
     useEffect(() => {
@@ -168,14 +163,14 @@ const App: React.FC = () => {
             dataIndex: 'role',
             key: 'role',
             render: (role: any, record: any) => (
-                <div>
+                <div style={{ width: "170px" }}>
                     {rowStates[record.key] ? (
                         <span>
                             <form action="" onSubmit={handleSubmit(onSubmit)} className='row'>
-                                <section className="col-8">
+                                <section className="col-7">
                                     <Controller
                                         render={({ field }) => (
-                                            <Select {...field} className=''>
+                                            <Select {...field} style={{ width: "100%" }}>
                                                 {roles && roles?.map((role) => (
                                                     <MenuItem value={role?._id}>
                                                         {role?.name}
@@ -187,15 +182,15 @@ const App: React.FC = () => {
                                         control={control}
                                     />
                                 </section>
-                                <Button type='primary' className='col-4' htmlType="submit">
+                                <Button type='primary' className='col-5' htmlType="submit">
                                     Update
                                 </Button>
                             </form>
                         </span>
                     ) : (
                         <span className='row'>
-                            <span className='col-6'>{role}</span>
-                            <Button type='primary' onClick={() => handleButtonClick(record.key)} className='col-6'>
+                            <span className='col-7'>{role}</span>
+                            <Button type='primary' onClick={() => handleButtonClick(record.key)} className='col-5'>
                                 Setting
                             </Button>
                         </span>

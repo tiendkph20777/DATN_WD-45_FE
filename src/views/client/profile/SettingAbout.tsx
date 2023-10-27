@@ -36,7 +36,7 @@ const SettingAbout = () => {
         localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
         setTimeout(() => {
             window.location.reload();
-        }, 0);
+        }, 500);
         updateUser(information)
     }
     useEffect(() => {

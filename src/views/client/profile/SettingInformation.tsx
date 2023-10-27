@@ -33,11 +33,11 @@ const SettingInformation = () => {
     }, [usersOne, setValue])
 
     const onSubmit = (information: any) => {
-        console.log(information);
+        // console.log(information);
         localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
         setTimeout(() => {
             window.location.reload();
-        }, 0);
+        }, 500);
         updateUser(information)
     }
     useEffect(() => {
@@ -56,6 +56,7 @@ const SettingInformation = () => {
             localStorage.removeItem('successMessage');
         }
     }, []);
+
 
 
     return (
@@ -96,7 +97,7 @@ const SettingInformation = () => {
                                 <div className="col-lg-3">
                                     <div className="form-group focused">
                                         <label className="form-control-label" htmlFor="input-email">Gender</label>
-                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Email" defaultValue={usersOne?.gender} readOnly />
+                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Gender" defaultValue={usersOne?.gender} readOnly />
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +164,6 @@ const SettingInformation = () => {
                                                     <Select {...field} style={{ width: "100%" }} className='form-control p-2'>
                                                         <MenuItem value={"Men"}>Men</MenuItem>
                                                         <MenuItem value={"Women"}>Women</MenuItem>
-                                                        {/* <MenuItem value={30}>Thirty</MenuItem> */}
                                                     </Select>
                                                 )}
                                                 name="gender"

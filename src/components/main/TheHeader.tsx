@@ -44,12 +44,13 @@ const TheHeader = () => {
     const { data: role } = useFetchOneRoleQuery(idrole)
 
     useEffect(() => {
-        if (role?.name === 'Admin') {
-            setIRole(true)
+        if (role && role?.name === 'Admin') {
+            setIRole(true);
         } else {
-            setIRole(false)
+            setIRole(false);
         }
-    }, [])
+    }, [role]);
+
     useEffect(() => {
         if (isLoggedIn1 === true) {
             setIsLoggedIn(true);
@@ -57,64 +58,6 @@ const TheHeader = () => {
             setIsLoggedIn(false);
         }
     }, [])
-
-    // const navigate = useNavigate();
-    // const storedStatus = JSON.parse(localStorage.getItem('user') || '{}');
-    // const isLoggedIn1 = !!storedStatus;
-    // const [isLoggedIn, setIsLoggedIn] = useState(false);
-    // const [isRoles, setIRole] = useState(false);
-
-    // const handleLogout = () => {
-    //     localStorage.removeItem('user');
-    //     navigate('/signin');
-    // };
-    // useEffect(() => {
-    //     // Use a loading state to track when data is being fetched
-    //     let isLoading = true;
-
-    //     const id = storedStatus?.user?._id;
-
-    //     if (id) {
-    //         // Fetch user data
-    //         useFetchOneUserQuery(id).then(({ data: user }: any) => {
-    //             // Once data is fetched, update the state
-    //             setIsLoggedIn(true);
-    //             isLoading = false;
-
-    //             const idrole = user?.role_id;
-
-    //             if (idrole) {
-    //                 // Fetch role data
-    //                 useFetchOneRoleQuery(idrole).then(({ data: role }) => {
-    //                     if (role?.name === 'Admin') {
-    //                         setIRole(true);
-    //                     } else {
-    //                         setIRole(false);
-    //                     }
-    //                 });
-    //             }
-    //         });
-    //     } else {
-    //         isLoading = false;
-    //     }
-
-    //     // Cleanup and handle unmounting
-    //     return () => {
-    //         // Ensure you cancel any pending API requests if the component unmounts
-    //         if (isLoading) {
-    //             // Cancel the ongoing requests or perform any cleanup needed
-    //         }
-    //     };
-    // }, []);
-
-    // useEffect(() => {
-    //     if (isLoggedIn1 === true) {
-    //         setIsLoggedIn(true);
-    //     } else {
-    //         setIsLoggedIn(false);
-    //     }
-    // }, []);
-
 
     return (
         <div>
