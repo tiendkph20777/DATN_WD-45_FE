@@ -1,9 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+const data = JSON.parse(localStorage.getItem('user')!);
+const token = data?.accessToKen;
 
 const roleAPI = createApi({
-    reducerPath: "role", // Reducer path for authentication
+    reducerPath: "role",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://localhost:8080/api", // Adjust the base URL for your authentication endpoints
+        baseUrl: "http://localhost:8080/api",
     }),
     tagTypes: ["role"],
     endpoints: (builder) => ({
@@ -20,14 +22,22 @@ const roleAPI = createApi({
             query: (_id) => ({
                 url: `/role/${_id}`,
                 method: "DELETE",
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
-            invalidatesTags: ["role"], // Chỉ invalidates dữ liệu người dùng, không invalidates dữ liệu sản phẩm
+            invalidatesTags: ["role"],
         }),
         updateRole: builder.mutation<void, any>({
             query: (user) => ({
                 url: `/role/${user._id}/update`,
                 method: 'PUT',
-                body: user
+                body: user,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
         }),
     }),

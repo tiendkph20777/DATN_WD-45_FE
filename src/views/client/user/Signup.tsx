@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { IAuth } from '../../../types/user.service';
 import { useFetchUserQuery, useSignUpMutation } from '../../../services/user.service';
 import { message as messageApi } from 'antd';
 import axios from 'axios';
+import { IAuth } from '../../../types/user';
 
 const Signup = () => {
     const [createUserSignup, { isLoading, isError }] = useSignUpMutation();
@@ -19,7 +19,7 @@ const Signup = () => {
     const [image, setImageUrl] = useState('');
     const [uploading, setUploading] = useState(false);
 
-    const handleImageUpload = async (event) => {
+    const handleImageUpload = async (event: any) => {
         const file = event.target.files[0];
         if (file) {
             setUploading(true);
@@ -175,7 +175,7 @@ const Signup = () => {
                                                 { required: true })}
                                         />
                                     </div>
-                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                    {/* <label htmlFor="fullName" className="form-label col-md-1 ">
                                         {errors.gender && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
                                     </label>
                                     <div className="col-md-11 form-group mb-3">
@@ -187,7 +187,7 @@ const Signup = () => {
                                             {...register("gender",
                                                 { required: true })}
                                         />
-                                    </div>
+                                    </div> */}
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
                                         {errors.email && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
                                     </label>
