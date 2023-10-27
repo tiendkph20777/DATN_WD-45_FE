@@ -13,7 +13,7 @@ import Index from "../views/client/home/Index";
 import IndexProduct from "../views/client/product/Index";
 import HomeClient from "../views/client/Home";
 import IndexAdmin from "../views/admin/Index";
-import IndexAbout from "../views/client/about/IndexAbout";
+// import IndexAbout from "../views/client/about/IndexAbout";
 import Signin from "../views/client/user/Signin";
 import Signup from "../views/client/user/Signup";
 import UserView from "../views/admin/User/UserView";
@@ -24,6 +24,9 @@ import CheckOut from "../views/client/home/CheckOut";
 import Blog from "../views/client/home/Blog";
 import BlogDetail from "../views/client/home/BlogDetail";
 import Profile from "../views/client/profile/Profile";
+import { VoucherView } from "../views/admin/Voucher";
+import VoucherAdd from "../views/admin/Voucher/VoucherAdd";
+import VoucherEdit from "../views/admin/Voucher/VoucherEdit";
 
 const routes: RouteObject[] = [
     {
@@ -69,7 +72,17 @@ const routes: RouteObject[] = [
             },
             {
                 path: "user/:id/edit", element: <UserUpdate />
-            }
+            },
+            //voucher
+            {
+                path: 'voucher', element: <VoucherView />
+            },
+            {
+                path: 'voucher/add', element: <VoucherAdd />
+            },
+            {
+                path: 'voucher/:id/edit', element: <VoucherEdit />
+            },
         ],
     },
     {

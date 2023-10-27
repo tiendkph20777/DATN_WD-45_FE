@@ -5,6 +5,7 @@ import productAPI from './services/product.service'
 import authAPI from './services/user.service'
 import roleAPI from './services/role.service'
 import productAPIDetall from './services/productDetail.service'
+import voucherAPI from './services/voucher.service'
 
 export const store = configureStore({
   reducer: {
@@ -12,9 +13,10 @@ export const store = configureStore({
     "brand": brandAPI.reducer,
     "auth": authAPI.reducer,
     "role": roleAPI.reducer,
-    "products": productAPIDetall.reducer
+    "products": productAPIDetall.reducer,
+    "voucher":voucherAPI.reducer
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware,productAPIDetall.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware,productAPIDetall.middleware, voucherAPI.middleware),
 
 })
 
