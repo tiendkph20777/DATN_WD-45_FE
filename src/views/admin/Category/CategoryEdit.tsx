@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import { Button, Form, Input, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Button, Form, Input, message, notification } from 'antd';
 import { useGetBrandByIdQuery, useUpdateBrandMutation } from '../../../services/brand.service';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type FieldType = {
     name?: string;
@@ -14,20 +14,33 @@ const CategoryEdit: React.FC = () => {
     // const navigate = useNavigate();
     const { idBrand } = useParams<{ idBrand: string }>();
     const { data: brandData } = useGetBrandByIdQuery(idBrand || "");
+    const [, setImage] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
-        form.setFieldsValue(brandData);
-
-    }, [brandData]);
+        if (brandData) {
+            form.setFieldsValue({
+                _id: brandData._id,
+                name: brandData.name,
+                image: brandData.image,
+                description: brandData.description,
+            });
+        }
+    }, [brandData, form]);
     const onFinish = (values: any) => {
         updateBrand({ ...values, _id: idBrand })
             .unwrap()
-            .then(() =>
-                messageApi.open({
-                    type: "success",
-                    content: "Cập nhật danh mục thành công",
-                })
-            );
+            .then(() => {
+                notification.success({
+                    message: "Success",
+                    description: "Sửa danh mục Thành Công!",
+                });
+                navigate("/admin/category");
+                window.location.reload()
+            })
+            .catch((error) => {
+                console.error("Error adding brand:", error);
+            });
 
     };
     const onFinishFailed = (errorInfo: any) => {
@@ -51,7 +64,7 @@ const CategoryEdit: React.FC = () => {
 
                         autoComplete="off"
                     >
-                        <Form.Item<FieldType>
+                        <Form.Item
                             label="Tên thương hiệu"
                             name="name"
 
@@ -59,7 +72,31 @@ const CategoryEdit: React.FC = () => {
                         >
                             <Input />
                         </Form.Item>
-
+                        <Form.Item label="Ảnh" name="image" valuePropName="file">
+                            <div>
+                                <div className="image-upload">
+                                    <label htmlFor="file-input">
+                                        <i className="bx bx-image-add"></i>
+                                    </label>
+                                    <input
+                                        id="file-input"
+                                        type="file"
+                                        onChange={(e: any) => setImage(e.target.files[0])}
+                                    />
+                                </div>
+                                <img src={brandData?.image} alt="" id="preview-image"></img>
+                            </div>
+                        </Form.Item>
+                        <Form.Item
+                            label="Mô tả sản phẩm"
+                            name="description"
+                            rules={[
+                                { required: true, message: 'Please input your product!' },
+                                { min: 3, message: "ít nhất 3 ký tự" },
+                            ]}
+                        >
+                            <Input />
+                        </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                             <Button type="primary" htmlType="submit">
                                 Cập nhật
