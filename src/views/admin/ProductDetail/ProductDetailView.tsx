@@ -74,23 +74,27 @@ const Dashboard = (props: Props) => {
 
   useEffect(() => {
     if (productData) {
-      const updatedDataSource = productData.map(
-        ({ _id, size, color, quantity, product_id }: IProduct) => ({
-          key: _id,
-          size,
-          color,
-          quantity,
-          product_id: product?.find((role) => role?._id === product_id)?.name,
-        })
-      );
-      setDataSourceToRender(updatedDataSource);
-
-      const updatedUniqueSizes = Array.from(
-        new Set(updatedDataSource.map((item) => item.size))
-      );
-      setUniqueSizes(updatedUniqueSizes);
+      // Kiểm tra xem product đã được load
+      if (product) {
+        const updatedDataSource = productData.map(
+          ({ _id, size, color, quantity, product_id }: IProduct) => ({
+            key: _id,
+            size,
+            color,
+            quantity,
+            product_id: product.find((role) => role?._id === product_id)?.name,
+          })
+        );
+        setDataSourceToRender(updatedDataSource);
+  
+        const updatedUniqueSizes = Array.from(
+          new Set(updatedDataSource.map((item) => item.size))
+        );
+        setUniqueSizes(updatedUniqueSizes);
+      }
     }
-  }, [productData]);
+  }, [productData, product]); // Thêm product vào danh sách dependencies
+
 
   const onSearch = (e) => {
     const inputValue = e.target.value;
@@ -183,7 +187,7 @@ const Dashboard = (props: Props) => {
                   <CloseOutlined />
                 </Button>
               </Popconfirm>
-
+              <Link to={`${id}/edit`} >
               <Button
                 type="primary"
                 style={{
@@ -192,10 +196,11 @@ const Dashboard = (props: Props) => {
                   minWidth: "4em",
                 }}
               >
-                <Link to={`${id}/edit`} >
-                  <EditOutlined />
-                </Link>
+                
+                  <EditOutlined/> Sửa 
               </Button>
+              </Link>
+
             </div>
           </>
         );
@@ -265,6 +270,8 @@ const Dashboard = (props: Props) => {
         >
           Reset
         </Button>
+        <Link to={`add`}>
+
         <Button
           type="primary"
           style={{
@@ -273,10 +280,10 @@ const Dashboard = (props: Props) => {
             minWidth: "4em",
           }}
         >
-          <Link to={`add`}>
-            <PlusOutlined />
-          </Link>
+            <PlusOutlined /> Thêm Sản Phẩm
         </Button>
+        </Link>
+
         
       </div>
       <Table

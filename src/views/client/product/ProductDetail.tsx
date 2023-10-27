@@ -130,7 +130,7 @@ const ProductDetail = () => {
                 </div>
                 <div className="product_count">
                   <label className="quantity">Số Lượng:</label>
-                  <input type="number" minLength={1} maxLength={999} />
+                  <input type="number" min="1" minLength={1} maxLength={999} />
                 </div>
 
                

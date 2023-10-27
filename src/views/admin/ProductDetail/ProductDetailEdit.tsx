@@ -64,7 +64,7 @@ const ProductProductEdit = () => {
 
   return (
     <div>
-      <h1 style={{ paddingTop: "100px" }}>Update Sản Phẩm</h1>
+      <h1 style={{ paddingTop: "100px" }}>Sửa Sản Phẩm</h1>
       <Form
         name="basic"
         form={form}
