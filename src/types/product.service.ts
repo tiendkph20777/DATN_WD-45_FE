@@ -1,6 +1,5 @@
 export interface IProducts {
-    [x: string]: any;
-    _id: string | number;
+    _id: string | number,
     name: string,
     brand_id: string,
     images: any,
@@ -8,4 +7,6 @@ export interface IProducts {
     price_sale: number,
     content: string,
     description: string
+    rate: string,
+
 }

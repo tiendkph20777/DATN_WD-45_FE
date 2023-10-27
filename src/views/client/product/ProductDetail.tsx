@@ -1,21 +1,18 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
-import { useGetProductByIdQuery } from "../../../services/product.service";
+import { useForm } from 'react-hook-form'
+import { useNavigate, useParams } from "react-router-dom";
+import { useAddCommentMutation, useGetProductByIdQuery } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import {
-  useGetAllProductsDetailQuery,
-  useGetProductDetailByIdQuery,
-} from "../../../services/productDetail.service";
+import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 const ProductDetail = () => {
   const { data: brandData } = useGetBrandsQuery();
   const { _id } = useParams();
   const { data: prodetailData } = useGetProductByIdQuery(_id);
+  const { handleSubmit, register } = useForm<any>()
   const brandName = brandData?.find(
     (brand: any) => brand._id == prodetailData?.brand_id
   )?.name;
-  console.log(brandName);
   const { data: productDataDetail } = useGetAllProductsDetailQuery();
-  const { data: productByIdDetail } = useGetProductDetailByIdQuery(_id);
 
   const sizes = productDataDetail?.map((detail) => detail.size) || [];
   const colors = productDataDetail?.map((detail) => detail.color) || [];
@@ -25,7 +22,7 @@ const ProductDetail = () => {
   const [selectedColorName, setSelectedColorName] = useState(""); // Thêm state cho tên màu
 
   // Hàm xử lý khi người dùng thay đổi màu sắc
-  const handleColorChange = (event) => {
+  const handleColorChange = (event: any) => {
     const selectedColor = event.target.value;
     setSelectedColor(selectedColor);
 
@@ -34,10 +31,22 @@ const ProductDetail = () => {
       (detail) => detail.color === selectedColor
     );
     if (selectedColorDetail) {
-      setSelectedColorName(selectedColorDetail.colorName);
+      setSelectedColorName(selectedColorDetail.color);
     }
   };
-
+  const { user: id_user }: any = JSON.parse(localStorage.getItem('user')!);
+  const [addProduct] = useAddCommentMutation()
+  const navigate = useNavigate()
+  const onHandleSubmit = ({ content, rate }: any) => {
+    const dataCmt = {
+      id_product: prodetailData?._id,
+      id_user,
+      rate,
+      content
+    }
+    addProduct(dataCmt)
+    navigate("/")
+  }
   return (
     <div>
       <div className="product_image_area">
@@ -133,7 +142,7 @@ const ProductDetail = () => {
                   <input type="number" min="1" minLength={1} maxLength={999} />
                 </div>
 
-               
+
 
                 <div className="card_area d-flex align-items-center">
                   <a className="primary-btn" href="#">
@@ -145,7 +154,26 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-    </div>
+      <div className="mx-auto w-50">
+        <h2>Bình luận</h2>
+        <form onSubmit={handleSubmit(onHandleSubmit)} className="form-floating">
+
+          <textarea className="form-control"
+            {...register("content", { required: true, minLength: 2 })}>
+          </textarea>
+          <label >Comments</label>
+          <select className="form-select w-25" {...register("rate", { required: true })}>
+            <option selected>Đánh giá</option>
+            <option value="1">1 sao</option>
+            <option value="2">2 sao</option>
+            <option value="3">3 sao</option>
+            <option value="4">4 sao</option>
+            <option value="5">5 sao</option>
+          </select>
+          <button type="submit" className="btn btn-primary">Bình luận</button>
+        </form>
+      </div>
+    </div >
   );
 };
 

@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFetchUserQuery, useSignInMutation } from '../../../services/user.service';
-import { IAuth } from '../../../types/user.service';
 import { message as messageApi } from 'antd';
+import { IAuth } from '../../../types/user';
 
 const Signin = () => {
     const navigate = useNavigate();
@@ -20,7 +20,6 @@ const Signin = () => {
         try {
             const response = await createUser(formData);
             if (response.error) {
-                const element = document.getElementById('loi');
                 messageApi.open({
                     type: 'error',
                     content: response.error.data.message,

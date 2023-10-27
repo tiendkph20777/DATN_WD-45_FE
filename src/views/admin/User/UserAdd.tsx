@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { useFetchUserQuery, useSignUpMutation } from '../../../services/user.service';
+import { useCreateUserMutation, useFetchUserQuery, useSignUpMutation } from '../../../services/user.service';
 import { message as messageApi } from 'antd';
 import axios from 'axios';
 import { IAuth } from '../../../types/user';
 
-const Signup = () => {
-    const [createUserSignup, { isLoading, isError }] = useSignUpMutation();
+const UserAdd = () => {
+    const [createUser, { isLoading, isError }] = useCreateUserMutation();
     const navigate = useNavigate();
     const { data: users } = useFetchUserQuery();
     const {
@@ -51,8 +51,10 @@ const Signup = () => {
     };
 
     const submitSignup = async (formData: IAuth) => {
+        console.log(formData)
         try {
-            const response = await createUserSignup({ ...formData, image });
+            console.log(formData)
+            const response = await createUser({ ...formData, image });
             if (response.error) {
                 console.log(response.error.data.message);
                 messageApi.open({
@@ -79,12 +81,10 @@ const Signup = () => {
                         },
                     });
                 } else {
-                    console.log("đăng ký thành công 🎉🎉🎉")
-                    localStorage.setItem("user", JSON.stringify(response.data))
-                    console.log(response)
+                    console.log("Thêm tài khoản mới thành công 🎉🎉🎉")
                     messageApi.info({
                         type: 'error',
-                        content: "Hello,chào mừng bạn mới hãy mua sắm với chúng tôi nào 🎉🎉🎉",
+                        content: "Thêm tài khoản mới thành công 🎉🎉🎉",
                         className: 'custom-class',
                         style: {
                             marginTop: '0',
@@ -92,7 +92,7 @@ const Signup = () => {
                             lineHeight: "50px"
                         },
                     });
-                    navigate("/")
+                    navigate("/admin/user")
                 }
             }
         } catch (error) {
@@ -101,26 +101,13 @@ const Signup = () => {
     };
 
     return (
-        <div>
+        <div style={{ paddingTop: "50px", width: "90%" }}>
             <section className="login_box_area section_gap">
                 <div className="">
                     <div className="row">
-                        <div className="col-lg-6">
-                            <div className="login_box_img">
-                                <img className="img-fluid" src="https://we25.vn/media/uploads/2016/08/converse-chuck-ii-shield-hi-white-trainers.jpg" alt="" />
-                                <div className="hover">
-                                    <h4>New to our website?</h4>
-                                    <p>
-                                        There are advances being made in science and technology everyday,
-                                        and a good example of this is the
-                                    </p>
-                                    <Link className="primary-btn" to={"/signin"}>Create an Account</Link>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-lg-6">
+                        <div className="col-lg-12">
                             <div className="login_form_inner" style={{ padding: 5 }}>
-                                <h3 className='m-3'>Sign up to enter</h3>
+                                <h3 className='m-3'>Add New User</h3>
                                 <form
                                     className="row login_form"
                                     action="contact_process.php"
@@ -175,29 +162,49 @@ const Signup = () => {
                                                 { required: true })}
                                         />
                                     </div>
-                                    {/* <label htmlFor="fullName" className="form-label col-md-1 ">
-                                        {errors.gender && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
+                                    <label htmlFor="fullName" className="form-label col-md-1 ">
+                                        {errors.address && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
                                     </label>
-                                    <div className="col-md-11 form-group mb-3">
+                                    <div className="col-md-8 form-group mb-3">
                                         <input
                                             type="text"
                                             className="form-control"
-                                            id="gender"
+                                            id="address"
                                             placeholder="Nhập address"
-                                            {...register("gender",
+                                            {...register("address",
                                                 { required: true })}
                                         />
-                                    </div> */}
+                                    </div>
+                                    <div className="col-md-3">
+                                        <select
+                                            className="form-select"
+                                            aria-label="Default select example"
+                                            {...register("gender")}
+                                            defaultValue="Gender"
+                                        >
+                                            <option value="Men">Men</option>
+                                            <option value="Women">Women</option>
+                                        </select>
+                                    </div>
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
                                         {errors.email && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
                                     </label>
-                                    <div className="col-md-11 form-group mb-3">
+                                    <div className="col-md-6 form-group mb-3">
                                         <input
                                             type="email"
                                             className="form-control"
-                                            id="username"
+                                            id="email"
                                             placeholder="Nhập email người dùng"
-                                            {...register("email")}
+                                            {...register("email", { required: true })}
+                                        />
+                                    </div>
+                                    <div className="col-md-5 form-group mb-3">
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="tel"
+                                            placeholder="Phone"
+                                            {...register("tel")}
                                         />
                                     </div>
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
@@ -209,7 +216,7 @@ const Signup = () => {
                                             className="form-control"
                                             id="password"
                                             placeholder="Nhập mật khẩu"
-                                            {...register('password')}
+                                            {...register('password', { required: true })}
                                         />
                                     </div>
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
@@ -225,24 +232,10 @@ const Signup = () => {
                                                 { required: true })}
                                         />
                                     </div>
-                                    <label htmlFor="" className='col-md-1'></label>
-                                    <div className="col-md-11 form-group mb-2">
-                                        <div className="creat_account">
-                                            <input type="checkbox" id="f-option2" name="selector" />
-                                            <label htmlFor="f-option2">Keep me logged in</label>
-                                        </div>
-                                    </div>
-                                    <label htmlFor="" className='col-md-1'></label>
-                                    <div className="col-md-11 form-group mb-2">
+                                    <div className="form-group mb-2" style={{ width: "200px", marginLeft: "40%" }}>
                                         <button type="submit" value="submit" className="primary-btn">
                                             Sign up
                                         </button>
-                                        <a href="#">Forgot Password?</a>
-                                    </div>
-                                    <div className='text-center'>
-                                        <p style={{ marginBottom: "-5px" }}>or</p>
-                                        <Link to={''} style={{ paddingRight: "50px" }}><svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 512 512"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z" /></svg></Link>
-                                        <Link to={''}><svg xmlns="http://www.w3.org/2000/svg" height="2em" viewBox="0 0 488 512"><path d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z" /></svg></Link>
                                     </div>
                                 </form>
                             </div>
@@ -254,4 +247,4 @@ const Signup = () => {
     )
 }
 
-export default Signup
+export default UserAdd
