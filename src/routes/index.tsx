@@ -12,6 +12,7 @@ import ProductProductEdit from "../views/admin/ProductDetail/ProductDetailEdit";
 import Index from "../views/client/home/Index";
 import IndexProduct from "../views/client/product/Index";
 import HomeClient from "../views/client/Home";
+import { CommentView } from "../views/admin/Comment";
 import IndexAdmin from "../views/admin/Index";
 // import IndexAbout from "../views/client/about/IndexAbout";
 import Signin from "../views/client/user/Signin";
@@ -66,6 +67,10 @@ const routes: RouteObject[] = [
             },
             {
                 path: 'product/detail/:idProduct/edit', element: <ProductProductEdit />
+            },
+            // Comment
+            {
+                path: 'comment', element: <CommentView />
             },
             //user
             {

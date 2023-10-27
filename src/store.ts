@@ -14,9 +14,10 @@ export const store = configureStore({
     "auth": authAPI.reducer,
     "role": roleAPI.reducer,
     "products": productAPIDetall.reducer,
-    "voucher":voucherAPI.reducer
+    "voucher": voucherAPI.reducer
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware,productAPIDetall.middleware, voucherAPI.middleware),
+
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware, productAPIDetall.middleware, voucherAPI.middleware),
 
 })
 
