@@ -124,6 +124,7 @@ const Dashboard = (props: Props) => {
     setShowNoProductsAlert(filteredData.length === 0);
   };  
 
+
   const resetSearch = () => {
     setSelectedColor(undefined);
     setSelectedSize(undefined);

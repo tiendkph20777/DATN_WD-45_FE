@@ -21,6 +21,7 @@ interface DataType {
 }
 
 const ProductView = () => {
+    
     const { data: productData } = useGetProductsQuery();
     // console.log(productData)
     const { data: brands } = useGetBrandsQuery();

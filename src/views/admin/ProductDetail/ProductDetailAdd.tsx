@@ -57,14 +57,14 @@ const ProductAdd = () => {
       >
 
         <Form.Item
-          label="product_id"
+          label="Name"
           name="product_id"
           // rules={[{ required: true, message: "Chọn Sản Phẩm" }]}
         >
           <Select placeholder="Chọn Sản Phẩm">
             {productData &&
-              productData.map((product:IProducts) => (
-                <Option key={product.id} value={product.id}>
+              productData?.map((product:IProducts) => (
+                <Option key={product._id} value={product._id}>
                   {product.name}
                   
                 </Option>

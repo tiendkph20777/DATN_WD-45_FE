@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IProducts } from "../types/product.service";
-const { accessToKen: token }: any = JSON.parse(localStorage.getItem('user')!);
+const data = JSON.parse(localStorage.getItem('user')!);
+const token = data?.accessToKen;
 
 const productAPI = createApi({
     reducerPath: "product",
@@ -20,7 +21,8 @@ const productAPI = createApi({
         removeProduct: builder.mutation<IProducts, number | string>({
             query: (id) => ({
                 url: `product/${id}`,
-                method: "DELETE"
+                method: "DELETE",
+                
             }),
             invalidatesTags: ["Product"]
         }),
@@ -37,7 +39,11 @@ const productAPI = createApi({
             query: (product) => ({
                 url: `/product/${product._id}/update`,
                 method: "PUT",
-                body: product
+                body: product,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
             invalidatesTags: ["Product"]
         }),
@@ -80,7 +86,8 @@ const productAPI = createApi({
             query: comment => ({
                 url: `/comment/${comment.id}`,
                 method: "PUT",
-                body: comment
+                body: comment,
+                
             }),
         }),
         getUser: builder.query<{ product: any | null }, string>({
