@@ -1,7 +1,9 @@
-import { Button, Form, Input, notification } from "antd";
+import { Button, Form, Input, notification,Select } from "antd";
 import { IProductDetail } from "../../../types/product";
 import { useNavigate } from "react-router-dom";
 import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
+import { useGetProductsQuery } from "../../../services/product.service";
+import { IProducts } from "../../../types/product.service";
 
 
 type FieldType = {
@@ -16,7 +18,12 @@ const ProductAdd = () => {
   const [addProduct] = useAddProductsDetailMutation();
   const navigate = useNavigate();
 
+  const { data:productData } = useGetProductsQuery()
+  console.log(productData)
+
   const onFinish = (values: IProductDetail) => {
+    
+    values.product_id = values.product_id?.toString();
     addProduct(values)
       .unwrap()
       .then(() => {
@@ -37,7 +44,7 @@ const ProductAdd = () => {
 
   return (
     <div >
-      <h1 style={{paddingTop:"200px"}}>Add Sản Phẩm</h1>
+      <h1 style={{paddingTop:"200px"}}>Thêm Sản Phẩm</h1>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -48,6 +55,32 @@ const ProductAdd = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
+
+        <Form.Item
+          label="Name"
+          name="product_id"
+          // rules={[{ required: true, message: "Chọn Sản Phẩm" }]}
+        >
+          <Select placeholder="Chọn Sản Phẩm">
+            {productData &&
+              productData?.map((product:IProducts) => (
+                <Option key={product._id} value={product._id}>
+                  {product.name}
+                  
+                </Option>
+              ))}
+          </Select>
+        </Form.Item>
+
+        {/* <Form.Item
+          label="product_id"
+          name="product_id"
+          rules={[{ required: true, message: "Nhập id Product" }]}
+        >
+          <Input />
+        </Form.Item> */}
+
+
         <Form.Item<FieldType>
           label="Size"
           name="size"
@@ -62,13 +95,7 @@ const ProductAdd = () => {
         >
           <Input />
         </Form.Item>
-        <Form.Item
-          label="product_id"
-          name="product_id"
-          rules={[{ required: true, message: "Nhập id Product" }]}
-        >
-          <Input />
-        </Form.Item>
+        
         <Form.Item
           label="Color"
           name="color"

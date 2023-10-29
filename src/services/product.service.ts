@@ -21,7 +21,8 @@ const productAPI = createApi({
         removeProduct: builder.mutation<IProducts, number | string>({
             query: (id) => ({
                 url: `product/${id}`,
-                method: "DELETE"
+                method: "DELETE",
+                
             }),
             invalidatesTags: ["Product"]
         }),
@@ -38,7 +39,11 @@ const productAPI = createApi({
             query: (product) => ({
                 url: `/product/${product._id}/update`,
                 method: "PUT",
-                body: product
+                body: product,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
             invalidatesTags: ["Product"]
         }),
@@ -81,7 +86,8 @@ const productAPI = createApi({
             query: comment => ({
                 url: `/comment/${comment.id}`,
                 method: "PUT",
-                body: comment
+                body: comment,
+                
             }),
         }),
         getUser: builder.query<{ product: any | null }, string>({
