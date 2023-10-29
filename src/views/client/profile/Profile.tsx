@@ -8,7 +8,7 @@ import { useFetchOneUserQuery } from '../../../services/user.service';
 
 const Profile = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!)
-    const idUs = profileUser?.user._id
+    const idUs = profileUser?.user
     const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
 
     return (

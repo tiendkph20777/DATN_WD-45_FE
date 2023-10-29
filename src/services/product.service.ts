@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IProducts } from "../types/product.service";
-const { accessToKen: token }: any = JSON.parse(localStorage.getItem('user')!);
+const data = JSON.parse(localStorage.getItem('user')!);
+const token = data?.accessToKen;
 
 const productAPI = createApi({
     reducerPath: "product",
