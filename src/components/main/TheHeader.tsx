@@ -38,8 +38,9 @@ const TheHeader = () => {
     };
 
     // const [roleid, setroleid] = useState()
-    const id = storedStatus?.user._id
+    const id = storedStatus?.user
     const { data: user } = useFetchOneUserQuery(id)
+    console.log(user)
     const idrole = user?.role_id
     const { data: role } = useFetchOneRoleQuery(idrole)
 
@@ -129,7 +130,7 @@ const TheHeader = () => {
                                 <div className="login d-block align-items-center" id="sing">
                                     {isLoggedIn ? (
                                         <div className="dropdown">
-                                            <button className="btn btn1">{storedStatus?.user?.userName}</button>
+                                            <button className="btn btn1">{user?.userName}</button>
                                             <div className="dropdown-content" style={{ width: "100px", borderRadius: "10px" }}>
                                                 <Link to="/profile" className='link1'>Profile</Link>
                                                 {isRoles ? (

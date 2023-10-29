@@ -8,7 +8,7 @@ import MenuItem from 'antd/es/menu/MenuItem';
 
 const SettingInformation = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!)
-    const idUs = profileUser?.user?._id
+    const idUs = profileUser?.user
     const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
     const [updateUser] = useUpdateUserMutation();
     const [form1, setForm1] = useState(true);
@@ -103,7 +103,7 @@ const SettingInformation = () => {
                                 <div className="col-lg-5">
                                     <div className="form-group focused">
                                         <label className="form-control-label" htmlFor="input-email">Phone</label>
-                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Gender" defaultValue={usersOne?.tel} readOnly />
+                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Phone" defaultValue={usersOne?.tel} readOnly />
                                     </div>
                                 </div>
                             </div>

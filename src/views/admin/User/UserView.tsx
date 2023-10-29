@@ -32,21 +32,6 @@ const App: React.FC = () => {
         }));
     };
 
-
-
-    // useEffect(() => {
-    //     if (searchResult) {
-    //         setValue('_id', searchResult?._id);
-    //         setValue('email', searchResult?.email);
-    //         setValue('userName', searchResult?.userName);
-    //         setValue('fullName', searchResult?.fullName);
-    //         setValue('gender', searchResult?.gender);
-    //         setValue('address', searchResult?.address);
-    //         setValue('password', searchResult?.password);
-    //         setValue('aboutme', searchResult?.aboutme);
-    //     }
-    // }, [searchResult, setValue])
-
     const onSubmit = (roledata: any) => {
         const selectedGender = roledata.role;
         console.log('Dữ liệu đã lấy:', selectedGender);
@@ -228,7 +213,7 @@ const App: React.FC = () => {
                 <span>
                     <Link to={record.key + '/edit'}>
                         <Button type='primary' >
-                            <EditOutlined /> Update
+                            <EditOutlined />
                         </Button>
                     </Link>
                     <Popconfirm
@@ -239,8 +224,8 @@ const App: React.FC = () => {
                         okText="Yes"
                         cancelText="No"
                     >
-                        <Button type="primary" style={{ backgroundColor: 'red', margin: '4px', minWidth: '8em' }}>
-                            <CloseOutlined /> Remove
+                        <Button type="primary" style={{ backgroundColor: 'red', margin: '4px' }}>
+                            <CloseOutlined />
                         </Button>
                     </Popconfirm>
                 </span>
