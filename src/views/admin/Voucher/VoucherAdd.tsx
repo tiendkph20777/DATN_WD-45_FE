@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Input, message,DatePicker } from 'antd';
+import { Button, DatePicker, Form, Input, message, notification } from 'antd';
 import { useAddVoucherMutation } from '../../../services/voucher.service';
 import { useNavigate } from 'react-router-dom';
 import { IVouchers } from "../../../types/voucher";
@@ -19,21 +19,32 @@ const VoucherAdd: React.FC = () => {
     const [addVoucher] = useAddVoucherMutation();
     const [messageApi, contextHolder] = message.useMessage();
     const navigate = useNavigate();
-
+    
     const onFinish = (values: IVouchers) => {
         addVoucher(values)
             .unwrap()
-            .then(() =>
-                messageApi.open({
-                    type: "success",
-                    content: "Thêm Voucher thành công",
+            .then(() =>{
+            
+                notification.success({
+                    message: 'Create Voucher Successful',
+                    description: `Thêm Voucher thành công.`,
+                    duration: 2,
                 })
-            );
+                navigate('/admin/voucher');
+            })
+            .catch(()=>{
+                messageApi.open({
+                    type: "warning",
+                    content: "Ngày kết thúc phải sau ngày bắt đầu",
+                })
+            }
+    );
         form.resetFields();
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+        console.log('Ngày kết thúc phải sau ngày bắt đầu', errorInfo);
+
     };
     return (
         <div className="container-fluid">
@@ -87,7 +98,7 @@ const VoucherAdd: React.FC = () => {
                         <Form.Item
                             label="date_end"
                             name="date_end"
-                            rules={[{ required: true, message: "Please input the date Start" }]}
+                            rules={[{ required: true, message: "Please input the date end" }]}
                         >
                             <DatePicker />
                         </Form.Item>
@@ -105,12 +116,8 @@ const VoucherAdd: React.FC = () => {
                             <Button type="primary" htmlType="submit">
                                 Submit
                             </Button>
-                            <Button
-                                type='primary'
-                                danger
-                                onClick={() => navigate("/admin/voucher")}
-                                className='ml-2'
-                            >Quay lại</Button>
+                            <Button htmlType="reset">reset</Button>
+                           
                         </Form.Item>
                     </Form>
                 </div>
