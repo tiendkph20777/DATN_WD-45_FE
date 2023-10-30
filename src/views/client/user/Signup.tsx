@@ -80,7 +80,7 @@ const Signup = () => {
                     });
                 } else {
                     console.log("đăng ký thành công 🎉🎉🎉")
-                    localStorage.setItem("user", JSON.stringify(response.data))
+                    localStorage.setItem("user", JSON.stringify(response?.data))
                     console.log(response)
                     messageApi.info({
                         type: 'error',

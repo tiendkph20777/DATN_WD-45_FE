@@ -10,6 +10,7 @@ import { useGetBrandsQuery } from "../../../services/brand.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import "./styles.css";
 import { IProducts } from "../../../types/product.service";
+import CommentProductDetail from "./CommentProductDetail";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -52,8 +53,8 @@ const ProductDetail = () => {
   const [colorsForSelectedSize, setColorsForSelectedSize] = useState([]);
   const [hasSelectedColor, setHasSelectedColor] = useState(false);
   const [mainImage, setMainImage] = useState(prodetailData?.images[0]);
-
-  const handleThumbnailClick = (image) => {
+  // console.log(selectedSize)
+  const handleThumbnailClick = (image: string) => {
     setMainImage(image);
   };
 
@@ -67,14 +68,14 @@ const ProductDetail = () => {
     }
   }, [selectedSize, productDataDetail]);
 
-  const handleSizeChange = (size) => {
+  const handleSizeChange = (size: any) => {
     setSelectedSize(size);
     setSelectedColor("");
     setSelectedColorName("");
     setHasSelectedColor(false);
   };
 
-  const handleColorChange = (color) => {
+  const handleColorChange = (color: any) => {
     setSelectedColor(color);
     const selectedColorDetail = productDataDetail?.find(
       (detail) => detail.color === color && detail.size === selectedSize
@@ -85,7 +86,7 @@ const ProductDetail = () => {
     setHasSelectedColor(true);
   };
 
-  const handleQuantityChange = (event) => {
+  const handleQuantityChange = (event: any) => {
     const newQuantity = parseInt(event.target.value, 10);
     if (!isNaN(newQuantity) && newQuantity >= 1) {
       setQuantity(newQuantity);
@@ -102,146 +103,140 @@ const ProductDetail = () => {
     }
   };
 
-  const { user: id_user } = JSON.parse(localStorage.getItem("user") || "{}");
-  const [addProduct] = useAddCommentMutation();
-  const navigate = useNavigate();
 
-  const onHandleSubmit = ({ content, rate }: any) => {
-    const dataCmt = {
-      id_product: prodetailData?._id,
-      id_user,
-      rate,
-      content,
-    };
-    addProduct(dataCmt);
-    navigate("/");
-  };
+  const onSubmitCart = (dataCart: any) => {
+    // console.log(dataCart, quantity, selectedColor, selectedSize)
+  }
+
+  /////////////////////
 
   return (
     <div>
       <div className="product_image_area">
         <div className="container">
-          <div className="row s_product_inner">
-            <div className="col-lg-5 offset-lg-1">
-              <div className="single-prd-item">
-                <img
-                  className="img-fluid w-[100px]"
-                  src={mainImage || prodetailData?.images[0]}
-                  alt=""
-                />
+          {/*  */}
+          <form action="" onSubmit={handleSubmit(onSubmitCart)}>
+            <div className="row s_product_inner">
+              <div className="col-lg-5 offset-lg-1">
+                <div className="single-prd-item">
+                  <img
+                    className="img-fluid w-[100px]"
+                    src={mainImage || prodetailData?.images[0]}
+                    alt=""
+                  />
+                </div>
+                <div className="image-carosell d-flex p-2">
+                  {prodetailData?.images?.map((item: any) => (
+                    <div
+                      className="single-prd-item col-3 p-2"
+                      key={item}
+                      onClick={() => handleThumbnailClick(item)}
+                    >
+                      <img className="img-fluid" src={item} alt="" />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="image-carosell d-flex p-2">
-                {prodetailData?.images?.map((item: any) => (
-                  <div
-                    className="single-prd-item col-3 p-2"
-                    key={item}
-                    onClick={() => handleThumbnailClick(item)}
-                  >
-                    <img className="img-fluid" src={item} alt="" />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="col-lg-5 offset-lg-1">
-              <div className="s_product_text">
-                <h3>{prodetailData?.name}</h3>
-                {prodetailData?.price_sale === 0 ? (
-                  <div className="product-price row">
-                    <strong className="col-12">
-                      {prodetailData?.price}
-                      <span>VND</span>
-                    </strong>
-                  </div>
-                ) : (
-                  <div className="product-price row">
-                    <strong className="col-12">
-                      {prodetailData?.price_sale}
-                      <span>VND</span>
-                    </strong>
-                    <div className="d-flex">
-                      <del className="price-del">
+              <div className="col-lg-5 offset-lg-1">
+                <div className="s_product_text">
+                  <h3>{prodetailData?.name}</h3>
+                  {prodetailData?.price_sale === 0 ? (
+                    <div className="product-price row">
+                      <strong className="col-12">
                         {prodetailData?.price}
                         <span>VND</span>
-                      </del>
+                      </strong>
                     </div>
-                  </div>
-                )}
-
-                <ul className="list">
-                  <li>
-                    <a className="active" href="#">
-                      <span>Danh Mục</span> : {brandName}
-                    </a>
-                  </li>
-                  <li>
-                    <i>{prodetailData?.content}</i>
-                  </li>
-                </ul>
-                <p className="description-product">
-                  {prodetailData?.description}
-                </p>
-
-                <div className="product-detail d-flex size">
-                  <div className="product-size w-25">
-                    <p>Kích Cỡ</p>
-                    <div className="size-buttons">
-                      {sizes.map((size, index) => (
-                        <button
-                          key={index}
-                          className={`size-button ${
-                            selectedSize === size ? "active" : ""
-                          }`}
-                          onClick={() => handleSizeChange(size)}
-                        >
-                          {size}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="product-colors w-75">
-                    {showColors && (
-                      <div>
-                        <p>Màu Sắc</p>
-                        <div className="color-buttons">
-                          {colorsForSelectedSize.map((color, index) => (
-                            <button
-                              key={index}
-                              className={`color-button ${
-                                selectedColor === color ? "active" : ""
-                              } ${hasSelectedColor ? "with-color" : ""}`}
-                              style={{ backgroundColor: color }}
-                              onClick={() => handleColorChange(color)}
-                            ></button>
-                          ))}
-                        </div>
+                  ) : (
+                    <div className="product-price row">
+                      <strong className="col-12">
+                        {prodetailData?.price_sale}
+                        <span>VND</span>
+                      </strong>
+                      <div className="d-flex">
+                        <del className="price-del">
+                          {prodetailData?.price}
+                          <span>VND</span>
+                        </del>
                       </div>
-                    )}
+                    </div>
+                  )}
+
+                  <ul className="list">
+                    <li>
+                      <a className="active" href="#">
+                        <span>Danh Mục</span> : {brandName}
+                      </a>
+                    </li>
+                    <li>
+                      <i>{prodetailData?.content}</i>
+                    </li>
+                  </ul>
+                  <p className="description-product">
+                    {prodetailData?.description}
+                  </p>
+
+                  <div className="product-detail d-flex size">
+                    <div className="product-size w-25">
+                      <p>Kích Cỡ</p>
+                      <div className="size-buttons">
+                        {sizes.map((size, index) => (
+                          <button
+                            key={index}
+                            className={`size-button ${selectedSize === size ? "active" : ""}`}
+                            onClick={() => handleSizeChange(size)}
+                          >
+                            {size}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="product-colors w-75">
+                      {showColors && (
+                        <div>
+                          <p>Màu Sắc</p>
+                          <div className="color-buttons">
+                            {colorsForSelectedSize.map((color, index) => (
+                              <button
+                                key={index}
+                                className={`color-button ${selectedColor === color ? "active" : ""} ${hasSelectedColor ? "with-color" : ""}`}
+                                style={{ backgroundColor: color }}
+                                onClick={() => handleColorChange(color)}
+                              ></button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="product_count">
-                  <label className="quantity">Số Lượng:</label>
-                  <div className="quantity-input">
-                    <button onClick={decrementQuantity}>-</button>
-                    <input
-                      min="1"
-                      maxLength={999}
-                      value={quantity}
-                      onChange={handleQuantityChange}
-                    />
-                    <button onClick={incrementQuantity}>+</button>
+                  <div className="product_count">
+                    <label className="quantity">Số Lượng:</label>
+                    <div className="quantity-input">
+                      <button onClick={decrementQuantity}>-</button>
+                      <input
+                        min="1"
+                        maxLength={999}
+                        value={quantity}
+                        onChange={handleQuantityChange}
+                      />
+                      <button onClick={incrementQuantity}>+</button>
+                    </div>
                   </div>
-                </div>
-                <div className="card_area d-flex align-items-center">
-                  <a className="primary-btn" href="#">
+                  <div className="card_area d-flex align-items-center">
+                    {/* <a className="primary-btn" href="#">
                     Add to Cart
-                  </a>
+                  </a> */}
+                    <button className="primary-btn">
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </form>
+          {/*  */}
         </div>
       </div>
-
       <div>
         <section className="our-team position-relative">
           <div className="container">
@@ -314,32 +309,8 @@ const ProductDetail = () => {
           </div>
         </section>
       </div>
-
-      <div className="mx-auto w-50">
-        <h2>Bình luận</h2>
-        <form onSubmit={handleSubmit(onHandleSubmit)} className="form-floating">
-          <textarea
-            className="form-control"
-            {...register("content", { required: true, minLength: 2 })}
-          ></textarea>
-          <label>Comments</label>
-          <select
-            className="form-select w-25"
-            {...register("rate", { required: true })}
-          >
-            <option value="0" selected>
-              Đánh giá
-            </option>
-            <option value="1">1 sao</option>
-            <option value="2">2 sao</option>
-            <option value="3">3 sao</option>
-            <option value="4">4 sao</option>
-            <option value="5">5 sao</option>
-          </select>
-          <button type="submit" className="btn btn-primary">
-            Bình luận
-          </button>
-        </form>
+      <div>
+        <CommentProductDetail />
       </div>
     </div>
   );

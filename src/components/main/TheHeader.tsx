@@ -40,7 +40,7 @@ const TheHeader = () => {
     // const [roleid, setroleid] = useState()
     const id = storedStatus?.user
     const { data: user } = useFetchOneUserQuery(id)
-    console.log(user)
+    // console.log(user)
     const idrole = user?.role_id
     const { data: role } = useFetchOneRoleQuery(idrole)
 
@@ -113,7 +113,7 @@ const TheHeader = () => {
                                     <Link to="/product" className='nav-link'>Sản Phẩm</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to="#" className='nav-link'>Giới Thiệu</Link>
+                                    <Link to="/blog" className='nav-link'>Giới Thiệu</Link>
                                 </li>
                                 {/* <li className="nav-item">
                                     <Link to="#" className='nav-link'>Tin Tức</Link>
