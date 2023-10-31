@@ -21,11 +21,13 @@ interface DataType {
 }
 
 const ProductView = () => {
-    
+
     const { data: productData } = useGetProductsQuery();
     // console.log(productData)
     const { data: brands } = useGetBrandsQuery();
     const [searchTerm, setSearchTerm] = useState('');
+    // const [searchResult, setSearchResult] = useState([]);
+
     const [dataSource, setDataSource] = useState<Array<any>>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const { data: categories } = useGetBrandsQuery();
@@ -33,14 +35,14 @@ const ProductView = () => {
     const [removeProduct] = useRemoveProductMutation();
     // const [dataSourceToRenders, setDataSourceToRenders] = useState<DataType[]>([]);
 
-    const confirm = async (id) => {
+    const confirm = async (id: number | string) => {
         try {
             // Gọi API xóa sản phẩm bất đồng bộ
             await removeProduct(id);
 
             // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
-            const updatedData = dataSource.filter((item) => item.key !== id);
-            setDataSource(updatedData);
+            const updatedDataSource = dataSource.filter((item) => item.key !== id);
+            setDataSource(updatedDataSource);
 
             // Hiển thị thông báo thành công
             notification.success({
@@ -111,17 +113,13 @@ const ProductView = () => {
 
             }
         },
-        {
-            title: 'Image',
-            dataIndex: 'image',
-            key: 'image',
-            render: (image: string) => <img src={image} alt="image" width={100} />,
-        },
+
 
         {
             title: "Ảnh",
             dataIndex: "images",
             key: "images",
+            width: 200,
             render: (images: string) => (
                 <img className="images" src={images} alt="images of product" width={100} />
             ),
@@ -136,11 +134,11 @@ const ProductView = () => {
             dataIndex: 'price_sale',
             key: 'price_sale',
         },
-        {
-            title: 'Mô tả sản phẩm',
-            dataIndex: 'description',
-            key: 'description',
-        },
+        // {
+        //     title: 'Mô tả sản phẩm',
+        //     dataIndex: 'description',
+        //     key: 'description',
+        // },
         {
             title: 'Nội dung sản phẩm',
             dataIndex: 'content',
@@ -153,12 +151,7 @@ const ProductView = () => {
             render: ({ key: id }: any) => {
                 return (
                     <>
-                        <Link to={`/admin/product/${id}/edit`}>
-                            <Button>
-                                Sửa
-                            </Button>
-                        </Link>
-                        <Button onClick={() => handleDelete(id)} type='primary' danger className='ml-2'> Xóa</Button>
+
                         <div>
                             <Popconfirm
                                 title="Delete the task"
@@ -246,10 +239,16 @@ const ProductView = () => {
                                 </form>
                             </div>
                             <div className="table-responsive">
-                                <Table columns={columns}
+                                <Table
+                                    columns={columns}
+                                    expandable={{
+                                        expandedRowRender: (record: any) => <p style={{ margin: 0 }}>{record.description}</p>,
+                                        rowExpandable: (record: any) => record.firstName !== 'Not Expandable',
+                                    }}
                                     dataSource={dataSource}
+                                    pagination={{ pageSize: 5, showQuickJumper: true }}
+
                                 />
-                                {/* pagination={{ pageSize: 5 }} */}
 
                             </div>
                         </div>

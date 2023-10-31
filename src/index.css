@@ -11,6 +11,12 @@
 /* @tailwind base;
 @tailwind components;
 @tailwind utilities; */
+#preview-image {
+    max-width: 300px;
+    /* Chiều rộng tối đa của ảnh */
+    max-height: 300px;
+    /* Chiều cao tối đa của ảnh */
+}
 
 :root,
 [data-bs-theme=light] {
