@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   useGetProductByIdQuery,
   useGetProductsQuery,
@@ -11,6 +11,8 @@ import { IProducts } from "../../../types/product.service";
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
 import ProductLienQuan from "./ProductLienQuan";
+import { message as messageApi } from 'antd';
+
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -56,7 +58,6 @@ const ProductDetail = () => {
   const handleThumbnailClick = (image: string) => {
     setMainImage(image);
   };
-
   useEffect(() => {
     if (selectedSize) {
       const filteredColors = productDataDetail
@@ -117,15 +118,28 @@ const ProductDetail = () => {
             const cartItem = {
               product_id: product._id,
               user_id: user,
+              quantity: quantity
             };
             const result = await addCart(cartItem);
+            messageApi.success({
+              type: 'error',
+              content: "Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉",
+              className: 'custom-class',
+              style: {
+                margin: '10px',
+                fontSize: "20px",
+                lineHeight: "50px",
+                // display: "flex",
+                // float: "right",
+              },
+            });
             return result;
           }
         }
       });
+      console.log(filteredProducts)
       const results = await Promise.all(filteredProducts);
       setIsAddingToCart(false);
-      console.log("Kết quả các cuộc gọi addCart:", results);
     }
   };
 

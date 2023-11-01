@@ -49,7 +49,6 @@ const YourFormComponent = () => {
                     },
                 });
             } else {
-                // console.log('Đăng nhập thành công 🎉🎉🎉');
                 messageApi.info({
                     type: 'error',
                     content: "Cập nhật user thành công 🎉🎉🎉",

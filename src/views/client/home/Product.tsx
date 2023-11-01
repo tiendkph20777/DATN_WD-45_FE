@@ -39,7 +39,7 @@ const Product = () => {
                         <div className="row ">
                             {brandData?.map((item) => {
                                 return (
-                                    <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2">
+                                    <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
                                         <div className="card">
                                             <a onClick={() => onHandleClick(item._id)} className="d-block overflow-hidden no-underline m-2">
                                                 <div className="position-relative overflow-hidden">
@@ -64,7 +64,7 @@ const Product = () => {
                                 const discount = Math.round(100 - (item.price_sale / item.price * 100))
                                 if (item.price_sale > 0) {
                                     return (
-                                        <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                                        <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
                                             <div className="card product-main">
                                                 <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                                     <div className="position-relative product-image overflow-hidden">
@@ -119,7 +119,7 @@ const Product = () => {
                             const brandName = brandData?.find((brand: any) => brand._id == item.brand_id)?.name
                             const discount = Math.round(100 - (item.price_sale / item.price * 100))
                             return (
-                                <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
+                                <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
                                     <div className="card product-main">
                                         <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                             <div className="position-relative product-image overflow-hidden">

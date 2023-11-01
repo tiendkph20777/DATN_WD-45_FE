@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from 'react'
-import { useFetchOneCartQuery } from '../../../services/cart.service'
+import { useFetchOneCartQuery, useRemoveCartDetailMutation } from '../../../services/cart.service'
 import { useGetAllProductsDetailQuery } from '../../../services/productDetail.service'
 import { useGetProductsQuery } from '../../../services/product.service';
-import { Button, Popconfirm } from 'antd';
+import { Button, Popconfirm, notification } from 'antd';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
+import { message as messageApi } from 'antd';
 
 const Cart = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
-    const { data: cartUser, isLoading } = useFetchOneCartQuery(idUs);
+    const { data: cartUser } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: Product } = useGetProductsQuery();
-    console.log(cartUser)
+    const [removeCartDetailMutation] = useRemoveCartDetailMutation()
+    // console.log(cartUser)
 
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
+
             const matchingIds = cartDetailIds?.filter((id: any) => ProductDetailUser.some((product) => product._id === id));
             // 
             const productIds = ProductDetailUser?.map((item) => item.product_id);
@@ -28,15 +31,17 @@ const Cart = () => {
                 const matchingProduct = filteredProducts?.find((product) => product._id === item.product_id);
 
                 if (matchingProduct) {
-                    const price = matchingProduct.price; // Lấy giá từ sản phẩm
-                    const quantity = cartUser.products.find((product: any) => product.productDetailId === item._id).quantity; // Lấy quantity từ cartUser
+                    const price = matchingProduct.price;
+                    const quantity = cartUser?.products.find((product: any) => product.productDetailId === item._id).quantity;
+                    const idCartDetail = cartUser?.products.find((product: any) => product.productDetailId === item._id)._id;
                     return {
                         ...item,
                         name: matchingProduct.name,
                         image: matchingProduct.images[0],
                         price: price,
                         quantity: quantity,
-                        total: price * quantity, // Tính tổng giá bằng cách nhân giá với số lượng
+                        total: price * quantity,
+                        idCartDetail: idCartDetail,
                     };
                 } else {
                     return item;
@@ -45,8 +50,29 @@ const Cart = () => {
             setCartDetail(modifiedProductDetails);
         }
     }, [cartUser, ProductDetailUser]);
-
-    console.log(cartDetail)
+    // console.log(cartDetail)
+    // remove
+    const removeProduct = async (id: string) => {
+        try {
+            const response = await removeCartDetailMutation(id);
+            messageApi.info({
+                type: 'error',
+                content: "Xóa sản phẩm trong giỏ hàng thành công ",
+                className: 'custom-class',
+                style: {
+                    marginTop: '0',
+                    fontSize: "20px",
+                    lineHeight: "50px"
+                },
+            });
+        } catch (error) {
+            console.error('Lỗi khi xóa sản phẩm', error);
+            notification.error({
+                message: 'Xóa',
+                description: 'Không thể xóa sản phẩm. Vui lòng thử lại sau.',
+            });
+        }
+    };
 
     return (
         <div><section className="cart_area">
@@ -56,7 +82,8 @@ const Cart = () => {
                         <table className="table">
                             <thead>
                                 <tr>
-                                    <th scope="col" style={{ paddingLeft: "60px" }}>Hình Ảnh</th>
+                                    <th></th>
+                                    <th scope="col">Hình Ảnh</th>
                                     <th scope="col">Tên Sản Phẩm</th>
                                     <th scope="col">Kích Cỡ</th>
                                     <th scope="col">Màu Sắc</th>
@@ -68,8 +95,10 @@ const Cart = () => {
                             <tbody>
                                 {cartDetail?.map((item: any) => (
                                     <tr key={item?._id}>
+                                        <td>
+                                            <input type="checkbox" name="" id="" />
+                                        </td>
                                         <td style={{ width: "100px" }}>
-                                            <input type="checkbox" name="" id="" style={{ marginRight: "20px" }} />
                                             <img
                                                 width={'100px'}
                                                 src={item?.image}
@@ -81,9 +110,6 @@ const Cart = () => {
                                         </td>
                                         <td>
                                             <h5>{item?.size}</h5>
-                                            {/* <select className='product-detail-size' name="" id="">
-                                                <option value="">{item?.size}</option>
-                                            </select> */}
                                         </td>
                                         <td>
                                             <div style={{ display: "flex", alignItems: "center" }}>
@@ -92,9 +118,6 @@ const Cart = () => {
                                                 ></button>
                                                 <h5>{item?.color}</h5>
                                             </div>
-                                            {/* <select className='product-detail-size' style={{ width: "100px" }} name="" id="">
-                                                <option value="">{item?.color}</option>
-                                            </select> */}
                                         </td>
                                         <td>
                                             <h5>{item?.quantity}</h5>
@@ -112,7 +135,7 @@ const Cart = () => {
                                             <Popconfirm
                                                 title="Bạn có chắc muốn xóa sản phẩm này không?"
                                                 onConfirm={() => {
-                                                    // removeProduct(record.key);
+                                                    removeProduct(item.idCartDetail);
                                                 }}
                                                 okText="Yes"
                                                 cancelText="No"
@@ -126,9 +149,8 @@ const Cart = () => {
                                 ))}
 
                                 <tr className="bottom_button">
-                                    <td>
-                                        <a className="gray_btn" href="#">Update Cart</a>
-                                    </td>
+                                    <td></td>
+                                    <td></td>
                                     <td></td>
                                     <td></td>
                                     <td>
