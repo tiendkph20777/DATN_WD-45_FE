@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import {
-  useAddCommentMutation,
   useGetProductByIdQuery,
   useGetProductsQuery,
 } from "../../../services/product.service";
@@ -29,7 +27,6 @@ const ProductDetail = () => {
   const { data: brandData } = useGetBrandsQuery();
   const { _id } = useParams();
   const { data: prodetailData } = useGetProductByIdQuery(_id);
-  const { handleSubmit, register } = useForm<any>();
 
   const brandName = brandData?.find(
     (brand) => brand._id === prodetailData?.brand_id
@@ -63,8 +60,8 @@ const ProductDetail = () => {
   useEffect(() => {
     if (selectedSize) {
       const filteredColors = productDataDetail
-        .filter((detail) => detail.size === selectedSize)
-        .map((detail) => detail.color);
+        .filter((detail) => detail?.size === selectedSize)
+        .map((detail) => detail?.color);
       setColorsForSelectedSize(filteredColors);
       setShowColors(true);
     }
@@ -80,10 +77,10 @@ const ProductDetail = () => {
   const handleColorChange = (color: any) => {
     setSelectedColor(color);
     const selectedColorDetail = productDataDetail?.find(
-      (detail) => detail.color === color && detail.size === selectedSize
+      (detail) => detail?.color === color && detail?.size === selectedSize
     );
     if (selectedColorDetail) {
-      setSelectedColorName(selectedColorDetail.color);
+      setSelectedColorName(selectedColorDetail?.color);
     }
     setHasSelectedColor(true);
   };
@@ -108,24 +105,6 @@ const ProductDetail = () => {
   ////////////////////////////////
   const { user } = JSON.parse(localStorage.getItem('user')!)
   const [addCart, isLoading] = useCreateCartMutation()
-
-  // const onSubmitCart = async (dataCart: any) => {
-  //   const filteredProducts = productDataDetail?.map(async (product) => {
-  //     if (typeof product?.size === 'number' && product?.size === selectedSize) {
-  //       if (product?.color === selectedColor) {
-  //         const cartItem = {
-  //           product_id: product._id,
-  //           user_id: user,
-  //         };
-  //         // console.log(cartItem)
-  //         const result = await addCart(cartItem);
-  //         return result;
-  //       }
-  //     }
-  //   });
-  //   const results = await Promise.all(filteredProducts);
-  //   // console.log("Kết quả các cuộc gọi addCart:", results);
-  // }
 
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
@@ -279,6 +258,7 @@ const ProductDetail = () => {
       </div>
     </div>
   );
+
 };
 
 export default ProductDetail;
