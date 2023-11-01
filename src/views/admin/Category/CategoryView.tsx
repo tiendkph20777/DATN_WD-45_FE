@@ -19,23 +19,22 @@ const CategoryView: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [dataSource, setDataSource] = useState<Array<any>>([]);
 
-    const confirm = async (id) => {
+    const confirm = async (id: number | string) => {
         try {
-            // Gọi API xóa danh mục bất đồng bộ
+            // Gọi API xóa sản phẩm bất đồng bộ
             await removeBrand(id);
 
-            // Cập nhật dữ liệu sau khi xóa danh mục thành công
-            const updatedBrand = dataSource.filter((item) => item.key !== id);
-            setDataSource(updatedBrand);
-
+            // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
+            const updatedDataSource = dataSource.filter((item) => item.key !== id);
+            setDataSource(updatedDataSource);
             // Hiển thị thông báo thành công
             notification.success({
                 message: "Success",
-                description: "Xóa danh mục thành công!",
+                description: "Xóa sản phẩm thành công!",
             });
         } catch (error) {
             // Xử lý lỗi nếu cần
-            console.error("Error deleting brand", error);
+            console.error("Error deleting product", error);
         }
     };
     useEffect(() => {
@@ -65,12 +64,7 @@ const CategoryView: React.FC = () => {
 
     //     }
     // };
-    const data = brandData?.map((brand: any) => {
-        return {
-            key: brand._id,
-            ...brand,
-        };
-    });
+
     const columns: ColumnsType<DataType> = [
         {
             title: 'Tên danh mục',
@@ -135,7 +129,12 @@ const CategoryView: React.FC = () => {
         },
 
     ];
-
+    const data = brandData?.map((brand: any) => {
+        return {
+            key: brand._id,
+            ...brand,
+        };
+    });
     return (
         <div className="container">
             <div className="row">

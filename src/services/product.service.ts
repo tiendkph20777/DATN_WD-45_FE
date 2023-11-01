@@ -22,7 +22,7 @@ const productAPI = createApi({
             query: (id) => ({
                 url: `product/${id}`,
                 method: "DELETE",
-                
+
             }),
             invalidatesTags: ["Product"]
         }),
@@ -87,7 +87,7 @@ const productAPI = createApi({
                 url: `/comment/${comment.id}`,
                 method: "PUT",
                 body: comment,
-                
+
             }),
         }),
         getUser: builder.query<{ product: any | null }, string>({
