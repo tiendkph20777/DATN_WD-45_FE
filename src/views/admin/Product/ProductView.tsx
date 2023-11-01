@@ -21,7 +21,7 @@ interface DataType {
 }
 
 const ProductView = () => {
-    
+
     const { data: productData } = useGetProductsQuery();
     // console.log(productData)
     const { data: brands } = useGetBrandsQuery();
@@ -153,12 +153,12 @@ const ProductView = () => {
             render: ({ key: id }: any) => {
                 return (
                     <>
-                        <Link to={`/admin/product/${id}/edit`}>
+                        {/* <Link to={`/admin/product/${id}/edit`}>
                             <Button>
                                 Sửa
                             </Button>
                         </Link>
-                        <Button onClick={() => handleDelete(id)} type='primary' danger className='ml-2'> Xóa</Button>
+                        <Button onClick={() => handleDelete(id)} type='primary' danger className='ml-2'> Xóa</Button> */}
                         <div>
                             <Popconfirm
                                 title="Delete the task"
@@ -179,18 +179,19 @@ const ProductView = () => {
                                 </Button>
                             </Popconfirm>
 
-                            <Button
-                                type="primary"
-                                style={{
-                                    backgroundColor: "blue",
-                                    margin: "4px",
-                                    minWidth: "4em",
-                                }}
-                            >
-                                <Link to={`${id}/edit`} >
+                            <Link to={`${id}/edit`} >
+                                <Button
+                                    type="primary"
+                                    style={{
+                                        backgroundColor: "blue",
+                                        margin: "4px",
+                                        minWidth: "4em",
+                                    }}
+                                >
+
                                     <EditOutlined />
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Link>
                         </div>
                     </>
                 );

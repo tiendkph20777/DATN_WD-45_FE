@@ -19,7 +19,11 @@ const brandAPI = createApi({
         removeBrand: builder.mutation<IBrands, number | string>({
             query: (id) => ({
                 url: `/brand/${id}`,
-                method: "DELETE"
+                method: "DELETE",
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
         }),
         addBrand: builder.mutation<IBrands, IBrands>({
@@ -37,7 +41,11 @@ const brandAPI = createApi({
             query: (brand) => ({
                 url: `/brand/${brand._id}/update`,
                 method: "PUT",
-                body: brand
+                body: brand,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             })
         }),
 

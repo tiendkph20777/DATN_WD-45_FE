@@ -8,7 +8,7 @@ import { IAuth } from '../../../types/user';
 const Signin = () => {
     const navigate = useNavigate();
     const [createUser, { isLoading }] = useSignInMutation();
-    const [showConfirmation, setShowConfirmation] = useState(false);
+    // const [showConfirmation, setShowConfirmation] = useState(false);
 
     const {
         register,
