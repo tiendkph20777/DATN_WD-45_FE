@@ -13,16 +13,16 @@ const productAPIDetall = createApi({
   endpoints: (builder) => ({
     getAllProductsDetail: builder.query<IProductDetail[], void>({
       query: () => `api/productdetail`,
-      providerTags: ["ProductDetail"],
+      providesTags: ["ProductDetail"],
     }),
 
-    getProductDetail: builder.query<IProduct[], void>({
+    getProductDetail: builder.query<IProductDetail[], void>({
       query: () => `api/product`,
-      providerTags: ["ProductDetail"],
+      providesTags: ["ProductDetail"],
     }),
     getProductDetailById: builder.query<IProductDetail, number | string>({
       query: (id: any) => `api/productdetail/${id}/detail`,
-      providerTags: ["ProductDetail"],
+      providesTags: ["ProductDetail"],
     }),
 
     removeProductsDetail: builder.mutation<void, number>({
@@ -32,7 +32,7 @@ const productAPIDetall = createApi({
         headers: {
           "content-type": "application/json",
           'authorization': `Bearer ${token}`
-      }
+        }
       }),
       invalidatesTags: ["ProductDetail"],
     }),
@@ -45,7 +45,7 @@ const productAPIDetall = createApi({
         headers: {
           "content-type": "application/json",
           'authorization': `Bearer ${token}`
-      }
+        }
       }),
     }),
 
@@ -57,7 +57,7 @@ const productAPIDetall = createApi({
         headers: {
           "content-type": "application/json",
           'authorization': `Bearer ${token}`
-      }
+        }
       }),
       invalidatesTags: ["ProductDetail"],
     }),

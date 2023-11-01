@@ -5,7 +5,7 @@ const data = JSON.parse(localStorage.getItem('user')!);
 const token = data?.accessToKen;
 
 const cartAPI = createApi({
-    reducerPath: "auth", // 
+    reducerPath: "cart", // 
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8080/api",
     }),
@@ -13,7 +13,7 @@ const cartAPI = createApi({
     endpoints: (builder) => ({
         createCart: builder.mutation<void, Partial<any>>({
             query: (cart) => ({
-                url: `/cart/add/${cart.productDetailId}/${cart.user_id}`,
+                url: `/cart/add/${cart.product_id}/${cart.user_id}`,
                 method: "POST",
                 body: cart,
                 headers: {
@@ -23,13 +23,26 @@ const cartAPI = createApi({
             }),
             invalidatesTags: ["Cart"],
         }),
+        // createCart: builder.mutation<void, { productDetailId: string, user: string }>({
+        //     query: ({ productDetailId, user }) => ({
+        //         url: `/cart/add/${productDetailId}/${user}`,
+        //         method: "POST",
+        //         body: { productDetailId, user },
+        //         headers: {
+        //             "content-type": "application/json",
+        //             'authorization': `Bearer ${token}`
+        //         }
+        //     }),
+        //     invalidatesTags: ["Cart"],
+        // }),
+
         fetchCart: builder.query<IAuth[], void>({
             query: () => "/cart/cart-detail",
             providesTags: ["Cart"]
         }),
         fetchOneCart: builder.query<any, string | number>({
-            query: (_id) => ({
-                url: `/cart/${_id}`,
+            query: (id) => ({
+                url: `/cart/${id}`,
                 method: "GET",
             }),
             providesTags: ["Cart"]

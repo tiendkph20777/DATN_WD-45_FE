@@ -31,7 +31,6 @@ const ProductView = () => {
     const [dataSource, setDataSource] = useState<Array<any>>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const { data: categories } = useGetBrandsQuery();
-    // const text = <span>Edit</span>;
     const [removeProduct] = useRemoveProductMutation();
     // const [dataSourceToRenders, setDataSourceToRenders] = useState<DataType[]>([]);
 
@@ -44,13 +43,11 @@ const ProductView = () => {
             const updatedDataSource = dataSource.filter((item) => item.key !== id);
             setDataSource(updatedDataSource);
 
-            // Hiển thị thông báo thành công
             notification.success({
                 message: "Success",
                 description: "Xóa sản phẩm thành công!",
             });
         } catch (error) {
-            // Xử lý lỗi nếu cần
             console.error("Error deleting product", error);
         }
     };
@@ -151,7 +148,6 @@ const ProductView = () => {
             render: ({ key: id }: any) => {
                 return (
                     <>
-
                         <div>
                             <Popconfirm
                                 title="Delete the task"
@@ -172,18 +168,19 @@ const ProductView = () => {
                                 </Button>
                             </Popconfirm>
 
-                            <Button
-                                type="primary"
-                                style={{
-                                    backgroundColor: "blue",
-                                    margin: "4px",
-                                    minWidth: "4em",
-                                }}
-                            >
-                                <Link to={`${id}/edit`} >
+                            <Link to={`${id}/edit`} >
+                                <Button
+                                    type="primary"
+                                    style={{
+                                        backgroundColor: "blue",
+                                        margin: "4px",
+                                        minWidth: "4em",
+                                    }}
+                                >
+
                                     <EditOutlined />
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Link>
                         </div>
                     </>
                 );

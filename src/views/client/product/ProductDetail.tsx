@@ -11,6 +11,8 @@ import { useGetAllProductsDetailQuery } from "../../../services/productDetail.se
 import "./styles.css";
 import { IProducts } from "../../../types/product.service";
 import CommentProductDetail from "./CommentProductDetail";
+import { useCreateCartMutation } from "../../../services/cart.service";
+import ProductLienQuan from "./ProductLienQuan";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -103,9 +105,26 @@ const ProductDetail = () => {
     }
   };
 
+  ////////////////////////////////
+  const { user } = JSON.parse(localStorage.getItem('user')!)
+  const [addCart, isLoading] = useCreateCartMutation()
 
-  const onSubmitCart = (dataCart: any) => {
-    // console.log(dataCart, quantity, selectedColor, selectedSize)
+  const onSubmitCart = async (dataCart: any) => {
+    const filteredProducts = productDataDetail?.map(async (product) => {
+      if (typeof product?.size === 'number' && product?.size === selectedSize) {
+        if (product?.color === selectedColor) {
+          const cartItem = {
+            product_id: product._id,
+            user_id: user,
+          };
+          // console.log(cartItem)
+          const result = await addCart(cartItem);
+          return result;
+        }
+      }
+    });
+    const results = await Promise.all(filteredProducts);
+    // console.log("Kết quả các cuộc gọi addCart:", results);
   }
 
   /////////////////////
@@ -238,76 +257,7 @@ const ProductDetail = () => {
         </div>
       </div>
       <div>
-        <section className="our-team position-relative">
-          <div className="container">
-            <h1>Sản Phẩm Liên Quan</h1>
-
-            <div className="row ourteam-row position-relative">
-              <div className="row col-xxl-9 border-2 col-xl-9 col-lg-9 col-sm-12 col-12 p-2">
-                {dataSourceToRender?.map((item) => {
-                  if (item.brand_id === prodetailData?.brand_id) {
-                    const brandName = brandData?.find(
-                      (brand: any) => brand._id === item.brand_id
-                    )?.name;
-                    const discount = Math.round(
-                      100 - (item.price_sale / item.price) * 100
-                    );
-
-                    return (
-                      <div
-                        className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2"
-                        key={item._id}
-                      >
-                        <div className="card product-main">
-                          <a
-                            href={"/product/" + item._id + "/detail"}
-                            className="d-block overflow-hidden no-underline"
-                          >
-                            <div className="position-relative product-image overflow-hidden">
-                              <img
-                                src={item.images[0]}
-                                alt=""
-                                width="100%"
-                                height="auto"
-                                className="inset-0 object-cover"
-                              />
-                              <div className="product-hot" />
-                            </div>
-                            <div className="bg-white content-product w-100 p-2">
-                              <div className="product-vendor">{brandName}</div>
-                              <h4 className="product-name">{item.name}</h4>
-                              {item.price_sale > 0 ? (
-                                <div className="product-price row">
-                                  <strong className="col-12">
-                                    {item.price_sale}đ
-                                  </strong>
-                                  <div className="d-flex">
-                                    <del className="price-del">
-                                      {item.price}đ
-                                    </del>
-                                    <span className="product-discount">
-                                      -{discount}%
-                                    </span>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="product-price row">
-                                  <strong className="col-12">
-                                    {item.price}đ
-                                  </strong>
-                                </div>
-                              )}
-                            </div>
-                          </a>
-                        </div>
-                      </div>
-                    );
-                  }
-                })}
-              </div>
-            </div>
-          </div>
-        </section>
+        <ProductLienQuan />
       </div>
       <div>
         <CommentProductDetail />
