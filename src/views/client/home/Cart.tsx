@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useFetchOneCartQuery, useRemoveCartDetailMutation } from '../../../services/cart.service'
+import { useCreateCartMutation, useFetchOneCartQuery, useRemoveCartDetailMutation, useUpdateCartDetailMutation } from '../../../services/cart.service'
 import { useGetAllProductsDetailQuery } from '../../../services/productDetail.service'
 import { useGetProductsQuery } from '../../../services/product.service';
 import { Button, Popconfirm, notification } from 'antd';
@@ -14,7 +14,8 @@ const Cart = () => {
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: Product } = useGetProductsQuery();
     const [removeCartDetailMutation] = useRemoveCartDetailMutation()
-    // console.log(cartUser)
+    const [updateCartDetailMutation] = useUpdateCartDetailMutation()
+    // console.log(ProductDetailUser)
 
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
@@ -26,7 +27,7 @@ const Cart = () => {
             const filteredProducts = Product?.filter((product: any) => productIds.includes(product?._id));
 
             const matchingProductDetailUser = ProductDetailUser?.filter((item) => matchingIds.includes(item._id));
-            // console.log(matchingProductDetailUser)
+
             const modifiedProductDetails = matchingProductDetailUser?.map((item: any) => {
                 const matchingProduct = filteredProducts?.find((product) => product._id === item.product_id);
 
@@ -50,7 +51,7 @@ const Cart = () => {
             setCartDetail(modifiedProductDetails);
         }
     }, [cartUser, ProductDetailUser]);
-    // console.log(cartDetail)
+
     // remove
     const removeProduct = async (id: string) => {
         try {
@@ -73,6 +74,68 @@ const Cart = () => {
             });
         }
     };
+
+    // update
+    const [editingProductId, setEditingProductId] = useState(null);
+
+    const handleEditButtonClick = (productId: any) => {
+        setEditingProductId(productId);
+    };
+
+    const handleSaveButtonClick = () => {
+        onSubmitCart(formData);
+        setEditingProductId(null);
+    };
+    const [formData, setFormData] = useState({});
+
+    // Hàm xử lý thay đổi dữ liệu khi người dùng nhập liệu
+    const handleInputChange = (e: any, field: any) => {
+        const value = e.target.value;
+        setFormData((prevData) => ({
+            ...prevData,
+            [field]: value,
+        }));
+    };
+    // console.log(ProductDetailUser)
+    const uniqueSizes = new Set(ProductDetailUser?.map((proSize: any) => proSize.size));
+    const uniqueColors = new Set(ProductDetailUser?.map((proColor: any) => proColor.color));
+    // console.log(formData)
+
+    ////////////////////////////////
+    const { user } = JSON.parse(localStorage.getItem('user')!)
+    const [addCart, isLoading] = useCreateCartMutation()
+
+    const [isAddingToCart, setIsAddingToCart] = useState({});
+
+    const onSubmitCart = async (dataCart: any) => {
+        console.log(dataCart)
+        // Tìm sản phẩm từ ProductDetailUser có kích cỡ, số lượng, và màu sắc khớp với dataCart
+        const matchingProduct = ProductDetailUser?.find((product) => (
+            product?.size === parseInt(dataCart.size) &&
+            // product?.quantity >= parseInt(dataCart.quantity) &&
+            product?.color === dataCart.color
+        ));
+
+        if (matchingProduct) {
+            // Tìm thấy sản phẩm khớp
+            const cartItem = {
+                product_id: matchingProduct._id,
+                user_id: user,
+                quantity: dataCart.quantity
+            };
+            const result = await updateCartDetailMutation(cartItem);
+            console.log(result)
+            return result;
+        } else {
+            // Không tìm thấy sản phẩm khớp
+            console.log("Không tìm thấy sản phẩm khớp.");
+        }
+
+        // Sau khi xử lý, cập nhật trạng thái và làm sạch formData (nếu cần)
+        setEditingProductId(null);
+        setFormData({});
+    };
+    // console.log(isAddingToCart)
 
     return (
         <div><section className="cart_area">
@@ -99,39 +162,98 @@ const Cart = () => {
                                             <input type="checkbox" name="" id="" />
                                         </td>
                                         <td style={{ width: "100px" }}>
-                                            <img
-                                                width={'100px'}
-                                                src={item?.image}
-                                                alt=""
-                                            />
+                                            <img width={'100px'} src={item?.image} alt="" />
                                         </td>
                                         <td>
                                             <h6>{item?.name}</h6>
                                         </td>
                                         <td>
-                                            <h5>{item?.size}</h5>
+                                            {editingProductId === item._id ? (
+                                                <select
+                                                    className='product-detail-size'
+                                                    name=""
+                                                    id=""
+                                                    style={{ width: "100px", height: "30px" }}
+                                                    value={formData?.size !== undefined ? formData?.size : item?.size}
+                                                    onChange={(e) => handleInputChange(e, 'size')}
+                                                >
+                                                    {[...uniqueSizes].map((size) => (
+                                                        <option key={size} value={size}>
+                                                            {size}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            ) : (
+                                                <h5>{item.size}</h5>
+                                            )}
                                         </td>
                                         <td>
                                             <div style={{ display: "flex", alignItems: "center" }}>
-                                                <button
-                                                    style={{ backgroundColor: item?.color, width: "20px", height: "20px", margin: "5px" }}
-                                                ></button>
-                                                <h5>{item?.color}</h5>
+                                                {editingProductId === item._id ? (
+                                                    <select
+                                                        className='product-detail-size'
+                                                        name=""
+                                                        id=""
+                                                        style={{ width: "100px", height: "30px" }}
+                                                        value={formData.color !== undefined ? formData.color : item.color}
+                                                        onChange={(e) => handleInputChange(e, 'color')}
+                                                    >
+                                                        {[...uniqueColors].map((color) => (
+                                                            <option key={color} value={color}>
+                                                                {color}
+                                                            </option>
+                                                        ))}
+                                                    </select>
+                                                ) : (
+                                                    <div style={{ display: "flex" }}>
+                                                        <button
+                                                            style={{
+                                                                backgroundColor: item?.color,
+                                                                width: "20px",
+                                                                height: "20px",
+                                                                marginRight: "5px",
+                                                            }}
+                                                        ></button>
+                                                        <h5>{item?.color}</h5>
+                                                    </div>
+                                                )}
                                             </div>
                                         </td>
                                         <td>
-                                            <h5>{item?.quantity}</h5>
+                                            {editingProductId === item._id ? (
+                                                <input
+                                                    type="number"
+                                                    value={formData.quantity !== undefined ? formData.quantity : item.quantity}
+                                                    style={{ width: "70px" }}
+                                                    className='product-detail-size'
+                                                    onChange={(e) => handleInputChange(e, 'quantity')}
+                                                />
+                                            ) : (
+                                                <h5>{item.quantity}</h5>
+                                            )}
                                         </td>
                                         <td>
-                                            <h5>{item?.price}VNĐ</h5>
+                                            <h5>{item.price}VNĐ</h5>
                                         </td>
                                         <td>
-                                            <h5>{item?.total}VNĐ</h5>
+                                            <h5>{item.total}VNĐ</h5>
                                         </td>
                                         <td>
-                                            <Button type='primary' >
-                                                <EditOutlined />
-                                            </Button>
+                                            {editingProductId === item._id ? (
+                                                <Button
+                                                    type='primary'
+                                                    onClick={() => handleSaveButtonClick(item?._id)}
+                                                >
+                                                    Save
+                                                </Button>
+                                            ) : (
+                                                <Button
+                                                    type='primary'
+                                                    onClick={() => handleEditButtonClick(item?._id)}
+                                                >
+                                                    Edit
+                                                </Button>
+                                            )}
                                             <Popconfirm
                                                 title="Bạn có chắc muốn xóa sản phẩm này không?"
                                                 onConfirm={() => {
@@ -147,6 +269,7 @@ const Cart = () => {
                                         </td>
                                     </tr>
                                 ))}
+
 
                                 <tr className="bottom_button">
                                     <td></td>
@@ -217,7 +340,7 @@ const Cart = () => {
                     </div>
                 </div>
             </div>
-        </section ></div>
+        </section ></div >
     )
 }
 

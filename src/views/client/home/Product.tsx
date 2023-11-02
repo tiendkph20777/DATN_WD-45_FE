@@ -68,7 +68,7 @@ const Product = () => {
                                             <div className="card product-main">
                                                 <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                                     <div className="position-relative product-image overflow-hidden">
-                                                        <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
+                                                        <img src={item.images[0]} alt="" width="100%" className=" inset-0 object-cover" />
                                                     </div>
                                                     <div className="bg-white content-product w-100 p-2">
                                                         <div className="product-detail pt-2 row text-center">

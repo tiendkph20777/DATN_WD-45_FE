@@ -129,8 +129,6 @@ const ProductDetail = () => {
                 margin: '10px',
                 fontSize: "20px",
                 lineHeight: "50px",
-                // display: "flex",
-                // float: "right",
               },
             });
             return result;
