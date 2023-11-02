@@ -29,6 +29,9 @@ import { VoucherView } from "../views/admin/Voucher";
 import VoucherAdd from "../views/admin/Voucher/VoucherAdd";
 import VoucherEdit from "../views/admin/Voucher/VoucherEdit";
 import UserAdd from "../views/admin/User/UserAdd";
+import { PaymentView } from "../views/admin/payment";
+import PaymentAdd from "../views/admin/payment/PaymentAdd";
+import PaymentEdit from "../views/admin/payment/PaymentEdit";
 
 const routes: RouteObject[] = [
     {
@@ -91,6 +94,16 @@ const routes: RouteObject[] = [
             },
             {
                 path: 'voucher/:id/edit', element: <VoucherEdit />
+            },
+            //paymnet
+            {
+                path: 'payment', element: <PaymentView />
+            },
+            {
+                path: 'payment/add', element: <PaymentAdd />
+            },
+            {
+                path: 'payment/:idPayment/edit', element: <PaymentEdit />
             },
         ],
     },

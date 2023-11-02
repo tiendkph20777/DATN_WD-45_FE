@@ -7,6 +7,7 @@ import roleAPI from './services/role.service'
 import productAPIDetall from './services/productDetail.service'
 import voucherAPI from './services/voucher.service'
 import cartAPI from './services/cart.service'
+import paymentAPI from './services/payment.service'
 
 export const store = configureStore({
   reducer: {
@@ -17,9 +18,10 @@ export const store = configureStore({
     "products": productAPIDetall.reducer,
     "voucher": voucherAPI.reducer,
     "cart": cartAPI.reducer,
+    "payment": paymentAPI.reducer,
   },
 
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware, productAPIDetall.middleware, voucherAPI.middleware, cartAPI.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware, productAPIDetall.middleware, voucherAPI.middleware, cartAPI.middleware, paymentAPI.middleware),
 
 })
 
