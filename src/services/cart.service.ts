@@ -23,23 +23,12 @@ const cartAPI = createApi({
             }),
             invalidatesTags: ["Cart"],
         }),
-        // createCart: builder.mutation<void, { productDetailId: string, user: string }>({
-        //     query: ({ productDetailId, user }) => ({
-        //         url: `/cart/add/${productDetailId}/${user}`,
-        //         method: "POST",
-        //         body: { productDetailId, user },
-        //         headers: {
-        //             "content-type": "application/json",
-        //             'authorization': `Bearer ${token}`
-        //         }
-        //     }),
-        //     invalidatesTags: ["Cart"],
-        // }),
 
         fetchCart: builder.query<IAuth[], void>({
             query: () => "/cart/cart-detail",
             providesTags: ["Cart"]
         }),
+
         fetchOneCart: builder.query<any, string | number>({
             query: (id) => ({
                 url: `/cart/${id}`,
@@ -47,32 +36,34 @@ const cartAPI = createApi({
             }),
             providesTags: ["Cart"]
         }),
-        // removeCart: builder.mutation<void, string | number>({
-        //     query: (_id) => ({
-        //         url: `/Cart/${_id}`,
-        //         method: "DELETE",
-        //         headers: {
-        //             "content-type": "application/json",
-        //             'authorization': `Bearer ${token}`
-        //         }
-        //     }),
-        //     invalidatesTags: ["Cart"],
-        // }),
-        // updateCart: builder.mutation<void, any>({
-        //     query: (Cart) => ({
-        //         url: `/Cart/${Cart._id}/update`,
-        //         method: 'PUT',
-        //         body: Cart,
-        //         headers: {
-        //             "content-type": "application/json",
-        //             'authorization': `Bearer ${token}`
-        //         }
-        //     }),
-        //     invalidatesTags: ["Cart"],
-        // }),
+
+        removeCartDetail: builder.mutation<void, string | number>({
+            query: (_id) => ({
+                url: `/cartDetail/${_id}`,
+                method: "DELETE",
+                // headers: {
+                //     "content-type": "application/json",
+                //     'authorization': `Bearer ${token}`
+                // }
+            }),
+            invalidatesTags: ["Cart"],
+        }),
+
+        updateCartDetail: builder.mutation<void, any>({
+            query: (Cart) => ({
+                url: `/cartDetail/${Cart.product_id}/update`,
+                method: 'PUT',
+                body: Cart,
+                // headers: {
+                //     "content-type": "application/json",
+                //     'authorization': `Bearer ${token}`
+                // }
+            }),
+            invalidatesTags: ["Cart"],
+        }),
     }),
 });
 
-export const { useCreateCartMutation, useFetchCartQuery, useFetchOneCartQuery } = cartAPI;
+export const { useCreateCartMutation, useFetchCartQuery, useFetchOneCartQuery, useRemoveCartDetailMutation, useUpdateCartDetailMutation } = cartAPI;
 
 export default cartAPI;
