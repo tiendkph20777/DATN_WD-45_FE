@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useFetchOneRoleQuery } from '../../services/role.service';
 import { useFetchOneUserQuery } from '../../services/user.service';
+import { useForm } from 'react-hook-form';
+import { useGetProductsQuery } from '../../services/product.service';
 
 const TheHeader = () => {
     useEffect(() => {
@@ -60,6 +62,14 @@ const TheHeader = () => {
         }
     }, [])
 
+    const { data: dataPro } = useGetProductsQuery();
+    const { handleSubmit, register } = useForm<any>();
+    const onHandleSubmit = ({ product }: any) => {
+        const id_product = dataPro?.find((role) => role?.name === product)?._id
+        if (id_product) {
+            navigate("/product/" + id_product + "/detail")
+        }
+    };
     return (
         <div>
             <header className="main-header position-fixed w-100">
@@ -78,10 +88,20 @@ const TheHeader = () => {
                             <img src="/src/assets/images/cart.svg" alt="" className="cart-icon" />
                             <span className="count-cart">15</span>
                         </a>
-                        <form action="" method="" className="form form-search d-flex w-25">
-                            <input type="text" placeholder="Tìm kiếm sản phẩm, thương hiệu.." />
-                            <i className="ti ti-search"></i>
+                        <form onSubmit={handleSubmit(onHandleSubmit)} className="form form-search d-flex w-25">
+                            <input type="text" placeholder="Tìm kiếm sản phẩm" list="name_product" {...register('product')} />
+
+                            <datalist id="name_product" >
+                                {dataPro?.map((item) => {
+                                    return (
+                                        <option value={item.name}>{item.name}</option>
+                                    )
+                                })}
+                            </datalist >
+
+                            <button type="submit" className="ti ti-search border border-0 "></button>
                         </form>
+
                         <style>
                             {`
                                     .form-search {

@@ -16,15 +16,16 @@ export default function CommentView() {
 
     const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
     const [searchResult, setSearchResult] = useState<DataType[]>([]);
-    const { data: dataCmt } = useFetchCommentQuery();
     const [Product_Remove] = useRemoveCommentMutation();
     const { data: dataPro } = useGetProductsQuery();
     const { data: dataUser } = useFetchUserQuery();
+    const { data: dataCmt } = useFetchCommentQuery();
     const { Search } = Input;
     useEffect(() => {
-        if (dataCmt) {
+        if (dataCmt && dataPro && dataUser) {
             const updatedDataSource = dataCmt.map(
-                ({ _id, content, id_product, id_user, rate }: DataType) => ({
+                ({ _id, content, id_product, id_user, rate }: DataType, key: any) => ({
+                    key,
                     _id,
                     content,
                     rate,
@@ -34,7 +35,7 @@ export default function CommentView() {
             );
             setDataSourceToRender(updatedDataSource);
         }
-    }, [dataCmt]);
+    }, [dataCmt && dataPro && dataUser]);
 
     const onSearch = (value: string | number) => {
         let filteredData = dataSourceToRender;
@@ -54,7 +55,7 @@ export default function CommentView() {
         {
             title: 'Người dùng',
             dataIndex: 'id_user',
-            key: 'id_user'
+            key: '1'
         },
         {
             title: 'Sản phẩm',
@@ -134,7 +135,8 @@ export default function CommentView() {
             <Table
                 columns={columns}
                 expandable={{
-                    expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.content}</p>
+                    expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.content}</p>,
+                    rowExpandable: (record) => record.content !== 'Not Expandable',
                 }}
                 dataSource={searchResult.length > 0 ? searchResult : dataSourceToRender}
                 pagination={{ pageSize: 7, showQuickJumper: true }} />

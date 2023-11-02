@@ -171,13 +171,7 @@ const ProductDetail = () => {
             <div className="col-lg-5 offset-lg-1">
               <div className="s_product_text">
                 <h3>{prodetailData?.name}</h3>
-                <div className="product-price row">
-                  <strong className="col-12">
-                    {prodetailData?.price}
-                    <span>VND</span>
-                  </strong>
-                </div>
-                {prodetailData?.price_sale !== 0 && (
+                {prodetailData?.price_sale > 0 ? (
                   <div className="product-price row">
                     <strong className="col-12">
                       {prodetailData?.price_sale}
@@ -189,6 +183,13 @@ const ProductDetail = () => {
                         <span>VND</span>
                       </del>
                     </div>
+                  </div>
+                ) : (
+                  <div className="product-price row">
+                    <strong className="col-12">
+                      {prodetailData?.price}
+                      <span>VND</span>
+                    </strong>
                   </div>
                 )}
                 <ul className="list">
@@ -263,11 +264,12 @@ const ProductDetail = () => {
         </div>
       </div>
       <div>
-        <ProductLienQuan />
-      </div>
-      <div>
         <CommentProductDetail />
       </div>
+      <div>
+        <ProductLienQuan />
+      </div>
+
     </div>
   );
 
