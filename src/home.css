@@ -21135,6 +21135,8 @@ label {
 
 .p_star input {
   background: #fff;
+  margin: 10px;
+  color: #000;
 }
 
 .p_star input:focus+.placeholder {
@@ -21147,6 +21149,7 @@ label {
   transform: translateY(-50%);
   left: 30px;
   z-index: 1;
+  background: #fff;
 }
 
 .p_star .placeholder::before {
@@ -21273,6 +21276,7 @@ label {
 .order_box {
   background: #e5ecee;
   padding: 30px;
+  width: 750px;
 }
 
 .order_box h2 {
