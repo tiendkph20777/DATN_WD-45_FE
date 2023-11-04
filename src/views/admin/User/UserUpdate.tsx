@@ -6,33 +6,36 @@ import { Button, Form, Select } from 'antd';
 import Input from 'antd/es/input/Input';
 import { message as messageApi } from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
+import { useFetchRoleQuery } from '../../../services/role.service';
 
 
 const YourFormComponent = () => {
     const { id }: any = useParams();
     const navigate = useNavigate();
-    const { data } = useFetchOneUserQuery(id);
-    const { control, handleSubmit, setValue } = useForm();
+    const { data: user } = useFetchOneUserQuery(id);
+    const { control, handleSubmit, setValue, watch } = useForm();
     const [updateUser] = useUpdateUserMutation();
+    const { data: roles } = useFetchRoleQuery()
 
     if (!id) {
         console.error('Id is undefined or null.');
         return null;
     }
-
+    // console.log(role_id)
     useEffect(() => {
-        if (data) {
-            setValue('_id', data._id);
-            setValue('email', data.email);
-            setValue('userName', data.userName);
-            setValue('fullName', data.fullName);
-            setValue('gender', data.gender);
-            setValue('address', data.address);
-            setValue('password', data.password);
-            setValue('tel', data.tel);
+        if (user) {
+            setValue('_id', user._id);
+            setValue('email', user.email);
+            setValue('userName', user.userName);
+            setValue('fullName', user.fullName);
+            setValue('gender', user.gender);
+            setValue('address', user.address);
+            setValue('password', user.password);
+            setValue('tel', user.tel);
+            setValue('role_id', user.role_id);
         }
-    }, [data, setValue]);
-    // console.log(data)
+    }, [user, setValue]);
+    console.log(user)
     const onSubmit = async (user: any) => {
         try {
             const response = await updateUser(user);
@@ -79,7 +82,7 @@ const YourFormComponent = () => {
                     <Controller
                         name="_id"
                         control={control}
-                        defaultValue={data?._id || ''}
+                        defaultValue={user?._id || ''}
                         render={({ field }) => <Input {...field} placeholder="id" />}
                     />
                 </Form.Item>
@@ -91,7 +94,7 @@ const YourFormComponent = () => {
                     <Controller
                         name="userName"
                         control={control}
-                        defaultValue={data?.username || ''}
+                        defaultValue={user?.username || ''}
                         render={({ field }) => <Input {...field} placeholder="Username" />}
                     />
                 </Form.Item>
@@ -103,7 +106,7 @@ const YourFormComponent = () => {
                     <Controller
                         name="fullName"
                         control={control}
-                        defaultValue={data?.fullName || ''}
+                        defaultValue={user?.fullName || ''}
                         render={({ field }) => <Input {...field} placeholder="fullName" />}
                     />
                 </Form.Item>
@@ -115,7 +118,7 @@ const YourFormComponent = () => {
                     <Controller
                         name="email"
                         control={control}
-                        defaultValue={data?.email || ''}
+                        defaultValue={user?.email || ''}
                         render={({ field }) => <Input {...field} placeholder="email" />}
                     />
                 </Form.Item>
@@ -143,23 +146,40 @@ const YourFormComponent = () => {
                     <Controller
                         name="tel"
                         control={control}
-                        defaultValue={data?.tel || ''}
+                        defaultValue={user?.tel || ''}
                         render={({ field }) => <Input {...field} placeholder="tel" />}
                     />
                 </Form.Item>
                 <Form.Item
                     label="Address"
                     name="address"
-                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                    rules={[{ required: true, message: 'Please input your address!' }]}
                 >
                     <Controller
                         name="address"
                         control={control}
-                        defaultValue={data?.address || ''}
+                        defaultValue={user?.address || ''}
                         render={({ field }) => <Input {...field} placeholder="address" />}
                     />
                 </Form.Item>
-
+                <Form.Item
+                    label="role_id"
+                    name="role_id"
+                    rules={[{ required: true, message: 'Please input your role_id!' }]}>
+                    <Controller
+                        render={({ field }) => (
+                            <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
+                                {roles?.map(role => (
+                                    <MenuItem key={role._id} value={role._id}>
+                                        {role.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        )}
+                        name="role_id"
+                        control={control}
+                    />
+                </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
                         Submit

@@ -118,7 +118,7 @@ const ProductView = () => {
             key: "images",
             width: 200,
             render: (images: string) => (
-                <img className="images" src={images} alt="images of product" width={100} />
+                <img className="images" src={images[0]} alt="images of product" width={100} />
             ),
         },
         {

@@ -51,7 +51,7 @@ const cartAPI = createApi({
 
         updateCartDetail: builder.mutation<void, any>({
             query: (Cart) => ({
-                url: `/cartDetail/${Cart.product_id}/update`,
+                url: `/cartDetail/${Cart.idCartDetail}/update`,
                 method: 'PUT',
                 body: Cart,
                 // headers: {

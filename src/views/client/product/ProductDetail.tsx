@@ -204,9 +204,9 @@ const ProductDetail = () => {
                   {prodetailData?.description}
                 </p>
                 <div className="product-detail d-flex size">
-                  <div className="product-size w-25">
+                  <div className="product-size ">
                     <p>Kích Cỡ</p>
-                    <div className="size-buttons">
+                    <div className="size-buttons" style={{ display: "contents", width: "100%" }}>
                       {sizes.map((size, index) => (
                         <button
                           key={index}
@@ -218,7 +218,7 @@ const ProductDetail = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="product-colors w-75">
+                  <div className="product-colors">
                     {showColors && (
                       <div>
                         <p>Màu Sắc</p>

@@ -62,10 +62,10 @@ const CheckOut = () => {
                 product_id: cartDetail.map(item => item.product_id),
                 user_id: idUs,
                 address: profileUser.map((item: { address: any; }) => item.address),
-                fullname:profileUser.map((item: { fullName: any; })=>item.fullName),
-                email:profileUser.map((item: { email: any; })=>item.email),
-                tel:profileUser.map((item: { tel: any; })=>item.tel),
-                total:cartDetail.map(item => item.total),
+                fullname: profileUser.map((item: { fullName: any; }) => item.fullName),
+                email: profileUser.map((item: { email: any; }) => item.email),
+                tel: profileUser.map((item: { tel: any; }) => item.tel),
+                total: cartDetail.map(item => item.total),
                 PaymentAmount: totalSum,
                 // Add other checkout-related data here
             };
@@ -178,24 +178,25 @@ const CheckOut = () => {
                             <div className="order_box">
                                 <h2>Your Order</h2>
                                 <tr>
-                                    <th scope="col" style={{ paddingLeft: "60px" }}>Hình Ảnh</th>
-                                    <th scope="col">Tên Sản Phẩm</th>
-                                    <th scope="col">Kích Cỡ</th>
-                                    <th scope="col">Màu Sắc</th>
-                                    <th scope="col">Số Lượng</th>
-                                    <th scope="col">Giá</th>
-                                    <th scope="col">Tạm Tính</th>
+                                    <th scope="col">Hình Ảnh</th>
+                                    <th scope="col">| Tên Sản Phẩm</th>
+                                    <th scope="col">| Kích Cỡ</th>
+                                    <th scope="col">| Màu Sắc</th>
+                                    <th scope="col">| Số Lượng</th>
+                                    <th scope="col">| Giá</th>
+                                    <th scope="col">| Tạm Tính</th>
                                 </tr>
                                 {cartDetail?.map((item: any) => (
-                                    <tr key={item?._id}>
+                                    <tr key={item?._id} style={{ height: "100px" }}>
                                         <td style={{ width: "100px" }}>
 
                                             <img
                                                 width={'100px'}
+                                                height={'100px'}
                                                 src={item?.image}
                                                 alt="" />
                                         </td>
-                                        <td style={{ width: "250px" }}>
+                                        <td style={{ width: "200px" }}>
                                             <h6>{item?.name}</h6>
                                         </td>
                                         <td style={{ width: "100px" }}>
@@ -215,23 +216,24 @@ const CheckOut = () => {
                                             <h5>{item?.quantity}</h5>
                                         </td>
                                         <td style={{ width: "100px" }}>
-                                            <h5>{item?.price}VNĐ</h5>
+                                            <h5>{item?.price}đ</h5>
                                         </td>
                                         <td style={{ width: "100px" }}>
-                                            <h5>{item?.total}VNĐ</h5>
+                                            <h5>{item?.total}đ</h5>
                                         </td>
 
                                     </tr>
                                 ))}
 
                                 <tr>
-                                    <td style={{ width: "150px" }}>Tổng thanh toán</td>
+                                    <td style={{ width: "150px", color: "black" }}>Tổng thanh toán</td>
                                     {/* <td>Shipping <span>Flat rate: 30000</span></td> */}
-                                    <td style={{ width: "300px" }}> </td>
-                                    <td style={{ width: "50px" }}> </td>
-                                    <td style={{ width: "150px" }}> </td>
-
-                                    <td style={{ width: "200px" }}> {totalSum}</td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td style={{ color: "black", fontSize: "20px" }}> {totalSum}đ</td>
                                 </tr>
 
 

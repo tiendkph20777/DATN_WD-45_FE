@@ -39,7 +39,7 @@ const Product = () => {
                         <div className="row ">
                             {brandData?.map((item) => {
                                 return (
-                                    <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
+                                    <div className="col-xxl-2 border-2 col-xl-2 col-lg-2 col-sm-4 col-6 p-2" key={item._id}>
                                         <div className="card">
                                             <a onClick={() => onHandleClick(item._id)} className="d-block overflow-hidden no-underline m-2">
                                                 <div className="position-relative overflow-hidden">
@@ -57,14 +57,14 @@ const Product = () => {
                     <div className="row ourteam-row w-100 position-relative ">
                         <div className="fs-2 section-heading p-5 text-uppercase fw-bold text-center">
                             Sản phẩm đang giảm giá
-                        </div> {/* <div class="col-xxl-8 col-xl-8 col-lg-8 col-sm-8 col-12"> */}
+                        </div>
                         <div className="row">
                             {dataSourceToRender?.map((item) => {
                                 const brandName = brandData?.find((brand: any) => brand._id == item.brand_id)?.name
                                 const discount = Math.round(100 - (item.price_sale / item.price * 100))
                                 if (item.price_sale > 0) {
                                     return (
-                                        <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
+                                        <div className="product col-xxl-3 border-2 col-xl-3 col-lg-4 col-sm-6 col-6 p-2" key={item._id}>
                                             <div className="card product-main">
                                                 <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                                     <div className="position-relative product-image overflow-hidden">
@@ -81,7 +81,7 @@ const Product = () => {
                                                             </div>
                                                         </div>
                                                         <div className="product-vendor">{brandName}</div>
-                                                        <h4 className="product-name">
+                                                        <h4 className="product-name" style={{}}>
                                                             {item.name}
                                                         </h4>
                                                         <div className="product-price row">
@@ -119,7 +119,7 @@ const Product = () => {
                             const brandName = brandData?.find((brand: any) => brand._id == item.brand_id)?.name
                             const discount = Math.round(100 - (item.price_sale / item.price * 100))
                             return (
-                                <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
+                                <div className="product col-xxl-3 border-2 col-xl-3 col-lg-4 col-sm-6 col-6  p-2" key={item._id}>
                                     <div className="card product-main">
                                         <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                             <div className="position-relative product-image overflow-hidden">

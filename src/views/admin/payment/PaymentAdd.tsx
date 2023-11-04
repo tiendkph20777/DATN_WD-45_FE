@@ -20,7 +20,7 @@ const PaymentAdd: React.FC = () => {
                     message: "Success",
                     description: "Thêm payment Thành Công!",
                 });
-                navigate("/admin/paymnent");
+                navigate("/admin/payment");
             })
             .catch((error) => {
                 console.error("Error adding payment:", error);
