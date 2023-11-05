@@ -15,6 +15,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { message as messageApi } from 'antd';
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
+import ProductLienQuan from "./ProductLienQuan";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -336,8 +337,9 @@ const ProductDetail = () => {
       </div>
       <div>
         <CommentProductDetail />
+        <ProductLienQuan />
 
-        <section className="our-team position-relative">
+        {/* <section className="our-team position-relative">
           <div className="container">
             <h1>Sản Phẩm Liên Quan</h1>
 
@@ -418,7 +420,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
       <div></div>
     </div>
