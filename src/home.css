@@ -14601,9 +14601,10 @@ textarea.form-control {
 /* Product Detail */
 
 .product-detail button {
-  background-color: var(--main-color);
-  color: white;
-  border: 2px solid #fff;
+  background-color: white;
+  color: black;
+  border-style: solid;
+  border-color: rgba(221, 221, 221, 1);
   transition: .3s;
 }
 
@@ -14611,6 +14612,7 @@ textarea.form-control {
   background-color: white;
   border: 2px solid var(--main-color);
   color: var(--main-color);
+  font-weight: bold;
 }
 
 .cart {
@@ -20468,13 +20470,9 @@ label {
 .product_count button {
   display: block;
   border: none;
-  background: transparent;
+  background: #EEEEEE;
   box-shadow: none;
   cursor: pointer;
-  position: absolute;
-  right: 0px;
-  font-size: 14px;
-  color: #cccccc;
   -webkit-transition: all 0.3s ease 0s;
   -moz-transition: all 0.3s ease 0s;
   -o-transition: all 0.3s ease 0s;

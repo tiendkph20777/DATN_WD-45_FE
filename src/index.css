@@ -19868,7 +19868,129 @@ fieldset:disabled .btn {
     width: 14px;
     height: 14px
 }
+/* CSS cho nút kích thước ngang */
+.size-buttons button {
+    display: inline-block;
+    background-color: #007BFF;
+    color: black;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+  }
+  
+  /* Đổi màu nền của nút khi người dùng chọn */
+  .size-buttons button:active {
+    background-color: #0056b3;
+    
+  }
+  
+  /* Đổi màu chữ của nút khi người dùng chọn */
+  .size-buttons button:focus {
+    color: black; 
+    font-size: bold;
+    background-color: white;
+  }
+  
+  /* CSS cho nút Bình luận */
+  .review-form button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  /* Đổi màu nền của nút khi người dùng chọn */
+  .review-form button:active {
+    background-color: #1e7e34;
+  }
+  
+  .product-colors {
+    margin-top: 20px;
+  }
+  
+  .color-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .color-button {
+    width: 30px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .color-button.active {
+    border: 2px solid #000;
+  }
+  .quantity {
+   display:flex;
+  }
+  
+  /* Thêm transition cho thuộc tính opacity và transform */
+  .single-prd-item img {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .single-prd-item img:hover {
+    opacity: 0.7; /* Độ mờ khi hover */
+    transform: scale(1.1); /* Phóng to hình ảnh khi hover */
+  }
+  
+  .size-button {
+    /* Định nghĩa kiểu dáng mặc định cho nút kích thước */
+    height: 40px;
+    /* Thêm các thuộc tính CSS khác cho nút kích thước nếu cần */
+  }
+  
+  .size-button.active {
+    /* Định nghĩa kiểu dáng cho nút kích thước được chọn */
+    border:  solid black; 
+    background-color: white;
+    color: red;/* Thay thế bằng màu viền mong muốn */
+    /* Thêm các thuộc tính CSS khác cho nút kích thước được chọn */
+  }
+  .quantity-input {
+    display: flex;
+  }
+  
+  .quantity-input span {
+    margin: 0 5px;
+  }
+  
+  .quantity-input button {
+    background: #f0f0f0;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5em;
+    padding: 0.2em 0.5em;
+    min-width: 20px;
+    text-align: center;
+  }
+  
+  .quantity-input input {
+    text-align: center;
+    font-size: 1em;
+    padding: 0.2em;
+  }
 
+  .product-blocks-443{
+    background: rgba(249, 255, 247, 1);
+    padding: 10px;
+    margin-left: 0px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(221, 221, 221, 1);
+    margin-bottom:20px
+  }
+  
+  
 .sidebar-nav ul .sidebar-item .first-level .sidebar-item:last-child {
     margin-bottom: 16px
 }
