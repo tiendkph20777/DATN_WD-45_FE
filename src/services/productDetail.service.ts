@@ -29,6 +29,7 @@ const productAPIDetall = createApi({
       query: (id) => ({
         url: `api/productdetail/${id}`,
         method: "DELETE",
+
         headers: {
           "content-type": "application/json",
           'authorization': `Bearer ${token}`
@@ -41,6 +42,7 @@ const productAPIDetall = createApi({
       query: (product) => ({
         url: `api/productdetail/add`,
         method: "POST",
+
         body: product,
         headers: {
           "content-type": "application/json",
