@@ -167,7 +167,12 @@ const ProductAdd: React.FC = () => {
                             <Input />
                         </Form.Item>
 
-                        <Form.Item label="Ảnh" name="images" valuePropName="file">
+                        <Form.Item
+                            label="Ảnh"
+                            name="images"
+                            valuePropName="file"
+                            id="preview-image"
+                        >
                             <div>
                                 <div className="image-upload">
                                     <label htmlFor="file-input">
@@ -203,7 +208,7 @@ const ProductAdd: React.FC = () => {
                                 <Button type="primary" htmlType="submit">
                                     Cập nhật
                                 </Button>
-                                <Button htmlType="reset">reset</Button>
+                                {/* <Button htmlType="reset">reset</Button> */}
                             </Space>
                         </Form.Item>
 

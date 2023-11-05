@@ -34,74 +34,83 @@ const VoucherEdit: React.FC = () => {
 
                 navigate('/admin/voucher');
                 notification.success({
-                    message: 'Update Successful',
-                    description: `Update thành công.`,
+                    message: 'Update Voucher Successful',
+                    description: `Update Voucher thành công.`,
                     duration: 2,
                 })
-            })}
-        const onFinishFailed = (errorInfo: any) => {
-            console.log('Failed', errorInfo);
-        };
-        return (
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="card-body">
-                        <h5 className="card-title fw-semibold mb-4">Cập nhật Voucher</h5>
-                        {contextHolder}
-                        <Form
-                            form={form}
-                            name="basic"
-                            labelCol={{ span: 8 }}
-                            wrapperCol={{ span: 16 }}
-                            style={{ maxWidth: 600 }}
-                            initialValues={{ remember: true }}
-                            onFinish={onFinish}
-                            onFinishFailed={onFinishFailed}
+            })
+            .catch(()=>{
+                
+                messageApi.open({
+                    type: "warning",
+                    content: "Ngày kết thúc phải sau ngày bắt đầu",
+                })
+            })
+            
+    }
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed', errorInfo);
+    };
+    return (
+        <div className="container-fluid">
+            <div className="row">
+                <div className="card-body">
+                    <h5 className="card-title fw-semibold mb-4">Cập nhật Voucher</h5>
+                    {contextHolder}
+                    <Form
+                        form={form}
+                        name="basic"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        style={{ maxWidth: 600 }}
+                        initialValues={{ remember: true }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
 
-                            autoComplete="off"
+                        autoComplete="off"
+                    >
+                        <Form.Item<FieldType>
+                            label="Mã giảm giá"
+                            name="code"
+                            rules={[{ required: true, message: 'Please input the code !' }, { min: 3, message: "ít nhất 3 ký tự" },]}
                         >
-                            <Form.Item<FieldType>
-                                label="Mã giảm giá"
-                                name="code"
-                                rules={[{ required: true, message: 'Please input the code !' }, { min: 3, message: "ít nhất 3 ký tự" },]}
-                            >
-                                <Input />
-                            </Form.Item>
+                            <Input />
+                        </Form.Item>
 
-                            <Form.Item<FieldType>
-                                label="Value"
-                                name="value"
-                                rules={[{ required: true, message: 'Please input the Value!' }, ]}
-                            >
-                                <Input />
-                            </Form.Item>
+                        <Form.Item<FieldType>
+                            label="Value"
+                            name="value"
+                            rules={[{ required: true, message: 'Please input the Value!' },]}
+                        >
+                            <Input />
+                        </Form.Item>
 
-                            <Form.Item<FieldType>
-                                label="quantity"
-                                name="quantity"
-                                rules={[{ required: true, message: "Please input the quantity" }]}
-                            >
-                                <Input />
-                            </Form.Item>
+                        <Form.Item<FieldType>
+                            label="quantity"
+                            name="quantity"
+                            rules={[{ required: true, message: "Please input the quantity" }]}
+                        >
+                            <Input />
+                        </Form.Item>
 
 
-                            <Form.Item
-                                label="date_start"
-                                name="date_start"
-                                rules={[{ required: true, message: "Please input the date Start" }]}
-                            >
-                                <Input />
-                            </Form.Item>
+                        <Form.Item
+                            label="date_start"
+                            name="date_start"
+                            rules={[{ required: true, message: "Please input the date Start" }]}
+                        >
+                            <Input />
+                        </Form.Item>
 
-                            <Form.Item
-                                label="date_end"
-                                name="date_end"
-                                rules={[{ required: true, message: "Please input the date Start" }]}
-                            >
-                                <Input />
-                            </Form.Item>
+                        <Form.Item
+                            label="date_end"
+                            name="date_end"
+                            rules={[{ required: true, message: "Please input the date Start" }]}
+                        >
+                            <Input />
+                        </Form.Item>
 
-                            {/* <Form.Item<FieldType>
+                        {/* <Form.Item<FieldType>
                             label="Status"
                             name="status"
                             rules={[{ required: true, message: "Please input the status" }]}
@@ -109,17 +118,22 @@ const VoucherEdit: React.FC = () => {
                             <Input />
                         </Form.Item> */}
 
-                            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                                <Button type="primary" htmlType="submit">
-                                    Cập nhật
-                                </Button>
-                                <Button htmlType="reset">reset</Button>
-                            </Form.Item>
-                        </Form>
-                    </div>
+                        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                            <Button type="primary" htmlType="submit">
+                                Cập nhật
+                            </Button>
+                            <Button
+                                type='primary'
+                                danger
+                                onClick={() => navigate("/admin/voucher")}
+                                className='ml-2'
+                            >Quay lại</Button>
+                        </Form.Item>
+                    </Form>
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
+}
 
-    export default VoucherEdit
+export default VoucherEdit

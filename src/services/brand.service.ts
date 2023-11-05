@@ -9,6 +9,7 @@ const brandAPI = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: "http://localhost:8080/api/"
     }),
+    tagTypes: ["Brand"],
     endpoints: builder => ({
         getBrands: builder.query<IBrands[], void>({
             query: () => `/brand`,
@@ -19,7 +20,11 @@ const brandAPI = createApi({
         removeBrand: builder.mutation<IBrands, number | string>({
             query: (id) => ({
                 url: `/brand/${id}`,
-                method: "DELETE"
+                method: "DELETE",
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
         }),
         addBrand: builder.mutation<IBrands, IBrands>({
@@ -32,13 +37,19 @@ const brandAPI = createApi({
                     'authorization': `Bearer ${token}`
                 }
             }),
+            invalidatesTags: ["Brand"],
         }),
         updateBrand: builder.mutation<IBrands, IBrands>({
             query: (brand) => ({
                 url: `/brand/${brand._id}/update`,
                 method: "PUT",
-                body: brand
-            })
+                body: brand,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
+            }),
+            invalidatesTags: ["Brand"],
         }),
 
     }),

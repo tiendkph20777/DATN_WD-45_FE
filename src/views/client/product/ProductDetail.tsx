@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
+
 import {
-  useAddCommentMutation,
   useGetProductByIdQuery,
   useGetProductsQuery,
 } from "../../../services/product.service";
@@ -12,8 +12,9 @@ import { IProducts } from "../../../types/product.service";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ImageZoom from "react-image-zoom";
-
+import { message as messageApi } from 'antd';
+import CommentProductDetail from "./CommentProductDetail";
+import { useCreateCartMutation } from "../../../services/cart.service";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -29,7 +30,6 @@ const ProductDetail = () => {
   const { data: brandData } = useGetBrandsQuery();
   const { _id } = useParams();
   const { data: prodetailData } = useGetProductByIdQuery(_id);
-  const { handleSubmit, register } = useForm<any>();
 
   const brandName = brandData?.find(
     (brand) => brand._id === prodetailData?.brand_id
@@ -49,8 +49,8 @@ const ProductDetail = () => {
   useEffect(() => {
     if (selectedSize) {
       const filteredColors = productDataDetail
-        .filter((detail) => detail.size === selectedSize)
-        .map((detail) => detail.color);
+        .filter((detail) => detail?.size === selectedSize)
+        .map((detail) => detail?.color);
       setColorsForSelectedSize(filteredColors);
       setShowColors(true);
     }
@@ -83,18 +83,18 @@ const ProductDetail = () => {
     setHasSelectedColor(false);
   };
 
-  const handleColorChange = (color) => {
+  const handleColorChange = (color: any) => {
     setSelectedColor(color);
     const selectedColorDetail = productDataDetail?.find(
-      (detail) => detail.color === color && detail.size === selectedSize
+      (detail) => detail?.color === color && detail?.size === selectedSize
     );
     if (selectedColorDetail) {
-      setSelectedColorName(selectedColorDetail.color);
+      setSelectedColorName(selectedColorDetail?.color);
     }
     setHasSelectedColor(true);
   };
 
-  const handleQuantityChange = (event) => {
+  const handleQuantityChange = (event: any) => {
     const newQuantity = parseInt(event.target.value, 10);
     if (!isNaN(newQuantity) && newQuantity >= 1) {
       setQuantity(newQuantity);
@@ -111,19 +111,45 @@ const ProductDetail = () => {
     }
   };
 
-  const { user: id_user } = JSON.parse(localStorage.getItem("user") || "{}");
-  const [addProduct] = useAddCommentMutation();
-  const navigate = useNavigate();
+  ////////////////////////////////
+  const { user } = JSON.parse(localStorage.getItem("user")!);
+  const [addCart, isLoading] = useCreateCartMutation();
 
-  const onHandleSubmit = ({ content, rate }: any) => {
-    const dataCmt = {
-      id_product: prodetailData?._id,
-      id_user,
-      rate,
-      content,
-    };
-    addProduct(dataCmt);
-    navigate("/");
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+
+  const onSubmitCart = async (dataCart: any) => {
+    if (!isAddingToCart) {
+      setIsAddingToCart(true);
+      const filteredProducts = productDataDetail?.map(async (product) => {
+        if (
+          typeof product?.size === "number" &&
+          product?.size === selectedSize
+        ) {
+          if (product?.color === selectedColor) {
+            const cartItem = {
+              product_id: product._id,
+              user_id: user,
+              quantity: quantity,
+            };
+            const result = await addCart(cartItem);
+            messageApi.success({
+              type: "error",
+              content: "Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉",
+              className: "custom-class",
+              style: {
+                margin: "10px",
+                fontSize: "20px",
+                lineHeight: "50px",
+              },
+            });
+            return result;
+          }
+        }
+      });
+      console.log(filteredProducts);
+      const results = await Promise.all(filteredProducts);
+      setIsAddingToCart(false);
+    }
   };
   const sliderSettings = {
     infinite: true, // Vòng lặp vô hạn
@@ -131,6 +157,8 @@ const ProductDetail = () => {
     slidesToShow: 1, // Số lượng ảnh được hiển thị cùng một lúc
     slidesToScroll: 1, // Số lượng ảnh được cuộn một lúc
   };
+
+  /////////////////////
 
   return (
     <div>
@@ -172,14 +200,7 @@ const ProductDetail = () => {
             <div className="col-lg-5 offset-lg-1">
               <div className="s_product_text">
                 <h3>{prodetailData?.name}</h3>
-                {prodetailData?.price_sale === 0 ? (
-                  <div className="product-price row">
-                    <strong className="col-12">
-                      {prodetailData?.price}
-                      <span>VND</span>
-                    </strong>
-                  </div>
-                ) : (
+                {prodetailData?.price_sale > 0 ? (
                   <div className="product-price row">
                     <strong className="col-12">
                       {prodetailData?.price_sale}
@@ -192,8 +213,14 @@ const ProductDetail = () => {
                       </del>
                     </div>
                   </div>
+                ) : (
+                  <div className="product-price row">
+                    <strong className="col-12">
+                      {prodetailData?.price}
+                      <span>VND</span>
+                    </strong>
+                  </div>
                 )}
-
                 <ul className="list">
                   <li>
                     <a className="active" href="#">
@@ -294,17 +321,22 @@ const ProductDetail = () => {
                   </div>
                 </div>
                 <div className="card_area d-flex align-items-center">
-                  <a className="primary-btn" href="#">
-                    Thêm Vào Giỏ Hàng
-                  </a>
+                  <button
+                    className="primary-btn"
+                    onClick={onSubmitCart}
+                    disabled={isAddingToCart}
+                  >
+                    {isAddingToCart ? "Adding to Cart..." : "Add to Cart"}
+                  </button>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <div>
+        <CommentProductDetail />
+
         <section className="our-team position-relative">
           <div className="container">
             <h1>Sản Phẩm Liên Quan</h1>
@@ -388,33 +420,7 @@ const ProductDetail = () => {
           </div>
         </section>
       </div>
-
-      <div className="mx-auto w-50">
-        <h2>Bình luận</h2>
-        <form onSubmit={handleSubmit(onHandleSubmit)} className="form-floating">
-          <textarea
-            className="form-control"
-            {...register("content", { required: true, minLength: 2 })}
-          ></textarea>
-          <label>Comments</label>
-          <select
-            className="form-select w-25"
-            {...register("rate", { required: true })}
-          >
-            <option value="0" selected>
-              Đánh giá
-            </option>
-            <option value="1">1 sao</option>
-            <option value="2">2 sao</option>
-            <option value="3">3 sao</option>
-            <option value="4">4 sao</option>
-            <option value="5">5 sao</option>
-          </select>
-          <button type="submit" className="btn btn-primary">
-            Bình luận
-          </button>
-        </form>
-      </div>
+      <div></div>
     </div>
   );
 };

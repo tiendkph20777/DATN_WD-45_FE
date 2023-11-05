@@ -13,22 +13,27 @@ const productAPIDetall = createApi({
   endpoints: (builder) => ({
     getAllProductsDetail: builder.query<IProductDetail[], void>({
       query: () => `api/productdetail`,
-      providerTags: ["ProductDetail"],
+      providesTags: ["ProductDetail"],
     }),
 
-    getProductDetail: builder.query<IProduct[], void>({
+    getProductDetail: builder.query<IProductDetail[], void>({
       query: () => `api/product`,
-      providerTags: ["ProductDetail"],
+      providesTags: ["ProductDetail"],
     }),
     getProductDetailById: builder.query<IProductDetail, number | string>({
       query: (id: any) => `api/productdetail/${id}/detail`,
-      providerTags: ["ProductDetail"],
+      providesTags: ["ProductDetail"],
     }),
 
     removeProductsDetail: builder.mutation<void, number>({
       query: (id) => ({
         url: `api/productdetail/${id}`,
         method: "DELETE",
+
+        headers: {
+          "content-type": "application/json",
+          'authorization': `Bearer ${token}`
+        }
       }),
       invalidatesTags: ["ProductDetail"],
     }),
@@ -37,8 +42,12 @@ const productAPIDetall = createApi({
       query: (product) => ({
         url: `api/productdetail/add`,
         method: "POST",
-        body: product
-      
+
+        body: product,
+        headers: {
+          "content-type": "application/json",
+          'authorization': `Bearer ${token}`
+        }
       }),
     }),
 
@@ -50,7 +59,7 @@ const productAPIDetall = createApi({
         headers: {
           "content-type": "application/json",
           'authorization': `Bearer ${token}`
-      }
+        }
       }),
       invalidatesTags: ["ProductDetail"],
     }),

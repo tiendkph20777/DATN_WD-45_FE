@@ -73,6 +73,14 @@ const SideBar = () => {
                             <span className="hide-menu">Mã giảm giá</span>
                         </Link>
                     </li>
+                    <li className="sidebar-item">
+                        <Link className="sidebar-link" to="/admin/comment" aria-expanded="false">
+                            <span>
+                                <i className="ti ti-article"></i>
+                            </span>
+                            <span className="hide-menu">Comment</span>
+                        </Link>
+                    </li>
                     <li className="nav-small-cap">
                         <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
                         <span className="hide-menu">Đơn Hàng</span>
@@ -91,6 +99,14 @@ const SideBar = () => {
                                 <i className="ti ti-mood-happy"></i>
                             </span>
                             <span className="hide-menu">Lịch Sử Đơn Hàng</span>
+                        </Link>
+                    </li>
+                    <li className="sidebar-item">
+                        <Link className="sidebar-link" to="/admin/payment" aria-expanded="false">
+                            <span>
+                                <i className="ti ti-mood-happy"></i>
+                            </span>
+                            <span className="hide-menu">Payment</span>
                         </Link>
                     </li>
                     <li className="nav-small-cap">

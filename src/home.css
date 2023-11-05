@@ -320,11 +320,11 @@
 
 .product-image {
   padding: 15px;
-  background: #e7e7e7;
+  /* background: #e7e7e7; */
 }
 
 .product-image img {
-  /* height: 200px; */
+  height: 400px;
   transition: transform 0.3s ease;
   padding-bottom: 50%;
   display: inline-block;
@@ -14641,13 +14641,13 @@ textarea.form-control {
 
 .count-cart {
   background: red;
-  margin-left: -13px;
-  padding: .2rem;
+  margin-left: -10px;
+  padding: 0.2rem;
   position: absolute;
-  line-height: 26px;
-  height: 30px;
+  line-height: 15px;
+  height: 20px;
   color: wheat;
-  width: 30px;
+  width: 23px;
   border-radius: 100px;
   text-align: center;
 }
@@ -21133,6 +21133,8 @@ label {
 
 .p_star input {
   background: #fff;
+  margin: 10px;
+  color: #000;
 }
 
 .p_star input:focus+.placeholder {
@@ -21145,6 +21147,7 @@ label {
   transform: translateY(-50%);
   left: 30px;
   z-index: 1;
+  background: #fff;
 }
 
 .p_star .placeholder::before {
@@ -21271,6 +21274,7 @@ label {
 .order_box {
   background: #e5ecee;
   padding: 30px;
+  width: 750px;
 }
 
 .order_box h2 {

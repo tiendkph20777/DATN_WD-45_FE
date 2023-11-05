@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { useFetchOneRoleQuery } from '../../services/role.service';
 import { useFetchOneUserQuery } from '../../services/user.service';
+import { useForm } from 'react-hook-form';
+import { useGetProductsQuery } from '../../services/product.service';
 
 const TheHeader = () => {
     useEffect(() => {
@@ -38,8 +40,9 @@ const TheHeader = () => {
     };
 
     // const [roleid, setroleid] = useState()
-    const id = storedStatus?.user._id
+    const id = storedStatus?.user
     const { data: user } = useFetchOneUserQuery(id)
+    // console.log(user)
     const idrole = user?.role_id
     const { data: role } = useFetchOneRoleQuery(idrole)
 
@@ -59,6 +62,14 @@ const TheHeader = () => {
         }
     }, [])
 
+    const { data: dataPro } = useGetProductsQuery();
+    const { handleSubmit, register } = useForm<any>();
+    const onHandleSubmit = ({ product }: any) => {
+        const id_product = dataPro?.find((role) => role?.name === product)?._id
+        if (id_product) {
+            navigate("/product/" + id_product + "/detail")
+        }
+    };
     return (
         <div>
             <header className="main-header position-fixed w-100">
@@ -77,10 +88,20 @@ const TheHeader = () => {
                             <img src="/src/assets/images/cart.svg" alt="" className="cart-icon" />
                             <span className="count-cart">15</span>
                         </a>
-                        <form action="" method="" className="form form-search d-flex w-25">
-                            <input type="text" placeholder="Tìm kiếm sản phẩm, thương hiệu.." />
-                            <i className="ti ti-search"></i>
+                        <form onSubmit={handleSubmit(onHandleSubmit)} className="form form-search d-flex w-25">
+                            <input type="text" placeholder="Tìm kiếm sản phẩm" list="name_product" {...register('product')} />
+
+                            <datalist id="name_product" >
+                                {dataPro?.map((item) => {
+                                    return (
+                                        <option value={item.name}>{item.name}</option>
+                                    )
+                                })}
+                            </datalist >
+
+                            <button type="submit" className="ti ti-search border border-0 "></button>
                         </form>
+
                         <style>
                             {`
                                     .form-search {
@@ -112,7 +133,7 @@ const TheHeader = () => {
                                     <Link to="/product" className='nav-link'>Sản Phẩm</Link>
                                 </li>
                                 <li className="nav-item">
-                                    <Link to="#" className='nav-link'>Giới Thiệu</Link>
+                                    <Link to="/blog" className='nav-link'>Giới Thiệu</Link>
                                 </li>
                                 {/* <li className="nav-item">
                                     <Link to="#" className='nav-link'>Tin Tức</Link>
@@ -129,7 +150,7 @@ const TheHeader = () => {
                                 <div className="login d-block align-items-center" id="sing">
                                     {isLoggedIn ? (
                                         <div className="dropdown">
-                                            <button className="btn btn1">{storedStatus?.user?.userName}</button>
+                                            <button className="btn btn1">{user?.userName}</button>
                                             <div className="dropdown-content" style={{ width: "100px", borderRadius: "10px" }}>
                                                 <Link to="/profile" className='link1'>Profile</Link>
                                                 {isRoles ? (

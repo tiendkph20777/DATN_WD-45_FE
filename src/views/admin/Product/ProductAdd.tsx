@@ -160,6 +160,7 @@ const ProductAdd: React.FC = () => {
                         <Form.Item
                             label="Ảnh"
                             name="images"
+                            id="preview-image"
                             required
                             rules={[
                                 { required: true, message: 'Please select an image!' },

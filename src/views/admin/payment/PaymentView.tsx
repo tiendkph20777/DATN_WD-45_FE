@@ -1,28 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Input, notification, Popconfirm } from 'antd';
-import { IBrands } from "../../../types/brand.service";
-import { useGetBrandsQuery, useRemoveBrandMutation } from '../../../services/brand.service';
+import { IPayment } from "../../../types/payment.service";
+
 import { Link } from 'react-router-dom';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import { ColumnsType } from 'antd/es/table';
+import { useGetPaymentQuery, useRemovePaymentMutation } from '../../../services/payment.service';
 
 interface DataType {
     key: string | number;
     name: string,
-    image: string,
-    description: string,
-
 }
-const CategoryView: React.FC = () => {
-    const { data: brandData } = useGetBrandsQuery();
-    const [removeBrand] = useRemoveBrandMutation();
+const PaymentView: React.FC = () => {
+    const { data: paymentData } = useGetPaymentQuery();
+    const [removePayment] = useRemovePaymentMutation();
     const [searchTerm, setSearchTerm] = useState('');
     const [dataSource, setDataSource] = useState<Array<any>>([]);
 
     const confirm = async (id: number | string) => {
         try {
             // Gọi API xóa sản phẩm bất đồng bộ
-            await removeBrand(id);
+            await removePayment(id);
 
             // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
             const updatedDataSource = dataSource.filter((item) => item.key !== id);
@@ -38,19 +36,18 @@ const CategoryView: React.FC = () => {
         }
     };
     useEffect(() => {
-        if (brandData) {
-            const filteredData = brandData.filter((brand: IBrands) =>
-                brand.name.toLowerCase().includes(searchTerm.toLowerCase())
+        if (paymentData) {
+            const filteredData = paymentData.filter((payment: IPayment) =>
+                payment.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
-            const updatedDataSource = filteredData.map((brand: IBrands) => ({
-                key: brand._id,
-                name: brand.name,
-                image: brand.image,
-                description: brand.description
+            const updatedDataSource = filteredData.map((payment: IPayment) => ({
+                key: payment._id,
+                name: payment.name,
+
             }));
             setDataSource(updatedDataSource);
         }
-    }, [brandData, searchTerm]);
+    }, [paymentData, searchTerm]);
 
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -58,31 +55,11 @@ const CategoryView: React.FC = () => {
         // useEffect sẽ được gọi và cập nhật dataSource
     };
 
-    // const handleDelete = (id?: number | string) => {
-    //     if (id) {
-    //         removeBrand(id);
-
-    //     }
-    // };
-
     const columns: ColumnsType<DataType> = [
         {
-            title: 'Tên danh mục',
+            title: 'Tên Payment',
             dataIndex: 'name',
             key: 'name',
-        },
-        {
-            title: "Ảnh",
-            dataIndex: "image",
-            key: "image",
-            render: (image: string) => (
-                <img className="image" src={image} alt="image of product" width={100} />
-            ),
-        },
-        {
-            title: 'Mô tả sản phẩm',
-            dataIndex: 'description',
-            key: 'description',
         },
         {
             title: "Hành động",
@@ -93,7 +70,7 @@ const CategoryView: React.FC = () => {
                         <div>
                             <Popconfirm
                                 title="Delete the task"
-                                description="Are you sure to delete this product ?"
+                                description="Are you sure to delete this payment ?"
                                 onConfirm={() => confirm(id)}
                                 okText="Yes"
                                 cancelText="No"
@@ -129,10 +106,10 @@ const CategoryView: React.FC = () => {
         },
 
     ];
-    const data = brandData?.map((brand: any) => {
+    const data = paymentData?.map((payment: any) => {
         return {
-            key: brand._id,
-            ...brand,
+            key: payment._id,
+            ...payment,
         };
     });
     return (
@@ -141,8 +118,8 @@ const CategoryView: React.FC = () => {
                 <div className="col-lg-12 d-flex align-items-stretch">
                     <div className="card w-100">
                         <div className="card-body mt-5" >
-                            <h5 className="card-title fw-semibold mb-4">Danh Mục</h5>
-                            <a className="text-white" href="/admin/category/add">
+                            <h5 className="card-title fw-semibold mb-4">Payment</h5>
+                            <a className="text-white" href="/admin/payment/add">
                                 <button type="button" className="btn btn-success m-1">Thêm</button>
                             </a>
                             <div className="col-lg-12 d-flex align-items-stretch">
@@ -171,4 +148,4 @@ const CategoryView: React.FC = () => {
     );
 };
 
-export default CategoryView;
+export default PaymentView;

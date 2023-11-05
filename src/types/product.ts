@@ -5,5 +5,4 @@ export interface IProductDetail {
     color?: string;
     product_id?: string;
     quantity?: number;
-    
 }

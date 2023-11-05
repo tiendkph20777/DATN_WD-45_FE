@@ -7,7 +7,7 @@ import { message as messageApi } from 'antd';
 
 const SettingAbout = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!)
-    const idUs = profileUser?.user?._id
+    const idUs = profileUser?.user
     const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
     const [updateUser] = useUpdateUserMutation();
     const [form1, setForm1] = useState(true);

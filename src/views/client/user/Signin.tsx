@@ -8,7 +8,7 @@ import { IAuth } from '../../../types/user';
 const Signin = () => {
     const navigate = useNavigate();
     const [createUser, { isLoading }] = useSignInMutation();
-    const [showConfirmation, setShowConfirmation] = useState(false);
+    // const [showConfirmation, setShowConfirmation] = useState(false);
 
     const {
         register,
@@ -19,6 +19,7 @@ const Signin = () => {
     const onSubmit = async (formData: IAuth) => {
         try {
             const response = await createUser(formData);
+            // console.log(formData)
             if (response.error) {
                 messageApi.open({
                     type: 'error',
