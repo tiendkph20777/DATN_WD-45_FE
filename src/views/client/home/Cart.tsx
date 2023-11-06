@@ -17,7 +17,6 @@ const Cart = () => {
     const { data: Product } = useGetProductsQuery();
     const [removeCartDetailMutation] = useRemoveCartDetailMutation();
     const [updateCartDetailMutation] = useUpdateCartDetailMutation();
-    // console.log("a", cartUser)
     // console.log(cartDetail)
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
@@ -80,7 +79,7 @@ const Cart = () => {
     // update
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const [editingProduct, setEditingProduct] = useState({});
+    const [editingProduct, setEditingProduct] = useState<any>({});
     const { control, handleSubmit, setValue, watch } = useForm();
 
     const handleEditClick = (id: string) => {
@@ -125,11 +124,12 @@ const Cart = () => {
             setValue('total', editingProduct.total);
         }
     }, [editingProduct, setValue]);
-    const targetProduct = ProductDetailUser?.filter((item) => item?.product_id === editingProduct?.product_id)
-    // console.log(targetProduct)
-    const uniqueSizes = new Set(targetProduct?.map((proSize: any) => proSize.size));
-    const uniqueColors = new Set(targetProduct?.map((proColor: any) => proColor.color));
-    // 
+
+    // Lấy ra danh sách các size và màu duy nhất từ sản phẩm đã chọn
+    const targetProduct = ProductDetailUser?.filter((item) => item?.product_id === editingProduct?.product_id);
+    const selectedProductSizes = [...new Set(targetProduct?.map((product) => product.size))];
+    const selectedProductColors = [...new Set(targetProduct?.map((product) => product.color))];
+
     const selectedSize = watch('size');
     const selectedColor = watch('color');
 
@@ -137,17 +137,18 @@ const Cart = () => {
         return product.size === selectedSize && product.color === selectedColor;
     });
 
-    // // Lấy ra danh sách các size và màu duy nhất từ sản phẩm đã chọn
-    // const targetProduct = ProductDetailUser?.filter((item) => item?.product_id === editingProduct?.product_id);
-    // const selectedProductSizes = [...new Set(targetProduct?.map((product) => product.size))];
-    // const selectedProductColors = [...new Set(targetProduct?.map((product) => product.color))];
-    // const selectedSizeInitial = selectedProductSizes[0];
-    // const selectedColorInitial = selectedProductColors[0];
-
-    // const matchingProduct = targetProduct?.find((product) => {
-    //     return product.size === selectedSizeInitial && product.color === selectedColorInitial;
-    // });
-
+    const handleSizeAndColorChange = (newSize: any, newColor: any) => {
+        setValue('size', newSize);
+        setValue('color', newColor);
+    };
+    // console.log(matchingProduct)
+    const handleSizeChange = (newSize: any) => {
+        setValue('size', newSize);
+        const matchingColors = targetProduct
+            ?.filter((product) => product.size === newSize)
+            ?.map((product) => product.color);
+        setValue('color', matchingColors[0]);
+    };
     // console.log(matchingProduct)
     const onSubmit = async (cartUs: any) => {
         if (matchingProduct) {
@@ -289,8 +290,8 @@ const Cart = () => {
                                             >
                                                 <Controller
                                                     render={({ field }) => (
-                                                        <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                                            {[...uniqueSizes].map((size) => (
+                                                        <Select {...field} style={{ width: "100%" }} className='form-control p-0' onChange={(newSize) => handleSizeChange(newSize)}>
+                                                            {selectedProductSizes?.map((size) => (
                                                                 <option key={size} value={size}>
                                                                     {size}
                                                                 </option>
@@ -301,6 +302,7 @@ const Cart = () => {
                                                     control={control}
                                                 />
                                             </Form.Item>
+
                                             <Form.Item
                                                 label="Color"
                                                 name="color"
@@ -310,11 +312,13 @@ const Cart = () => {
                                                 <Controller
                                                     render={({ field }) => (
                                                         <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                                            {[...uniqueColors].map((color) => (
-                                                                <option key={color} value={color}>
-                                                                    {color}
-                                                                </option>
-                                                            ))}
+                                                            {targetProduct
+                                                                ?.filter((product) => product.size === watch('size'))
+                                                                .map((product) => (
+                                                                    <option key={product.color} value={product.color}>
+                                                                        {product.color}
+                                                                    </option>
+                                                                ))}
                                                         </Select>
                                                     )}
                                                     name="color"

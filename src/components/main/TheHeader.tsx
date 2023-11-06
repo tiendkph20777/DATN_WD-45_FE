@@ -4,6 +4,7 @@ import { useFetchOneRoleQuery } from '../../services/role.service';
 import { useFetchOneUserQuery } from '../../services/user.service';
 import { useForm } from 'react-hook-form';
 import { useGetProductsQuery } from '../../services/product.service';
+import { useFetchOneCartQuery } from '../../services/cart.service';
 
 const TheHeader = () => {
     useEffect(() => {
@@ -45,7 +46,10 @@ const TheHeader = () => {
     // console.log(user)
     const idrole = user?.role_id
     const { data: role } = useFetchOneRoleQuery(idrole)
-
+    // cart user
+    const { data: cartUser } = useFetchOneCartQuery(id);
+    const cartlength = cartUser?.products.length
+    // 
     useEffect(() => {
         if (role && role?.name === 'Admin') {
             setIRole(true);
@@ -145,7 +149,7 @@ const TheHeader = () => {
                             <div className="d-flex align-items-center">
                                 <Link to={"/cart"} className="cart">
                                     <img src="/src/assets/images/cart.svg" alt="" className="cart-icon" />
-                                    <span className="count-cart">15</span>
+                                    <span className="count-cart">{cartlength}</span>
                                 </Link>
                                 <div className="login d-block align-items-center" id="sing">
                                     {isLoggedIn ? (
