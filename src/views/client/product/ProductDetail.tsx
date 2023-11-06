@@ -271,9 +271,8 @@ const ProductDetail = () => {
                       {productSizes?.map((size, index) => (
                         <button
                           key={index}
-                          className={`size-button ${
-                            selectedSize === size ? "active" : ""
-                          }`}
+                          className={`size-button ${selectedSize === size ? "active" : ""
+                            }`}
                           onClick={() => handleSizeChange(size)}
                         >
                           {size}
@@ -289,9 +288,8 @@ const ProductDetail = () => {
                           {colorsForSelectedSize.map((color, index) => (
                             <button
                               key={index}
-                              className={`color-button ${
-                                selectedColor === color ? "active" : ""
-                              } ${hasSelectedColor ? "with-color" : ""}`}
+                              className={`color-button ${selectedColor === color ? "active" : ""
+                                } ${hasSelectedColor ? "with-color" : ""}`}
                               style={{ backgroundColor: color }}
                               onClick={() => handleColorChange(color)}
                             ></button>
@@ -346,6 +344,7 @@ const ProductDetail = () => {
                 <Slider
                   dots={true} // Hiển thị dấu chấm chỉ định trang hiện tại
                   infinite={true} // Lặp vô tận qua các ảnh
+                  adaptiveHeight={true}
                   speed={300} // Tốc độ chuyển đổi (milliseconds)
                   slidesToShow={4} // Số ảnh được hiển thị cùng một lúc
                   slidesToScroll={1} // Số ảnh được chuyển đổi khi bạn di chuyển slide

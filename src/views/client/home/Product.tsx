@@ -1,13 +1,18 @@
-
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import Slider from "react-slick";
 import { useGetBrandsQuery } from '../../../services/brand.service';
 import { useGetProductsQuery } from '../../../services/product.service';
 import { IProducts } from '../../../types/product.service';
 import { useEffect, useState } from 'react';
+
 const Product = () => {
     const { data: productData } = useGetProductsQuery();
     const { data: brandData } = useGetBrandsQuery();
     const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
     const [searchResult, setSearchResult] = useState<IProducts[]>([]);
+    const brandName = (item: any) => brandData?.find((brand: any) => brand._id == item.brand_id)?.name
+    const discount = (item: any) => Math.round(100 - (item.price_sale / item.price * 100))
     useEffect(() => {
         if (productData) {
             const updatedDataSource = productData.map(({ ...IProducts }) => ({ ...IProducts }));
@@ -18,8 +23,8 @@ const Product = () => {
 
     const onHandleClick = (value: string | number) => {
         let filteredData = dataSourceToRender;
-        if (filteredData.length > 2) {
-            filteredData = filteredData.filter((item) => item.brand_id == value);
+        filteredData = filteredData.filter((item) => item.brand_id == value);
+        if (filteredData.length > 1) {
             setDataSourceToRender(filteredData);
         } else {
             filteredData = searchResult;
@@ -27,19 +32,52 @@ const Product = () => {
             setDataSourceToRender(filteredData);
         }
     };
+    const settings = {
+        // dots: true,  Hiển thị dấu chấm chỉ định trang hiện tại
+        infinite: true, // Lặp vô tận qua các ảnh
+        adaptiveHeight: true,
+        speed: 800,// Tốc độ chuyển đổi (milliseconds)
+        slidesToShow: 4, // Số ảnh được hiển thị cùng một lúc
+        slidesToScroll: 1, // Số ảnh được chuyển đổi khi bạn di chuyển slide
+        autoplay: true,
+        autoplaySpeed: 2000, // Thời gian chuyển ảnh
+        arrows: true,
+        responsive:
+            [
+                {
+                    breakpoint: 1024,
+                    settings: {
+                        slidesToShow: 3,
+                        slidesToScroll: 3,
+                        infinite: true,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 600,
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 2
+                    }
+                }
+            ]
+    };
 
     return (
         <div>
             <section className="our-team position-relative">
                 <div className="container">
-                    <div className="fs-2 section-heading text-uppercase fw-bold text-center">
+                    <div className="fs-2 mb-4 section-heading text-uppercase fw-bold text-center">
                         Thương Hiệu
                     </div>
+                    <div>
+
+                    </div>
                     <div className="row ourteam-row position-relative container">
-                        <div className="row ">
+                        <div className="row">
                             {brandData?.map((item) => {
                                 return (
-                                    <div className="col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
+                                    <div className="brandIcon col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2 " key={item._id}>
                                         <div className="card">
                                             <a onClick={() => onHandleClick(item._id)} className="d-block overflow-hidden no-underline m-2">
                                                 <div className="position-relative overflow-hidden">
@@ -50,61 +88,55 @@ const Product = () => {
                                     </div>
                                 )
                             })}
-
-
                         </div>
                     </div>
                     <div className="row ourteam-row w-100 position-relative ">
                         <div className="fs-2 section-heading p-5 text-uppercase fw-bold text-center">
                             Sản phẩm đang giảm giá
-                        </div> {/* <div class="col-xxl-8 col-xl-8 col-lg-8 col-sm-8 col-12"> */}
-                        <div className="row">
-                            {dataSourceToRender?.map((item) => {
-                                const brandName = brandData?.find((brand: any) => brand._id == item.brand_id)?.name
-                                const discount = Math.round(100 - (item.price_sale / item.price * 100))
-                                if (item.price_sale > 0) {
-                                    return (
-                                        <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
-                                            <div className="card product-main">
-                                                <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
-                                                    <div className="position-relative product-image overflow-hidden">
-                                                        <img src={item.images[0]} alt="" width="100%" className=" inset-0 object-cover" />
-                                                    </div>
-                                                    <div className="bg-white content-product w-100 p-2">
-                                                        <div className="product-detail pt-2 row text-center">
-                                                            <div className="col-6 d-flex">
-                                                            </div>
-                                                            <div className="col-6 row justify-content-end">
-                                                                <div className="col-3 m-1 product-color color-1" />
-                                                                <div className="col-3 m-1 product-color color-2" />
-                                                                <div className="col-3 m-1 product-color color-3" />
-                                                            </div>
+                        </div>
+                        <div >
+                            <Slider {...settings}>
+                                {dataSourceToRender?.slice(0, 6).map((item) => {
+                                    if (item.price_sale > 0) {
+                                        return (
+                                            <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
+                                                <div className="card product-main">
+                                                    <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
+                                                        <div className="position-relative product-image overflow-hidden">
+                                                            <img src={item.images[0]} alt="" width="100%" className=" inset-0 object-cover" />
                                                         </div>
-                                                        <div className="product-vendor">{brandName}</div>
-                                                        <h4 className="product-name">
-                                                            {item.name}
-                                                        </h4>
-                                                        <div className="product-price row">
-                                                            <strong className="col-12">{item.price_sale}đ</strong>
-                                                            <div className="d-flex">
-                                                                <del className="price-del">{item.price}đ</del>
-                                                                <span className="product-discount">-{discount}%</span>
+                                                        <div className="bg-white content-product w-100 p-2">
+                                                            <div className="product-detail px-3 row ">
+                                                                <div className="col-12 row px-2">
+                                                                    <div className="col-1 m-1 product-color color-1" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="product-vendor">{brandName(item)}</div>
+                                                            <h4 className="product-name" style={{ height: '60px' }}>
+                                                                {item.name}
+                                                            </h4>
+                                                            <div className="product-price row">
+                                                                <strong className="col-12">{item.price_sale}đ</strong>
+                                                                <div className="d-flex">
+                                                                    <del className="price-del">{item.price}đ</del>
+                                                                    <span className="product-discount">-{discount(item)}%</span>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                    <div className="product-action pt-5 row text-center justify-content-center">
-                                                        <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
+                                                        <div className="product-action pt-5 row text-center justify-content-center">
+                                                            <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
+                                                            </div>
+                                                            <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
+                                                            </div>
                                                         </div>
-                                                        <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
-                                                        </div>
-                                                    </div>
-                                                </a>
+                                                    </a>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                }
+                                        )
+                                    }
+                                })}
+                            </Slider>
 
-                            })}
                         </div>
                     </div>
                 </div>
@@ -114,10 +146,8 @@ const Product = () => {
                     <div className="fs-2 p-5 section-heading text-uppercase fw-bold text-center m-2">
                         Sản phẩm bán chạy
                     </div>
-                    <div className="row">
-                        {dataSourceToRender?.map((item) => {
-                            const brandName = brandData?.find((brand: any) => brand._id == item.brand_id)?.name
-                            const discount = Math.round(100 - (item.price_sale / item.price * 100))
+                    <Slider {...settings}>
+                        {dataSourceToRender?.slice(0, 6).map((item) => {
                             return (
                                 <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
                                     <div className="card product-main">
@@ -125,20 +155,15 @@ const Product = () => {
                                             <div className="position-relative product-image overflow-hidden">
                                                 <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                                 <div className="product-hot" />
-                                                {/* <div class="product-category"></div> */}
                                             </div>
                                             <div className="bg-white content-product w-100 p-2">
-                                                <div className="product-detail p-2 row text-center">
-                                                    <div className="col-6 d-flex">
-                                                    </div>
-                                                    <div className="col-6 row justify-content-end">
-                                                        <div className="col-3 m-1 product-color color-1" />
-                                                        <div className="col-3 m-1 product-color color-2" />
-                                                        <div className="col-3 m-1 product-color color-3" />
+                                                <div className="product-detail px-3 row ">
+                                                    <div className="col-12 row px-2">
+                                                        <div className="col-1 m-1 product-color color-1" />
                                                     </div>
                                                 </div>
-                                                <div className="product-vendor">{brandName}</div>
-                                                <h4 className="product-name">
+                                                <div className="product-vendor">{brandName(item)}</div>
+                                                <h4 className="product-name" style={{ height: '60px' }}>
                                                     {item.name}
                                                 </h4>
                                                 {item.price_sale > 0 ? (
@@ -146,7 +171,7 @@ const Product = () => {
                                                         <strong className="col-12">{item.price_sale}đ</strong>
                                                         <div className="d-flex">
                                                             <del className="price-del">{item.price}đ</del>
-                                                            <span className="product-discount">-{discount}%</span>
+                                                            <span className="product-discount">-{discount(item)}%</span>
                                                         </div>
                                                     </div>
                                                 ) : (
@@ -165,24 +190,20 @@ const Product = () => {
                                         </a>
                                     </div>
                                 </div>
-
                             )
                         })}
 
-                    </div>
+                    </Slider>
                 </div>
 
             </section>
             <section className="our-team position-relative pt-2">
                 <div className="container">
-                    <h5 className="fs-5 section-subheading text-uppercase text-center fw-500" style={{ paddingBottom: "30px" }}>Giày</h5>
                     <div className="fs-2 section-heading pb-5 text-uppercase fw-bold text-center">
                         Sản phẩm nổi bật
                     </div>
-                    <div className="row">
-                        {dataSourceToRender?.map((item) => {
-                            const brandName = brandData?.find((brand: any) => brand._id == item.brand_id)?.name
-                            const discount = Math.round(100 - (item.price_sale / item.price * 100))
+                    <Slider {...settings}>
+                        {dataSourceToRender?.slice(0, 6).map((item) => {
                             return (
                                 <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2">
                                     <div className="card product-main">
@@ -192,17 +213,13 @@ const Product = () => {
                                                 <div className="product-hot" />
                                             </div>
                                             <div className="bg-white content-product w-100 p-2">
-                                                <div className="product-detail p-2 row text-center">
-                                                    <div className="col-6 d-flex">
-                                                    </div>
-                                                    <div className="col-6 row justify-content-end">
-                                                        <div className="col-3 m-1 product-color color-1" />
-                                                        <div className="col-3 m-1 product-color color-2" />
-                                                        <div className="col-3 m-1 product-color color-3" />
+                                                <div className="product-detail px-3 row ">
+                                                    <div className="col-12 row px-2">
+                                                        <div className="col-1 m-1 product-color color-1" />
                                                     </div>
                                                 </div>
-                                                <div className="product-vendor">{brandName}</div>
-                                                <h4 className="product-name">
+                                                <div className="product-vendor">{brandName(item)}</div>
+                                                <h4 className="product-name" style={{ height: '60px' }}>
                                                     {item.name}
                                                 </h4>
                                                 {item.price_sale > 0 ? (
@@ -210,7 +227,7 @@ const Product = () => {
                                                         <strong className="col-12">{item.price_sale}đ</strong>
                                                         <div className="d-flex">
                                                             <del className="price-del">{item.price}đ</del>
-                                                            <span className="product-discount">-{discount}%</span>
+                                                            <span className="product-discount">-{discount(item)}%</span>
                                                         </div>
                                                     </div>
                                                 ) : (
@@ -233,7 +250,7 @@ const Product = () => {
                             )
                         })}
 
-                    </div>
+                    </Slider>
                 </div></section>
         </div >
     )

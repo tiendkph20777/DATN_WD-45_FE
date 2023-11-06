@@ -1,3 +1,5 @@
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { useAddCommentMutation, useFetchCommentQuery, useGetProductByIdQuery, useGetProductsQuery } from '../../../services/product.service';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
@@ -40,9 +42,10 @@ const CommentProductDetail = () => {
 
     return (
         <div className="mx-auto w-70 row h-50 my-5">
-            <div className='col'>
-                <div>
-                    {dataSourceToRender.map((item, ee) => {
+            <h3>XEM ĐÁNH GIÁ</h3>
+            <div className='w-50'>
+                <div className="scroll">
+                    {dataSourceToRender.map((item) => {
                         const nameUser = dataUser?.find((role) => role?._id === item.id_user)?.fullName
                         return (
                             <div className="border p-3">
@@ -77,8 +80,7 @@ const CommentProductDetail = () => {
                     </button>
                 </form>
             </div>
-
-        </div>
+        </div >
     )
 }
 
