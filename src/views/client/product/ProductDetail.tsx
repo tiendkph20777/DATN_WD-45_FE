@@ -49,7 +49,7 @@ const ProductDetail = () => {
   useEffect(() => {
     if (selectedSize) {
       const filteredColors = productDataDetail
-        .filter((detail) => detail?.size === selectedSize)
+        ?.filter((detail) => detail?.size === selectedSize)
         .map((detail) => detail?.color);
       setColorsForSelectedSize(filteredColors);
       setShowColors(true);
@@ -265,10 +265,6 @@ const ProductDetail = () => {
                 </div>
 
                 <div className="product-detail d-flex size">
-                  {/* <div className="product-size ">
-                    <p>Kích Cỡ</p>
-                    <div className="size-buttons" style={{ display: "contents", width: "100%" }}>
-                      {sizes.map((size, index) => ( */}
                   <div className="product-size w-25 ">
                     <p>Kích Cỡ</p>
                     <div className="size-buttons">
