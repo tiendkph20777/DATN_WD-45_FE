@@ -50,8 +50,6 @@ const Product = () => {
                                     </div>
                                 )
                             })}
-
-
                         </div>
                     </div>
                     <div className="row ourteam-row w-100 position-relative ">
@@ -81,9 +79,9 @@ const Product = () => {
                                                             </div>
                                                         </div>
                                                         <div className="product-vendor">{brandName}</div>
-                                                        <h4 className="product-name" style={{}}>
+                                                        <p className="product-name ellipsis" style={{ fontSize: "18px" }} >
                                                             {item.name}
-                                                        </h4>
+                                                        </p>
                                                         <div className="product-price row">
                                                             <strong className="col-12">{item.price_sale}đ</strong>
                                                             <div className="d-flex">
@@ -128,7 +126,7 @@ const Product = () => {
                                                 {/* <div class="product-category"></div> */}
                                             </div>
                                             <div className="bg-white content-product w-100 p-2">
-                                                <div className="product-detail p-2 row text-center">
+                                                <div className="product-detail row text-center">
                                                     <div className="col-6 d-flex">
                                                     </div>
                                                     <div className="col-6 row justify-content-end">
@@ -138,7 +136,7 @@ const Product = () => {
                                                     </div>
                                                 </div>
                                                 <div className="product-vendor">{brandName}</div>
-                                                <h4 className="product-name">
+                                                <h4 className="product-name ellipsis">
                                                     {item.name}
                                                 </h4>
                                                 {item.price_sale > 0 ? (
@@ -191,18 +189,18 @@ const Product = () => {
                                                 <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                                 <div className="product-hot" />
                                             </div>
-                                            <div className="bg-white content-product w-100 p-2">
-                                                <div className="product-detail p-2 row text-center">
+                                            <div className="bg-white content-product w-100">
+                                                <div className="product-detail row">
                                                     <div className="col-6 d-flex">
                                                     </div>
                                                     <div className="col-6 row justify-content-end">
-                                                        <div className="col-3 m-1 product-color color-1" />
-                                                        <div className="col-3 m-1 product-color color-2" />
-                                                        <div className="col-3 m-1 product-color color-3" />
+                                                        <div className="col-2 m-1 product-color color-1" />
+                                                        <div className="col-2 m-1 product-color color-2" />
+                                                        <div className="col-2 m-1 product-color color-3" />
                                                     </div>
                                                 </div>
                                                 <div className="product-vendor">{brandName}</div>
-                                                <h4 className="product-name">
+                                                <h4 className="product-name ellipsis">
                                                     {item.name}
                                                 </h4>
                                                 {item.price_sale > 0 ? (

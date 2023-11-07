@@ -28,7 +28,7 @@ const Signin = () => {
                     style: {
                         marginTop: '0',
                         fontSize: "20px",
-                        lineHeight: "50px"
+                        lineHeight: "30px"
                     },
                 });
             } else {
@@ -41,7 +41,7 @@ const Signin = () => {
                     style: {
                         marginTop: '0',
                         fontSize: "20px",
-                        lineHeight: "50px"
+                        lineHeight: "30px"
                     },
                 });
                 navigate("/");

@@ -356,7 +356,7 @@ const Index = () => {
                         </div>
                         <div className="bg-white content-product w-100 p-2">
                           <div className="product-vendor">{brandName}</div>
-                          <h4 className="product-name">{item.name}</h4>
+                          <h4 className="product-name ellipsis">{item.name}</h4>
                           {item.price_sale > 0 ? (
                             <div className="product-price row">
                               <strong className="col-12">

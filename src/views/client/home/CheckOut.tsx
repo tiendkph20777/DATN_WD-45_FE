@@ -187,9 +187,8 @@ const CheckOut = () => {
                                     <th scope="col">| Tạm Tính</th>
                                 </tr>
                                 {cartDetail?.map((item: any) => (
-                                    <tr key={item?._id} style={{ height: "100px" }}>
+                                    <tr key={item?._id} style={{ height: "100px" }} >
                                         <td style={{ width: "100px" }}>
-
                                             <img
                                                 width={'100px'}
                                                 height={'100px'}
@@ -199,7 +198,7 @@ const CheckOut = () => {
                                         <td style={{ width: "200px" }}>
                                             <h6>{item?.name}</h6>
                                         </td>
-                                        <td style={{ width: "100px" }}>
+                                        <td style={{ width: "100px", textAlign: "center" }}>
                                             <h5>{item?.size}</h5>
 
                                         </td>
@@ -212,7 +211,7 @@ const CheckOut = () => {
                                             </div>
 
                                         </td>
-                                        <td style={{ width: "100px" }}>
+                                        <td style={{ width: "100px", textAlign: "center" }}>
                                             <h5>{item?.quantity}</h5>
                                         </td>
                                         <td style={{ width: "100px" }}>
@@ -278,8 +277,8 @@ const CheckOut = () => {
                     </form>
 
                 </div>
-            </div>
-        </section></div>
+            </div >
+        </section ></div >
     )
 
 }

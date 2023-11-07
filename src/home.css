@@ -8414,6 +8414,7 @@ fieldset:disabled .btn {
 
 .d-flex {
   display: flex !important;
+  /* padding: 0px; */
 }
 
 .d-inline-flex {
@@ -13579,11 +13580,11 @@ fieldset:disabled .btn {
   background-repeat: no-repeat;
   z-index: -1;
 }
-
+/* 
 .our-team .row {
-  /* padding-top: 20px; */
-  /* margin: 0 -25px; */
-}
+  padding-top: 20px;
+  margin: 0 ;
+} */
 
 .our-team .team-bg {
   border-radius: 0px 229.5px 0px 0px;
@@ -23122,3 +23123,11 @@ label {
 .product__filter-item:hover .filter__form-item label {
   background: #ff4545;
 } */
+.ellipsis {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Use 'normal' to allow wrapping within the lines */
+}
