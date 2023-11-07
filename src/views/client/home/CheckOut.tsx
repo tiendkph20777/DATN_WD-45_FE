@@ -4,18 +4,40 @@ import { useGetAllProductsDetailQuery } from '../../../services/productDetail.se
 import { useGetProductsQuery } from '../../../services/product.service';
 import { useFetchOneUserQuery } from '../../../services/user.service';
 import { useCreateCheckoutMutation } from "../../../services/checkout.service";
+import { useGetPaymentQuery } from '../../../services/payment.service';
+
+import { Select, Button, Form, Input, notification, Checkbox } from 'antd';
+import form from 'antd/es/form';
 
 
+const { Option } = Select;
 const CheckOut = () => {
-
+    const [form] = Form.useForm();
     const profileUser = JSON.parse(localStorage.getItem("user")!);
-    const idUs = profileUser?.user;
+    // console.log(profileUser.user)
+
     const [cartDetail, setCartDetail] = useState([]);
-    console.log(cartDetail)
-    const { data: usersOne } = useFetchOneUserQuery(idUs)
+    // const [usersOne, setUsersOne] = useState(); // Initialize usersOne as null
+
+    const idUs = profileUser?.user;
+    const usersOne = useFetchOneUserQuery(idUs).data
+
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const response =  useFetchOneUserQuery(idUs);
+    //             setUsersOne(response.data);
+    //             console.log(response)
+    //         } catch (error) {
+    //         }
+    //     };
+
+    //     fetchUserData(); 
+    // }, [idUs]);
+    console.log(usersOne)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
-
+    const { data: payment } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
 
     useEffect(() => {
@@ -52,44 +74,38 @@ const CheckOut = () => {
 
     const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
     const [addCheckout, { isLoading, isError, isSuccess }] = useCreateCheckoutMutation();
+    // const data=cartDetail.map(item=>{
+    //     return {
+    //         product_id: item.product_id,
+    //         user_id: idUs,
+    //         address: profileUser.map((item: { address: any; }) => item.address),
+    //         fullname: profileUser.map((item: { fullName: any; }) => item.fullName),
+    //         email: profileUser.map((item: { email: any; }) => item.email),
+    //         tel: profileUser.map((item: { tel: any; }) => item.tel),
+    //         total:  item.total,
+    //         PaymentAmount: totalSum,
+    //         payment: payment
+    //     }
+    // })
 
-    const onSubmitCheckout = async () => {
-        if (!isAddingToCheckout) {
-            setIsAddingToCheckout(true);
-
-            // Prepare the data for creating a checkout
-            const checkoutData = {
-                product_id: cartDetail.map(item => item.product_id),
-                user_id: idUs,
-                address: profileUser.map((item: { address: any; }) => item.address),
-                fullname: profileUser.map((item: { fullName: any; }) => item.fullName),
-                email: profileUser.map((item: { email: any; }) => item.email),
-                tel: profileUser.map((item: { tel: any; }) => item.tel),
-                total: cartDetail.map(item => item.total),
-                PaymentAmount: totalSum,
-                // Add other checkout-related data here
-            };
-
-            try {
-                // Call the addCheckout mutation to create a checkout
-                const response = await addCheckout(checkoutData).unwrap();
-
-                // Handle success and navigate to a confirmation page or perform other actions
-                if (isSuccess(response)) {
-                    // Handle success, e.g., show a success message, redirect to a confirmation page
-                    console.log('Checkout successful');
-                    // You may want to reset the cart or perform other post-checkout actions.
-                }
-            } catch (error) {
-                // Handle any errors or display error messages to the user
-                console.error('Error adding checkout:', error);
-            } finally {
-                setIsAddingToCheckout(false);
-            }
-        }
-    };
 
     const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item.total, 0);
+    const createCheckout = (value: any) => {
+
+        const date = new Date();
+        const year = date.getFullYear().toString();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+        const dateCreate = `${year}/${month}/${day}/${hours}/${minutes}/${seconds}`;
+
+        const newData = { products: cartDetail, ...value, status: "Chờ xác nhận...", dateCreate };
+
+        // addCheckout(newData).unwrap();
+        console.log(newData)
+    }
 
     return (
         <div><section className="checkout_area section_gap">
@@ -128,158 +144,213 @@ const CheckOut = () => {
                 </div>
                 <div className="billing_details">
 
-                    <form className="row" action="" method="post" noValidate>
-                        <div className="col-lg-4">
+
+                    <Form
+                        form={form}
+                        name="basic"
+                        labelCol={{ span: 8 }}
+                        wrapperCol={{ span: 16 }}
+                        style={{ maxWidth: 600 }}
+                        initialValues={{ remember: true }}
+                        autoComplete="off"
+                        className="row contact_form"
+                        onFinish={createCheckout}
+                    >
+                        <div className="col-lg-9">
                             <h3>Billing Details</h3>
-                            <div className="row contact_form"  >
+                            <div className="row contact_form">
                                 <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="first" name="name" defaultValue={usersOne?.userName} readOnly />
-                                    {/* <span className="placeholder" data-placeholder="First name"></span> */}
+                                    <Form.Item
+                                        label="First Name"
+                                        name="user_id"
+                                        initialValue={usersOne?._id}
+                                        hidden
+                                    >
+
+                                    </Form.Item>
                                 </div>
                                 <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="last" name="name" defaultValue={usersOne?.fullName} readOnly />
-                                    <span className="placeholder" ></span>
+                                    <Form.Item
+                                        label="First Name"
+                                        name="name"
+                                        initialValue={usersOne?.userName}
+                                    >
+                                        <Input readOnly />
+                                    </Form.Item>
+                                </div>
+                                <div className="col-md-6 form-group p_star">
+                                    <Form.Item label="Last Name" name="name" initialValue={usersOne?.fullName}>
+                                        <Input readOnly />
+                                    </Form.Item>
                                 </div>
                                 <div className="col-md-12 form-group">
-                                    <input type="text" className="form-control" id="company" name="company" placeholder="Company name" />
+                                    <Form.Item label="Company Name" name="company">
+                                        <Input placeholder="Company name" />
+                                    </Form.Item>
                                 </div>
                                 <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="number" name="number" defaultValue={usersOne?.tel} readOnly />
-                                    <span className="placeholder" ></span>
+                                    <Form.Item
+                                        label="Phone Number"
+                                        name="tel"
+                                        initialValue={usersOne?.tel}
+                                    >
+                                        <Input readOnly />
+                                    </Form.Item>
                                 </div>
                                 <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="email" name="compemailany" defaultValue={usersOne?.email} readOnly />
-                                    <span className="placeholder" ></span>
+                                    <Form.Item
+                                        label="Email"
+                                        name="email"
+                                        initialValue={usersOne?.email}
+                                    >
+                                        <Input readOnly />
+                                    </Form.Item>
                                 </div>
-
                                 <div className="col-md-12 form-group p_star">
-                                    <input type="text" className="form-control" id="add1" name="add1" defaultValue={usersOne?.address} readOnly />
-                                    <span className="placeholder" ></span>
+                                    <Form.Item label="Address" name="address" initialValue={usersOne?.address}>
+                                        <Input readOnly />
+                                    </Form.Item>
                                 </div>
-
-
                                 <div className="col-md-12 form-group">
-                                    <div className="creat_account">
-                                        <input type="checkbox" id="f-option2" name="selector" />
-                                        <label htmlFor={"f-option2"}>Create an account?</label>
-                                    </div>
+                                    <Form.Item name="createAccount" valuePropName="checked">
+                                        <Checkbox>Create an account?</Checkbox>
+                                    </Form.Item>
                                 </div>
                                 <div className="col-md-12 form-group">
                                     <div className="creat_account">
                                         <h3>Shipping Details</h3>
-                                        <input type="checkbox" id="f-option3" name="selector" />
-                                        <label htmlFor="f-option3">Ship to a different address?</label>
+                                        <Form.Item name="shipToDifferentAddress" valuePropName="checked">
+                                            <Checkbox>Ship to a different address?</Checkbox>
+                                        </Form.Item>
+                                        <Form.Item label="Order Notes" name="Note">
+                                            <Input.TextArea rows={1} placeholder="Order Notes" />
+                                        </Form.Item>
                                     </div>
-                                    <textarea className="form-control" name="message" id="message" rows={1} placeholder="Order Notes"></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-8">
+                        <div className="col-lg-3">
                             <div className="order_box">
                                 <h2>Your Order</h2>
-                                <tr>
-                                    <th scope="col">Hình Ảnh</th>
-                                    <th scope="col">| Tên Sản Phẩm</th>
-                                    <th scope="col">| Kích Cỡ</th>
-                                    <th scope="col">| Màu Sắc</th>
-                                    <th scope="col">| Số Lượng</th>
-                                    <th scope="col">| Giá</th>
-                                    <th scope="col">| Tạm Tính</th>
-                                </tr>
-                                {cartDetail?.map((item: any) => (
-                                    <tr key={item?._id} style={{ height: "100px" }} >
-                                        <td style={{ width: "100px" }}>
-                                            <img
-                                                width={'100px'}
-                                                height={'100px'}
-                                                src={item?.image}
-                                                alt="" />
-                                        </td>
-                                        <td style={{ width: "200px" }}>
-                                            <h6>{item?.name}</h6>
-                                        </td>
-                                        <td style={{ width: "100px", textAlign: "center" }}>
-                                            <h5>{item?.size}</h5>
-
-                                        </td>
-                                        <td style={{ width: "100px" }}>
-                                            <div style={{ display: "flex", alignItems: "center" }}>
-                                                <button
-                                                    style={{ backgroundColor: item?.color, width: "20px", height: "20px", margin: "5px" }}
-                                                ></button>
-                                                <h5>{item?.color}</h5>
-                                            </div>
-
-                                        </td>
-                                        <td style={{ width: "100px", textAlign: "center" }}>
-                                            <h5>{item?.quantity}</h5>
-                                        </td>
-                                        <td style={{ width: "100px" }}>
-                                            <h5>{item?.price}đ</h5>
-                                        </td>
-                                        <td style={{ width: "100px" }}>
-                                            <h5>{item?.total}đ</h5>
-                                        </td>
-
+                                <table>
+                                    <tr>
+                                        <th scope="col">Hình Ảnh</th>
+                                        <th scope="col">| Tên Sản Phẩm</th>
+                                        <th scope="col">| Kích Cỡ</th>
+                                        <th scope="col">| Màu Sắc</th>
+                                        <th scope="col">| Số Lượng</th>
+                                        <th scope="col">| Giá</th>
+                                        <th scope="col">| Tạm Tính</th>
                                     </tr>
-                                ))}
+                                    {cartDetail?.map((item: any) => (
+                                        <tr key={item?._id} style={{ height: "100px" }}>
+                                            <td style={{ width: "100px" }}>
 
-                                <tr>
-                                    <td style={{ width: "150px", color: "black" }}>Tổng thanh toán</td>
-                                    {/* <td>Shipping <span>Flat rate: 30000</span></td> */}
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td style={{ color: "black", fontSize: "20px" }}> {totalSum}đ</td>
-                                </tr>
+                                                <img
+                                                    width={'100px'}
+                                                    height={'100px'}
+                                                    src={item?.image}
+                                                    alt="" />
+                                            </td>
+                                            <td style={{ width: "200px" }}>
+                                                <h6>{item?.name}</h6>
+                                            </td>
+                                            <td style={{ width: "100px" }}>
+                                                <h5>{item?.size}</h5>
 
+                                            </td>
+                                            <td style={{ width: "100px" }}>
+                                                <div style={{ display: "flex", alignItems: "center" }}>
+                                                    <button
+                                                        style={{ backgroundColor: item?.color, width: "20px", height: "20px", margin: "5px" }}
+                                                    ></button>
+                                                    <h5>{item?.color}</h5>
+                                                </div>
 
+                                            </td>
+                                            <td style={{ width: "100px" }}>
+                                                <h5>{item?.quantity}</h5>
+                                            </td>
+                                            <td style={{ width: "100px" }}>
+                                                <h5>{item?.price}đ</h5>
+                                            </td>
+                                            <td style={{ width: "100px" }}>
+                                                <h5>{item?.total}đ</h5>
+                                            </td>
 
+                                        </tr>
 
-                                <div className="payment_item">
-                                    <div className="radion_btn">
-                                        <input type="radio" id="f-option5" name="selector" />
-                                        <label htmlFor="f-option5">Check payments</label>
-                                        <div className="check"></div>
-                                    </div>
-                                    <p>Please send a check to Store Name, Store Street, Store Town, Store State / County,
-                                        Store Postcode.</p>
+                                    ))}
+                                </table>
+
+                                <div className="col-md-12 form-group">
+
+                                    <Input readOnly value={totalSum} />
+
                                 </div>
+                                <div className="payment_item">
+                                    <Form.Item
+                                        label="Payment Method"
+                                        name="paymentMethod"
+                                        rules={[{ required: true, message: 'Please select a payment' }]}
+                                    >
+                                        <Select placeholder="Select a payment">
+                                            {payment?.map((payment) => (
+                                                <Option key={payment._id} value={payment._id}>
+                                                    {payment.name}
+                                                </Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                </div>
+
+
                                 <div className="payment_item active">
-                                    <div className="radion_btn">
-                                        <input type="radio" id="f-option6" name="selector" />
-                                        <label htmlFor="f-option6">Paypal </label>
-                                        <img src="img/product/card.jpg" alt="" />
-                                        <div className="check"></div>
-                                    </div>
-                                    <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
-                                        account.</p>
+                                    <Form.Item
+                                        label=" Shipping"
+                                        name="shipping"
+                                        rules={[{ required: true, message: 'Please select a shipping' }]}
+                                    >
+                                        <Select placeholder="Select a shipping">
+                                            <Option value="shoppee">Shoppee</Option>
+                                            <Option value="vietelpost">VietelPost</Option>
+                                        </Select>
+                                    </Form.Item>
                                 </div>
                                 <div className="creat_account">
-                                    <input type="checkbox" id="f-option4" name="selector" />
-                                    <label htmlFor="f-option4">I’ve read and accept the </label>
-                                    <a href="#">terms & conditions*</a>
-                                </div>
-
-                                <div className="card_area  align-items-center">
-                                    <button
-                                        className="primary-btn"
-                                        onClick={onSubmitCheckout}
-                                        disabled={isAddingToCheckout}
+                                    <Form.Item
+                                        name="acceptTerms"
+                                        valuePropName="checked"
+                                        rules={[
+                                            {
+                                                validator: (_, value) => value ? Promise.resolve() : Promise.reject('Please accept the terms & conditions'),
+                                            },
+                                        ]}
                                     >
-                                        {isAddingToCheckout ? "Ordering..." : "Order"}
-                                    </button>
+                                        <Checkbox>
+                                            I’ve read and accept the <a href="#">terms & conditions*</a>
+                                        </Checkbox>
+                                    </Form.Item>
+                                </div>
+                                <div className="card_area align-items-center">
+                                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                                        <Button type="primary" htmlType="submit">
+                                            Order
+                                        </Button>
+                                    </Form.Item>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </Form>
 
                 </div>
-            </div >
-        </section ></div >
+            </div>
+        </section></div>
     )
 
 }
 export default CheckOut
+
+function moment(date: Date) {
+    throw new Error('Function not implemented.');
+}
