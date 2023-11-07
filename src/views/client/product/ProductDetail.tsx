@@ -364,6 +364,7 @@ const ProductDetail = () => {
                 <Slider
                   dots={true} // Hiển thị dấu chấm chỉ định trang hiện tại
                   infinite={true} // Lặp vô tận qua các ảnh
+                  adaptiveHeight={true}
                   speed={300} // Tốc độ chuyển đổi (milliseconds)
                   slidesToShow={4} // Số ảnh được hiển thị cùng một lúc
                   slidesToScroll={1} // Số ảnh được chuyển đổi khi bạn di chuyển slide
