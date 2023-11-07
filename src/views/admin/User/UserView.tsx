@@ -203,7 +203,7 @@ const App: React.FC = () => {
             title: 'Image',
             dataIndex: 'image',
             key: 'image',
-            render: (image: any) => <img src={image} alt="" style={{ maxWidth: '100px' }} />,
+            render: (image: any) => <img src={image} alt="" style={{ width: '100px', height: "70px" }} />,
         },
         {
             title: <p><Link to={"add"}><Button type='primary'>Add New User</Button></Link></p>,
@@ -250,7 +250,7 @@ const App: React.FC = () => {
                         rowExpandable: (record: any) => record.firstName !== 'Not Expandable',
                     }}
                     dataSource={searchResult.length > 0 ? searchResult : []}
-                    pagination={{ pageSize: 5, showQuickJumper: true }}
+                    pagination={{ pageSize: 10, showQuickJumper: true }}
                 />
             </div>
         </div>

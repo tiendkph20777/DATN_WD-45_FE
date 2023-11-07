@@ -1,5 +1,4 @@
 import { RouteObject } from "react-router-dom";
-import Dashboard from "../views/admin/Dashboard";
 import { RoleView } from "../views/admin/Category";
 import CategoryAdd from "../views/admin/Category/CategoryAdd";
 import CategoryEdit from "../views/admin/Category/CategoryEdit";
@@ -32,15 +31,16 @@ import UserAdd from "../views/admin/User/UserAdd";
 import { PaymentView } from "../views/admin/payment";
 import PaymentAdd from "../views/admin/payment/PaymentAdd";
 import PaymentEdit from "../views/admin/payment/PaymentEdit";
+import Dashboard from "../views/admin/Dashboard/Dashboard";
 
 const routes: RouteObject[] = [
     {
         path: '/admin',
-        element: <Dashboard />,
+        element: <IndexAdmin />,
         children: [
             {
                 index: true,
-                element: <IndexAdmin />
+                element: <Dashboard />
             },
             {
                 path: 'category', element: <RoleView />

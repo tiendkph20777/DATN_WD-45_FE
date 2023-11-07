@@ -15,6 +15,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { message as messageApi } from 'antd';
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
+import ProductLienQuan from "./ProductLienQuan";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -46,17 +47,23 @@ const ProductDetail = () => {
   const [hasSelectedColor, setHasSelectedColor] = useState(false);
   const [mainImage, setMainImage] = useState(prodetailData?.images[0]);
 
+  // if (!selectedSize) {
+  //   console.log(selectedSize)
+  // } {
+  //   console.log("bạn chưa chọn size")
+  // }
+
   useEffect(() => {
     if (selectedSize) {
       const filteredColors = productDataDetail
-        .filter((detail) => detail?.size === selectedSize)
+        ?.filter((detail) => detail?.size === selectedSize)
         .map((detail) => detail?.color);
       setColorsForSelectedSize(filteredColors);
       setShowColors(true);
     }
   }, [selectedSize, productDataDetail]);
 
-  const handleThumbnailClick = (image) => {
+  const handleThumbnailClick = (image: string) => {
     setMainImage(image);
   };
 
@@ -76,7 +83,7 @@ const ProductDetail = () => {
     }
   }, [productData, prodetailData, productDataDetail]);
 
-  const handleSizeChange = (size) => {
+  const handleSizeChange = (size: any) => {
     setSelectedSize(size);
     setSelectedColor("");
     setSelectedColorName("");
@@ -112,43 +119,56 @@ const ProductDetail = () => {
   };
 
   ////////////////////////////////
-  const { user } = JSON.parse(localStorage.getItem("user")!);
+  const profileUser = JSON.parse(localStorage.getItem("user")!)
+  const user = profileUser?.user
   const [addCart, isLoading] = useCreateCartMutation();
 
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const onSubmitCart = async (dataCart: any) => {
-    if (!isAddingToCart) {
-      setIsAddingToCart(true);
-      const filteredProducts = productDataDetail?.map(async (product) => {
-        if (
-          typeof product?.size === "number" &&
-          product?.size === selectedSize
-        ) {
-          if (product?.color === selectedColor) {
-            const cartItem = {
-              product_id: product._id,
-              user_id: user,
-              quantity: quantity,
-            };
-            const result = await addCart(cartItem);
-            messageApi.success({
-              type: "error",
-              content: "Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉",
-              className: "custom-class",
-              style: {
-                margin: "10px",
-                fontSize: "20px",
-                lineHeight: "50px",
-              },
-            });
-            return result;
+    if (user) {
+      if (!isAddingToCart) {
+        setIsAddingToCart(true);
+        const filteredProducts = productDataDetail?.map(async (product) => {
+          if (
+            typeof product?.size === "number" && product?.size === selectedSize
+          ) {
+            if (product?.color === selectedColor) {
+              const cartItem = {
+                product_id: product._id,
+                user_id: user,
+                quantity: quantity,
+              };
+              const result = await addCart(cartItem);
+              messageApi.success({
+                type: "error",
+                content: "Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉",
+                className: "custom-class",
+                style: {
+                  margin: "10px",
+                  fontSize: "20px",
+                  lineHeight: "30px",
+                },
+              });
+              return result;
+            }
           }
+        });
+        // console.log(filteredProducts);
+        const results = await Promise.all(filteredProducts);
+        setIsAddingToCart(false);
+      }
+    } else {
+      messageApi.error({
+        type: "error",
+        content: "Vui lòng đăng nhập để thực hiện chức năng này !!!",
+        className: "custom-class",
+        style: {
+          margin: "10px",
+          fontSize: "20px",
+          lineHeight: "30px",
         }
-      });
-      console.log(filteredProducts);
-      const results = await Promise.all(filteredProducts);
-      setIsAddingToCart(false);
+      })
     }
   };
   const sliderSettings = {
@@ -231,24 +251,24 @@ const ProductDetail = () => {
                     <i>{prodetailData?.content}</i>
                   </li>
                 </ul>
-                <p className="description-product">
+                <p className="description-product  ">
                   {prodetailData?.description}
                 </p>
-                <div class="product-blocks-details product-blocks-443 grid-rows">
-                  <div class="grid-row grid-row-443-1">
-                    <div class="grid-cols">
-                      <div class="grid-col grid-col-443-1-1">
-                        <div class="grid-items">
-                          <div class="grid-item grid-item-443-1-1-1">
-                            <div class="module module-info_blocks module-info_blocks-361">
-                              <div class="module-body">
-                                <div class="module-item module-item-1 info-blocks info-blocks-icon">
-                                  <div class="info-block">
-                                    <div class="info-block-content">
-                                      <div class="info-block-title">
+                <div className="product-blocks-details product-blocks-443 grid-rows">
+                  <div className="grid-row grid-row-443-1">
+                    <div className="grid-cols">
+                      <div className="grid-col grid-col-443-1-1">
+                        <div className="grid-items">
+                          <div className="grid-item grid-item-443-1-1-1">
+                            <div className="module module-info_blocks module-info_blocks-361">
+                              <div className="module-body">
+                                <div className="module-item module-item-1 info-blocks info-blocks-icon">
+                                  <div className="info-block">
+                                    <div className="info-block-content">
+                                      <div className="info-block-title">
                                         KHUYẾN MẠI ĐẶC BIỆT EXTRA SALE
                                       </div>
-                                      <div class="info-block-text">
+                                      <div className="info-block-text">
                                         Giảm thêm 200.000đ với đơn hàng từ 4
                                         triệu. Nhập mã: MYS200K
                                       </div>
@@ -280,7 +300,7 @@ const ProductDetail = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="product-colors w-75">
+                  <div className="product-colors">
                     {showColors && (
                       <div>
                         <p>Màu Sắc</p>
@@ -334,7 +354,7 @@ const ProductDetail = () => {
       </div>
       <div>
         <CommentProductDetail />
-
+        {/* <ProductLienQuan /> */}
         <section className="our-team position-relative">
           <div className="container">
             <h1>Sản Phẩm Liên Quan</h1>
@@ -380,11 +400,11 @@ const ProductDetail = () => {
                                 />
                                 <div className="product-hot" />
                               </div>
-                              <div className="bg-white content-product w-100 p-2 h-50">
+                              <div className="bg-white content-product w-100 p-2 pb-0">
                                 <div className="product-vendor">
                                   {brandName}
                                 </div>
-                                <h4 className="product-name">{item.name}</h4>
+                                <h4 className="product-name ">{item.name}</h4>
                                 {item.price_sale > 0 ? (
                                   <div className="product-price row">
                                     <strong className="col-12">
@@ -406,6 +426,12 @@ const ProductDetail = () => {
                                     </strong>
                                   </div>
                                 )}
+                              </div>
+                              <div className="product-action pt-5 row text-center justify-content-center">
+                                <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
+                                </div>
+                                <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
+                                </div>
                               </div>
                             </a>
                           </div>

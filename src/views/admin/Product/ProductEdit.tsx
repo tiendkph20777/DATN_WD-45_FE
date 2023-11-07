@@ -56,6 +56,7 @@ const ProductAdd: React.FC = () => {
             });
         }
     }, [productData, form]);
+    console.log(productData)
     // const [brands, setBrands] = useState<any[]>([]);
     // const [brandId, setBrandId] = useState<number | string | undefined>(undefined);
     const { data: categories } = useGetBrandsQuery();

@@ -112,7 +112,7 @@ const Product = () => {
                                                                 </div>
                                                             </div>
                                                             <div className="product-vendor">{brandName(item)}</div>
-                                                            <h4 className="product-name" style={{ height: '60px' }}>
+                                                            <h4 className="product-name ellipsis">
                                                                 {item.name}
                                                             </h4>
                                                             <div className="product-price row">
@@ -141,7 +141,7 @@ const Product = () => {
                     </div>
                 </div>
             </section>
-            <section className="our-team position-relative mt-5">
+            <section className="our-team position-relative">
                 <div className="container">
                     <div className="fs-2 p-5 section-heading text-uppercase fw-bold text-center m-2">
                         Sản phẩm bán chạy

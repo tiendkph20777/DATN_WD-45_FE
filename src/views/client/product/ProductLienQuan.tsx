@@ -30,7 +30,7 @@ const ProductLienQuan = () => {
                 <div className="container">
                     <h1>Sản Phẩm Liên Quan</h1>
                     <div className="row ourteam-row position-relative">
-                        <div className="row col-xxl-9 border-2 col-xl-9 col-lg-9 col-sm-12 col-12 p-2">
+                        <div className="row col-xxl-12 border-2 col-xl-12 col-lg-12 col-sm-12 col-12 p-2">
                             {dataSourceToRender?.map((item) => {
                                 if (item.brand_id === prodetailData?.brand_id) {
                                     const brandName = brandData?.find(
@@ -41,7 +41,7 @@ const ProductLienQuan = () => {
                                     );
                                     return (
                                         <div
-                                            className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2"
+                                            className="product col-xxl-3 border-2 col-xl-3 col-lg-3 col-sm-4 col-6 p-2"
                                             key={item._id}
                                         >
                                             <div className="card product-main">
@@ -83,6 +83,12 @@ const ProductLienQuan = () => {
                                                                 </strong>
                                                             </div>
                                                         )}
+                                                    </div>
+                                                    <div className="product-action pt-5 row text-center justify-content-center">
+                                                        <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
+                                                        </div>
+                                                        <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
+                                                        </div>
                                                     </div>
                                                 </a>
                                             </div>
