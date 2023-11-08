@@ -13638,6 +13638,7 @@ fieldset:disabled .btn {
   background-repeat: no-repeat;
   z-index: -1;
 }
+
 /* 
 .our-team .row {
   padding-top: 20px;
@@ -23183,9 +23184,11 @@ label {
 } */
 .ellipsis {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2;
+  /* Limit to 2 lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal; /* Use 'normal' to allow wrapping within the lines */
+  white-space: normal;
+  /* Use 'normal' to allow wrapping within the lines */
 }

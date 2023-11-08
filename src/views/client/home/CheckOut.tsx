@@ -8,12 +8,15 @@ import { useGetPaymentQuery } from '../../../services/payment.service';
 
 import { Select, Button, Form, Input, notification, Checkbox } from 'antd';
 import form from 'antd/es/form';
+import { useGetVoucherByCodeQuery } from '../../../services/voucher.service';
 
 
 const { Option } = Select;
 const CheckOut = () => {
     const [form] = Form.useForm();
     const profileUser = JSON.parse(localStorage.getItem("user")!);
+    // const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
+
     // console.log(profileUser.user)
 
     const [cartDetail, setCartDetail] = useState([]);
@@ -22,19 +25,20 @@ const CheckOut = () => {
     const idUs = profileUser?.user;
     const usersOne = useFetchOneUserQuery(idUs).data
 
-    // useEffect(() => {
-    //     const fetchUserData = async () => {
-    //         try {
-    //             const response =  useFetchOneUserQuery(idUs);
-    //             setUsersOne(response.data);
-    //             console.log(response)
-    //         } catch (error) {
-    //         }
-    //     };
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await useFetchOneUserQuery(idUs);
+                setUsersOne(response.data);
+                console.log(response)
+            } catch (error) {
+            }
+        };
 
-    //     fetchUserData(); 
-    // }, [idUs]);
+        fetchUserData();
+    }, [idUs]);
     console.log(usersOne)
+
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: payment } = useGetPaymentQuery();
@@ -72,8 +76,7 @@ const CheckOut = () => {
         }
     }, [cartUser, ProductDetailUser]);
 
-    const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
-    const [addCheckout, { isLoading, isError, isSuccess }] = useCreateCheckoutMutation();
+
     // const data=cartDetail.map(item=>{
     //     return {
     //         product_id: item.product_id,
@@ -87,9 +90,15 @@ const CheckOut = () => {
     //         payment: payment
     //     }
     // })
-
-
     const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item.total, 0);
+    // const [voucherCode, setVoucherCode] = useState('');
+
+    // const handleCheckVoucher = async () => {
+    //     const valueVoucher = await useGetVoucherByCodeQuery(voucherCode)
+    //     console.log(valueVoucher);
+    //     // console.log(voucherCode);
+    // }
+    const [addCheckout] = useCreateCheckoutMutation();
     const createCheckout = (value: any) => {
 
         const date = new Date();
@@ -101,47 +110,18 @@ const CheckOut = () => {
         const seconds = date.getSeconds().toString().padStart(2, '0');
         const dateCreate = `${year}/${month}/${day}/${hours}/${minutes}/${seconds}`;
 
-        const newData = { products: cartDetail, ...value, status: "Chờ xác nhận...", dateCreate };
+        const newData = { products: cartDetail, ...value, total: totalSum, status: "Chờ xác nhận...", dateCreate };
 
-        // addCheckout(newData).unwrap();
+        addCheckout(newData);
         console.log(newData)
     }
+
 
     return (
         <div><section className="checkout_area section_gap">
             <div className="container">
-                {/* <div className="returning_customer">
-                    <div className="check_title">
-                        <h2>Returning Customer? <a href="#">Click here to login</a></h2>
-                    </div>
-                    <p>If you have shopped with us before, please enter your details in the boxes below. If you are a new
-                        customer, please proceed to the Billing & Shipping section.</p>
-                    <form className="row contact_form" action="#" method="post" noValidate>
-                        <div className="col-md-6 form-group p_star">
-                            <input type="text" className="form-control" id="name" name="name" />
-                            <span className="placeholder" data-placeholder="Username or Email"></span>
-                        </div>
-                        <div className="col-md-6 form-group p_star">
-                            <input type="password" className="form-control" id="password" name="password" />
-                            <span className="placeholder" data-placeholder="Password"></span>
-                        </div>
-                        <div className="col-md-12 form-group">
-                            <button type="submit" value="submit" className="primary-btn">login</button>
-                            <div className="creat_account">
-                                <input type="checkbox" id="f-option" name="selector" />
-                                <label htmlFor="f-option">Remember me</label>
-                            </div>
-                            <a className="lost_pass" href="#">Lost your password?</a>
-                        </div>
-                    </form>
-                </div> */}
-                <div className="cupon_area">
-                    <div className="check_title">
-                        <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
-                    </div>
-                    <input type="text" placeholder="Enter coupon code" />
-                    <a className="tp_btn" href="#">Apply Coupon</a>
-                </div>
+
+
                 <div className="billing_details">
 
 
@@ -161,7 +141,7 @@ const CheckOut = () => {
                             <div className="row contact_form">
                                 <div className="col-md-6 form-group p_star">
                                     <Form.Item
-                                        label="First Name"
+                                        label="ID NAME"
                                         name="user_id"
                                         initialValue={usersOne?._id}
                                         hidden
@@ -169,70 +149,65 @@ const CheckOut = () => {
 
                                     </Form.Item>
                                 </div>
-                                <div className="col-md-6 form-group p_star">
+                                <div className="col-md-12 form-group p_star">
                                     <Form.Item
-                                        label="First Name"
-                                        name="name"
-                                        initialValue={usersOne?.userName}
+                                        label="Họ và tên"
+                                        name="fullName"
+                                        initialValue={usersOne?.fullName + ' ' + usersOne?.userName}
+                                        rules={[{ required: true, message: 'Vui lòng điền họ và tên' }]}
                                     >
-                                        <Input readOnly />
+                                        <Input />
                                     </Form.Item>
                                 </div>
-                                <div className="col-md-6 form-group p_star">
-                                    <Form.Item label="Last Name" name="name" initialValue={usersOne?.fullName}>
-                                        <Input readOnly />
-                                    </Form.Item>
-                                </div>
-                                <div className="col-md-12 form-group">
-                                    <Form.Item label="Company Name" name="company">
-                                        <Input placeholder="Company name" />
-                                    </Form.Item>
-                                </div>
-                                <div className="col-md-6 form-group p_star">
-                                    <Form.Item
-                                        label="Phone Number"
-                                        name="tel"
-                                        initialValue={usersOne?.tel}
-                                    >
-                                        <Input readOnly />
-                                    </Form.Item>
-                                </div>
-                                <div className="col-md-6 form-group p_star">
+                                <Form.Item
+                                    label="Số điện thoại"
+                                    name="tel"
+                                    initialValue={usersOne?.tel}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng điền số điện thoại',
+                                        },
+                                        {
+                                            validator: (_, value) => {
+                                                const phoneNumberPattern = /^[0-9]{10}$/; // Định dạng: 10 chữ số
+                                                if (phoneNumberPattern.test(value)) {
+                                                    return Promise.resolve(); // Số điện thoại hợp lệ, không có lỗi
+                                                }
+                                                return Promise.reject('Số điện thoại không hợp lệ!'); // Số điện thoại không hợp lệ, trả về thông báo lỗi
+                                            },
+                                        },
+                                    ]}
+                                >
+                                    <Input />
+                                </Form.Item>
+
+                                <div className="col-md-12 form-group p_star">
                                     <Form.Item
                                         label="Email"
                                         name="email"
                                         initialValue={usersOne?.email}
                                     >
-                                        <Input readOnly />
+                                        <Input />
                                     </Form.Item>
                                 </div>
                                 <div className="col-md-12 form-group p_star">
-                                    <Form.Item label="Address" name="address" initialValue={usersOne?.address}>
-                                        <Input readOnly />
+                                    <Form.Item label="Địa chỉ giao hàng" name="address" initialValue={usersOne?.address} rules={[{ required: true, message: 'Bạn không ghi địa chỉ thì chúng tôi gửi xuống mương à :)))' }]}>
+                                        <Input />
+
                                     </Form.Item>
                                 </div>
                                 <div className="col-md-12 form-group">
-                                    <Form.Item name="createAccount" valuePropName="checked">
-                                        <Checkbox>Create an account?</Checkbox>
+                                    <Form.Item label="Ghi chú" name="Note">
+                                        <Input.TextArea rows={1} placeholder="#Gọi vào giờ hàng chính #Không ném vào nhà" />
                                     </Form.Item>
-                                </div>
-                                <div className="col-md-12 form-group">
-                                    <div className="creat_account">
-                                        <h3>Shipping Details</h3>
-                                        <Form.Item name="shipToDifferentAddress" valuePropName="checked">
-                                            <Checkbox>Ship to a different address?</Checkbox>
-                                        </Form.Item>
-                                        <Form.Item label="Order Notes" name="Note">
-                                            <Input.TextArea rows={1} placeholder="Order Notes" />
-                                        </Form.Item>
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div className="col-lg-3">
                             <div className="order_box">
                                 <h2>Your Order</h2>
-                                <table>
+                                <table className=''>
                                     <tr>
                                         <th scope="col">Hình Ảnh</th>
                                         <th scope="col">| Tên Sản Phẩm</th>
@@ -283,14 +258,20 @@ const CheckOut = () => {
                                     ))}
                                 </table>
 
-                                <div className="col-md-12 form-group">
 
-                                    <Input readOnly value={totalSum} />
-
-                                </div>
-                                <div className="payment_item">
+                                <div className="col-8 payment_item">
                                     <Form.Item
-                                        label="Payment Method"
+                                        label="Tổng tiền"
+                                        name="total"
+                                    >
+                                        <b style={{ display: 'none' }}>{totalSum}</b>
+                                        <Input type="text" readOnly value={totalSum} />
+                                    </Form.Item>
+                                </div>
+
+                                <div className="col-8  payment_item">
+                                    <Form.Item
+                                        label="Hình thức thanh toán"
                                         name="paymentMethod"
                                         rules={[{ required: true, message: 'Please select a payment' }]}
                                     >
@@ -303,9 +284,26 @@ const CheckOut = () => {
                                         </Select>
                                     </Form.Item>
                                 </div>
+                                <div className="col-md-12 d-flex form-group p_star">
+                                    <Form.Item
+                                        label="Nhập mã giảm giá"
+                                        name="voucherCode"
+                                        className='col-md-6'
+                                    >
+                                        <Input
+                                            className='col-md-4'
+                                        // value={voucherCode}
+                                        // onChange={(e) => setVoucherCode(e.target.value)}
+                                        />
+                                    </Form.Item>
+                                    {/* <Button className='bg-success btn-success ' onClick={handleCheckVoucher}>
+                                        Kiểm Tra
+                                    </Button> */}
+                                </div>
 
 
-                                <div className="payment_item active">
+
+                                <div className="col-8 payment_item active">
                                     <Form.Item
                                         label=" Shipping"
                                         name="shipping"

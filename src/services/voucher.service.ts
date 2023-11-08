@@ -18,7 +18,7 @@ const voucherAPI = createApi({
                     'authorization': `Bearer ${token}`
                 }
             }),
-            
+
         }),
         getVoucherById: builder.query<IVouchers, number | string>({
             query: (id) => ({
@@ -30,10 +30,13 @@ const voucherAPI = createApi({
                 }
             }),
         }),
-        getVoucherByCode: builder.query<IVouchers, number | string>({
-            query: (code) => `/voucher/${code}`,
+        getVoucherByCode: builder.query<IVouchers, string | string>({
+            query: (code) => ({
+                url: `/voucher/${code}`,
+                method: "GET",
+            }),
         }),
-        
+
         removeVoucher: builder.mutation<IVouchers, number | string>({
             query: (id) => ({
                 url: `/voucher/${id}`,

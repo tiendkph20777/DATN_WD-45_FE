@@ -11,29 +11,25 @@ const checkoutAPI = createApi({
     }),
     tagTypes: ["Checkout"],
     endpoints: (builder) => ({
-        createCheckout: builder.mutation<void, Partial<any>>({
-            query: (cart) => ({
+        createCheckout: builder.mutation<any, Partial<any>>({
+            query: checkout => ({
                 url: `/checkout/add`,
                 method: "POST",
-                body: cart,
-                headers: {
-                    "content-type": "application/json",
-                    'authorization': `Bearer ${token}`
-                }
+                body: checkout,
             }),
             invalidatesTags: ["Checkout"],
         }),
-    
+
 
         fetchCheckout: builder.query<IAuth[], void>({
             query: () => "/checkout",
             providesTags: ["Checkout"]
         }),
-       
-      
+
+
     }),
 });
 
-export const { useCreateCheckoutMutation, useFetchCheckoutQuery} = checkoutAPI;
+export const { useCreateCheckoutMutation, useFetchCheckoutQuery } = checkoutAPI;
 
 export default checkoutAPI;
