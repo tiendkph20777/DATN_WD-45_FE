@@ -4,12 +4,15 @@ import { useGetProductsQuery } from "../../../../services/product.service";
 import { useGetBrandsQuery } from "../../../../services/brand.service";
 import { Pagination } from "antd";
 
-const Index = () => {
+const PageProduct = () => {
     const { data: productData } = useGetProductsQuery();
     const { data: brandData } = useGetBrandsQuery();
+    const brandName = (item: any) => brandData?.find((brand: any) => brand._id == item.brand_id)?.name
+    const discount = (item: any) => Math.round(100 - (item.price_sale / item.price * 100))
+    const [searchResult, setSearchResult] = useState<IProducts[]>([]);
     const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 8;
+    const productsPerPage = 10;
 
     useEffect(() => {
         if (productData) {
@@ -26,91 +29,92 @@ const Index = () => {
         setCurrentPage(page);
     };
 
+    useEffect(() => {
+        if (productData) {
+            const updatedDataSource = productData.map(({ ...IProducts }) => ({ ...IProducts }));
+            setSearchResult(updatedDataSource)
+        }
+    }, [productData]);
+    const onHandleClick = (value: string | number) => {
+        let filteredData = dataSourceToRender;
+        filteredData = filteredData.filter((item) => item.brand_id == value);
+        if (filteredData.length > 1) {
+            setDataSourceToRender(filteredData);
+        } else {
+            filteredData = searchResult;
+            filteredData = filteredData.filter((item) => item.brand_id == value);
+            setDataSourceToRender(filteredData);
+        }
+    };
+
     return (
         <div>
-            <section className="our-team position-relative">
-                <div className="container">
-                    <div className="row ourteam-row position-relative">
-                        <div className="fs-2 mb-4 mt-5 section-heading text-uppercase fw-bold">
-                            Sản phẩm mới
+            <section className="our-team position-relative pt-2">
+                <div className="container_home">
+                    <div className="d-flex mb-3 py-5">
+                        <div className="fs-5 text-uppercase fw-bold">
+                            - SẢN PHẨM MỚI
                         </div>
-                        <div className="row border-2 p-2">
-                            {dataSourceToRender?.map((item) => {
-                                const brandName = brandData?.find(
-                                    (brand: any) => brand._id == item.brand_id
-                                )?.name;
-                                const discount = Math.round(
-                                    100 - (item.price_sale / item.price) * 100
-                                );
-                                return (
-                                    <div className="product col-xxl-3 border-2 col-xl-3 col-lg-3 col-sm-4 col-6 p-2">
-                                        <div className="card product-main">
-                                            <a
-                                                href={"/product/" + item._id + "/detail"}
-                                                className="d-block overflow-hidden no-underline"
-                                            >
-                                                <div className="position-relative product-image overflow-hidden">
-                                                    <img
-                                                        src={item.images[0]}
-                                                        alt=""
-                                                        width="100%"
-                                                        height="auto"
-                                                        className=" inset-0 object-cover"
-                                                    />
-                                                    {/* <div class="product-sale-30"></div> */}
-                                                    <div className="product-hot" />
-                                                    {/* <div class="product-category"></div> */}
-                                                </div>
-                                                <div className="product-detail p-2 row text-center">
-                                                    <div className="col-6 d-flex"></div>
-                                                    <div className="col-6 row justify-content-end">
-                                                        <div className="col-3 m-1 product-color color-1" />
-                                                        <div className="col-3 m-1 product-color color-2" />
-                                                        <div className="col-3 m-1 product-color color-3" />
-                                                        {/* <div class="col-3 m-1 product-color color-4"></div> */}
-                                                    </div>
-                                                </div>
-                                                <div className="bg-white content-product w-100 p-2">
-                                                    <div className="product-vendor">{brandName}</div>
-                                                    <h4 className="product-name ellipsis">{item.name}</h4>
-                                                    {item.price_sale > 0 ? (
-                                                        <div className="product-price row">
-                                                            <strong className="col-12">
-                                                                {item.price_sale}đ
-                                                            </strong>
-                                                            <div className="d-flex">
-                                                                <del className="price-del">{item.price}đ</del>
-                                                                <span className="product-discount">
-                                                                    -{discount}%
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div className="product-price row">
-                                                            <strong className="col-12">{item.price}đ</strong>
-                                                        </div>
-                                                    )}
-                                                </div>
-                                                <div className="product-action pt-5 row text-center justify-content-center">
-                                                    <div className="col-6">
-                                                        <img
-                                                            src="/src/assets/images/products/icons/read.svg"
-                                                            alt=""
-                                                        />
-                                                    </div>
-                                                    <div className="col-6">
-                                                        <img
-                                                            src="/src/assets/images/products/icons/cart.svg"
-                                                            alt=""
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </a>
+                        <div>
+                            <div className="d-flex flex-row  mx-4 w-full">
+                                {brandData?.map((item) => {
+                                    return (
+                                        <div className="brandIcon " key={item._id}>
+                                            <div onClick={() => onHandleClick(item._id)} >
+                                                {item.name}
+                                            </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    )
+                                })}
+                            </div>
                         </div>
+                    </div>
+                    <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
+                        {/* <div className="row row-cols-lg-5 g-2 g-lg-3"> */}
+                        {dataSourceToRender.slice(0, 15).map((item) => {
+                            return (
+                                <div className="product border-2 p-2" key={item._id}>
+                                    <div className="card product-main">
+                                        <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
+                                            <div className="position-relative product-image overflow-hidden">
+                                                <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
+                                            </div>
+                                            <div className="bg-white content-product w-100 p-2">
+                                                <div className="product-detail px-3 row ">
+                                                    <div className="col-12 row px-2">
+                                                        <div className="col-1 m-1 product-color color-1" />
+                                                    </div>
+                                                </div>
+                                                <div className="product-vendor">{brandName(item)}</div>
+                                                <h4 className="product-name ellipsis">
+                                                    {item.name}
+                                                </h4>
+                                                {item.price_sale > 0 ? (
+                                                    <div className="product-price row">
+                                                        <strong className="col-12">{item.price_sale}đ</strong>
+                                                        <div className="d-flex">
+                                                            <del className="price-del">{item.price}đ</del>
+                                                            <span className="product-discount">-{discount(item)}%</span>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="product-price row">
+                                                        <strong className="col-12">{item.price}đ</strong>
+                                                    </div>
+                                                )}
+
+                                            </div>
+                                            <div className="product-action pt-5 row text-center justify-content-center">
+                                                <div className="col-6"><img src="/src/assets/icons/read.svg" alt="" />
+                                                </div>
+                                                <div className="col-6"><img src="/src/assets/icons/cart.svg" alt="" />
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            )
+                        })}
                     </div>
                     <Pagination
                         defaultCurrent={1}
@@ -119,10 +123,9 @@ const Index = () => {
                         onChange={handlePageChange}
                         style={{ display: "flex", justifyContent: "center", fontSize: "24px", margin: "20px" }}
                     />
-
                 </div>
             </section>
         </div>
     );
 };
-export default Index;
+export default PageProduct;
