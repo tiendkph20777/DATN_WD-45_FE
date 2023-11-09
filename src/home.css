@@ -153,8 +153,19 @@
   }
 }
 
+.brandIcon {
+  margin: 0 10px;
+  padding: 4px 8px;
+  background-color: whitesmoke;
+}
+
+.brandIcon>div {
+  text-transform: capitalize;
+}
+
 .brandIcon:hover {
   background-color: #000;
+  color: white;
   cursor: pointer;
 }
 
@@ -406,7 +417,6 @@
 
 .card {
   border: none !important;
-  padding: 5px;
   --bs-card-border-radius: 0px;
 }
 
@@ -1088,6 +1098,7 @@ progress {
 }
 
 .container,
+.container_home,
 .container-fluid,
 .container-xl,
 .container-lg,
@@ -1105,7 +1116,8 @@ progress {
 @media (min-width: 576px) {
 
   .container-sm,
-  .container {
+  .container,
+  .container_home {
     max-width: 540px;
   }
 }
@@ -1114,7 +1126,8 @@ progress {
 
   .container-md,
   .container-sm,
-  .container {
+  .container,
+  .container_home {
     max-width: 720px;
   }
 }
@@ -1124,7 +1137,8 @@ progress {
   .container-lg,
   .container-md,
   .container-sm,
-  .container {
+  .container,
+  .container_home {
     max-width: 960px;
   }
 }
@@ -1137,6 +1151,10 @@ progress {
   .container-sm,
   .container {
     max-width: 1120px;
+  }
+
+  .container_home {
+    max-width: 1400px;
   }
 }
 
@@ -4761,7 +4779,7 @@ fieldset:disabled .btn {
 }
 
 .navbar>.container,
-.navbar>.container-fluid,
+.navbar>.container_home .navbar>.container-fluid,
 .navbar>.container-sm,
 .navbar>.container-md,
 .navbar>.container-lg,
@@ -8657,25 +8675,15 @@ fieldset:disabled .btn {
   text-align: center;
 }
 
-.slick-prev,
-.slick-next,
-.slick-prev::before,
-.slick-next::before {
-  z-index: 10 !important;
-  color: black;
+.button_slide {
+  border: none;
+  padding: 6px 16px;
+  margin-left: 8px;
+  background-color: whitesmoke;
 }
 
-.slick-prev::before,
-.slick-next::before {
-  font-size: 30px;
-}
-
-.slick-prev {
-  left: -50px;
-}
-
-.slick-next {
-  right: -50px;
+.button_slide:hover {
+  background-color: #5d6470;
 }
 
 .w-25 {
@@ -13638,6 +13646,7 @@ fieldset:disabled .btn {
   background-repeat: no-repeat;
   z-index: -1;
 }
+
 /* 
 .our-team .row {
   padding-top: 20px;
@@ -16443,6 +16452,7 @@ h6 {
 @media (max-width: 575px) {
 
   .navbar-expand-lg>.container,
+  .navbar-expand-lg>.container_home,
   .navbar-expand-lg>.container-fluid {
     padding: 0px 15px;
   }
@@ -23183,9 +23193,11 @@ label {
 } */
 .ellipsis {
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2;
+  /* Limit to 2 lines */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: normal; /* Use 'normal' to allow wrapping within the lines */
+  white-space: normal;
+  /* Use 'normal' to allow wrapping within the lines */
 }
