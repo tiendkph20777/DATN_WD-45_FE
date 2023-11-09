@@ -23,9 +23,9 @@ const Profile = () => {
                         <div className="container-fluid d-flex align-items-center">
                             <div className="row">
                                 <div className="col-lg-7 col-md-10">
-                                    <h1 className="display-2 text-white">Hello {usersOne?.userName}</h1>
-                                    <p className="text-white mt-0 mb-5">This is your profile page. You can see the progress you've made with your work and manage your projects or assigned tasks</p>
-                                    <a href="#!" className="btn btn-info">Edit profile</a>
+                                    <h1 className="display-2 text-white">Xin Chào {usersOne?.userName}</h1>
+                                    <p className="text-white mt-0 mb-5">Đây là trang hồ sơ của bạn. Bạn có thể thấy tiến độ bạn đã đạt được trong công việc và quản lý các dự án hoặc nhiệm vụ được giao</p>
+                                    <a href="#!" className="btn btn-info">Chỉnh sửa hồ sơ</a>
                                 </div>
                             </div>
                         </div>
@@ -46,7 +46,7 @@ const Profile = () => {
                                     </div>
                                     <div className="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                                         <div className="d-flex justify-content-between">
-                                            <a href="#" className="btn btn-sm btn-info mr-4">Update</a>
+                                            <a href="#" className="btn btn-sm btn-info mr-4">Cập nhật</a>
                                             {/* <a href="#" className="btn btn-sm btn-default float-right">Message</a> */}
                                         </div>
                                     </div>
@@ -67,7 +67,7 @@ const Profile = () => {
                                     <div className="card-header bg-white border-0">
                                         <div className="row align-items-center">
                                             <div className="col-8">
-                                                <h3 className="mb-0">My account</h3>
+                                                <h3 className="mb-0">Tài khoản của tôi</h3>
                                             </div>
                                         </div>
                                     </div>

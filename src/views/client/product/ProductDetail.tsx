@@ -344,7 +344,7 @@ const ProductDetail = () => {
                     onClick={onSubmitCart}
                     disabled={isAddingToCart}
                   >
-                    {isAddingToCart ? "Adding to Cart..." : "Add to Cart"}
+                    {isAddingToCart ? "Thêm vào giỏ hàng..." : "Thêm vào giỏ hàng"}
                   </button>
                 </div>
               </div>

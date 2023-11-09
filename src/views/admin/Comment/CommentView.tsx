@@ -74,11 +74,11 @@ export default function CommentView() {
             render: ({ _id: id }: any) => {
                 return (
                     <Popconfirm
-                        title="Delete the task"
-                        description="Are you sure to delete this product ?"
+                        title="Xóa bình luận này!"
+                        description="Bạn có chắc chắn muốn xóa bình luận này ?"
                         onConfirm={() => Product_Remove({ id })}
-                        okText="Yes"
-                        cancelText="No"
+                        okText="Xóa"
+                        cancelText="Hủy"
                     >
                         <Button
                             type="primary"

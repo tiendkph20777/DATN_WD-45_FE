@@ -65,10 +65,10 @@ const PaymentEdit: React.FC = () => {
                         autoComplete="off"
                     >
                         <Form.Item
-                            label="Tên payment"
+                            label="Phương Thức Thanh Toán"
                             name="name"
 
-                            rules={[{ required: true, message: 'Please input your name!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
+                            rules={[{ required: true, message: 'Vui lòng nhập Phương Thức Thanh Toán!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
                         >
                             <Input />
                         </Form.Item>
@@ -78,7 +78,12 @@ const PaymentEdit: React.FC = () => {
                             <Button type="primary" htmlType="submit">
                                 Cập nhật
                             </Button>
-
+                            <Button
+                                type='primary'
+                                danger
+                                onClick={() => navigate("/admin/payment")}
+                                className='ml-2'
+                            >Quay lại</Button>
                         </Form.Item>
                     </Form>
                 </div>

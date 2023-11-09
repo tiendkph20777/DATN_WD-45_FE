@@ -91,12 +91,12 @@ const VoucherView: React.FC = () => {
                             <Link to={`/admin/voucher/${id}/edit`}>Update</Link>
                         </Button>
                         <Popconfirm
-                        title="Are you sure to remove this item?"
+                        title="Bạn có chắc chắn muốn xóa voucher này ?"
                         onConfirm={() => {
                             confirm(id);
                         }}
-                        okText="Yes"
-                        cancelText="No"
+                        okText="Xóa"
+                        cancelText="Hủy"
                     >
                         <Button type="primary" style={{ backgroundColor: 'red', margin: '4px', minWidth: '8em' }}>
                             <CloseOutlined /> Remove

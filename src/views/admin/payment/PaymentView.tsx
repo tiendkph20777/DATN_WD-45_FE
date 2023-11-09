@@ -28,7 +28,7 @@ const PaymentView: React.FC = () => {
             // Hiển thị thông báo thành công
             notification.success({
                 message: "Success",
-                description: "Xóa sản phẩm thành công!",
+                description: "Xóa Phương Thức Thanh Toán thành công!",
             });
         } catch (error) {
             // Xử lý lỗi nếu cần
@@ -57,7 +57,7 @@ const PaymentView: React.FC = () => {
 
     const columns: ColumnsType<DataType> = [
         {
-            title: 'Tên Payment',
+            title: 'Phương Thức Thanh Toán',
             dataIndex: 'name',
             key: 'name',
         },
@@ -69,11 +69,11 @@ const PaymentView: React.FC = () => {
                     <>
                         <div>
                             <Popconfirm
-                                title="Delete the task"
-                                description="Are you sure to delete this payment ?"
+                                title="Xóa Phương Thức Thanh Toán này"
+                                description="Bạn có chắc chắn muốn xóa Phương Thức Thanh Toán này ?"
                                 onConfirm={() => confirm(id)}
-                                okText="Yes"
-                                cancelText="No"
+                                okText="Xóa"
+                                cancelText="Hủy"
                             >
                                 <Button
                                     type="primary"
@@ -118,7 +118,7 @@ const PaymentView: React.FC = () => {
                 <div className="col-lg-12 d-flex align-items-stretch">
                     <div className="card w-100">
                         <div className="card-body mt-5" >
-                            <h5 className="card-title fw-semibold mb-4">Payment</h5>
+                            <h5 className="card-title fw-semibold mb-4">Phương Thức Thanh Toán</h5>
                             <a className="text-white" href="/admin/payment/add">
                                 <button type="button" className="btn btn-success m-1">Thêm</button>
                             </a>
@@ -128,7 +128,7 @@ const PaymentView: React.FC = () => {
                                         <Input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Nhập tên sản phẩm cần tìm"
+                                            placeholder="Nhập Phương Thức Thanh Toán cần tìm"
                                             name="searchTerm"
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}

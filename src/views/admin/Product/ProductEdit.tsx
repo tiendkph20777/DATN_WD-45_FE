@@ -70,7 +70,7 @@ const ProductAdd: React.FC = () => {
                     description: "Sửa Sản Phẩm Thành Công!",
                 });
                 navigate("/admin/product");
-                window.location.reload()
+
             })
             .catch((error) => {
                 console.error("Error adding product:", error);
@@ -124,9 +124,9 @@ const ProductAdd: React.FC = () => {
                         <Form.Item<FieldType>
                             label="Category"
                             name="brand_id"
-                            rules={[{ required: true, message: 'Please select a category!' }]}
+                            rules={[{ required: true, message: 'Vui lòng chọn thương hiệu!' }]}
                         >
-                            <Select placeholder="Select a category">
+                            <Select placeholder="Thương Hiệu">
                                 {categories?.map((category) => (
                                     <Option key={category._id} value={category._id}>
                                         {category.name}
@@ -139,7 +139,7 @@ const ProductAdd: React.FC = () => {
                             label="Tên sản phẩm"
                             name="name"
                             rules={[
-                                { required: true, message: 'Please input your product!' },
+                                { required: true, message: 'Vui lòng nhập tên sản phẩm!' },
                                 { min: 3, message: "ít nhất 3 ký tự" },
                             ]}
                         >
@@ -149,8 +149,8 @@ const ProductAdd: React.FC = () => {
 
                         <Form.Item
                             name="price"
-                            label="Giá"
-                            rules={[{ required: true, message: 'Please select your price!' }]}
+                            label="Giá niêm yết"
+                            rules={[{ required: true, message: 'Vui lòng nhập giá sản phẩm!' }]}
                         >
                             <Form.Item name="price" noStyle>
                                 <InputNumber min={1} max={16000000} />
@@ -158,10 +158,10 @@ const ProductAdd: React.FC = () => {
 
                         </Form.Item>
                         <Form.Item<FieldType>
-                            label="Giảm giá"
+                            label="Giá bán"
                             name="price_sale"
                             rules={[
-                                { required: true, message: 'Please input your product!' },
+                                { required: true, message: 'Vui lòng nhập giá bán sản phẩm!' },
 
                             ]}
                         >
@@ -192,14 +192,14 @@ const ProductAdd: React.FC = () => {
                             label="Mô tả sản phẩm"
                             name="description"
                             rules={[
-                                { required: true, message: 'Please input your product!' },
+                                { required: true, message: 'Vui lòng nhập mô tả sản phẩm!' },
                                 { min: 3, message: "ít nhất 3 ký tự" },
                             ]}
                         >
                             <Input />
                         </Form.Item>
                         <Form.Item label="Nội dung" name="content" rules={[
-                            { required: true, message: 'Please input your product!' },
+                            { required: true, message: 'Vui lòng nhập nôi dung sản phẩm!' },
 
                         ]}>
                             <TextArea rows={4} />
@@ -209,7 +209,12 @@ const ProductAdd: React.FC = () => {
                                 <Button type="primary" htmlType="submit">
                                     Cập nhật
                                 </Button>
-                                {/* <Button htmlType="reset">reset</Button> */}
+                                <Button
+                                    type='primary'
+                                    danger
+                                    onClick={() => navigate("/admin/product")}
+                                    className='ml-2'
+                                >Quay lại</Button>
                             </Space>
                         </Form.Item>
 

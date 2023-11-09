@@ -54,7 +54,7 @@ const YourFormComponent = () => {
             } else {
                 messageApi.info({
                     type: 'error',
-                    content: "Cập nhật user thành công 🎉🎉🎉",
+                    content: "Cập nhật Người Dùng thành công 🎉🎉🎉",
                     className: 'custom-class',
                     style: {
                         marginTop: '0',
@@ -76,7 +76,7 @@ const YourFormComponent = () => {
                 <Form.Item
                     label="Username"
                     name="_id"
-                    rules={[{ required: true, message: 'Please input your id!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập ID!' }]}
                     style={{ display: 'none' }}
                 >
                     <Controller
@@ -89,7 +89,7 @@ const YourFormComponent = () => {
                 <Form.Item
                     label="Username"
                     name="userName"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập tên người dùng!' }]}
                 >
                     <Controller
                         name="userName"
@@ -101,7 +101,7 @@ const YourFormComponent = () => {
                 <Form.Item
                     label="fullName"
                     name="fullName"
-                    rules={[{ required: true, message: 'Please input your fullName!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập đầy đủ họ tên!' }]}
                 >
                     <Controller
                         name="fullName"
@@ -113,7 +113,7 @@ const YourFormComponent = () => {
                 <Form.Item
                     label="email"
                     name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập Email!' }]}
                 >
                     <Controller
                         name="email"
@@ -125,13 +125,13 @@ const YourFormComponent = () => {
                 <Form.Item
                     label="gender"
                     name="gender"
-                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                    rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}
                 >
                     <Controller
                         render={({ field }) => (
                             <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                <MenuItem value={"Men"}>Men</MenuItem>
-                                <MenuItem value={"Women"}>Women</MenuItem>
+                                <MenuItem value={"Men"}>Nam</MenuItem>
+                                <MenuItem value={"Women"}>Nữ</MenuItem>
                             </Select>
                         )}
                         name="gender"
@@ -165,7 +165,7 @@ const YourFormComponent = () => {
                 <Form.Item
                     label="role_id"
                     name="role_id"
-                    rules={[{ required: true, message: 'Please input your role_id!' }]}>
+                    rules={[{ required: true, message: 'Vui lòng nhập Role_id!' }]}>
                     <Controller
                         render={({ field }) => (
                             <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
@@ -182,7 +182,7 @@ const YourFormComponent = () => {
                 </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Cập nhật
                     </Button>
                 </Form.Item>
             </form>

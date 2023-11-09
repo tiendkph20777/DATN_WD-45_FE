@@ -33,7 +33,7 @@ const SettingAbout = () => {
 
     const onSubmit = (information: any) => {
         // console.log(information);
-        localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
+        localStorage.setItem('successMessage', "Chúc mừng bạn đã Cập nhật thành công 🎉🎉🎉");
         setTimeout(() => {
             window.location.reload();
         }, 500);
@@ -63,14 +63,14 @@ const SettingAbout = () => {
                     <h3 className="heading-small text-muted mb-4">About me</h3>
                 </div>
                 <div className="col-4 text-right">
-                    <button className="btn btn-sm btn-primary" onClick={handleButtonClick}>Settings</button>
+                    <button className="btn btn-sm btn-primary" onClick={handleButtonClick}>Chỉnh sửa</button>
                 </div>
             </div>
             {form1 ? (
                 <div className="pl-lg-4">
                     <div className="form-group focused">
                         <label>About Me</label>
-                        <textarea rows={4} className="form-control form-control-alternative" placeholder="A few words about you ..." defaultValue={usersOne?.aboutme} readOnly />
+                        <textarea rows={4} className="form-control form-control-alternative" placeholder="Một vài từ về bạn ..." defaultValue={usersOne?.aboutme} readOnly />
                     </div>
                 </div>
             ) : (
@@ -84,7 +84,7 @@ const SettingAbout = () => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please enter your introduction!',
+                                        message: 'Vui lòng giới thiệu về bản thân bạn!',
                                     },
                                 ]}
                             >
@@ -97,7 +97,7 @@ const SettingAbout = () => {
                                         <Input.TextArea
                                             className='form-control form-control-alternative form-control-label text-black'
                                             rows={5}
-                                            placeholder="A few words about you ..."
+                                            placeholder="Một vài từ về bạn ..."
                                             {...field}
                                         />
                                     )}
@@ -105,7 +105,7 @@ const SettingAbout = () => {
                             </Form.Item>
                         </div>
                         <div className="col-lg-7 text-right">
-                            <button className="btn btn-sm btn-info">Update</button>
+                            <button className="btn btn-sm btn-info">Cập nhật</button>
                         </div>
                     </form>
                 </div>

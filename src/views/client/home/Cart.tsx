@@ -163,7 +163,7 @@ const Cart = () => {
                 await updateCartDetailMutation(modifiedCartDetail);
                 messageApi.info({
                     type: 'error',
-                    content: "Cập nhật sản phẩm thành công 🎉🎉🎉",
+                    content: "Cập nhật giỏ hàng thành công 🎉🎉🎉",
                     className: 'custom-class',
                     style: {
                         marginTop: '0',
@@ -306,7 +306,7 @@ const Cart = () => {
                                             <Form.Item
                                                 label="Color"
                                                 name="color"
-                                                rules={[{ required: true, message: 'Please input your color!' }]}
+                                                rules={[{ required: true, message: 'Vui lòng chọn màu!' }]}
                                                 className='col-xl-7 col-lg-7 col-sm-7 col-12'
                                             >
                                                 <Controller
@@ -328,7 +328,7 @@ const Cart = () => {
                                             <Form.Item
                                                 label="quantity"
                                                 name="quantity"
-                                                rules={[{ required: true, message: 'Please input your quantity!' }]}
+                                                rules={[{ required: true, message: 'Vui lòng nhập số lượng!' }]}
                                             >
                                                 <Controller
                                                     name="quantity"
