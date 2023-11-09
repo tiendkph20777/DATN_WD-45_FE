@@ -6,33 +6,21 @@ import { useGetProductsQuery } from '../../../services/product.service';
 import { IProducts } from '../../../types/product.service';
 import { useEffect, useState } from 'react';
 import useRefs from "react-use-refs";
-import { Pagination } from 'antd';
+import PageProduct from "./homeProduct/PageProduct";
 const Product = () => {
     const { data: productData } = useGetProductsQuery();
     const { data: brandData } = useGetBrandsQuery();
     const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
-    const [searchResult, setSearchResult] = useState<IProducts[]>([]);
     const brandName = (item: any) => brandData?.find((brand: any) => brand._id == item.brand_id)?.name
     const discount = (item: any) => Math.round(100 - (item.price_sale / item.price * 100))
+
     useEffect(() => {
         if (productData) {
             const updatedDataSource = productData.map(({ ...IProducts }) => ({ ...IProducts }));
             setDataSourceToRender(updatedDataSource);
-            setSearchResult(updatedDataSource)
         }
     }, [productData]);
 
-    const onHandleClick = (value: string | number) => {
-        let filteredData = dataSourceToRender;
-        filteredData = filteredData.filter((item) => item.brand_id == value);
-        if (filteredData.length > 1) {
-            setDataSourceToRender(filteredData);
-        } else {
-            filteredData = searchResult;
-            filteredData = filteredData.filter((item) => item.brand_id == value);
-            setDataSourceToRender(filteredData);
-        }
-    };
 
     const settings = {
         // dots: true,  Hiển thị dấu chấm chỉ định trang hiện tại
@@ -81,11 +69,11 @@ const Product = () => {
                     </div>
                     <div>
                     </div>
-                    <div className="row my-5 ourteam-row position-relative container_home">
+                    <div className="row my-xl-5 my-0 ourteam-row position-relative">
                         <div className="row">
                             {brandData?.map((item) => {
                                 return (
-                                    <div className=" col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2 " key={item._id}>
+                                    <div className=" col-xxl-2 border-2 col-xl-2 col-lg-2 col-sm-2 col-4 " key={item._id}>
                                         <div className="">
                                             <div className="position-relative overflow-hidden">
                                                 <img src={item.image} alt="" width="100%" height="100px" style={{ marginTop: '10%' }} className=" inset-0 object-cover" />
@@ -98,79 +86,10 @@ const Product = () => {
                     </div>
                 </div>
             </section>
-            <section className="our-team position-relative pt-2">
-                <div className="container_home">
-                    <div className="d-flex mb-3 py-5">
-                        <div className="fs-5 text-uppercase fw-bold">
-                            - SẢN PHẨM MỚI
-                        </div>
-                        <div>
-                            <div className="d-flex flex-row  mx-4 w-full">
-                                {brandData?.map((item) => {
-                                    return (
-                                        <div className="brandIcon " key={item._id}>
-                                            <div onClick={() => onHandleClick(item._id)} >
-                                                {item.name}
-                                            </div>
-                                        </div>
-                                    )
-                                })}
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row row-cols-lg-5 g-2 g-lg-3">
-                        {dataSourceToRender.slice(0, 15).map((item) => {
-                            return (
-                                // <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
-                                <div className="product col border-2 p-2" key={item._id}>
-                                    <div className="card product-main">
-                                        <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
-                                            <div className="position-relative product-image overflow-hidden">
-                                                <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
-                                            </div>
-                                            <div className="bg-white content-product w-100 p-2">
-                                                <div className="product-detail px-3 row ">
-                                                    <div className="col-12 row px-2">
-                                                        <div className="col-1 m-1 product-color color-1" />
-                                                    </div>
-                                                </div>
-                                                <div className="product-vendor">{brandName(item)}</div>
-                                                <h4 className="product-name" style={{ height: '60px' }}>
-                                                    {item.name}
-                                                </h4>
-                                                {item.price_sale > 0 ? (
-                                                    <div className="product-price row">
-                                                        <strong className="col-12">{item.price_sale}đ</strong>
-                                                        <div className="d-flex">
-                                                            <del className="price-del">{item.price}đ</del>
-                                                            <span className="product-discount">-{discount(item)}%</span>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="product-price row">
-                                                        <strong className="col-12">{item.price}đ</strong>
-                                                    </div>
-                                                )}
-
-                                            </div>
-                                            <div className="product-action pt-5 row text-center justify-content-center">
-                                                <div className="col-6"><img src="/src/assets/icons/read.svg" alt="" />
-                                                </div>
-                                                <div className="col-6"><img src="/src/assets/icons/cart.svg" alt="" />
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            )
-                        })}
-
-                    </div>
-                    <Pagination onChange={(page: number, pageSize: number) => {
-
-                    }} total={50} />
-                </div></section>
-
+            {/* page product */}
+            <div>
+                <PageProduct />
+            </div>
             <section className="our-team position-relative pt-2">
                 <div className="container_home">
                     <div>
@@ -224,7 +143,6 @@ const Product = () => {
                                 }
                             })}
                         </Slider>
-
                     </div>
                 </div></section >
             <section className="our-team position-relative">
@@ -255,7 +173,7 @@ const Product = () => {
                                                     </div>
                                                 </div>
                                                 <div className="product-vendor">{brandName(item)}</div>
-                                                <h4 className="product-name" style={{ height: '60px' }}>
+                                                <h4 className="product-name ellipsis" >
                                                     {item.name}
                                                 </h4>
                                                 {item.price_sale > 0 ? (
@@ -287,12 +205,9 @@ const Product = () => {
 
                     </Slider>
                 </div>
-
             </section>
-
-        </div>
+        </div >
     )
 }
 
 export default Product
-

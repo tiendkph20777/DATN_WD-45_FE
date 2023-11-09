@@ -20520,7 +20520,11 @@ label {
   position: relative;
   margin-bottom: 24px;
 }
-
+.product_count1 {
+  display: inline-block;
+  position: relative;
+  display: flex;
+}
 .product_count label {
   font-size: 14px;
   color: #777777;
