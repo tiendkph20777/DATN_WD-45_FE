@@ -81,16 +81,28 @@ const Cart = () => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [editingProduct, setEditingProduct] = useState<any>({});
     const { control, handleSubmit, setValue, watch } = useForm();
+    const [quantity, setQuantity] = useState(0);
+    // console.log(editingProduct)
+    const setQuantityForEditingProduct = () => {
+        if (editingProduct) {
+            setQuantity(editingProduct.quantity);
+        }
+    };
+
+    useEffect(() => {
+        setQuantityForEditingProduct();
+    }, [editingProduct]);
 
     const handleEditClick = (id: string) => {
         const productToEdit = cartDetail?.find((item) => item?.idCartDetail === id);
-        // console.log(productToEdit)
         setEditingProduct(productToEdit);
         showModal();
     };
+
     const showModal = () => {
         setOpen(true);
     };
+
     const handleOk = async () => {
         setConfirmLoading(true);
         try {
@@ -107,9 +119,11 @@ const Cart = () => {
             setConfirmLoading(false);
         }
     };
+
     const handleCancel = () => {
         setOpen(false);
     };
+
     useEffect(() => {
         if (editingProduct) {
             setValue('_id', editingProduct?._id);
@@ -125,6 +139,27 @@ const Cart = () => {
         }
     }, [editingProduct, setValue]);
 
+    const handleQuantityChange = (event: any) => {
+        const newQuantity = parseInt(event.target.value, 10);
+        if (!isNaN(newQuantity) && newQuantity >= 1) {
+            setValue('quantity', newQuantity);
+        }
+    };
+
+    const incrementQuantity = () => {
+        const newQuantity = quantity + 1;
+        setQuantity(newQuantity);
+        setValue('quantity', newQuantity);
+    };
+
+    const decrementQuantity = () => {
+        if (quantity > 1) {
+            const newQuantity = quantity - 1;
+            setQuantity(newQuantity);
+            setValue('quantity', newQuantity);
+        }
+    };
+
     // Lấy ra danh sách các size và màu duy nhất từ sản phẩm đã chọn
     const targetProduct = ProductDetailUser?.filter((item) => item?.product_id === editingProduct?.product_id);
     const selectedProductSizes = [...new Set(targetProduct?.map((product) => product.size))];
@@ -137,10 +172,6 @@ const Cart = () => {
         return product.size === selectedSize && product.color === selectedColor;
     });
 
-    const handleSizeAndColorChange = (newSize: any, newColor: any) => {
-        setValue('size', newSize);
-        setValue('color', newColor);
-    };
     // console.log(matchingProduct)
     const handleSizeChange = (newSize: any) => {
         setValue('size', newSize);
@@ -157,7 +188,7 @@ const Cart = () => {
                 const modifiedCartDetail = {
                     idCartDetail: cartUs.idCartDetail,
                     productDetailId: cartUs._id,
-                    quantity: cartUs.quantity,
+                    quantity: quantity,
                 };
                 // console.log("cartUs", modifiedCartDetail);
                 await updateCartDetailMutation(modifiedCartDetail);
@@ -269,84 +300,132 @@ const Cart = () => {
                                         </td>
                                     </tr>
                                 ))}
-                                <Modal
-                                    title="Chỉnh sửa sản phẩm"
-                                    open={open}
-                                    onOk={handleOk}
-                                    confirmLoading={confirmLoading}
-                                    onCancel={handleCancel}
-                                >
-                                    <form action="" onSubmit={handleSubmit(onSubmit)}>
-                                        <div className='row'>
-                                            <img height={'150px'} src={editingProduct?.image} alt="" className='col-xl-4 col-lg-4 col-sm-4 col-8' />
-                                            <label htmlFor="" style={{ padding: "30px" }} className='col-xl-7 col-lg-7 col-sm-7 col-12'>{editingProduct?.name}</label>
-                                        </div>
-                                        <div className='row'>
-                                            <Form.Item
-                                                label="Size"
-                                                name="size"
-                                                rules={[{ required: true, message: 'Please input your username!' }]}
-                                                className='col-xl-5 col-lg-5 col-sm-5 col-12'
-                                            >
-                                                <Controller
-                                                    render={({ field }) => (
-                                                        <Select {...field} style={{ width: "100%" }} className='form-control p-0' onChange={(newSize) => handleSizeChange(newSize)}>
-                                                            {selectedProductSizes?.map((size) => (
-                                                                <option key={size} value={size}>
-                                                                    {size}
-                                                                </option>
-                                                            ))}
-                                                        </Select>
-                                                    )}
-                                                    name="size"
-                                                    control={control}
-                                                />
-                                            </Form.Item>
 
-                                            <Form.Item
-                                                label="Color"
-                                                name="color"
-                                                rules={[{ required: true, message: 'Please input your color!' }]}
-                                                className='col-xl-7 col-lg-7 col-sm-7 col-12'
-                                            >
-                                                <Controller
-                                                    render={({ field }) => (
-                                                        <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                                            {targetProduct
-                                                                ?.filter((product) => product.size === watch('size'))
-                                                                .map((product) => (
-                                                                    <option key={product.color} value={product.color}>
-                                                                        {product.color}
-                                                                    </option>
-                                                                ))}
-                                                        </Select>
-                                                    )}
-                                                    name="color"
-                                                    control={control}
-                                                />
-                                            </Form.Item>
-                                            <Form.Item
-                                                label="quantity"
-                                                name="quantity"
-                                                rules={[{ required: true, message: 'Please input your quantity!' }]}
-                                            >
-                                                <Controller
-                                                    name="quantity"
-                                                    control={control}
-                                                    defaultValue={editingProduct?.quantity || ''}
-                                                    render={({ field }) => <Input {...field} placeholder="quantity" />}
-                                                />
-                                            </Form.Item>
-                                        </div>
-                                    </form>
-                                </Modal>
                             </tbody>
                         </table>
-                        <ProceedToCheckout />
+                        <div>
+                            <hr />
+                            <table className="table">
+                                <tbody>
+                                    <tr className="out_button_area">
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <div className="checkout_btn_inner d-flex align-items-center">
+                                                <a className="gray_btn" href="/">Continue Shopping</a>
+
+                                                <a className="primary-btn" href="/checkout">Thanh toán</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <Modal
+                            title="Chỉnh sửa sản phẩm"
+                            open={open}
+                            onOk={handleOk}
+                            confirmLoading={confirmLoading}
+                            onCancel={handleCancel}
+                        >
+                            <form action="" onSubmit={handleSubmit(onSubmit)}>
+                                <div className='row'>
+                                    <img height={'150px'} src={editingProduct?.image} alt="" className='col-xl-4 col-lg-4 col-sm-4 col-8' />
+                                    <label htmlFor="" style={{ padding: "30px" }} className='col-xl-7 col-lg-7 col-sm-7 col-12'>{editingProduct?.name}</label>
+                                </div>
+                                <div className='row'>
+                                    <Form.Item
+                                        label=""
+                                        name="size"
+                                        rules={[{ required: true, message: 'Please input your username!' }]}
+                                        className='col-xl-5 col-lg-5 col-sm-5 col-12'
+                                    >
+                                        <Controller
+                                            render={({ field }) => (
+                                                <div style={{ display: "flex" }}>
+                                                    <label className="p-1">Size:</label>
+                                                    <Select {...field} style={{ width: "100%" }} className='form-control p-0' onChange={(newSize) => handleSizeChange(newSize)}>
+                                                        {selectedProductSizes?.map((size) => (
+                                                            <option key={size} value={size}>
+                                                                {size}
+                                                            </option>
+                                                        ))}
+                                                    </Select>
+                                                </div>
+                                            )}
+                                            name="size"
+                                            control={control}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label=""
+                                        name="color"
+                                        rules={[{ required: true, message: 'Please input your color!' }]}
+                                        className='col-xl-7 col-lg-7 col-sm-7 col-12'
+                                    >
+                                        <Controller
+                                            render={({ field }) => (
+                                                <div style={{ display: "flex" }}>
+                                                    <label className="p-1">Color:</label>
+                                                    <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
+                                                        {targetProduct
+                                                            ?.filter((product) => product.size === watch('size'))
+                                                            .map((product) => (
+                                                                <option key={product.color} value={product.color}>
+                                                                    {product.color}
+                                                                </option>
+                                                            ))}
+                                                    </Select>
+                                                </div>
+                                            )}
+                                            name="color"
+                                            control={control}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label=""
+                                        name="quantity"
+                                        rules={[{ message: 'Please input your quantity!' }]}
+                                    >
+                                        <Controller
+                                            name="quantity"
+                                            control={control}
+                                            defaultValue={editingProduct?.quantity || 1} // Set the default value to 1
+                                            render={({ field }) => (
+                                                <div className="product_count1 flex-1">
+                                                    <label className="quantity p-2">Số Lượng:</label>
+                                                    <div className="quantity-input">
+                                                        <span>
+                                                            <button onClick={decrementQuantity} type="button">-</button>
+                                                        </span>
+                                                        <input
+                                                            min="1"
+                                                            maxLength={10}
+                                                            value={field.value}
+                                                            onChange={(e) => {
+                                                                field.onChange(e);
+                                                                handleQuantityChange(e);
+                                                            }}
+                                                            className="form-control"
+                                                        />
+                                                        <span>
+                                                            <button onClick={incrementQuantity} type="button">+</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        />
+                                    </Form.Item>
+
+                                </div>
+                            </form>
+                        </Modal>
                     </div>
                 </div>
             </div>
-        </section ></div >
+        </section >
+        </div >
     )
 }
 

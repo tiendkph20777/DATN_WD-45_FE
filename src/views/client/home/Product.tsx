@@ -5,6 +5,7 @@ import { useGetBrandsQuery } from '../../../services/brand.service';
 import { useGetProductsQuery } from '../../../services/product.service';
 import { IProducts } from '../../../types/product.service';
 import { useEffect, useState } from 'react';
+import PageProduct from "./homeProduct/PageProduct";
 
 const Product = () => {
     const { data: productData } = useGetProductsQuery();
@@ -70,28 +71,22 @@ const Product = () => {
                     <div className="fs-2 mb-4 section-heading text-uppercase fw-bold text-center">
                         Thương Hiệu
                     </div>
-                    <div>
-
-                    </div>
                     <div className="row ourteam-row position-relative container">
                         <div className="row">
                             {brandData?.map((item) => {
                                 return (
-                                    <div className="brandIcon col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2 " key={item._id}>
+                                    <div className=" col-xxl-2 border-2 col-xl-2 col-lg-6 col-sm-6 col-12 p-2 " key={item._id}>
                                         <div className="card">
-                                            <a onClick={() => onHandleClick(item._id)} className="d-block overflow-hidden no-underline m-2">
-                                                <div className="position-relative overflow-hidden">
-                                                    <img src={item.image} alt="" width="100%" height="100px" style={{ marginTop: '10%' }} className=" inset-0 object-cover" />
-                                                </div>
-                                            </a>
+                                            <img src={item.image} alt="" width="100%" height="100px" style={{ marginTop: '10%' }} className=" inset-0 object-cover" />
                                         </div>
                                     </div>
                                 )
                             })}
                         </div>
                     </div>
+                    <PageProduct />
                     <div className="row ourteam-row w-100 position-relative ">
-                        <div className="fs-2 section-heading p-5 text-uppercase fw-bold text-center">
+                        <div className="fs-2 section-heading p-5 text-uppercase fw-bold ">
                             Sản phẩm đang giảm giá
                         </div>
                         <div >
@@ -143,7 +138,7 @@ const Product = () => {
             </section>
             <section className="our-team position-relative">
                 <div className="container">
-                    <div className="fs-2 p-5 section-heading text-uppercase fw-bold text-center m-2">
+                    <div className="fs-2 p-5 section-heading text-uppercase fw-bold m-2">
                         Sản phẩm bán chạy
                     </div>
                     <Slider {...settings}>
@@ -199,7 +194,7 @@ const Product = () => {
             </section>
             <section className="our-team position-relative pt-2">
                 <div className="container">
-                    <div className="fs-2 section-heading pb-5 text-uppercase fw-bold text-center">
+                    <div className="fs-2 section-heading pb-5 text-uppercase fw-bold">
                         Sản phẩm nổi bật
                     </div>
                     <Slider {...settings}>
