@@ -5,7 +5,6 @@ import { useGetProductsQuery } from '../../../services/product.service';
 import { Button, Form, Input, Modal, Popconfirm, Select, notification } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { message as messageApi } from 'antd';
-import ProceedToCheckout from './ProceedToCheckout';
 import { Controller, useForm } from 'react-hook-form';
 
 const Cart = () => {
@@ -194,7 +193,7 @@ const Cart = () => {
                 await updateCartDetailMutation(modifiedCartDetail);
                 messageApi.info({
                     type: 'error',
-                    content: "Cập nhật sản phẩm thành công 🎉🎉🎉",
+                    content: "Cập nhật giỏ hàng thành công 🎉🎉🎉",
                     className: 'custom-class',
                     style: {
                         marginTop: '0',
@@ -222,87 +221,122 @@ const Cart = () => {
     };
 
     return (
-        <div><section className="cart_area">
-            <div className="container">
-                <div className="cart_inner">
-                    <div className="table-responsive">
-                        <table className="table">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th scope="col">Hình Ảnh</th>
-                                    <th scope="col">Tên Sản Phẩm</th>
-                                    <th scope="col">Kích Cỡ</th>
-                                    <th scope="col">Màu Sắc</th>
-                                    <th scope="col">Số Lượng</th>
-                                    <th scope="col">Giá</th>
-                                    <th scope="col">Tạm Tính</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {cartDetail?.map((item: any) => (
-                                    <tr key={item?._id}>
-                                        <td>
-                                            <input type="checkbox" name="" id="" />
-                                        </td>
-                                        <td style={{ width: "100px" }}>
-                                            <img width={'100px'} src={item?.image} alt="" />
-                                        </td>
-                                        <td>
-                                            <h6>{item?.name}</h6>
-                                        </td>
-                                        <td>
-                                            <h5>{item.size}</h5>
-                                        </td>
-                                        <td>
-                                            <div style={{ display: "flex", alignItems: "center" }}>
-                                                <div style={{ display: "flex" }}>
-                                                    <button
-                                                        style={{
-                                                            backgroundColor: item?.color,
-                                                            width: "20px",
-                                                            height: "20px",
-                                                            marginRight: "5px",
-                                                        }}
-                                                    ></button>
-                                                    <h5>{item?.color}</h5>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <h5>{item.quantity}</h5>
-                                        </td>
-                                        <td>
-                                            <h5>{item.price}VNĐ</h5>
-                                        </td>
-                                        <td>
-                                            <h5>{item.total}VNĐ</h5>
-                                        </td>
-                                        <td>
-                                            <Button
-                                                type="primary"
-                                                onClick={() => handleEditClick(item.idCartDetail)}
-                                            >
-                                                Edit
-                                            </Button>
-                                            <Popconfirm
-                                                title="Bạn có chắc muốn xóa sản phẩm này không?"
-                                                onConfirm={() => {
-                                                    removeProduct(item.idCartDetail);
-                                                }}
-                                                okText="Yes"
-                                                cancelText="No"
-                                            >
-                                                <Button type="primary" style={{ backgroundColor: 'red', margin: '4px' }}>
-                                                    <CloseOutlined />
-                                                </Button>
-                                            </Popconfirm>
-                                        </td>
+        <div>
+            <section className="cart_area">
+                <div className="container">
+                    <div className="cart_inner">
+                        <div className="table-responsive">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th scope="col">Hình Ảnh</th>
+                                        <th scope="col">Tên Sản Phẩm</th>
+                                        <th scope="col">Kích Cỡ</th>
+                                        <th scope="col">Màu Sắc</th>
+                                        <th scope="col">Số Lượng</th>
+                                        <th scope="col">Giá</th>
+                                        <th scope="col">Tạm Tính</th>
                                     </tr>
-                                ))}
-
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    {cartDetail?.map((item: any) => (
+                                        <tr key={item?._id}>
+                                            <td>
+                                                <input type="checkbox" name="" id="" />
+                                            </td>
+                                            <td style={{ width: "100px" }}>
+                                                <img width={'100px'} src={item?.image} alt="" />
+                                            </td>
+                                            <td>
+                                                <h6>{item?.name}</h6>
+                                            </td>
+                                            <td>
+                                                <h5>{item.size}</h5>
+                                            </td>
+                                            <td>
+                                                <div style={{ display: "flex", alignItems: "center" }}>
+                                                    <div style={{ display: "flex" }}>
+                                                        <button
+                                                            style={{
+                                                                backgroundColor: item?.color,
+                                                                width: "20px",
+                                                                height: "20px",
+                                                                marginRight: "5px",
+                                                            }}
+                                                        ></button>
+                                                        <h5>{item?.color}</h5>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <h5>{item.quantity}</h5>
+                                            </td>
+                                            <td>
+                                                <h5>{item.price}VNĐ</h5>
+                                            </td>
+                                            <td>
+                                                <h5>{item.total}VNĐ</h5>
+                                            </td>
+                                            <td>
+                                                <Button
+                                                    type="primary"
+                                                    onClick={() => handleEditClick(item.idCartDetail)}
+                                                >
+                                                    Edit
+                                                </Button>
+                                                <Popconfirm
+                                                    title="Bạn có chắc muốn xóa sản phẩm này không?"
+                                                    onConfirm={() => {
+                                                        removeProduct(item.idCartDetail);
+                                                    }}
+                                                    okText="Yes"
+                                                    cancelText="No"
+                                                >
+                                                    <Button type="primary" style={{ backgroundColor: 'red', margin: '4px' }}>
+                                                        <CloseOutlined />
+                                                    </Button>
+                                                </Popconfirm>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    <Form.Item
+                                        label="Color"
+                                        name="color"
+                                        rules={[{ required: true, message: 'Vui lòng chọn màu!' }]}
+                                        className='col-xl-7 col-lg-7 col-sm-7 col-12'
+                                    >
+                                        <Controller
+                                            render={({ field }) => (
+                                                <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
+                                                    {targetProduct
+                                                        ?.filter((product) => product.size === watch('size'))
+                                                        .map((product) => (
+                                                            <option key={product.color} value={product.color}>
+                                                                {product.color}
+                                                            </option>
+                                                        ))}
+                                                </Select>
+                                            )}
+                                            name="color"
+                                            control={control}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="quantity"
+                                        name="quantity"
+                                        rules={[{ required: true, message: 'Vui lòng nhập số lượng!' }]}
+                                    >
+                                        <Controller
+                                            name="quantity"
+                                            control={control}
+                                            defaultValue={editingProduct?.quantity || ''}
+                                            render={({ field }) => <Input {...field} placeholder="quantity" />}
+                                        />
+                                    </Form.Item>
+                                </tbody>
+                            </table>
+                        </div>
                         <div>
                             <hr />
                             <table className="table">
@@ -423,8 +457,7 @@ const Cart = () => {
                         </Modal>
                     </div>
                 </div>
-            </div>
-        </section >
+            </section >
         </div >
     )
 }

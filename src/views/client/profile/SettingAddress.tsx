@@ -32,7 +32,7 @@ const SettingAddress = () => {
 
     const onSubmit = (information: any) => {
         console.log(information);
-        localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
+        localStorage.setItem('successMessage', "Chúc mừng bạn đã Cập nhật thành công 🎉🎉🎉");
         setTimeout(() => {
             window.location.reload();
         }, 500);
@@ -60,10 +60,10 @@ const SettingAddress = () => {
             {/* Address */}
             <div className="row align-items-center">
                 <div className="col-8">
-                    <h3 className="heading-small text-muted mb-4">Contact information</h3>
+                    <h3 className="heading-small text-muted mb-4">Thông tin liên lạc</h3>
                 </div>
                 <div className="col-4 text-right">
-                    <button className="btn btn-sm btn-primary" onClick={handleButtonClick}>Settings</button>
+                    <button className="btn btn-sm btn-primary" onClick={handleButtonClick}>Chỉnh sửa</button>
                 </div>
             </div>
             {form1 ? (
@@ -71,28 +71,28 @@ const SettingAddress = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="form-group focused">
-                                <label className="form-control-label" htmlFor="input-address">Address</label>
-                                <input id="input-address" className="form-control form-control-alternative l" placeholder="Address" defaultValue={usersOne?.address} readOnly />
+                                <label className="form-control-label" htmlFor="input-address">Địa chỉ</label>
+                                <input id="input-address" className="form-control form-control-alternative l" placeholder="Địa chỉ" defaultValue={usersOne?.address} readOnly />
                             </div>
                         </div>
                     </div>
                     <div className="row">
                         <div className="col-lg-4">
                             <div className="form-group focused">
-                                <label className="form-control-label" htmlFor="input-city">City</label>
-                                <input type="text" id="input-city" className="form-control form-control-alternative " placeholder="City" readOnly />
+                                <label className="form-control-label" htmlFor="input-city">Thành phố</label>
+                                <input type="text" id="input-city" className="form-control form-control-alternative " placeholder="Thành phố" readOnly />
                             </div>
                         </div>
                         <div className="col-lg-4">
                             <div className="form-group focused">
-                                <label className="form-control-label" htmlFor="input-country">Country</label>
-                                <input type="text" id="input-country" className="form-control form-control-alternative " placeholder="Country" readOnly />
+                                <label className="form-control-label" htmlFor="input-country">Quốc gia</label>
+                                <input type="text" id="input-country" className="form-control form-control-alternative " placeholder="Quốc gia" readOnly />
                             </div>
                         </div>
                         <div className="col-lg-4">
                             <div className="form-group">
-                                <label className="form-control-label" htmlFor="input-country">Postal code</label>
-                                <input type="number" id="input-postal-code" className="form-control form-control-alternative " placeholder="Postal code" readOnly />
+                                <label className="form-control-label" htmlFor="input-country">Mã bưu điện</label>
+                                <input type="number" id="input-postal-code" className="form-control form-control-alternative " placeholder="Mã bưu điện" readOnly />
                             </div>
                         </div>
                     </div>
@@ -103,16 +103,16 @@ const SettingAddress = () => {
                         <div className="row">
                             <div className="col-md-12">
                                 <div className="form-group focused">
-                                    <label className="form-control-label" htmlFor="input-address">Address</label>
+                                    <label className="form-control-label" htmlFor="input-address">Địa chỉ</label>
                                     <Form.Item
-                                        rules={[{ required: true, message: 'Please input your username!' }]}
+                                        rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
                                         className='form-control form-control-alternative form-control-label p-2'
                                     >
                                         <Controller
                                             name="address"
                                             control={control}
                                             defaultValue={usersOne?.address || ''}
-                                            render={({ field }) => <Input {...field} placeholder="address" />}
+                                            render={({ field }) => <Input {...field} placeholder="Địa chỉ" />}
                                         />
                                     </Form.Item>
                                 </div>
@@ -121,25 +121,25 @@ const SettingAddress = () => {
                         <div className="row">
                             <div className="col-lg-4">
                                 <div className="form-group focused">
-                                    <label className="form-control-label" htmlFor="input-city">City</label>
-                                    <input style={{ color: "black" }} type="text" id="input-city" className="form-control form-control-alternative form-control-label" placeholder="City" />
+                                    <label className="form-control-label" htmlFor="input-city">Thành phố</label>
+                                    <input style={{ color: "black" }} type="text" id="input-city" className="form-control form-control-alternative form-control-label" placeholder="Thành phố" />
                                 </div>
                             </div>
                             <div className="col-lg-4">
                                 <div className="form-group focused">
-                                    <label className="form-control-label" htmlFor="input-country">Country</label>
-                                    <input style={{ color: "black" }} type="text" id="input-country" className="form-control form-control-alternative form-control-label" placeholder="Country" />
+                                    <label className="form-control-label" htmlFor="input-country">Quốc gia</label>
+                                    <input style={{ color: "black" }} type="text" id="input-country" className="form-control form-control-alternative form-control-label" placeholder="Quốc gia" />
                                 </div>
                             </div>
                             <div className="col-lg-4">
                                 <div className="form-group">
-                                    <label className="form-control-label" htmlFor="input-country">Postal code</label>
-                                    <input style={{ color: "black" }} type="number" id="input-postal-code" className="form-control form-control-alternative form-control-label" placeholder="Postal code" />
+                                    <label className="form-control-label" htmlFor="input-country">Mã bưu điện</label>
+                                    <input style={{ color: "black" }} type="number" id="input-postal-code" className="form-control form-control-alternative form-control-label" placeholder="Mã bưu điện" />
                                 </div>
                             </div>
                         </div>
                         <div className="col-lg-7 text-right">
-                            <button className="btn btn-sm btn-info">Update</button>
+                            <button className="btn btn-sm btn-info">Cập nhật</button>
                         </div>
                     </form>
                 </div>

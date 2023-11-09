@@ -111,9 +111,9 @@ const ProductAdd: React.FC = () => {
                         <Form.Item
                             label="Category"
                             name="brand_id"
-                            rules={[{ required: true, message: 'Please select a category!' }]}
+                            rules={[{ required: true, message: 'Vui lòng chọn thương hiệu!' }]}
                         >
-                            <Select placeholder="Select a category">
+                            <Select placeholder="Thương Hiệu">
                                 {categories?.map((category) => (
                                     <Option key={category._id} value={category._id}>
                                         {category.name}
@@ -126,7 +126,7 @@ const ProductAdd: React.FC = () => {
                             label="Tên sản phẩm"
                             name="name"
                             rules={[
-                                { required: true, message: 'Please input your product!' },
+                                { required: true, message: 'Vui lòng nhập tên sản phẩm!' },
                                 { min: 3, message: "ít nhất 3 ký tự" },
                             ]}
                         >
@@ -134,7 +134,7 @@ const ProductAdd: React.FC = () => {
                         </Form.Item>
 
 
-                        <Form.Item label="Giá" name="price" rules={[
+                        <Form.Item label="Giá niêm yết" name="price" rules={[
                             {
                                 required: true,
                                 type: 'number',
@@ -144,7 +144,7 @@ const ProductAdd: React.FC = () => {
                             <InputNumber />
                         </Form.Item>
                         <Form.Item
-                            label="Giảm giá"
+                            label="Giá bán"
                             name="price_sale"
                             rules={[
                                 {
@@ -163,7 +163,7 @@ const ProductAdd: React.FC = () => {
                             id="preview-image"
                             required
                             rules={[
-                                { required: true, message: 'Please select an image!' },
+                                { required: true, message: 'Vui lòng chọn ít nhất 1 ảnh!' },
                                 { validator: (_, value) => (value ? Promise.resolve() : Promise.reject('Please select an image!')) },
                             ]}
                             valuePropName="file"
@@ -189,14 +189,14 @@ const ProductAdd: React.FC = () => {
                             label="Mô tả sản phẩm"
                             name="description"
                             rules={[
-                                { required: true, message: 'Please input your product!' },
+                                { required: true, message: 'Vui lòng nhập mô tả sản phẩm!' },
                                 { min: 3, message: "ít nhất 3 ký tự" },
                             ]}
                         >
                             <Input />
                         </Form.Item>
                         <Form.Item label="Nội dung" name="content" rules={[
-                            { required: true, message: 'Please input your product!' },
+                            { required: true, message: 'Vui lòng nhập nôi dung sản phẩm!' },
 
                         ]}>
                             <TextArea rows={4} />
