@@ -153,7 +153,7 @@ const CheckOut = () => {
                                     <Form.Item
                                         label="Họ và tên"
                                         name="fullName"
-                                        initialValue={usersOne?.fullName + ' ' + usersOne?.userName}
+                                        initialValue={usersOne?.fullName}
                                         rules={[{ required: true, message: 'Vui lòng điền họ và tên' }]}
                                     >
                                         <Input />
@@ -199,7 +199,7 @@ const CheckOut = () => {
                                 </div>
                                 <div className="col-md-12 form-group">
                                     <Form.Item label="Ghi chú" name="Note">
-                                        <Input.TextArea rows={1} placeholder="#Gọi vào giờ hàng chính #Không ném vào nhà" />
+                                        <Input.TextArea rows={1} placeholder="#Gọi vào giờ hàng chính" />
                                     </Form.Item>
                                 </div>
                             </div>
