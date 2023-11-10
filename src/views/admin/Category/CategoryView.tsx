@@ -67,7 +67,7 @@ const CategoryView: React.FC = () => {
 
     const columns: ColumnsType<DataType> = [
         {
-            title: 'Tên danh mục',
+            title: 'Thương Hiệu',
             dataIndex: 'name',
             key: 'name',
         },
@@ -80,7 +80,7 @@ const CategoryView: React.FC = () => {
             ),
         },
         {
-            title: 'Mô tả sản phẩm',
+            title: 'Mô tả ',
             dataIndex: 'description',
             key: 'description',
         },
@@ -93,10 +93,10 @@ const CategoryView: React.FC = () => {
                         <div>
                             <Popconfirm
                                 title="Delete the task"
-                                description="Are you sure to delete this product ?"
+                                description="Bạn có chắc chắn muốn xóa thương Hiệu này ?"
                                 onConfirm={() => confirm(id)}
-                                okText="Yes"
-                                cancelText="No"
+                                okText="Xóa"
+                                cancelText="Hủy"
                             >
                                 <Button
                                     type="primary"
@@ -141,7 +141,7 @@ const CategoryView: React.FC = () => {
                 <div className="col-lg-12 d-flex align-items-stretch">
                     <div className="card w-100">
                         <div className="card-body mt-5" >
-                            <h5 className="card-title fw-semibold mb-4">Danh Mục</h5>
+                            <h5 className="card-title fw-semibold mb-4">Thương Hiệu</h5>
                             <a className="text-white" href="/admin/category/add">
                                 <button type="button" className="btn btn-success m-1">Thêm</button>
                             </a>
@@ -151,7 +151,7 @@ const CategoryView: React.FC = () => {
                                         <Input
                                             type="text"
                                             className="form-control"
-                                            placeholder="Nhập tên sản phẩm cần tìm"
+                                            placeholder="Nhập tên thương hiệu cần tìm"
                                             name="searchTerm"
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}

@@ -170,7 +170,7 @@ const UserAdd = () => {
                                             type="text"
                                             className="form-control"
                                             id="address"
-                                            placeholder="Nhập address"
+                                            placeholder="Nhập Địa Chỉ"
                                             {...register("address",
                                                 { required: true })}
                                         />
@@ -182,8 +182,8 @@ const UserAdd = () => {
                                             {...register("gender")}
                                             defaultValue="Gender"
                                         >
-                                            <option value="Men">Men</option>
-                                            <option value="Women">Women</option>
+                                            <option value="Men">Nam</option>
+                                            <option value="Women">Nữ</option>
                                         </select>
                                     </div>
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
@@ -234,7 +234,7 @@ const UserAdd = () => {
                                     </div>
                                     <div className="form-group mb-2" style={{ width: "200px", marginLeft: "40%" }}>
                                         <button type="submit" value="submit" className="primary-btn">
-                                            Sign up
+                                            Đăng ký
                                         </button>
                                     </div>
                                 </form>

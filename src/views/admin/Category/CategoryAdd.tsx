@@ -32,7 +32,7 @@ const CategoryAdd: React.FC = () => {
             .then(() => {
                 notification.success({
                     message: "Success",
-                    description: "Thêm Sản Phẩm Thành Công!",
+                    description: "Thêm Thương Hiệu Thành Công!",
                 });
                 navigate("/admin/category");
             })
@@ -81,7 +81,7 @@ const CategoryAdd: React.FC = () => {
                         <Form.Item
                             label="Name"
                             name="name"
-                            rules={[{ required: true, message: 'Please input your name!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
+                            rules={[{ required: true, message: 'Vui lòng nhập tên Thương Hiệu!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
                         >
                             <Input />
                         </Form.Item>
@@ -90,7 +90,7 @@ const CategoryAdd: React.FC = () => {
                             name="image"
                             required
                             rules={[
-                                { required: true, message: 'Please select an image!' },
+                                { required: true, message: 'Vui lòng chọn 1 ảnh!' },
                                 { validator: (_, value) => (value ? Promise.resolve() : Promise.reject('Please select an image!')) },
                             ]}
                             valuePropName="file"
@@ -114,7 +114,7 @@ const CategoryAdd: React.FC = () => {
                             label="Mô tả sản phẩm"
                             name="description"
                             rules={[
-                                { required: true, message: 'Please input your product!' },
+                                { required: true, message: 'Vui lòng nhập mô tả!' },
                                 { min: 3, message: "ít nhất 3 ký tự" },
                             ]}
                         >
@@ -125,12 +125,7 @@ const CategoryAdd: React.FC = () => {
                             <Button type="primary" htmlType="submit" >
                                 Submit
                             </Button>
-                            <Button
-                                type='primary'
-                                danger
-                                onClick={() => navigate("/admin/category")}
-                                className='ml-2'
-                            >Quay lại</Button>
+                            <Button htmlType="reset">reset</Button>
                         </Form.Item>
                     </Form>
                 </div>

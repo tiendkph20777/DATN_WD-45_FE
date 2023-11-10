@@ -29,7 +29,7 @@ const ProductAdd = () => {
       .then(() => {
         notification.success({
           message: "Success",
-          description: "Thêm Sản Phẩm Thành Công!",
+          description: "Thêm Chi Tiết Sản Phẩm Thành Công!",
         });
         navigate("/admin/product/detail");
       })
@@ -44,7 +44,7 @@ const ProductAdd = () => {
 
   return (
     <div >
-      <h1 style={{paddingTop:"200px"}}>Thêm Sản Phẩm</h1>
+      <h1 style={{paddingTop:"200px"}}>Thêm Chi Tiết Sản Phẩm</h1>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -105,8 +105,9 @@ const ProductAdd = () => {
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
           <Button type="primary" htmlType="submit" style={{ backgroundColor: "blue" }}>
-            Add New Product
+            Thêm
           </Button>
+          <Button htmlType="reset">reset</Button>
         </Form.Item>
       </Form>
     </div>

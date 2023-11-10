@@ -122,7 +122,7 @@ const ProductView = () => {
             ),
         },
         {
-            title: 'Giá',
+            title: 'Giá niêm yết',
             dataIndex: 'price',
             key: 'price',
         },
@@ -150,11 +150,11 @@ const ProductView = () => {
                     <>
                         <div>
                             <Popconfirm
-                                title="Delete the task"
-                                description="Are you sure to delete this product ?"
+                                title="Xóa sản phẩm này!"
+                                description="Bạn có chắc chắn muốn xóa sản phẩm này ?"
                                 onConfirm={() => confirm(id)}
-                                okText="Yes"
-                                cancelText="No"
+                                okText="Xóa"
+                                cancelText="Hủy"
                             >
                                 <Button
                                     type="primary"

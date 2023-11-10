@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import {
   useGetProductByIdQuery,
@@ -15,7 +14,6 @@ import "slick-carousel/slick/slick-theme.css";
 import { message as messageApi } from 'antd';
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
-import ProductLienQuan from "./ProductLienQuan";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -46,12 +44,6 @@ const ProductDetail = () => {
   const [colorsForSelectedSize, setColorsForSelectedSize] = useState([]);
   const [hasSelectedColor, setHasSelectedColor] = useState(false);
   const [mainImage, setMainImage] = useState(prodetailData?.images[0]);
-
-  // if (!selectedSize) {
-  //   console.log(selectedSize)
-  // } {
-  //   console.log("bạn chưa chọn size")
-  // }
 
   useEffect(() => {
     if (selectedSize) {
@@ -321,14 +313,13 @@ const ProductDetail = () => {
                 </div>
                 <div className="product_count flex-1">
                   <label className="quantity">Số Lượng:</label>
-
                   <div className="quantity-input">
                     <span>
                       <button onClick={decrementQuantity}>-</button>
                     </span>
                     <input
                       min="1"
-                      maxLength={999}
+                      maxLength={10}
                       value={quantity}
                       onChange={handleQuantityChange}
                       className="w-50"
@@ -344,7 +335,7 @@ const ProductDetail = () => {
                     onClick={onSubmitCart}
                     disabled={isAddingToCart}
                   >
-                    {isAddingToCart ? "Adding to Cart..." : "Add to Cart"}
+                    {isAddingToCart ? "Thêm vào giỏ hàng..." : "Thêm vào giỏ hàng"}
                   </button>
                 </div>
               </div>
@@ -404,7 +395,7 @@ const ProductDetail = () => {
                                 <div className="product-vendor">
                                   {brandName}
                                 </div>
-                                <h4 className="product-name ">{item.name}</h4>
+                                <h4 className="product-name ellipsis">{item.name}</h4>
                                 {item.price_sale > 0 ? (
                                   <div className="product-price row">
                                     <strong className="col-12">

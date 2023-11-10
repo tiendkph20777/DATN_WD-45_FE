@@ -34,7 +34,7 @@ const SettingInformation = () => {
 
     const onSubmit = (information: any) => {
         // console.log(information);
-        localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
+        localStorage.setItem('successMessage', "Chúc mừng bạn đã cập nhật thành công 🎉🎉🎉");
         setTimeout(() => {
             window.location.reload();
         }, 500);
@@ -63,10 +63,10 @@ const SettingInformation = () => {
         <div>
             <div className="row align-items-center">
                 <div className="col-8">
-                    <h3 className="heading-small text-muted mb-4">User information</h3>
+                    <h3 className="heading-small text-muted mb-4">Thông tin người dùng</h3>
                 </div>
                 <div className="col-4 text-right">
-                    <button className="btn btn-sm btn-primary" onClick={handleButtonClick}>Settings</button>
+                    <button className="btn btn-sm btn-primary" onClick={handleButtonClick}>Chỉnh sửa</button>
                 </div>
             </div>
             <div className="pl-lg-4">
@@ -76,34 +76,34 @@ const SettingInformation = () => {
                             <div className="row">
                                 <div className="col-lg-5">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-username">Username</label>
+                                        <label className="form-control-label" htmlFor="input-username">Tên người dùng</label>
                                         <input type="text" id="input-username" className="form-control form-control-alternative font-bold" placeholder="Username" defaultValue={usersOne?.userName} readOnly />
                                     </div>
                                 </div>
                                 <div className="col-lg-4">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-first-name">First name</label>
-                                        <input type="text" id="input-first-name" className="form-control form-control-alternative" placeholder="First name" defaultValue={usersOne?.fullName} readOnly />
+                                        <label className="form-control-label" htmlFor="input-first-name">Tên đầy đủ</label>
+                                        <input type="text" id="input-first-name" className="form-control form-control-alternative" placeholder="Tên đầy đủ" defaultValue={usersOne?.fullName} readOnly />
                                     </div>
                                 </div>
                                 <div className="col-lg-3">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-email">Gender</label>
-                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Gender" defaultValue={usersOne?.gender} readOnly />
+                                        <label className="form-control-label" htmlFor="input-email">Giới tính</label>
+                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Giới tính" defaultValue={usersOne?.gender} readOnly />
                                     </div>
                                 </div>
                             </div>
                             <div className="row">
                                 <div className="col-lg-7">
                                     <div className="form-group">
-                                        <label className="form-control-label" htmlFor="input-email">Email address</label>
+                                        <label className="form-control-label" htmlFor="input-email">Email</label>
                                         <input type="email" id="input-email" className="form-control form-control-alternative" placeholder={usersOne?.email} readOnly />
                                     </div>
                                 </div>
                                 <div className="col-lg-5">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-email">Phone</label>
-                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Phone" defaultValue={usersOne?.tel} readOnly />
+                                        <label className="form-control-label" htmlFor="input-email">Điện thoại</label>
+                                        <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Điện thoại" defaultValue={usersOne?.tel} readOnly />
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@ const SettingInformation = () => {
                         <form action="" onSubmit={handleSubmit(onSubmit)}>
                             <div className="row">
                                 <div className='col-lg-5'>
-                                    <label className="form-control-label" htmlFor="input-first-name">User name</label>
+                                    <label className="form-control-label" htmlFor="input-first-name">Tên người dùng</label>
                                     <Form.Item
                                         rules={[{ required: true, message: 'Please input your username!' }]}
                                         className='form-control form-control-alternative form-control-label text-black'
@@ -129,7 +129,7 @@ const SettingInformation = () => {
                                 </div>
                                 <div className="col-lg-4">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-first-name">First name</label>
+                                        <label className="form-control-label" htmlFor="input-first-name">Tên đầy đủ</label>
                                         <Form.Item
                                             rules={[{ required: true, message: 'Please input your fullName!' }]}
                                             className='form-control form-control-alternative form-control-label p-2'
@@ -145,13 +145,13 @@ const SettingInformation = () => {
                                 </div>
                                 <div className="col-lg-3">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-email">Gender</label>
+                                        <label className="form-control-label" htmlFor="input-email">Giới tính</label>
                                         <section className=' className="form-control form-control-alternative form-control-label'>
                                             <Controller
                                                 render={({ field }) => (
                                                     <Select {...field} style={{ width: "100%" }} className='form-control p-2'>
-                                                        <MenuItem value={"Men"}>Men</MenuItem>
-                                                        <MenuItem value={"Women"}>Women</MenuItem>
+                                                        <MenuItem value={"Men"}>Nam</MenuItem>
+                                                        <MenuItem value={"Women"}>Nữ</MenuItem>
                                                     </Select>
                                                 )}
                                                 name="gender"
@@ -164,9 +164,9 @@ const SettingInformation = () => {
                             <div className="row">
                                 <div className="col-lg-7">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-email">Email address</label>
+                                        <label className="form-control-label" htmlFor="input-email">Email </label>
                                         <Form.Item
-                                            rules={[{ required: true, message: 'Please input your fullName!' }]}
+                                            rules={[{ required: true, message: 'Vui lòng nhập email!' }]}
                                             className='form-control form-control-alternative form-control-label p-2'
                                         >
                                             <Controller
@@ -180,9 +180,9 @@ const SettingInformation = () => {
                                 </div>
                                 <div className="col-lg-5">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-email">Phone</label>
+                                        <label className="form-control-label" htmlFor="input-email">Điện thoại</label>
                                         <Form.Item
-                                            rules={[{ required: true, message: 'Please input your fullName!' }]}
+                                            rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
                                             className='form-control form-control-alternative form-control-label p-2'
                                         >
                                             <Controller
@@ -196,7 +196,7 @@ const SettingInformation = () => {
                                 </div>
                             </div>
                             <div className="col-lg-7 text-right">
-                                <button className="btn btn-sm btn-info">Update</button>
+                                <button className="btn btn-sm btn-info">Cập nhật</button>
                             </div>
                         </form>
                     </div>
