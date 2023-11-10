@@ -64,7 +64,7 @@ const Signin = () => {
                                         There are advances being made in science and technology everyday,
                                         and a good example of this is the
                                     </p>
-                                    <Link className="primary-btn" to={"/signup"}>Create an Account</Link>
+                                    <Link className="primary-btn" to={"/signup"}>Tạo tài khoản mới</Link>
                                 </div>
                             </div>
                         </div>
@@ -105,7 +105,7 @@ const Signin = () => {
                                     </div>
                                     <div className="col-md-12 form-group">
                                         <button type="submit" value="submit" className="primary-btn">
-                                            Log In
+                                            Đăng nhập
                                         </button>
                                         <a href="#">Forgot Password?</a>
                                     </div>

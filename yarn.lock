@@ -3622,6 +3622,7 @@
     "react-lifecycles-compat" "^3.0.0"
     "warning" "^4.0.3"
 
+
 "react-onclickoutside@^6.13.0":
   "integrity" "sha512-ty8So6tcUpIb+ZE+1HAhbLROvAIJYyJe/1vRrrcmW+jLsaM+/powDRqxzo6hSh9CuRZGSL1Q8mvcF5WRD93a0A=="
   "resolved" "https://registry.npmjs.org/react-onclickoutside/-/react-onclickoutside-6.13.0.tgz"

@@ -32,6 +32,7 @@ import { PaymentView } from "../views/admin/payment";
 import PaymentAdd from "../views/admin/payment/PaymentAdd";
 import PaymentEdit from "../views/admin/payment/PaymentEdit";
 import Dashboard from "../views/admin/Dashboard/Dashboard";
+import Oops404 from "../views/client/Oops404/Oops404";
 
 const routes: RouteObject[] = [
     {
@@ -153,6 +154,10 @@ const routes: RouteObject[] = [
     {
         path: '/signup',
         element: <Signup />
+    },
+    {
+        path: "*",
+        element: <Oops404 />
     },
 ];
 
