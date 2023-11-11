@@ -136,7 +136,7 @@ const Dashboard = (props: Props) => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Tên Sản phẩm",
       dataIndex: "product_id",
       key: "product_id",
     },
@@ -154,28 +154,28 @@ const Dashboard = (props: Props) => {
       },
     },
     {
-      title: "Color",
+      title: "Màu sắc",
       dataIndex: "color",
       key: "color",
     },
     {
-      title: "Quantity",
+      title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: ({ key: id }: any) => {
         return (
           <>
             <div>
               <Popconfirm
-                title="Delete the task"
-                description="Are you sure to delete this product ?"
+                title="Xóa sản phẩm này"
+                description="Bạn có chắc chắn muốn xóa sản phẩm này ?"
                 onConfirm={() => confirm(id)}
-                okText="Yes"
-                cancelText="No"
+                okText="Xóa"
+                cancelText="Hủy"
               >
                 <Button
                   type="primary"
@@ -230,7 +230,7 @@ const Dashboard = (props: Props) => {
           onChange={(value) => setSelectedColor(value)}
           style={{ marginBottom: "20px", marginTop: "40px" }}
         >
-          <Option value={undefined}>All Color</Option>
+          <Option value={undefined}>Tất cả màu sắc</Option>
           {dataSourceToRender && dataSourceToRender.length > 0 ? (
             dataSourceToRender.map((item) => (
               <Option key={item.color} value={item.color}>

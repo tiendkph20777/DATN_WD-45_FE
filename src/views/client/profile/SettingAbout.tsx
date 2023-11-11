@@ -69,7 +69,7 @@ const SettingAbout = () => {
             {form1 ? (
                 <div className="pl-lg-4">
                     <div className="form-group focused">
-                        <label>About Me</label>
+                        <label>Về tôi</label>
                         <textarea rows={4} className="form-control form-control-alternative" placeholder="Một vài từ về bạn ..." defaultValue={usersOne?.aboutme} readOnly />
                     </div>
                 </div>
@@ -77,7 +77,7 @@ const SettingAbout = () => {
                 <div className="pl-lg-4">
                     <form action="" onSubmit={handleSubmit(onSubmit)}>
                         <div className="form-group focused">
-                            <label>About Me</label>
+                            <label>Về tôi</label>
                             <Form.Item
 
                                 name={['user', 'introduction']}
