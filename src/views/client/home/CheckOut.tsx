@@ -20,29 +20,27 @@ const CheckOut = () => {
     const { data: paymentQuery } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
 
+
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
             const matchingIds = cartDetailIds?.filter((id: any) => ProductDetailUser.some((product) => product._id === id));
-            // 
             const productIds = ProductDetailUser?.map((item) => item.product_id);
             const filteredProducts = Product?.filter((product: any) => productIds.includes(product?._id));
-
             const matchingProductDetailUser = ProductDetailUser?.filter((item) => matchingIds.includes(item._id));
-            // console.log(matchingProductDetailUser)
             const modifiedProductDetails = matchingProductDetailUser?.map((item: any) => {
                 const matchingProduct = filteredProducts?.find((product) => product._id === item.product_id);
 
                 if (matchingProduct) {
-                    const price = matchingProduct.price; // Lấy giá từ sản phẩm
-                    const quantity = cartUser.products.find((product: any) => product.productDetailId === item._id).quantity; // Lấy quantity từ cartUser
+                    const price = matchingProduct.price;
+                    const quantity = cartUser.products.find((product: any) => product.productDetailId === item._id).quantity;
                     return {
                         ...item,
                         name: matchingProduct.name,
                         image: matchingProduct.images[0],
                         price: price,
                         quantity: quantity,
-                        total: price * quantity, // Tính tổng giá bằng cách nhân giá với số lượng
+                        total: price * quantity,
                     };
                 } else {
                     return item;
@@ -73,7 +71,7 @@ const CheckOut = () => {
 
     const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
     const [addCheckout] = useCreateCheckoutMutation();
-    const valueVoucher = voucher?.value !== undefined ? voucher.value : 0; // Use 0 if valueVoucher is undefined
+    const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
     const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item.total, 0);
     const total = totalSum - valueVoucher;
 
@@ -105,7 +103,7 @@ const CheckOut = () => {
                 const date = new Date()
                 const newData = { ...data, products: cartDetail, payment_id: selectedPayment, total: totalSum - voucher?.value, voucherCode, dateCreate: date, status: 'Đang xác nhận đơn hàng' };
                 console.log(newData);
-                // await addCheckout(newData);
+                await addCheckout(newData);
             } catch (error) {
                 console.error('Lỗi khi tạo checkout:', error);
             }
