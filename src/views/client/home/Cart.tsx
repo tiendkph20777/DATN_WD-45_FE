@@ -300,7 +300,7 @@ const Cart = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    <Form.Item
+                                    {/* <Form.Item
                                         label="Color"
                                         name="color"
                                         rules={[{ required: true, message: 'Vui lòng chọn màu!' }]}
@@ -333,7 +333,7 @@ const Cart = () => {
                                             defaultValue={editingProduct?.quantity || ''}
                                             render={({ field }) => <Input {...field} placeholder="quantity" />}
                                         />
-                                    </Form.Item>
+                                    </Form.Item> */}
                                 </tbody>
                             </table>
                         </div>

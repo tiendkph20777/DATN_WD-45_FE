@@ -4,6 +4,8 @@ import { useGetAllProductsDetailQuery } from '../../../services/productDetail.se
 import { useGetProductsQuery } from '../../../services/product.service';
 import { useFetchOneUserQuery } from '../../../services/user.service';
 import { useCreateCheckoutMutation } from "../../../services/checkout.service";
+import { useGetVoucherByCodeQuery } from '../../../services/voucher.service';
+import { useGetPaymentQuery } from '../../../services/payment.service';
 
 
 const CheckOut = () => {
@@ -15,7 +17,7 @@ const CheckOut = () => {
     const { data: usersOne } = useFetchOneUserQuery(idUs)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
-
+    const { data: paymentQuery } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
 
     useEffect(() => {
@@ -50,127 +52,109 @@ const CheckOut = () => {
         }
     }, [cartUser, ProductDetailUser]);
 
+
+    const [voucherCode, setVoucherCode] = useState('');
+    const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
+
+    const getCodeVoucher = () => {
+        if (!voucherCode) {
+            console.error('Mã khuyến mãi không được để trống');
+            return;
+        }
+    };
+    if (voucher) {
+        console.log('Thông tin voucher:', voucher);
+    }
+    if (error) {
+        console.error('Lỗi khi truy vấn mã khuyến mãi:', error);
+    }
+
+
+
     const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
-    const [addCheckout, { isLoading, isError, isSuccess }] = useCreateCheckoutMutation();
+    const [addCheckout] = useCreateCheckoutMutation();
+    const valueVoucher = voucher?.value !== undefined ? voucher.value : 0; // Use 0 if valueVoucher is undefined
+    const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item.total, 0);
+    const total = totalSum - valueVoucher;
 
-    const onSubmitCheckout = async () => {
-        if (!isAddingToCheckout) {
-            setIsAddingToCheckout(true);
+    // Payment ID
+    const [selectedPayment, setSelectedPayment] = useState(null);
 
-            // Prepare the data for creating a checkout
-            const checkoutData = {
-                product_id: cartDetail.map(item => item.product_id),
-                user_id: idUs,
-                address: profileUser.map((item: { address: any; }) => item.address),
-                fullname: profileUser.map((item: { fullName: any; }) => item.fullName),
-                email: profileUser.map((item: { email: any; }) => item.email),
-                tel: profileUser.map((item: { tel: any; }) => item.tel),
-                total: cartDetail.map(item => item.total),
-                PaymentAmount: totalSum,
-                // Add other checkout-related data here
-            };
+    const handlePaymentSelect = (paymentId: any) => {
+        setSelectedPayment(paymentId);
+        // Thêm logic xử lý khi phương thức thanh toán được chọn
+    };
+    console.log(selectedPayment);
+
+    const handleOnClick = async () => {
+        const form = document.querySelector('#form_checkout') as HTMLFormElement | null;
+        if (form) {
+            const formData = new FormData(form);
+            const data: { [key: string]: string } = {};
+            formData.forEach((value, key) => {
+                const inputElement = form.querySelector(`[name="${key}"]`);
+                if (inputElement && inputElement instanceof HTMLInputElement) {
+                    const name = inputElement.getAttribute('name');
+                    if (name) {
+                        data[name] = value.toString();
+                    }
+                }
+            });
 
             try {
-                // Call the addCheckout mutation to create a checkout
-                const response = await addCheckout(checkoutData).unwrap();
-
-                // Handle success and navigate to a confirmation page or perform other actions
-                if (isSuccess(response)) {
-                    // Handle success, e.g., show a success message, redirect to a confirmation page
-                    console.log('Checkout successful');
-                    // You may want to reset the cart or perform other post-checkout actions.
-                }
+                const date = new Date()
+                const newData = { ...data, products: cartDetail, payment_id: selectedPayment, total: totalSum - voucher?.value, voucherCode, dateCreate: date, status: 'Đang xác nhận đơn hàng' };
+                console.log(newData);
+                // await addCheckout(newData);
             } catch (error) {
-                // Handle any errors or display error messages to the user
-                console.error('Error adding checkout:', error);
-            } finally {
-                setIsAddingToCheckout(false);
+                console.error('Lỗi khi tạo checkout:', error);
             }
         }
     };
 
-    const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item.total, 0);
-
     return (
         <div><section className="checkout_area section_gap">
             <div className="container">
-                {/* <div className="returning_customer">
-                    <div className="check_title">
-                        <h2>Returning Customer? <a href="#">Click here to login</a></h2>
-                    </div>
-                    <p>If you have shopped with us before, please enter your details in the boxes below. If you are a new
-                        customer, please proceed to the Billing & Shipping section.</p>
-                    <form className="row contact_form" action="#" method="post" noValidate>
-                        <div className="col-md-6 form-group p_star">
-                            <input type="text" className="form-control" id="name" name="name" />
-                            <span className="placeholder" data-placeholder="Username or Email"></span>
-                        </div>
-                        <div className="col-md-6 form-group p_star">
-                            <input type="password" className="form-control" id="password" name="password" />
-                            <span className="placeholder" data-placeholder="Password"></span>
-                        </div>
-                        <div className="col-md-12 form-group">
-                            <button type="submit" value="submit" className="primary-btn">login</button>
-                            <div className="creat_account">
-                                <input type="checkbox" id="f-option" name="selector" />
-                                <label htmlFor="f-option">Remember me</label>
-                            </div>
-                            <a className="lost_pass" href="#">Lost your password?</a>
-                        </div>
-                    </form>
-                </div> */}
-                <div className="cupon_area">
-                    <div className="check_title">
-                        <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
-                    </div>
-                    <input type="text" placeholder="Enter coupon code" />
-                    <a className="tp_btn" href="#">Apply Coupon</a>
-                </div>
                 <div className="billing_details">
-
-                    <form className="row" action="" method="post" noValidate>
+                    <form className="row" id='form_checkout' noValidate>
                         <div className="col-lg-4">
                             <h3>Billing Details</h3>
                             <div className="row contact_form"  >
-                                <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="first" name="name" defaultValue={usersOne?.userName} readOnly />
-                                    {/* <span className="placeholder" data-placeholder="First name"></span> */}
+                                <div className="col-md-12 form-group p_star">
+                                    <input hidden type="text" className="form-control" id="last" name="user_id" value={usersOne?._id} />
+                                    <span className="placeholder" ></span>
                                 </div>
-                                <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="last" name="name" defaultValue={usersOne?.fullName} readOnly />
+                                <div className="col-md-12 form-group p_star">
+                                    <label htmlFor="">Họ và tên</label>
+                                    <input type="text" className="form-control" id="last" name="fullName" value={usersOne?.fullName} />
                                     <span className="placeholder" ></span>
                                 </div>
                                 <div className="col-md-12 form-group">
-                                    <input type="text" className="form-control" id="company" name="company" placeholder="Company name" />
+                                    <label htmlFor="">Email</label>
+                                    <input type="text" className="form-control" id="email" name="email" placeholder="Địa chỉ email" value={usersOne?.email} />
                                 </div>
-                                <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="number" name="number" defaultValue={usersOne?.tel} readOnly />
-                                    <span className="placeholder" ></span>
-                                </div>
-                                <div className="col-md-6 form-group p_star">
-                                    <input type="text" className="form-control" id="email" name="compemailany" defaultValue={usersOne?.email} readOnly />
+                                <div className="col-md-12 form-group p_star">
+                                    <label htmlFor="">Số điện thoại</label>
+                                    <input type="text" className="form-control" id="number" placeholder='Số điện thoại' name="tel" value={usersOne?.tel} />
                                     <span className="placeholder" ></span>
                                 </div>
 
                                 <div className="col-md-12 form-group p_star">
-                                    <input type="text" className="form-control" id="add1" name="add1" defaultValue={usersOne?.address} readOnly />
+                                    <label htmlFor="">Địa chỉ</label>
+                                    <input type="text" className="form-control" id="address" placeholder='Địa chỉ giao hàng' name="address" value={usersOne?.address} />
                                     <span className="placeholder" ></span>
                                 </div>
-
-
-                                <div className="col-md-12 form-group">
+                                {/* <div className="col-md-12 form-group">
                                     <div className="creat_account">
                                         <input type="checkbox" id="f-option2" name="selector" />
                                         <label htmlFor={"f-option2"}>Create an account?</label>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="col-md-12 form-group">
                                     <div className="creat_account">
-                                        <h3>Shipping Details</h3>
-                                        <input type="checkbox" id="f-option3" name="selector" />
-                                        <label htmlFor="f-option3">Ship to a different address?</label>
+                                        <label htmlFor="">Ghi chú</label>
                                     </div>
-                                    <textarea className="form-control" name="message" id="message" rows={1} placeholder="Order Notes"></textarea>
+                                    <input className="form-control" name="Note" id="Note" placeholder="#giao giờ hàng chính"></input>
                                 </div>
                             </div>
                         </div>
@@ -224,54 +208,80 @@ const CheckOut = () => {
                                     </tr>
                                 ))}
 
-                                <tr>
-                                    <td style={{ width: "150px", color: "black" }}>Tổng thanh toán</td>
-                                    {/* <td>Shipping <span>Flat rate: 30000</span></td> */}
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td> </td>
-                                    <td style={{ color: "black", fontSize: "20px" }}> {totalSum}đ</td>
-                                </tr>
-
-
-
-
-                                <div className="payment_item">
-                                    <div className="radion_btn">
-                                        <input type="radio" id="f-option5" name="selector" />
-                                        <label htmlFor="f-option5">Check payments</label>
-                                        <div className="check"></div>
-                                    </div>
-                                    <p>Please send a check to Store Name, Store Street, Store Town, Store State / County,
-                                        Store Postcode.</p>
+                                <div className="payment_item active">
+                                    <form className='row mt-3' id='form-voucher'>
+                                        <input
+                                            type="text"
+                                            className='col-8 m-1'
+                                            name='voucherCode'
+                                            placeholder='Nhập mã khuyến mại tại đây!'
+                                            value={voucherCode}
+                                            onChange={(e) => setVoucherCode(e.target.value)}
+                                        />
+                                        <button
+                                            type='button'
+                                            className='col-3 btn btn-dark bg-dark text-light m-1'
+                                            onClick={getCodeVoucher}
+                                        >
+                                            Kiểm Tra
+                                        </button>
+                                    </form>
                                 </div>
                                 <div className="payment_item active">
-                                    <div className="radion_btn">
-                                        <input type="radio" id="f-option6" name="selector" />
-                                        <label htmlFor="f-option6">Paypal </label>
-                                        <img src="img/product/card.jpg" alt="" />
-                                        <div className="check"></div>
-                                    </div>
-                                    <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
-                                        account.</p>
+                                    <form className='row mt-3'>
+                                        <label htmlFor="" className='col-8 m-2'>Trước Khuyến Mại</label>
+                                        <input type="text" disabled className='col-2 money-checkout w-25' value={totalSum} />
+                                    </form>
                                 </div>
-                                <div className="creat_account">
-                                    <input type="checkbox" id="f-option4" name="selector" />
-                                    <label htmlFor="f-option4">I’ve read and accept the </label>
-                                    <a href="#">terms & conditions*</a>
+                                <div className="payment_item active">
+                                    <form className='row mt-3'>
+                                        <label htmlFor="" className='col-8 m-2'>Sau Khuyến Mại(*Voucher)</label>
+                                        <input type="text" disabled className='col-2 money-checkout w-25' placeholder='*Giá trị voucher' value={voucher ? voucher.value : ''} />
+                                    </form>
                                 </div>
 
-                                <div className="card_area  align-items-center">
-                                    <button
-                                        className="primary-btn"
-                                        onClick={onSubmitCheckout}
+                                <div className="payment_item active">
+                                    <form className='row mt-3'>
+                                        <label htmlFor="" className='col-8 m-2'>Tổng Thanh Toán</label>
+                                        <input type="text" disabled className='col-2 text-danger w-25 total-checkout' name='total' value={total} />
+                                    </form>
+                                </div>
+
+                                <div className="row">
+                                    <div className="payment_item active col-5 m-2">
+                                        <div>
+                                            <select
+                                                onChange={(e) => handlePaymentSelect(e.target.value)}
+                                                name="payment_id"
+                                                className='form-select'
+                                            >
+                                                {paymentQuery?.map((item) => (
+                                                    <option key={item._id} value={item._id}>
+                                                        {item.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div className="creat_account col-6">
+                                        <input checked disabled type="checkbox" id="f-option4" name="selector" />
+                                        <label htmlFor="f-option4">Việc đặt hàng của bạn đồng thời chấp nhận </label>
+                                        <a href="#"> điều khoản và dịch vụ*</a>của chúng tôi.
+                                        <label htmlFor="f-option4">** Đối với đơn hàng nội thành là 25k, ngoại thành là 40k</label>
+                                    </div>
+
+                                </div>
+                                <div className="card_area col-6 align-items-center">
+                                    <button type='button'
+                                        className="primary-btn w-50 m-2"
+                                        onClick={handleOnClick}
                                         disabled={isAddingToCheckout}
                                     >
                                         {isAddingToCheckout ? "Ordering..." : "Order"}
                                     </button>
                                 </div>
+
+
                             </div>
                         </div>
                     </form>
