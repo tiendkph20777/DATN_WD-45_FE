@@ -61,13 +61,13 @@ const Signin = () => {
                                 <div className="hover">
                                     <h4>Bạn lần đầu đến trang web của chúng tôi?</h4>
                                     <p>
-                                    Khoa học công nghệ ngày càng tiến bộ,
+                                        Khoa học công nghệ ngày càng tiến bộ,
                                         và một ví dụ điển hình về điều này là
                                     </p>
                                     <Link className="primary-btn" to={"/signup"}>Tạo tài khoản</Link>
-                                </div>
-                            </div>
-                        </div>
+                                </div >
+                            </div >
+                        </div >
                         <div className="col-lg-6">
                             <div className="login_form_inner container">
                                 <h3>ĐĂNG NHẬP</h3>
@@ -105,7 +105,7 @@ const Signin = () => {
                                     </div>
                                     <div className="col-md-12 form-group">
                                         <button type="submit" value="submit" className="primary-btn">
-                                           Đăng nhập
+                                            Đăng nhập
                                         </button>
                                         <a href="#">Quên mật khẩu?</a>
                                     </div>
@@ -117,10 +117,10 @@ const Signin = () => {
                                 </form>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
-        </div>
+                    </div >
+                </div >
+            </section >
+        </div >
     )
 }
 

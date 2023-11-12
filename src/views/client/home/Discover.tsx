@@ -38,14 +38,14 @@ const Discover = () => {
                         </div>
                     </div></section>
                 <section className="our-portfolio position-relative">
-                    <div className="container">
+                    {/* <div className="container">
                         <div className="row">
                             <div className="col-lg-12 d-flex justify-content-center">
                                 <a href="#" className="btn btn-primary btn-hover-secondery text-capitalize fw-normal">Đăng ký
                                     ngay</a>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                     <div className=''><img src="/src/assets/images/our-portfolio/waves.svg" className="w-100 position-relative wave" />
                     </div>
                 </section>

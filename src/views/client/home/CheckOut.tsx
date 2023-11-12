@@ -10,16 +10,16 @@ import { useNavigate } from 'react-router-dom';
 
 
 const CheckOut = () => {
-
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
-    console.log(cartDetail)
+    // console.log(cartDetail)
     const { data: usersOne } = useFetchOneUserQuery(idUs)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: paymentQuery } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
+    console.log(cartDetail)
 
 
     useEffect(() => {
@@ -79,6 +79,18 @@ const CheckOut = () => {
     // Payment ID
     const [selectedPayment, setSelectedPayment] = useState(null);
 
+    // Prepare the data for creating a checkout
+    // const checkoutData = {
+    //     product_id: cartDetail.map(item => item.product_id),
+    //     user_id: idUs,
+    //     address: profileUser.map((item: { address: any; }) => item.address),
+    //     fullname: profileUser.map((item: { fullName: any; }) => item.fullName),
+    //     email: profileUser.map((item: { email: any; }) => item.email),
+    //     tel: profileUser.map((item: { tel: any; }) => item.tel),
+    //     total: cartDetail.map(item => item.total),
+    //     PaymentAmount: totalSum,
+    //     // Add other checkout-related data here
+    // };
     const handlePaymentSelect = (paymentId: any) => {
         setSelectedPayment(paymentId);
         // Thêm logic xử lý khi phương thức thanh toán được chọn
@@ -199,96 +211,116 @@ const CheckOut = () => {
                                             <h5>{item?.quantity}</h5>
                                         </td>
                                         <td style={{ width: "100px" }}>
-                                            <h5>{item?.price}đ</h5>
+                                            <h5>{item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                         </td>
                                         <td style={{ width: "100px" }}>
-                                            <h5>{item?.total}đ</h5>
+                                            <h5>{item?.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                         </td>
 
                                     </tr>
                                 ))}
 
-                                <div className="payment_item active">
-                                    <form className='row mt-3' id='form-voucher'>
-                                        <input
-                                            type="text"
-                                            className='col-8 m-1'
-                                            name='voucherCode'
-                                            placeholder='Nhập mã khuyến mại tại đây!'
-                                            value={voucherCode}
-                                            onChange={(e) => setVoucherCode(e.target.value)}
-                                        />
-                                        <button
-                                            type='button'
-                                            className='col-3 btn btn-dark bg-dark text-light m-1'
-                                            onClick={getCodeVoucher}
-                                        >
-                                            Kiểm Tra
-                                        </button>
-                                    </form>
-                                </div>
-                                <div className="payment_item active">
-                                    <form className='row mt-3'>
-                                        <label htmlFor="" className='col-8 m-2'>Trước Khuyến Mại</label>
-                                        <input type="text" disabled className='col-2 money-checkout w-25' value={totalSum} />
-                                    </form>
-                                </div>
-                                <div className="payment_item active">
-                                    <form className='row mt-3'>
-                                        <label htmlFor="" className='col-8 m-2'>Sau Khuyến Mại(*Voucher)</label>
-                                        <input type="text" disabled className='col-2 money-checkout w-25' placeholder='*Giá trị voucher' value={voucher ? voucher.value : ''} />
-                                    </form>
-                                </div>
-
-                                <div className="payment_item active">
-                                    <form className='row mt-3'>
-                                        <label htmlFor="" className='col-8 m-2'>Tổng Thanh Toán</label>
-                                        <input type="text" disabled className='col-2 text-danger w-25 total-checkout' name='total' value={total} />
-                                    </form>
-                                </div>
-
-                                <div className="row">
-                                    <div className="payment_item active col-5 m-2">
-                                        <div>
-                                            <select
-                                                onChange={(e) => handlePaymentSelect(e.target.value)}
-                                                name="payment_id"
-                                                className='form-select'
+                                <tr>
+                                    <td style={{ width: "150px", color: "black" }}>Tổng thanh toán</td>
+                                    {/* <td>Shipping <span>Flat rate: 30000</span></td> */}
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td style={{ color: "black", fontSize: "20px" }}>{totalSum?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                                </tr>
+                                <div className="payment_item">
+                                    <div className="radion_btn">
+                                        <input type="radio" id="f-option5" name="selector" />
+                                        <label htmlFor="f-option5">Check payments</label>
+                                        <div className="check"></div>
+                                    </div>
+                                    <p>Please send a check to Store Name, Store Street, Store Town, Store State / County,
+                                        Store Postcode.</p>
+                                    <div className="payment_item active">
+                                        <form className='row mt-3' id='form-voucher'>
+                                            <input
+                                                type="text"
+                                                className='col-8 m-1'
+                                                name='voucherCode'
+                                                placeholder='Nhập mã khuyến mại tại đây!'
+                                                value={voucherCode}
+                                                onChange={(e) => setVoucherCode(e.target.value)}
+                                            />
+                                            <button
+                                                type='button'
+                                                className='col-3 btn btn-dark bg-dark text-light m-1'
+                                                onClick={getCodeVoucher}
                                             >
-                                                {paymentQuery?.map((item) => (
-                                                    <option key={item._id} value={item._id}>
-                                                        {item.name}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                                Kiểm Tra
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div className="payment_item active">
+                                        <form className='row mt-3'>
+                                            <label htmlFor="" className='col-8 m-2'>Trước Khuyến Mại</label>
+                                            <input type="text" disabled className='col-2 money-checkout w-25' value={totalSum} />
+                                        </form>
+                                    </div>
+                                    <div className="payment_item active">
+                                        <form className='row mt-3'>
+                                            <label htmlFor="" className='col-8 m-2'>Sau Khuyến Mại(*Voucher)</label>
+                                            <input type="text" disabled className='col-2 money-checkout w-25' placeholder='*Giá trị voucher' value={voucher ? voucher.value : ''} />
+                                        </form>
+                                    </div>
+
+                                    <div className="payment_item active">
+                                        <form className='row mt-3'>
+                                            <label htmlFor="" className='col-8 m-2'>Tổng Thanh Toán</label>
+                                            <input type="text" disabled className='col-2 text-danger w-25 total-checkout' name='total' value={total} />
+                                        </form>
+                                    </div>
+
+                                    <div className="row">
+                                        <div className="payment_item active col-5 m-2">
+                                            <div>
+                                                <select
+                                                    onChange={(e) => handlePaymentSelect(e.target.value)}
+                                                    name="payment_id"
+                                                    className='form-select'
+                                                >
+                                                    {paymentQuery?.map((item) => (
+                                                        <option key={item._id} value={item._id}>
+                                                            {item.name}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
                                         </div>
+                                        <div className="creat_account col-6">
+                                            <input checked disabled type="checkbox" id="f-option4" name="selector" />
+                                            <label htmlFor="f-option4">Việc đặt hàng của bạn đồng thời chấp nhận </label>
+                                            <a href="#"> điều khoản và dịch vụ*</a>của chúng tôi.
+                                            <label htmlFor="f-option4">** Đối với đơn hàng nội thành là 25k, ngoại thành là 40k</label>
+                                        </div>
+
                                     </div>
-                                    <div className="creat_account col-6">
-                                        <input checked disabled type="checkbox" id="f-option4" name="selector" />
-                                        <label htmlFor="f-option4">Việc đặt hàng của bạn đồng thời chấp nhận </label>
-                                        <a href="#"> điều khoản và dịch vụ*</a>của chúng tôi.
-                                        <label htmlFor="f-option4">** Đối với đơn hàng nội thành là 25k, ngoại thành là 40k</label>
+                                    <div className="card_area col-6 align-items-center">
+                                        <button type='button'
+                                            className="primary-btn w-50 m-2"
+                                            onClick={handleOnClick}
+                                            disabled={isAddingToCheckout}
+                                        >
+                                            {isAddingToCheckout ? "Ordering..." : "Order"}
+                                        </button>
                                     </div>
+
 
                                 </div>
-                                <div className="card_area col-6 align-items-center">
-                                    <button type='button'
-                                        className="primary-btn w-50 m-2"
-                                        onClick={handleOnClick}
-                                        disabled={isAddingToCheckout}
-                                    >
-                                        {isAddingToCheckout ? "Ordering..." : "Order"}
-                                    </button>
-                                </div>
-
-
-                            </div>
+                            </div >
                         </div>
-                    </form>
+                    </form >
 
-                </div>
+                </div >
             </div >
-        </section ></div >
+        </section >
+        </div >
     )
 
 }
