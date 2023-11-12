@@ -6,6 +6,7 @@ import { useFetchOneUserQuery } from '../../../services/user.service';
 import { useCreateCheckoutMutation } from "../../../services/checkout.service";
 import { useGetVoucherByCodeQuery } from '../../../services/voucher.service';
 import { useGetPaymentQuery } from '../../../services/payment.service';
+import { useNavigate } from 'react-router-dom';
 
 
 const CheckOut = () => {
@@ -83,7 +84,7 @@ const CheckOut = () => {
         // Thêm logic xử lý khi phương thức thanh toán được chọn
     };
     console.log(selectedPayment);
-
+    const navigation = useNavigate()
     const handleOnClick = async () => {
         const form = document.querySelector('#form_checkout') as HTMLFormElement | null;
         if (form) {
@@ -101,9 +102,10 @@ const CheckOut = () => {
 
             try {
                 const date = new Date()
-                const newData = { ...data, products: cartDetail, payment_id: selectedPayment, total: totalSum - voucher?.value, voucherCode, dateCreate: date, status: 'Đang xác nhận đơn hàng' };
+                const newData = { ...data, products: cartDetail, payment_id: selectedPayment, shipping: "", total: totalSum - voucher?.value, voucherCode, dateCreate: date, status: 'Đang xác nhận đơn hàng' };
                 console.log(newData);
                 await addCheckout(newData);
+                navigation("/profile")
             } catch (error) {
                 console.error('Lỗi khi tạo checkout:', error);
             }
