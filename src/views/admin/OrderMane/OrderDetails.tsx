@@ -4,43 +4,11 @@ import { useGetAllProductsDetailQuery } from '../../../services/productDetail.se
 import { useGetProductsQuery } from '../../../services/product.service';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
-    const { data: ProDetail } = useGetAllProductsDetailQuery()
-    const { data: Product } = useGetProductsQuery()
-    const productIdsInRoleName = roleMane?.products;
-    const [statePro, setStatePro] = useState<any>([])
-    console.log(ProDetail)
 
-    useEffect(() => {
-        if (ProDetail && Product) {
-            const matchingProducts = ProDetail?.filter(product => productIdsInRoleName?.includes(product._id));
-            // console.log("Matching Products:", matchingProducts);
-
-            const matchingProductIds = matchingProducts?.map(prod => prod.product_id);
-            const finalMatchingProducts = Product?.filter((prod: any) => matchingProductIds?.includes(prod._id));
-            // console.log("Final Matching Products:", finalMatchingProducts);
-
-            const mergedProducts = matchingProducts?.map((item: any) => {
-                const matchingProduct = finalMatchingProducts?.find((product) => product._id === item.product_id);
-
-                if (matchingProduct) {
-                    const price = matchingProduct.price;
-                    return {
-                        ...item,
-                        name: matchingProduct.name,
-                        image: matchingProduct.images[0],
-                        price: price,
-                    };
-                } else {
-                    return item;
-                }
-            });
-
-            const uniqueProducts = Array.from(new Set([...mergedProducts]));
-            setStatePro(uniqueProducts);
-        }
-    }, [ProDetail, Product, productIdsInRoleName]);
-
-    // console.log(statePro)
+    const total = roleMane.products.reduce((acc, product) => {
+        const productTotal = product.total || 0;
+        return acc + productTotal;
+    }, 0);
 
     return (
         <div className="col-lg-12">
@@ -94,7 +62,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {statePro?.map((item: any) => (
+                        {roleMane?.products?.map((item: any) => (
 
                             <tr key={item?._id} style={{ height: "100px", lineHeight: "100px" }} >
                                 <td style={{ width: "100px", padding: "0" }}>
@@ -138,7 +106,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <td> </td>
                             <td> </td>
                             <td> </td>
-                            {/* <td style={{ color: "black", fontSize: "20px" }}>{totalSum?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td> */}
+                            <td style={{ color: "black", fontSize: "20px" }}>{total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                         </tr>
                     </tbody>
                 </table>

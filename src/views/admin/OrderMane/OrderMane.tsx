@@ -4,7 +4,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery, useUpdateCheckoutMutation } from '../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
 import { message as messageApi } from 'antd';
-import unorm from 'unorm';
 
 
 const OrderMane: React.FC = () => {
@@ -33,11 +32,20 @@ const OrderMane: React.FC = () => {
         setSearchFullName(value.toLowerCase());
     };
 
-    const nonSuccessfulOrders = orderDa
+    const nonSuccessfulOrder = orderDa?.map((order, index) => {
+        const totals = order.products.reduce((acc: any, product: any) => acc + (product.total || 0), 0);
+        return {
+            ...order,
+            index: index + 1,
+            totals,
+        };
+    });
+    // console.log(nonSuccessfulOrder);
+
+    const nonSuccessfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status !== 'Giao hàng thành công' && order.status !== 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
         ?.map((order, index) => ({ ...order, index: index + 1 }));
-
 
     const onFinish = async (values: any, id: string) => {
         try {
@@ -49,6 +57,22 @@ const OrderMane: React.FC = () => {
                 messageApi.success({
                     type: 'success',
                     content: "Đơn hàng đã được giao thành công 🎉🎉🎉",
+                    className: 'custom-class',
+                    style: {
+                        marginTop: '0',
+                        fontSize: "15px",
+                        lineHeight: "50px"
+                    },
+                });
+                await updateCheck(updatedData).unwrap();
+            } else if (values.status === 'Hủy đơn hàng') {
+                const updatedData = {
+                    _id: id,
+                    status: values.status,
+                };
+                messageApi.error({
+                    type: 'success',
+                    content: "Đơn hàng đã bị hủy",
                     className: 'custom-class',
                     style: {
                         marginTop: '0',
@@ -95,12 +119,12 @@ const OrderMane: React.FC = () => {
         },
         {
             title: 'Tổng tiền đơn hàng',
-            dataIndex: 'total',
-            key: 'total',
-            render: (_, { total }) => (
+            dataIndex: 'totals',
+            key: 'totals',
+            render: (_, { totals }) => (
                 <>
                     <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>
-                        {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                        {totals?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </Tag>
                 </>
             ),
@@ -127,7 +151,7 @@ const OrderMane: React.FC = () => {
                                     rules={[{ required: true, message: 'Province is required' }]}
                                 >
                                     <Select placeholder="Select province" style={{ width: "250px" }}>
-                                        <Select.Option value="Chờ xác nhận">Chờ xác nhận</Select.Option>
+                                        <Select.Option value="Đang xác nhận đơn hàng">Đang xác nhận đơn hàng</Select.Option>
                                         <Select.Option value="Tiếp nhận đơn hàng">Tiếp nhận đơn hàng</Select.Option>
                                         <Select.Option value="Đã giao cho đơn vị vận chuyển">Đã giao cho đơn vị vận chuyển</Select.Option>
                                         <Select.Option value="Đang giao hàng">Đang giao hàng</Select.Option>

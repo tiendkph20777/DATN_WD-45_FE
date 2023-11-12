@@ -30,7 +30,15 @@ const Abortorder: React.FC = () => {
     const handleFullNameSearchChange = (value: string) => {
         setSearchFullName(value.toLowerCase());
     };
-    const successfulOrders = orderDa
+    const nonSuccessfulOrder = orderDa?.map((order, index) => {
+        const totals = order.products.reduce((acc: any, product: any) => acc + (product.total || 0), 0);
+        return {
+            ...order,
+            index: index + 1,
+            totals,
+        };
+    });
+    const successfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status === 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
         ?.map((order, index) => ({ ...order, index: index + 1 }));
@@ -51,12 +59,12 @@ const Abortorder: React.FC = () => {
         },
         {
             title: 'Tổng tiền đơn hàng',
-            dataIndex: 'total',
-            key: 'total',
-            render: (_, { total }) => (
+            dataIndex: 'totals',
+            key: 'totals',
+            render: (_, { totals }) => (
                 <>
                     <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>
-                        {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                        {totals?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </Tag>
                 </>
             ),
