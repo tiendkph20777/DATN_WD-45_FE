@@ -235,7 +235,7 @@ const App: React.FC = () => {
 
 
     return (
-        <div style={{ paddingTop: "10%" }}>
+        <div style={{ paddingTop: "70px" }}>
             <div className='row' style={{ display: "flex", justifyContent: "center" }}>
                 <div className='col-5'>
                     <Search placeholder="Nhập email người dùng" value={searchText} onChange={(e) => onSearch(e.target.value)} enterButton />

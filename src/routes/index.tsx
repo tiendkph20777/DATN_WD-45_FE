@@ -19,7 +19,7 @@ import Signup from "../views/client/user/Signup";
 import UserView from "../views/admin/User/UserView";
 import UserUpdate from "../views/admin/User/UserUpdate";
 import ProductDetail from "../views/client/product/ProductDetail";
-import Cart from "../views/client/home/Cart";
+import Cart from "../views/client/home/Cart/Cart";
 import CheckOut from "../views/client/home/CheckOut";
 import Blog from "../views/client/home/Blog";
 import BlogDetail from "../views/client/home/BlogDetail";
@@ -33,6 +33,9 @@ import PaymentAdd from "../views/admin/payment/PaymentAdd";
 import PaymentEdit from "../views/admin/payment/PaymentEdit";
 import Dashboard from "../views/admin/Dashboard/Dashboard";
 import Oops404 from "../views/client/Oops404/Oops404";
+import OrderMane from "../views/admin/OrderMane/OrderMane";
+import HistoryOrder from "../views/admin/OrderMane/HistoryOrder/HistoryOrder";
+import Abortorder from "../views/admin/OrderMane/Abortorder/Abortorder";
 
 const routes: RouteObject[] = [
     {
@@ -105,6 +108,16 @@ const routes: RouteObject[] = [
             },
             {
                 path: 'payment/:idPayment/edit', element: <PaymentEdit />
+            },
+            // orderManagement
+            {
+                path: 'orderManagement', element: <OrderMane />
+            },
+            {
+                path: 'historyOrder', element: <HistoryOrder />
+            },
+            {
+                path: 'abortOrder', element: <Abortorder />
             },
         ],
     },

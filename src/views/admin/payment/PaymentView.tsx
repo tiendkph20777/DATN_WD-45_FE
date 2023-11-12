@@ -113,28 +113,31 @@ const PaymentView: React.FC = () => {
         };
     });
     return (
-        <div className="container">
+        <div className="container" style={{ paddingTop: "70px" }}>
             <div className="row">
                 <div className="col-lg-12 d-flex align-items-stretch">
                     <div className="card w-100">
-                        <div className="card-body mt-5" >
-                            <h5 className="card-title fw-semibold mb-4">Phương Thức Thanh Toán</h5>
-                            <a className="text-white" href="/admin/payment/add">
-                                <button type="button" className="btn btn-success m-1">Thêm</button>
-                            </a>
+                        <div className="card-body" >
+                            <h5 className="card-title fw-semibold">Phương Thức Thanh Toán</h5>
+                            <Link className="text-white" to="/admin/payment/add">
+                                <button className="btn btn-success m-1">Thêm</button>
+                            </Link>
                             <div className="col-lg-12 d-flex align-items-stretch">
                                 <form onSubmit={handleSearch} className="d-flex w-100" method='POST'>
-                                    <div className="m-2 w-75">
+                                    <div className=" w-75">
                                         <Input
                                             type="text"
-                                            className="form-control"
+                                            className=""
                                             placeholder="Nhập Phương Thức Thanh Toán cần tìm"
                                             name="searchTerm"
                                             value={searchTerm}
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                         />
                                     </div>
-                                    <button type="submit" className="p-2 btn btn-secondary m-2">Tìm kiếm</button>
+                                    <Button type="primary" htmlType="submit" >
+                                        Tìm kiếm
+                                    </Button>
+                                    {/* <button type="submit" className=" btn btn-secondary ">Tìm kiếm</button> */}
                                 </form>
                             </div>
                             <div className="table-responsive">

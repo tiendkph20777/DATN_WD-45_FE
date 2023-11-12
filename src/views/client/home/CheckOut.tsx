@@ -7,16 +7,16 @@ import { useCreateCheckoutMutation } from "../../../services/checkout.service";
 
 
 const CheckOut = () => {
-
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
-    console.log(cartDetail)
+    // console.log(cartDetail)
     const { data: usersOne } = useFetchOneUserQuery(idUs)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
 
     const { data: Product } = useGetProductsQuery();
+    console.log(cartDetail)
 
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
@@ -69,7 +69,6 @@ const CheckOut = () => {
                 PaymentAmount: totalSum,
                 // Add other checkout-related data here
             };
-
             try {
                 // Call the addCheckout mutation to create a checkout
                 const response = await addCheckout(checkoutData).unwrap();
@@ -215,10 +214,10 @@ const CheckOut = () => {
                                             <h5>{item?.quantity}</h5>
                                         </td>
                                         <td style={{ width: "100px" }}>
-                                            <h5>{item?.price}đ</h5>
+                                            <h5>{item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                         </td>
                                         <td style={{ width: "100px" }}>
-                                            <h5>{item?.total}đ</h5>
+                                            <h5>{item?.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                         </td>
 
                                     </tr>
@@ -232,12 +231,8 @@ const CheckOut = () => {
                                     <td> </td>
                                     <td> </td>
                                     <td> </td>
-                                    <td style={{ color: "black", fontSize: "20px" }}> {totalSum}đ</td>
+                                    <td style={{ color: "black", fontSize: "20px" }}>{totalSum?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                                 </tr>
-
-
-
-
                                 <div className="payment_item">
                                     <div className="radion_btn">
                                         <input type="radio" id="f-option5" name="selector" />
