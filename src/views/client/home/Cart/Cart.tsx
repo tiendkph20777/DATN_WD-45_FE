@@ -302,6 +302,40 @@ const Cart = () => {
                                             </td>
                                         </tr>
                                     ))}
+                                    {/* <Form.Item
+                                        label="Color"
+                                        name="color"
+                                        rules={[{ required: true, message: 'Vui lòng chọn màu!' }]}
+                                        className='col-xl-7 col-lg-7 col-sm-7 col-12'
+                                    >
+                                        <Controller
+                                            render={({ field }) => (
+                                                <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
+                                                    {targetProduct
+                                                        ?.filter((product) => product.size === watch('size'))
+                                                        .map((product) => (
+                                                            <option key={product.color} value={product.color}>
+                                                                {product.color}
+                                                            </option>
+                                                        ))}
+                                                </Select>
+                                            )}
+                                            name="color"
+                                            control={control}
+                                        />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="quantity"
+                                        name="quantity"
+                                        rules={[{ required: true, message: 'Vui lòng nhập số lượng!' }]}
+                                    >
+                                        <Controller
+                                            name="quantity"
+                                            control={control}
+                                            defaultValue={editingProduct?.quantity || ''}
+                                            render={({ field }) => <Input {...field} placeholder="quantity" />}
+                                        />
+                                    </Form.Item> */}
                                 </tbody>
                             </table>
                         </div>

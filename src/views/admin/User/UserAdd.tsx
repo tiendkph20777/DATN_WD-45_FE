@@ -107,7 +107,7 @@ const UserAdd = () => {
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="login_form_inner" style={{ padding: 5 }}>
-                                <h3 className='m-3'>Add New User</h3>
+                                <h3 className='m-3'>Thêm mới người dùng</h3>
                                 <form
                                     className="row login_form"
                                     action="contact_process.php"
@@ -145,7 +145,7 @@ const UserAdd = () => {
                                             type="text"
                                             className="form-control"
                                             id="fullName"
-                                            placeholder="Nhập full name"
+                                            placeholder="Nhập tên đầy đủ"
                                             {...register("fullName", { required: true })}
                                         />
                                     </div>
@@ -157,7 +157,7 @@ const UserAdd = () => {
                                             type="text"
                                             className="form-control"
                                             id="userName"
-                                            placeholder="Nhập last name"
+                                            placeholder="Nhập tên người dùng"
                                             {...register("userName",
                                                 { required: true })}
                                         />
@@ -182,8 +182,8 @@ const UserAdd = () => {
                                             {...register("gender")}
                                             defaultValue="Gender"
                                         >
-                                            <option value="Men">Nam</option>
-                                            <option value="Women">Nữ</option>
+                                            <option value="Nam">Nam</option>
+                                            <option value="Nữ">Nữ</option>
                                         </select>
                                     </div>
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
@@ -203,7 +203,7 @@ const UserAdd = () => {
                                             type="text"
                                             className="form-control"
                                             id="tel"
-                                            placeholder="Phone"
+                                            placeholder="Số điện thoại"
                                             {...register("tel")}
                                         />
                                     </div>

@@ -16,10 +16,6 @@ const checkoutAPI = createApi({
                 url: `/checkout/add`,
                 method: "POST",
                 body: cart,
-                headers: {
-                    "content-type": "application/json",
-                    'authorization': `Bearer ${token}`
-                }
             }),
             invalidatesTags: ["Checkout"],
         }),
@@ -66,5 +62,6 @@ const checkoutAPI = createApi({
 });
 
 export const { useCreateCheckoutMutation, useFetchCheckoutQuery, useFetchOneCheckoutQuery, useRemoveCheckoutMutation, useUpdateCheckoutMutation } = checkoutAPI;
+
 
 export default checkoutAPI;

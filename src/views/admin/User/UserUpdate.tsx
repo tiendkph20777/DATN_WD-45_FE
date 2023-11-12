@@ -87,7 +87,7 @@ const YourFormComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Username"
+                    label="Tên người dùng"
                     name="userName"
                     rules={[{ required: true, message: 'Vui lòng nhập tên người dùng!' }]}
                 >
@@ -99,7 +99,7 @@ const YourFormComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="fullName"
+                    label="Tên đầy đủ"
                     name="fullName"
                     rules={[{ required: true, message: 'Vui lòng nhập đầy đủ họ tên!' }]}
                 >
@@ -111,7 +111,7 @@ const YourFormComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="email"
+                    label="Email"
                     name="email"
                     rules={[{ required: true, message: 'Vui lòng nhập Email!' }]}
                 >
@@ -123,15 +123,15 @@ const YourFormComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="gender"
+                    label="Giới tính"
                     name="gender"
                     rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}
                 >
                     <Controller
                         render={({ field }) => (
                             <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                <MenuItem value={"Men"}>Nam</MenuItem>
-                                <MenuItem value={"Women"}>Nữ</MenuItem>
+                                <MenuItem value={"Nam"}>Nam</MenuItem>
+                                <MenuItem value={"Nữ"}>Nữ</MenuItem>
                             </Select>
                         )}
                         name="gender"
@@ -139,9 +139,9 @@ const YourFormComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Phone"
+                    label="Điện thoại"
                     name="tel"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập số diện thoại!' }]}
                 >
                     <Controller
                         name="tel"
@@ -151,9 +151,9 @@ const YourFormComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Address"
+                    label="Địa chỉ"
                     name="address"
-                    rules={[{ required: true, message: 'Please input your address!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
                 >
                     <Controller
                         name="address"
