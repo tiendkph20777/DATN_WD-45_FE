@@ -210,7 +210,7 @@ const Dashboard = (props: Props) => {
   ];
 
   return (
-    <div style={{ paddingTop: "100px" }}>
+    <div style={{ paddingTop: "70px" }}>
       {showNoProductsAlert && (
         <Alert message="Không tìm thấy sản phẩm" type="info" showIcon style={{
           marginTop: "20px", backgroundColor: "red"
@@ -272,7 +272,6 @@ const Dashboard = (props: Props) => {
           Reset
         </Button>
         <Link to={`add`}>
-
           <Button
             type="primary"
             style={{
@@ -284,8 +283,6 @@ const Dashboard = (props: Props) => {
             <PlusOutlined /> Thêm Sản Phẩm
           </Button>
         </Link>
-
-
       </div>
       <Table
         columns={columns}

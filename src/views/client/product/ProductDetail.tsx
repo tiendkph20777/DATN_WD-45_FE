@@ -399,11 +399,11 @@ const ProductDetail = () => {
                                 {item.price_sale > 0 ? (
                                   <div className="product-price row">
                                     <strong className="col-12">
-                                      {item.price_sale}đ
+                                      {item.price_sale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </strong>
                                     <div className="d-flex">
                                       <del className="price-del">
-                                        {item.price}đ
+                                        {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                       </del>
                                       <span className="product-discount">
                                         -{discount}%
@@ -413,7 +413,7 @@ const ProductDetail = () => {
                                 ) : (
                                   <div className="product-price row">
                                     <strong className="col-12">
-                                      {item.price}đ
+                                      {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </strong>
                                   </div>
                                 )}
