@@ -19,14 +19,14 @@ const SideBar = () => {
                 <ul id="sidebarnav">
                     <li className="nav-small-cap">
                         <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
-                        <span className="hide-menu">Home</span>
+                        <span className="hide-menu">Admin</span>
                     </li>
                     <li className="sidebar-item">
                         <Link className="sidebar-link" to="/" aria-expanded="false">
                             <span>
                                 <i className="ti ti-layout-dashboard"></i>
                             </span>
-                            <span className="hide-menu">Back To Home</span>
+                            <span className="hide-menu">Quay lại trang chủ</span>
                         </Link>
                     </li>
                     <li className="sidebar-item">
@@ -78,7 +78,7 @@ const SideBar = () => {
                             <span>
                                 <i className="ti ti-article"></i>
                             </span>
-                            <span className="hide-menu">Comment</span>
+                            <span className="hide-menu">Bình luận</span>
                         </Link>
                     </li>
                     <li className="nav-small-cap">
@@ -86,7 +86,7 @@ const SideBar = () => {
                         <span className="hide-menu">Đơn Hàng</span>
                     </li>
                     <li className="sidebar-item">
-                        <Link className="sidebar-link" to="#" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/orderManagement" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
@@ -94,7 +94,7 @@ const SideBar = () => {
                         </Link>
                     </li>
                     <li className="sidebar-item">
-                        <Link className="sidebar-link" to="#" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/historyOrder" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
@@ -102,23 +102,31 @@ const SideBar = () => {
                         </Link>
                     </li>
                     <li className="sidebar-item">
+                        <Link className="sidebar-link" to="/admin/abortOrder" aria-expanded="false">
+                            <span>
+                                <i className="ti ti-mood-happy"></i>
+                            </span>
+                            <span className="hide-menu">Đơn Hàng Bị Hủy</span>
+                        </Link>
+                    </li>
+                    <li className="sidebar-item">
                         <Link className="sidebar-link" to="/admin/payment" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
-                            <span className="hide-menu">Payment</span>
+                            <span className="hide-menu">Phương thức thanh toán</span>
                         </Link>
                     </li>
                     <li className="nav-small-cap">
                         <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
-                        <span className="hide-menu">Người Dùng</span>
+                        <span className="hide-menu">Tài khoản</span>
                     </li>
                     <li className="sidebar-item">
                         <Link className="sidebar-link" to="/admin/user" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
-                            <span className="hide-menu">User</span>
+                            <span className="hide-menu">Người dùng</span>
                         </Link>
                     </li>
                     <li className="sidebar-item">

@@ -18,9 +18,9 @@ const PaymentAdd: React.FC = () => {
             .then(() => {
                 notification.success({
                     message: "Success",
-                    description: "Thêm payment Thành Công!",
+                    description: "Thêm Phương Thức Thanh Toán Thành Công!",
                 });
-                navigate("/admin/paymnent");
+                navigate("/admin/payment");
             })
             .catch((error) => {
                 console.error("Error adding payment:", error);
@@ -32,7 +32,7 @@ const PaymentAdd: React.FC = () => {
         <div className="container-fluid">
             <div className="row">
                 <div className="card-body">
-                    <h5 className="card-title fw-semibold mb-4">Thêm Payment</h5>
+                    <h5 className="card-title fw-semibold mb-4">Thêm Phương Thức Thanh Toán</h5>
                     {/* {contextHolder} */}
                     <Form
                         form={form}
@@ -45,23 +45,18 @@ const PaymentAdd: React.FC = () => {
                         autoComplete="off"
                     >
                         <Form.Item
-                            label="Name"
+                            label="Phương Thức Thanh Toán"
                             name="name"
-                            rules={[{ required: true, message: 'Please input your name!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
+                            rules={[{ required: true, message: 'Vui lòng nhập Phương Thức Thanh Toán!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
                         >
                             <Input />
                         </Form.Item>
 
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                             <Button type="primary" htmlType="submit" >
-                                Submit
+                                Thêm
                             </Button>
-                            <Button
-                                type='primary'
-                                danger
-                                onClick={() => navigate("/admin/payment")}
-                                className='ml-2'
-                            >Quay lại</Button>
+                            <Button htmlType="reset">reset</Button>
                         </Form.Item>
                     </Form>
                 </div>

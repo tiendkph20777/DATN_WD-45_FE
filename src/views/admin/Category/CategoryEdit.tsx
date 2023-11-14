@@ -33,7 +33,7 @@ const CategoryEdit: React.FC = () => {
             .then(() => {
                 notification.success({
                     message: "Success",
-                    description: "Sửa danh mục Thành Công!",
+                    description: "Sửa Thương Hiệu Thành Công!",
                 });
                 navigate("/admin/category");
                 window.location.reload()
@@ -68,7 +68,7 @@ const CategoryEdit: React.FC = () => {
                             label="Tên thương hiệu"
                             name="name"
 
-                            rules={[{ required: true, message: 'Please input your name!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
+                            rules={[{ required: true, message: 'Vui lòng nhập tên Thương Hiệu!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
                         >
                             <Input />
                         </Form.Item>
@@ -91,7 +91,7 @@ const CategoryEdit: React.FC = () => {
                             label="Mô tả sản phẩm"
                             name="description"
                             rules={[
-                                { required: true, message: 'Please input your product!' },
+                                { required: true, message: 'Vui lòng nhập mô tả!' },
                                 { min: 3, message: "ít nhất 3 ký tự" },
                             ]}
                         >
@@ -101,12 +101,12 @@ const CategoryEdit: React.FC = () => {
                             <Button type="primary" htmlType="submit">
                                 Cập nhật
                             </Button>
-                            {/* <Button
+                            <Button
                                 type='primary'
                                 danger
                                 onClick={() => navigate("/admin/category")}
                                 className='ml-2'
-                            >Quay lại</Button> */}
+                            >Quay lại</Button>
                         </Form.Item>
                     </Form>
                 </div>

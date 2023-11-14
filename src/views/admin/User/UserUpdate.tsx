@@ -6,33 +6,36 @@ import { Button, Form, Select } from 'antd';
 import Input from 'antd/es/input/Input';
 import { message as messageApi } from 'antd';
 import MenuItem from 'antd/es/menu/MenuItem';
+import { useFetchRoleQuery } from '../../../services/role.service';
 
 
 const YourFormComponent = () => {
     const { id }: any = useParams();
     const navigate = useNavigate();
-    const { data } = useFetchOneUserQuery(id);
-    const { control, handleSubmit, setValue } = useForm();
+    const { data: user } = useFetchOneUserQuery(id);
+    const { control, handleSubmit, setValue, watch } = useForm();
     const [updateUser] = useUpdateUserMutation();
+    const { data: roles } = useFetchRoleQuery()
 
     if (!id) {
         console.error('Id is undefined or null.');
         return null;
     }
-
+    // console.log(role_id)
     useEffect(() => {
-        if (data) {
-            setValue('_id', data._id);
-            setValue('email', data.email);
-            setValue('userName', data.userName);
-            setValue('fullName', data.fullName);
-            setValue('gender', data.gender);
-            setValue('address', data.address);
-            setValue('password', data.password);
-            setValue('tel', data.tel);
+        if (user) {
+            setValue('_id', user._id);
+            setValue('email', user.email);
+            setValue('userName', user.userName);
+            setValue('fullName', user.fullName);
+            setValue('gender', user.gender);
+            setValue('address', user.address);
+            setValue('password', user.password);
+            setValue('tel', user.tel);
+            setValue('role_id', user.role_id);
         }
-    }, [data, setValue]);
-    // console.log(data)
+    }, [user, setValue]);
+    console.log(user)
     const onSubmit = async (user: any) => {
         try {
             const response = await updateUser(user);
@@ -51,7 +54,7 @@ const YourFormComponent = () => {
             } else {
                 messageApi.info({
                     type: 'error',
-                    content: "Cập nhật user thành công 🎉🎉🎉",
+                    content: "Cập nhật Người Dùng thành công 🎉🎉🎉",
                     className: 'custom-class',
                     style: {
                         marginTop: '0',
@@ -73,62 +76,62 @@ const YourFormComponent = () => {
                 <Form.Item
                     label="Username"
                     name="_id"
-                    rules={[{ required: true, message: 'Please input your id!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập ID!' }]}
                     style={{ display: 'none' }}
                 >
                     <Controller
                         name="_id"
                         control={control}
-                        defaultValue={data?._id || ''}
+                        defaultValue={user?._id || ''}
                         render={({ field }) => <Input {...field} placeholder="id" />}
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Username"
+                    label="Tên người dùng"
                     name="userName"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập tên người dùng!' }]}
                 >
                     <Controller
                         name="userName"
                         control={control}
-                        defaultValue={data?.username || ''}
+                        defaultValue={user?.username || ''}
                         render={({ field }) => <Input {...field} placeholder="Username" />}
                     />
                 </Form.Item>
                 <Form.Item
-                    label="fullName"
+                    label="Tên đầy đủ"
                     name="fullName"
-                    rules={[{ required: true, message: 'Please input your fullName!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập đầy đủ họ tên!' }]}
                 >
                     <Controller
                         name="fullName"
                         control={control}
-                        defaultValue={data?.fullName || ''}
+                        defaultValue={user?.fullName || ''}
                         render={({ field }) => <Input {...field} placeholder="fullName" />}
                     />
                 </Form.Item>
                 <Form.Item
-                    label="email"
+                    label="Email"
                     name="email"
-                    rules={[{ required: true, message: 'Please input your email!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập Email!' }]}
                 >
                     <Controller
                         name="email"
                         control={control}
-                        defaultValue={data?.email || ''}
+                        defaultValue={user?.email || ''}
                         render={({ field }) => <Input {...field} placeholder="email" />}
                     />
                 </Form.Item>
                 <Form.Item
-                    label="gender"
+                    label="Giới tính"
                     name="gender"
-                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                    rules={[{ required: true, message: 'Vui lòng chọn giới tính!' }]}
                 >
                     <Controller
                         render={({ field }) => (
                             <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                <MenuItem value={"Men"}>Men</MenuItem>
-                                <MenuItem value={"Women"}>Women</MenuItem>
+                                <MenuItem value={"Nam"}>Nam</MenuItem>
+                                <MenuItem value={"Nữ"}>Nữ</MenuItem>
                             </Select>
                         )}
                         name="gender"
@@ -136,33 +139,50 @@ const YourFormComponent = () => {
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Phone"
+                    label="Điện thoại"
                     name="tel"
-                    rules={[{ required: true, message: 'Please input your username!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập số diện thoại!' }]}
                 >
                     <Controller
                         name="tel"
                         control={control}
-                        defaultValue={data?.tel || ''}
+                        defaultValue={user?.tel || ''}
                         render={({ field }) => <Input {...field} placeholder="tel" />}
                     />
                 </Form.Item>
                 <Form.Item
-                    label="Address"
+                    label="Địa chỉ"
                     name="address"
-                    rules={[{ required: true, message: 'Please input your gender!' }]}
+                    rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
                 >
                     <Controller
                         name="address"
                         control={control}
-                        defaultValue={data?.address || ''}
+                        defaultValue={user?.address || ''}
                         render={({ field }) => <Input {...field} placeholder="address" />}
                     />
                 </Form.Item>
-
+                <Form.Item
+                    label="role_id"
+                    name="role_id"
+                    rules={[{ required: true, message: 'Vui lòng nhập Role_id!' }]}>
+                    <Controller
+                        render={({ field }) => (
+                            <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
+                                {roles?.map(role => (
+                                    <MenuItem key={role._id} value={role._id}>
+                                        {role.name}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        )}
+                        name="role_id"
+                        control={control}
+                    />
+                </Form.Item>
                 <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Cập nhật
                     </Button>
                 </Form.Item>
             </form>

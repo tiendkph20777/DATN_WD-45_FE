@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import {
   useGetProductByIdQuery,
@@ -50,14 +49,14 @@ const ProductDetail = () => {
   useEffect(() => {
     if (selectedSize) {
       const filteredColors = productDataDetail
-        .filter((detail) => detail?.size === selectedSize)
+        ?.filter((detail) => detail?.size === selectedSize)
         .map((detail) => detail?.color);
       setColorsForSelectedSize(filteredColors);
       setShowColors(true);
     }
   }, [selectedSize, productDataDetail]);
 
-  const handleThumbnailClick = (image) => {
+  const handleThumbnailClick = (image: string) => {
     setMainImage(image);
   };
 
@@ -77,7 +76,7 @@ const ProductDetail = () => {
     }
   }, [productData, prodetailData, productDataDetail]);
 
-  const handleSizeChange = (size) => {
+  const handleSizeChange = (size: any) => {
     setSelectedSize(size);
     setSelectedColor("");
     setSelectedColorName("");
@@ -113,43 +112,56 @@ const ProductDetail = () => {
   };
 
   ////////////////////////////////
-  const { user } = JSON.parse(localStorage.getItem("user")!);
+  const profileUser = JSON.parse(localStorage.getItem("user")!)
+  const user = profileUser?.user
   const [addCart, isLoading] = useCreateCartMutation();
 
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const onSubmitCart = async (dataCart: any) => {
-    if (!isAddingToCart) {
-      setIsAddingToCart(true);
-      const filteredProducts = productDataDetail?.map(async (product) => {
-        if (
-          typeof product?.size === "number" &&
-          product?.size === selectedSize
-        ) {
-          if (product?.color === selectedColor) {
-            const cartItem = {
-              product_id: product._id,
-              user_id: user,
-              quantity: quantity,
-            };
-            const result = await addCart(cartItem);
-            messageApi.success({
-              type: "error",
-              content: "Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉",
-              className: "custom-class",
-              style: {
-                margin: "10px",
-                fontSize: "20px",
-                lineHeight: "50px",
-              },
-            });
-            return result;
+    if (user) {
+      if (!isAddingToCart) {
+        setIsAddingToCart(true);
+        const filteredProducts = productDataDetail?.map(async (product) => {
+          if (
+            typeof product?.size === "number" && product?.size === selectedSize
+          ) {
+            if (product?.color === selectedColor) {
+              const cartItem = {
+                product_id: product._id,
+                user_id: user,
+                quantity: quantity,
+              };
+              const result = await addCart(cartItem);
+              messageApi.success({
+                type: "error",
+                content: "Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉",
+                className: "custom-class",
+                style: {
+                  margin: "10px",
+                  fontSize: "20px",
+                  lineHeight: "30px",
+                },
+              });
+              return result;
+            }
           }
+        });
+        // console.log(filteredProducts);
+        const results = await Promise.all(filteredProducts);
+        setIsAddingToCart(false);
+      }
+    } else {
+      messageApi.error({
+        type: "error",
+        content: "Vui lòng đăng nhập để thực hiện chức năng này !!!",
+        className: "custom-class",
+        style: {
+          margin: "10px",
+          fontSize: "20px",
+          lineHeight: "30px",
         }
-      });
-      console.log(filteredProducts);
-      const results = await Promise.all(filteredProducts);
-      setIsAddingToCart(false);
+      })
     }
   };
   const sliderSettings = {
@@ -232,24 +244,24 @@ const ProductDetail = () => {
                     <i>{prodetailData?.content}</i>
                   </li>
                 </ul>
-                <p className="description-product">
+                <p className="description-product  ">
                   {prodetailData?.description}
                 </p>
-                <div class="product-blocks-details product-blocks-443 grid-rows">
-                  <div class="grid-row grid-row-443-1">
-                    <div class="grid-cols">
-                      <div class="grid-col grid-col-443-1-1">
-                        <div class="grid-items">
-                          <div class="grid-item grid-item-443-1-1-1">
-                            <div class="module module-info_blocks module-info_blocks-361">
-                              <div class="module-body">
-                                <div class="module-item module-item-1 info-blocks info-blocks-icon">
-                                  <div class="info-block">
-                                    <div class="info-block-content">
-                                      <div class="info-block-title">
+                <div className="product-blocks-details product-blocks-443 grid-rows">
+                  <div className="grid-row grid-row-443-1">
+                    <div className="grid-cols">
+                      <div className="grid-col grid-col-443-1-1">
+                        <div className="grid-items">
+                          <div className="grid-item grid-item-443-1-1-1">
+                            <div className="module module-info_blocks module-info_blocks-361">
+                              <div className="module-body">
+                                <div className="module-item module-item-1 info-blocks info-blocks-icon">
+                                  <div className="info-block">
+                                    <div className="info-block-content">
+                                      <div className="info-block-title">
                                         KHUYẾN MẠI ĐẶC BIỆT EXTRA SALE
                                       </div>
-                                      <div class="info-block-text">
+                                      <div className="info-block-text">
                                         Giảm thêm 200.000đ với đơn hàng từ 4
                                         triệu. Nhập mã: MYS200K
                                       </div>
@@ -272,9 +284,8 @@ const ProductDetail = () => {
                       {productSizes?.map((size, index) => (
                         <button
                           key={index}
-                          className={`size-button ${
-                            selectedSize === size ? "active" : ""
-                          }`}
+                          className={`size-button ${selectedSize === size ? "active" : ""
+                            }`}
                           onClick={() => handleSizeChange(size)}
                         >
                           {size}
@@ -282,7 +293,7 @@ const ProductDetail = () => {
                       ))}
                     </div>
                   </div>
-                  <div className="product-colors w-75">
+                  <div className="product-colors">
                     {showColors && (
                       <div>
                         <p>Màu Sắc</p>
@@ -290,9 +301,8 @@ const ProductDetail = () => {
                           {colorsForSelectedSize.map((color, index) => (
                             <button
                               key={index}
-                              className={`color-button ${
-                                selectedColor === color ? "active" : ""
-                              } ${hasSelectedColor ? "with-color" : ""}`}
+                              className={`color-button ${selectedColor === color ? "active" : ""
+                                } ${hasSelectedColor ? "with-color" : ""}`}
                               style={{ backgroundColor: color }}
                               onClick={() => handleColorChange(color)}
                             ></button>
@@ -304,14 +314,13 @@ const ProductDetail = () => {
                 </div>
                 <div className="product_count flex-1">
                   <label className="quantity">Số Lượng:</label>
-
                   <div className="quantity-input">
                     <span>
                       <button onClick={decrementQuantity}>-</button>
                     </span>
                     <input
                       min="1"
-                      maxLength={999}
+                      maxLength={10}
                       value={quantity}
                       onChange={handleQuantityChange}
                       className="w-50"
@@ -327,7 +336,7 @@ const ProductDetail = () => {
                     onClick={onSubmitCart}
                     disabled={isAddingToCart}
                   >
-                    {isAddingToCart ? "Adding to Cart..." : "Add to Cart"}
+                    {isAddingToCart ? "Thêm vào giỏ hàng..." : "Thêm vào giỏ hàng"}
                   </button>
                 </div>
               </div>
@@ -337,9 +346,14 @@ const ProductDetail = () => {
       </div>
       <div>
         <CommentProductDetail />
+<<<<<<< HEAD
         <ProductLienQuan />
 
         {/* <section className="our-team position-relative">
+=======
+        {/* <ProductLienQuan /> */}
+        <section className="our-team position-relative">
+>>>>>>> 18b29cc45a1c1367eb4fc2bc90ba2b6195c8d7cf
           <div className="container">
             <h1>Sản Phẩm Liên Quan</h1>
 
@@ -348,6 +362,7 @@ const ProductDetail = () => {
                 <Slider
                   dots={true} // Hiển thị dấu chấm chỉ định trang hiện tại
                   infinite={true} // Lặp vô tận qua các ảnh
+                  adaptiveHeight={true}
                   speed={300} // Tốc độ chuyển đổi (milliseconds)
                   slidesToShow={4} // Số ảnh được hiển thị cùng một lúc
                   slidesToScroll={1} // Số ảnh được chuyển đổi khi bạn di chuyển slide
@@ -383,19 +398,19 @@ const ProductDetail = () => {
                                 />
                                 <div className="product-hot" />
                               </div>
-                              <div className="bg-white content-product w-100 p-2 h-50">
+                              <div className="bg-white content-product w-100 p-2 pb-0">
                                 <div className="product-vendor">
                                   {brandName}
                                 </div>
-                                <h4 className="product-name">{item.name}</h4>
+                                <h4 className="product-name ellipsis">{item.name}</h4>
                                 {item.price_sale > 0 ? (
                                   <div className="product-price row">
                                     <strong className="col-12">
-                                      {item.price_sale}đ
+                                      {item.price_sale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </strong>
                                     <div className="d-flex">
                                       <del className="price-del">
-                                        {item.price}đ
+                                        {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                       </del>
                                       <span className="product-discount">
                                         -{discount}%
@@ -405,10 +420,16 @@ const ProductDetail = () => {
                                 ) : (
                                   <div className="product-price row">
                                     <strong className="col-12">
-                                      {item.price}đ
+                                      {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </strong>
                                   </div>
                                 )}
+                              </div>
+                              <div className="product-action pt-5 row text-center justify-content-center">
+                                <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
+                                </div>
+                                <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
+                                </div>
                               </div>
                             </a>
                           </div>

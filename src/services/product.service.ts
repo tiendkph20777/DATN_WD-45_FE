@@ -10,7 +10,6 @@ const productAPI = createApi({
         baseUrl: "http://localhost:8080/api"
     }),
     endpoints: builder => ({
-
         getProducts: builder.query<IProducts[], void>({
             query: () => `/product`,
         }),
@@ -22,7 +21,10 @@ const productAPI = createApi({
             query: (id) => ({
                 url: `product/${id}`,
                 method: "DELETE",
-
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
             invalidatesTags: ["Product"]
         }),
@@ -30,7 +32,11 @@ const productAPI = createApi({
             query: product => ({
                 url: `product/add`,
                 method: "POST",
-                body: product
+                body: product,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
             }),
 
         }),

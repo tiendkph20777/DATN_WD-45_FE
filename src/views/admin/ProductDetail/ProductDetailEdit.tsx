@@ -38,7 +38,7 @@ const ProductProductEdit = () => {
         color: productData?.productDetail.color,
       });
     }
-  }, [productData,form]);
+  }, [productData, form]);
 
   const onFinish = (values: IProductDetail) => {
     console.log(values);
@@ -48,7 +48,7 @@ const ProductProductEdit = () => {
       .then(() => {
         notification.success({
           message: "Success",
-          description: "Sửa Sản Phẩm Thành Công!",
+          description: "Sửa Chi Tiết Sản Phẩm Thành Công!",
         });
         navigate("/admin/product/detail");
         window.location.reload();
@@ -64,7 +64,7 @@ const ProductProductEdit = () => {
 
   return (
     <div>
-      <h1 style={{ paddingTop: "100px" }}>Sửa Sản Phẩm</h1>
+      <h1 style={{ paddingTop: "100px" }}>Sửa Chi Tiết Sản Phẩm</h1>
       <Form
         name="basic"
         form={form}
@@ -111,8 +111,14 @@ const ProductProductEdit = () => {
             htmlType="submit"
             style={{ backgroundColor: "blue" }}
           >
-            Submit
+            Cập nhật
           </Button>
+          <Button
+            type='primary'
+            danger
+            onClick={() => navigate("/admin/product/detail")}
+            className='ml-2'
+          >Quay lại</Button>
         </Form.Item>
       </Form>
     </div>

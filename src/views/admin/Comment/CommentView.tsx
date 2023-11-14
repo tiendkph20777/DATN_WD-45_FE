@@ -40,6 +40,7 @@ export default function CommentView() {
     const onSearch = (value: string | number) => {
         let filteredData = dataSourceToRender;
         filteredData = filteredData.filter((item) => {
+            console.log(item.id_product)
             return (
                 item.id_product == value || item.id_user == value || item.rate == value
             );
@@ -73,11 +74,11 @@ export default function CommentView() {
             render: ({ _id: id }: any) => {
                 return (
                     <Popconfirm
-                        title="Delete the task"
-                        description="Are you sure to delete this product ?"
+                        title="Xóa bình luận này!"
+                        description="Bạn có chắc chắn muốn xóa bình luận này ?"
                         onConfirm={() => Product_Remove({ id })}
-                        okText="Yes"
-                        cancelText="No"
+                        okText="Xóa"
+                        cancelText="Hủy"
                     >
                         <Button
                             type="primary"
@@ -105,9 +106,10 @@ export default function CommentView() {
                 style={{ width: 200, marginBottom: 8 }}
                 placeholder="Chọn sản phẩm"
                 onChange={onSearch}
-                options={dataPro?.map((item) => (
+                options={dataPro?.map((item) =>
+                (
                     {
-                        value: item._id,
+                        value: item.name,
                         label: item.name
                     }
                 ))} />
@@ -117,7 +119,7 @@ export default function CommentView() {
                 onChange={onSearch}
                 options={dataUser?.map((item) => (
                     {
-                        value: item._id,
+                        value: item.fullName,
                         label: item.fullName
                     }
                 ))} />

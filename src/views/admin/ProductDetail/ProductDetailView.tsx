@@ -86,7 +86,7 @@ const Dashboard = (props: Props) => {
           })
         );
         setDataSourceToRender(updatedDataSource);
-  
+
         const updatedUniqueSizes = Array.from(
           new Set(updatedDataSource.map((item) => item.size))
         );
@@ -122,7 +122,7 @@ const Dashboard = (props: Props) => {
 
     setSearchResult(filteredData);
     setShowNoProductsAlert(filteredData.length === 0);
-  };  
+  };
 
 
   const resetSearch = () => {
@@ -136,7 +136,7 @@ const Dashboard = (props: Props) => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Tên Sản phẩm",
       dataIndex: "product_id",
       key: "product_id",
     },
@@ -154,28 +154,28 @@ const Dashboard = (props: Props) => {
       },
     },
     {
-      title: "Color",
+      title: "Màu sắc",
       dataIndex: "color",
       key: "color",
     },
     {
-      title: "Quantity",
+      title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
       render: ({ key: id }: any) => {
         return (
           <>
             <div>
               <Popconfirm
-                title="Delete the task"
-                description="Are you sure to delete this product ?"
+                title="Xóa sản phẩm này"
+                description="Bạn có chắc chắn muốn xóa sản phẩm này ?"
                 onConfirm={() => confirm(id)}
-                okText="Yes"
-                cancelText="No"
+                okText="Xóa"
+                cancelText="Hủy"
               >
                 <Button
                   type="primary"
@@ -189,17 +189,17 @@ const Dashboard = (props: Props) => {
                 </Button>
               </Popconfirm>
               <Link to={`${id}/edit`} >
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "blue",
-                  margin: "4px",
-                  minWidth: "4em",
-                }}
-              >
-                
-                  <EditOutlined/> Sửa 
-              </Button>
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "blue",
+                    margin: "4px",
+                    minWidth: "4em",
+                  }}
+                >
+
+                  <EditOutlined /> Sửa
+                </Button>
               </Link>
 
             </div>
@@ -210,18 +210,18 @@ const Dashboard = (props: Props) => {
   ];
 
   return (
-    <div style={{paddingTop:"100px"}}>
+    <div style={{ paddingTop: "70px" }}>
       {showNoProductsAlert && (
         <Alert message="Không tìm thấy sản phẩm" type="info" showIcon style={{
-          marginTop: "20px", backgroundColor:"red"}}  />
+          marginTop: "20px", backgroundColor: "red"
+        }} />
       )}
-
-      <div className="search-bar" style={{paddingTop:"100px"}}>
+      <div className="search-bar">
         <Input
           placeholder="Tìm kiếm sản phẩm"
           value={searchProductId}
           onChange={(e) => setSearchProductId(e.target.value)} // ấn để tìm kiếm
-          // onChange={onSearch} // tìm kiếm luôn
+        // onChange={onSearch} // tìm kiếm luôn
         />
         <Select
           style={{ width: 200, marginRight: 8 }}
@@ -230,7 +230,7 @@ const Dashboard = (props: Props) => {
           onChange={(value) => setSelectedColor(value)}
           style={{ marginBottom: "20px", marginTop: "40px" }}
         >
-          <Option value={undefined}>All Color</Option>
+          <Option value={undefined}>Tất cả màu sắc</Option>
           {dataSourceToRender && dataSourceToRender.length > 0 ? (
             dataSourceToRender.map((item) => (
               <Option key={item.color} value={item.color}>
@@ -262,7 +262,7 @@ const Dashboard = (props: Props) => {
         >
           Tìm Kiếm
         </Button>
-        
+
         <Button
           type="primary"
           icon={<CloseOutlined />}
@@ -272,20 +272,17 @@ const Dashboard = (props: Props) => {
           Reset
         </Button>
         <Link to={`add`}>
-
-        <Button
-          type="primary"
-          style={{
-            backgroundColor: "blue",
-            margin: "4px",
-            minWidth: "4em",
-          }}
-        >
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: "blue",
+              margin: "4px",
+              minWidth: "4em",
+            }}
+          >
             <PlusOutlined /> Thêm Sản Phẩm
-        </Button>
+          </Button>
         </Link>
-
-        
       </div>
       <Table
         columns={columns}
@@ -296,7 +293,7 @@ const Dashboard = (props: Props) => {
           rowExpandable: (record) => record.name !== "Not Expandable",
         }}
         dataSource={searchResult.length > 0 ? searchResult : dataSourceToRender}
-        pagination={{ pageSize: 5, showQuickJumper: true }}
+        pagination={{ pageSize: 10, showQuickJumper: true }}
       />
     </div>
   );

@@ -16,6 +16,27 @@ const checkoutAPI = createApi({
                 url: `/checkout/add`,
                 method: "POST",
                 body: cart,
+            }),
+            invalidatesTags: ["Checkout"],
+        }),
+
+        fetchCheckout: builder.query<IAuth[], void>({
+            query: () => "/checkout",
+            providesTags: ["Checkout"]
+        }),
+
+        fetchOneCheckout: builder.query<any, string | number>({
+            query: (_id) => ({
+                url: `/checkout/${_id}`,
+                method: "GET",
+            }),
+            providesTags: ["Checkout"]
+        }),
+
+        removeCheckout: builder.mutation<void, string | number>({
+            query: (_id) => ({
+                url: `/checkout/${_id}`,
+                method: "DELETE",
                 headers: {
                     "content-type": "application/json",
                     'authorization': `Bearer ${token}`
@@ -23,17 +44,24 @@ const checkoutAPI = createApi({
             }),
             invalidatesTags: ["Checkout"],
         }),
-    
 
-        fetchCheckout: builder.query<IAuth[], void>({
-            query: () => "/checkout",
-            providesTags: ["Checkout"]
+        updateCheckout: builder.mutation<void, any>({
+            query: (cart) => ({
+                url: `/checkout/${cart._id}/update`,
+                method: 'PUT',
+                body: cart,
+                headers: {
+                    "content-type": "application/json",
+                    'authorization': `Bearer ${token}`
+                }
+            }),
+            invalidatesTags: ["Checkout"],
         }),
-       
-      
+
     }),
 });
 
-export const { useCreateCheckoutMutation, useFetchCheckoutQuery} = checkoutAPI;
+export const { useCreateCheckoutMutation, useFetchCheckoutQuery, useFetchOneCheckoutQuery, useRemoveCheckoutMutation, useUpdateCheckoutMutation } = checkoutAPI;
+
 
 export default checkoutAPI;

@@ -35,7 +35,7 @@ const App: React.FC = () => {
     const onSubmit = (roledata: any) => {
         const selectedGender = roledata.role;
         console.log('Dữ liệu đã lấy:', selectedGender);
-        localStorage.setItem('successMessage', "Chúc mừng bạn đã update thành công 🎉🎉🎉");
+        localStorage.setItem('successMessage', "Chúc mừng bạn đã cập nhật thành công 🎉🎉🎉");
         // setTimeout(() => {
         //     window.location.reload();
         // }, 0);
@@ -152,13 +152,13 @@ const App: React.FC = () => {
 
 
     const columns = [
-        { title: 'User Name', dataIndex: 'userName', key: 'userName' },
-        { title: 'Full Name', dataIndex: 'fullName', key: 'fullName' },
+        { title: 'Tên người dùng', dataIndex: 'userName', key: 'userName' },
+        { title: 'Tên đầy đủ', dataIndex: 'fullName', key: 'fullName' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
-        { title: 'Gender', dataIndex: 'gender', key: 'gender' },
-        { title: 'Phone', dataIndex: 'tel', key: 'tel' },
+        { title: 'Giới tính', dataIndex: 'gender', key: 'gender' },
+        { title: 'Điện thoại ', dataIndex: 'tel', key: 'tel' },
         {
-            title: 'Role',
+            title: 'Vai trò',
             dataIndex: 'role',
             key: 'role',
             render: (role: any, record: any) => (
@@ -182,7 +182,7 @@ const App: React.FC = () => {
                                     />
                                 </section>
                                 <Button type='primary' className='col-5' htmlType="submit">
-                                    Update
+                                    Cập nhật
                                 </Button>
                             </form>
                         </span>
@@ -200,13 +200,13 @@ const App: React.FC = () => {
             ),
         },
         {
-            title: 'Image',
+            title: 'Ảnh',
             dataIndex: 'image',
             key: 'image',
-            render: (image: any) => <img src={image} alt="" style={{ maxWidth: '100px' }} />,
+            render: (image: any) => <img src={image} alt="" style={{ width: '100px', height: "70px" }} />,
         },
         {
-            title: <p><Link to={"add"}><Button type='primary'>Add New User</Button></Link></p>,
+            title: <p><Link to={"add"}><Button type='primary'>Thêm người dùng mới</Button></Link></p>,
             dataIndex: '',
             key: 'action',
             render: (record: any) => (
@@ -217,12 +217,12 @@ const App: React.FC = () => {
                         </Button>
                     </Link>
                     <Popconfirm
-                        title="Are you sure to remove this item?"
+                        title="Bạn có chắc chắn muốn xóa người dùng này?"
                         onConfirm={() => {
                             removeProduct(record.key);
                         }}
-                        okText="Yes"
-                        cancelText="No"
+                        okText="Xóa"
+                        cancelText="Hủy"
                     >
                         <Button type="primary" style={{ backgroundColor: 'red', margin: '4px' }}>
                             <CloseOutlined />
@@ -235,13 +235,13 @@ const App: React.FC = () => {
 
 
     return (
-        <div style={{ paddingTop: "10%" }}>
+        <div style={{ paddingTop: "70px" }}>
             <div className='row' style={{ display: "flex", justifyContent: "center" }}>
                 <div className='col-5'>
-                    <Search placeholder="Search email user" value={searchText} onChange={(e) => onSearch(e.target.value)} enterButton />
+                    <Search placeholder="Nhập email người dùng" value={searchText} onChange={(e) => onSearch(e.target.value)} enterButton />
                 </div>
                 <div className='col-5'>
-                    <Search placeholder="Search name user" value={searchText1} onChange={(e) => onSearch1(e.target.value)} enterButton />
+                    <Search placeholder="Nhập tên người dùng " value={searchText1} onChange={(e) => onSearch1(e.target.value)} enterButton />
                 </div>
                 <Table
                     columns={columns}
@@ -250,7 +250,7 @@ const App: React.FC = () => {
                         rowExpandable: (record: any) => record.firstName !== 'Not Expandable',
                     }}
                     dataSource={searchResult.length > 0 ? searchResult : []}
-                    pagination={{ pageSize: 5, showQuickJumper: true }}
+                    pagination={{ pageSize: 10, showQuickJumper: true }}
                 />
             </div>
         </div>
