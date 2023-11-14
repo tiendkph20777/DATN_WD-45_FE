@@ -205,6 +205,7 @@ const Dashboard = (props: Props) => {
                 onConfirm={() => confirm(id)}
                 okText="Xóa"
                 cancelText="Hủy"
+<<<<<<< HEAD
 =======
       render: ({ key: id }: any) => (
         <>
@@ -224,6 +225,8 @@ const Dashboard = (props: Props) => {
                   minWidth: "4em",
                 }}
 >>>>>>> b30b4e1 (color)
+=======
+>>>>>>> 92fa84a4ba63ed6b25b67ab6988fe8906e08ca52
               >
                 <CloseOutlined />
               </Button>
@@ -325,8 +328,11 @@ const Dashboard = (props: Props) => {
             <PlusOutlined /> Thêm Sản Phẩm
           </Button>
         </Link>
+<<<<<<< HEAD
 =======
 >>>>>>> b30b4e1 (color)
+=======
+>>>>>>> 92fa84a4ba63ed6b25b67ab6988fe8906e08ca52
       </div>
       <Table
         columns={columns}
