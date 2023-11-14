@@ -367,14 +367,10 @@ const ProductDetail = () => {
       </div>
       <div>
         <CommentProductDetail />
-<<<<<<< HEAD
         <ProductLienQuan />
 
         {/* <section className="our-team position-relative">
-=======
-        {/* <ProductLienQuan /> */}
-        <section className="our-team position-relative">
->>>>>>> 18b29cc45a1c1367eb4fc2bc90ba2b6195c8d7cf
+
           <div className="container">
             <h1>Sản Phẩm Liên Quan</h1>
 
