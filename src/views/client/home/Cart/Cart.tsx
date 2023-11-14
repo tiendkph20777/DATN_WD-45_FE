@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { useFetchOneCartQuery, useRemoveCartDetailMutation, useUpdateCartDetailMutation } from '../../../services/cart.service'
-import { useGetAllProductsDetailQuery } from '../../../services/productDetail.service'
-import { useGetProductsQuery } from '../../../services/product.service';
+import { useFetchOneCartQuery, useRemoveCartDetailMutation, useUpdateCartDetailMutation } from '../../../../services/cart.service'
+import { useGetAllProductsDetailQuery } from '../../../../services/productDetail.service'
+import { useGetProductsQuery } from '../../../../services/product.service';
 import { Button, Form, Input, Modal, Popconfirm, Select, notification } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { message as messageApi } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
+import ProductSale from '../homeProduct/ProductSale';
+import EditProductModal from './CartModel';
 
 const Cart = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!);
@@ -51,7 +53,7 @@ const Cart = () => {
             setCartDetail(modifiedProductDetails);
         }
     }, [cartUser, ProductDetailUser]);
-
+    // console.log(cartDetail)
     // remove
     const removeProduct = async (id: string) => {
         try {
@@ -93,7 +95,7 @@ const Cart = () => {
     }, [editingProduct]);
 
     const handleEditClick = (id: string) => {
-        const productToEdit = cartDetail?.find((item) => item?.idCartDetail === id);
+        const productToEdit = cartDetail?.find((item: any) => item?.idCartDetail === id);
         setEditingProduct(productToEdit);
         showModal();
     };
@@ -192,7 +194,7 @@ const Cart = () => {
                 // console.log("cartUs", modifiedCartDetail);
                 await updateCartDetailMutation(modifiedCartDetail);
                 messageApi.info({
-                    type: 'error',
+                    type: 'success',
                     content: "Cập nhật giỏ hàng thành công 🎉🎉🎉",
                     className: 'custom-class',
                     style: {
@@ -273,25 +275,25 @@ const Cart = () => {
                                                 <h5>{item.quantity}</h5>
                                             </td>
                                             <td>
-                                                <h5>{item.price}VNĐ</h5>
+                                                <h5>{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                             </td>
                                             <td>
-                                                <h5>{item.total}VNĐ</h5>
+                                                <h5>{item.total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                             </td>
                                             <td>
                                                 <Button
                                                     type="primary"
                                                     onClick={() => handleEditClick(item.idCartDetail)}
                                                 >
-                                                    Edit
+                                                    Chỉnh sửa
                                                 </Button>
                                                 <Popconfirm
                                                     title="Bạn có chắc muốn xóa sản phẩm này không?"
                                                     onConfirm={() => {
                                                         removeProduct(item.idCartDetail);
                                                     }}
-                                                    okText="Yes"
-                                                    cancelText="No"
+                                                    okText="Xóa"
+                                                    cancelText="Hủy"
                                                 >
                                                     <Button type="primary" style={{ backgroundColor: 'red', margin: '4px' }}>
                                                         <CloseOutlined />
@@ -300,7 +302,7 @@ const Cart = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    <Form.Item
+                                    {/* <Form.Item
                                         label="Color"
                                         name="color"
                                         rules={[{ required: true, message: 'Vui lòng chọn màu!' }]}
@@ -333,7 +335,7 @@ const Cart = () => {
                                             defaultValue={editingProduct?.quantity || ''}
                                             render={({ field }) => <Input {...field} placeholder="quantity" />}
                                         />
-                                    </Form.Item>
+                                    </Form.Item> */}
                                 </tbody>
                             </table>
                         </div>
@@ -356,105 +358,29 @@ const Cart = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <Modal
-                            title="Chỉnh sửa sản phẩm"
-                            open={open}
-                            onOk={handleOk}
-                            confirmLoading={confirmLoading}
-                            onCancel={handleCancel}
-                        >
-                            <form action="" onSubmit={handleSubmit(onSubmit)}>
-                                <div className='row'>
-                                    <img height={'150px'} src={editingProduct?.image} alt="" className='col-xl-4 col-lg-4 col-sm-4 col-8' />
-                                    <label htmlFor="" style={{ padding: "30px" }} className='col-xl-7 col-lg-7 col-sm-7 col-12'>{editingProduct?.name}</label>
-                                </div>
-                                <div className='row'>
-                                    <Form.Item
-                                        label=""
-                                        name="size"
-                                        rules={[{ required: true, message: 'Please input your username!' }]}
-                                        className='col-xl-5 col-lg-5 col-sm-5 col-12'
-                                    >
-                                        <Controller
-                                            render={({ field }) => (
-                                                <div style={{ display: "flex" }}>
-                                                    <label className="p-1">Size:</label>
-                                                    <Select {...field} style={{ width: "100%" }} className='form-control p-0' onChange={(newSize) => handleSizeChange(newSize)}>
-                                                        {selectedProductSizes?.map((size) => (
-                                                            <option key={size} value={size}>
-                                                                {size}
-                                                            </option>
-                                                        ))}
-                                                    </Select>
-                                                </div>
-                                            )}
-                                            name="size"
-                                            control={control}
-                                        />
-                                    </Form.Item>
-                                    <Form.Item
-                                        label=""
-                                        name="color"
-                                        rules={[{ required: true, message: 'Please input your color!' }]}
-                                        className='col-xl-7 col-lg-7 col-sm-7 col-12'
-                                    >
-                                        <Controller
-                                            render={({ field }) => (
-                                                <div style={{ display: "flex" }}>
-                                                    <label className="p-1">Color:</label>
-                                                    <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                                        {targetProduct
-                                                            ?.filter((product) => product.size === watch('size'))
-                                                            .map((product) => (
-                                                                <option key={product.color} value={product.color}>
-                                                                    {product.color}
-                                                                </option>
-                                                            ))}
-                                                    </Select>
-                                                </div>
-                                            )}
-                                            name="color"
-                                            control={control}
-                                        />
-                                    </Form.Item>
-                                    <Form.Item
-                                        label=""
-                                        name="quantity"
-                                        rules={[{ message: 'Please input your quantity!' }]}
-                                    >
-                                        <Controller
-                                            name="quantity"
-                                            control={control}
-                                            defaultValue={editingProduct?.quantity || 1} // Set the default value to 1
-                                            render={({ field }) => (
-                                                <div className="product_count1 flex-1">
-                                                    <label className="quantity p-2">Số Lượng:</label>
-                                                    <div className="quantity-input">
-                                                        <span>
-                                                            <button onClick={decrementQuantity} type="button">-</button>
-                                                        </span>
-                                                        <input
-                                                            min="1"
-                                                            maxLength={10}
-                                                            value={field.value}
-                                                            onChange={(e) => {
-                                                                field.onChange(e);
-                                                                handleQuantityChange(e);
-                                                            }}
-                                                            className="form-control"
-                                                        />
-                                                        <span>
-                                                            <button onClick={incrementQuantity} type="button">+</button>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        />
-                                    </Form.Item>
-
-                                </div>
-                            </form>
-                        </Modal>
+                        <div>
+                            <ProductSale />
+                            <EditProductModal
+                                open={open}
+                                confirmLoading={confirmLoading}
+                                onCancel={handleCancel}
+                                handleOk={handleOk}
+                                control={control}
+                                handleSubmit={handleSubmit}
+                                handleSizeChange={handleSizeChange}
+                                targetProduct={targetProduct}
+                                selectedProductSizes={selectedProductSizes}
+                                selectedColor={selectedColor}
+                                watch={watch}
+                                handleQuantityChange={handleQuantityChange}
+                                quantity={quantity}
+                                incrementQuantity={incrementQuantity}
+                                decrementQuantity={decrementQuantity}
+                                editingProduct={editingProduct}
+                                setValue={setValue}
+                                onSubmit={onSubmit}
+                            />
+                        </div>
                     </div>
                 </div>
             </section >

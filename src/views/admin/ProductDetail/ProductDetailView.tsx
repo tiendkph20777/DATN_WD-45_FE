@@ -164,7 +164,7 @@ const Dashboard = (props: Props) => {
 
   const columns = [
     {
-      title: "Name",
+      title: "Tên Sản phẩm",
       dataIndex: "product_id",
       key: "product_id",
     },
@@ -182,18 +182,30 @@ const Dashboard = (props: Props) => {
       },
     },
     {
-      title: "Color",
+      title: "Màu sắc",
       dataIndex: "color",
       key: "color",
     },
     {
-      title: "Quantity",
+      title: "Số lượng",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "Action",
+      title: "Hành động",
       key: "action",
+<<<<<<< HEAD
+      render: ({ key: id }: any) => {
+        return (
+          <>
+            <div>
+              <Popconfirm
+                title="Xóa sản phẩm này"
+                description="Bạn có chắc chắn muốn xóa sản phẩm này ?"
+                onConfirm={() => confirm(id)}
+                okText="Xóa"
+                cancelText="Hủy"
+=======
       render: ({ key: id }: any) => (
         <>
           <div>
@@ -211,6 +223,7 @@ const Dashboard = (props: Props) => {
                   margin: "4px",
                   minWidth: "4em",
                 }}
+>>>>>>> b30b4e1 (color)
               >
                 <CloseOutlined />
               </Button>
@@ -234,7 +247,7 @@ const Dashboard = (props: Props) => {
   ];
 
   return (
-    <div style={{ paddingTop: "100px" }}>
+    <div style={{ paddingTop: "70px" }}>
       {showNoProductsAlert && (
         <Alert
           message="Không tìm thấy sản phẩm"
@@ -259,7 +272,7 @@ const Dashboard = (props: Props) => {
           onChange={(value) => setSelectedColor(value)}
           style={{ marginBottom: "20px", marginTop: "40px" }}
         >
-          <Option value={undefined}>All Color</Option>
+          <Option value={undefined}>Tất cả màu sắc</Option>
           {dataSourceToRender && dataSourceToRender.length > 0 ? (
             dataSourceToRender.map((item) => (
               <Option key={item.color} value={item.color}>
@@ -299,6 +312,21 @@ const Dashboard = (props: Props) => {
         >
           Reset
         </Button>
+<<<<<<< HEAD
+        <Link to={`add`}>
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: "blue",
+              margin: "4px",
+              minWidth: "4em",
+            }}
+          >
+            <PlusOutlined /> Thêm Sản Phẩm
+          </Button>
+        </Link>
+=======
+>>>>>>> b30b4e1 (color)
       </div>
       <Table
         columns={columns}

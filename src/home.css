@@ -2771,6 +2771,22 @@ progress {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.total-checkout {
+  font-size: 20px;
+  color: red !important;
+  font-weight: bold;
+  border: none;
+}
+
+.money-checkout {
+  font-size: 20px;
+  color: rgb(0, 0, 0) !important;
+  font-weight: bold;
+  border: none;
+}
+
+
+
 @media (prefers-reduced-motion: reduce) {
   .form-control {
     transition: none;
@@ -13936,7 +13952,7 @@ fieldset:disabled .btn {
 
 .contact {
   background-color: #f2f2f8;
-  padding: 200px 0;
+  padding: 100px 0;
   z-index: 1;
 }
 
@@ -14121,7 +14137,8 @@ label {
   color: #000;
   font-size: 16px;
   font-weight: 400;
-  box-shadow: -1px 1px 6px #b0c8dd;
+
+  /* box-shadow: -1px 1px 6px #b0c8dd; */
 }
 
 .form-control::-moz-placeholder {
@@ -20520,11 +20537,13 @@ label {
   position: relative;
   margin-bottom: 24px;
 }
+
 .product_count1 {
   display: inline-block;
   position: relative;
   display: flex;
 }
+
 .product_count label {
   font-size: 14px;
   color: #777777;
@@ -21206,7 +21225,7 @@ label {
 
 .p_star input {
   background: #fff;
-  margin: 10px;
+  /* margin: 10px; */
   color: #000;
 }
 
@@ -22852,9 +22871,10 @@ label {
 
 .contact_form .form-group .form-control {
   font-size: 13px;
-  line-height: 26px;
+  /* line-height: 26px; */
   color: #999;
-  border: 1px solid #eeeeee;
+  margin-top: 10px;
+  /* border: 1px solid #eeeeee; */
   font-family: "Roboto", sans-serif;
   border-radius: 0px;
   padding-left: 20px;

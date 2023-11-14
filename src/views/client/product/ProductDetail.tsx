@@ -14,6 +14,7 @@ import "slick-carousel/slick/slick-theme.css";
 import { message as messageApi } from "antd";
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
+import ProductLienQuan from "./ProductLienQuan";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -366,8 +367,14 @@ const ProductDetail = () => {
       </div>
       <div>
         <CommentProductDetail />
+<<<<<<< HEAD
+        <ProductLienQuan />
+
+        {/* <section className="our-team position-relative">
+=======
         {/* <ProductLienQuan /> */}
         <section className="our-team position-relative">
+>>>>>>> 18b29cc45a1c1367eb4fc2bc90ba2b6195c8d7cf
           <div className="container">
             <h1>Sản Phẩm Liên Quan</h1>
 
@@ -422,11 +429,11 @@ const ProductDetail = () => {
                                 {item.price_sale > 0 ? (
                                   <div className="product-price row">
                                     <strong className="col-12">
-                                      {item.price_sale}đ
+                                      {item.price_sale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </strong>
                                     <div className="d-flex">
                                       <del className="price-del">
-                                        {item.price}đ
+                                        {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                       </del>
                                       <span className="product-discount">
                                         -{discount}%
@@ -436,7 +443,7 @@ const ProductDetail = () => {
                                 ) : (
                                   <div className="product-price row">
                                     <strong className="col-12">
-                                      {item.price}đ
+                                      {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </strong>
                                   </div>
                                 )}
@@ -465,7 +472,7 @@ const ProductDetail = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
       </div>
       <div></div>
     </div>

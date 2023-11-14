@@ -10,7 +10,6 @@ const productAPI = createApi({
         baseUrl: "http://localhost:8080/api"
     }),
     endpoints: builder => ({
-
         getProducts: builder.query<IProducts[], void>({
             query: () => `/product`,
         }),
