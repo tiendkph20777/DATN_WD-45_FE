@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Popconfirm, notification } from "antd";
-import { useGetProductsQuery } from "../../../services/product.service";
+import {
+  useGetProductByIdQuery,
+  useGetProductsQuery,
+} from "../../../services/product.service";
 import { IProducts } from "../../../types/product.service";
 import { Link } from "react-router-dom";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import Table, { ColumnsType } from "antd/es/table";
 import { CloseOutlined, EditOutlined } from "@ant-design/icons";
 import { useRemoveProductMutation } from "../../../services/product.service";
+import { useParams } from "react-router-dom";
 
 interface DataType {
   key: string | number;
@@ -21,7 +25,9 @@ interface DataType {
 }
 
 const ProductView = () => {
+  const { id:idProduct } = useParams();
   const { data: productData } = useGetProductsQuery();
+  const { data: productDetailData } = useGetProductByIdQuery();
   // console.log(productData)
   const { data: brands } = useGetBrandsQuery();
   const [searchTerm, setSearchTerm] = useState("");
@@ -171,7 +177,32 @@ const ProductView = () => {
                   <CloseOutlined />
                 </Button>
               </Popconfirm>
-
+              <Link to={`detail/${id}`}>
+                {/* Modify the Link component above to include the correct path */}
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "green", // Change the color as needed
+                    margin: "4px",
+                    minWidth: "4em",
+                  }}
+                >
+                  Chi tiết
+                </Button>
+              </Link>
+              <Link to={`detail/add/${id}`}>
+                {/* Modify the Link component above to include the correct path */}
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "green", // Change the color as needed
+                    margin: "4px",
+                    minWidth: "4em",
+                  }}
+                >
+                  Thêm Chi tiết
+                </Button>
+              </Link>
               <Link to={`${id}/edit`}>
                 <Button
                   type="primary"
@@ -197,12 +228,12 @@ const ProductView = () => {
     };
   });
   return (
-    <div style={{ paddingTop: "70px" }}>
+    <div className="">
       <div className="row">
         <div className="col-lg-12 d-flex align-items-stretch">
           <div className="card w-100">
-            <div className="card-body">
-              <h5 className="card-title fw-semibold">Sản Phẩm</h5>
+            <div className="card-body mt-5">
+              <h5 className="card-title fw-semibold mb-4">Sản Phẩm</h5>
               <a className="text-white" href="/admin/product/add">
                 <button type="button" className="btn btn-success m-1">
                   Thêm
@@ -225,7 +256,7 @@ const ProductView = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="mt-2 col-7">
+                  <div className="mt-2 col-5">
                     <Input
                       type="text"
                       className="form-control"
@@ -237,7 +268,7 @@ const ProductView = () => {
                   </div>
                   <button
                     type="submit"
-                    className="col-2 p-2 btn btn-secondary mt-2"
+                    className="col-4 p-2 btn btn-secondary mt-2"
                   >
                     Tìm kiếm
                   </button>
