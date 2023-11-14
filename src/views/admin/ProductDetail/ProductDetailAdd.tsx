@@ -90,7 +90,7 @@ const ProductAdd = () => {
         className="timeline-badge-border rounded-sm rounded product-main"
       >
 
-        <Form.Item label="Name" name="product_id" className="w-full">
+        <Form.Item label="Name" name="product_id" className="w-full" has>
           <Select placeholder="Chọn Sản Phẩm" defaultValue={id} >
             {productData &&
               productData?.map((product: IProducts) => (

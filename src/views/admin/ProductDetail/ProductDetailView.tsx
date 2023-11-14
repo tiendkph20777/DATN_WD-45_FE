@@ -194,7 +194,6 @@ const Dashboard = (props: Props) => {
     {
       title: "Hành động",
       key: "action",
-<<<<<<< HEAD
       render: ({ key: id }: any) => {
         return (
           <>
@@ -205,8 +204,6 @@ const Dashboard = (props: Props) => {
                 onConfirm={() => confirm(id)}
                 okText="Xóa"
                 cancelText="Hủy"
-<<<<<<< HEAD
-=======
       render: ({ key: id }: any) => (
         <>
           <div>
@@ -224,9 +221,7 @@ const Dashboard = (props: Props) => {
                   margin: "4px",
                   minWidth: "4em",
                 }}
->>>>>>> b30b4e1 (color)
-=======
->>>>>>> 92fa84a4ba63ed6b25b67ab6988fe8906e08ca52
+
               >
                 <CloseOutlined />
               </Button>
@@ -248,6 +243,7 @@ const Dashboard = (props: Props) => {
       ),
     },
   ];
+
 
   return (
     <div style={{ paddingTop: "70px" }}>
@@ -315,7 +311,6 @@ const Dashboard = (props: Props) => {
         >
           Reset
         </Button>
-<<<<<<< HEAD
         <Link to={`add`}>
           <Button
             type="primary"
@@ -328,11 +323,8 @@ const Dashboard = (props: Props) => {
             <PlusOutlined /> Thêm Sản Phẩm
           </Button>
         </Link>
-<<<<<<< HEAD
-=======
->>>>>>> b30b4e1 (color)
-=======
->>>>>>> 92fa84a4ba63ed6b25b67ab6988fe8906e08ca52
+
+
       </div>
       <Table
         columns={columns}
@@ -347,6 +339,8 @@ const Dashboard = (props: Props) => {
       />
     </div>
   );
+
 };
+
 
 export default Dashboard;
