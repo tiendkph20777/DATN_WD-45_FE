@@ -1,10 +1,11 @@
-import { Button, Form, Input, notification,Select } from "antd";
-import { IProductDetail } from "../../../types/product";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Form, Input, Select, Button, notification } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
 import { IProducts } from "../../../types/product.service";
 
+const { Option } = Select;
 
 type FieldType = {
   name?: string;
@@ -15,27 +16,59 @@ type FieldType = {
 };
 
 const ProductAdd = () => {
+  const { id } = useParams();
   const [addProduct] = useAddProductsDetailMutation();
   const navigate = useNavigate();
+  const [form] = Form.useForm();
 
-  const { data:productData } = useGetProductsQuery()
-  console.log(productData)
+  const { data: productData, refetch: refetchProductData } =
+    useGetProductsQuery();
 
-  const onFinish = (values: IProductDetail) => {
-    
-    values.product_id = values.product_id?.toString();
-    addProduct(values)
-      .unwrap()
-      .then(() => {
+  useEffect(() => {
+    if (productData && id) {
+      const selectedProduct = productData.find(
+        (product: IProducts) => product._id === id
+      );
+
+      if (selectedProduct) {
+        form.setFieldsValue({ product_id: selectedProduct._id });
+      }
+    }
+  }, [productData, id, form]);
+
+  const onFinish = async (values) => {
+    try {
+      const response = await addProduct(values);
+
+      if (response.data) {
+        console.log("Sản phẩm đã được thêm thành công");
+
+        form.resetFields();
+
         notification.success({
           message: "Success",
-          description: "Thêm Chi Tiết Sản Phẩm Thành Công!",
+          description: "Sản phẩm đã được thêm thành công!",
         });
-        navigate("/admin/product/detail");
-      })
-      .catch((error) => {
-        console.error("Error adding product:", error);
+
+        handleAdditionalTasks(response.data);
+      }
+      const productId = values.product_id;
+      // console.log('New product ID:', productId);
+      navigate(`/admin/product/detail/${productId}`);
+    } catch (error) {
+      console.error("Lỗi khi thêm sản phẩm", error);
+      notification.error({
+        message: "Error",
+        description: "Thêm sản phẩm không thành công. Vui lòng thử lại!",
       });
+    }
+  };
+
+  const handleAdditionalTasks = (productData) => {
+    console.log(
+      "Thực hiện các tác vụ bổ sung với dữ liệu sản phẩm",
+      productData
+    );
   };
 
   const onFinishFailed = (errorInfo: any) => {
@@ -43,8 +76,8 @@ const ProductAdd = () => {
   };
 
   return (
-    <div >
-      <h1 style={{paddingTop:"200px"}}>Thêm Chi Tiết Sản Phẩm</h1>
+    <div className="navbar-collapse">
+      <h1 style={{ paddingTop: "200px",color:"blue" }} className="text-center">Thêm Chi Tiết Sản Phẩm</h1>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -54,40 +87,28 @@ const ProductAdd = () => {
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
+        className="timeline-badge-border rounded-sm rounded product-main"
       >
 
-        <Form.Item
-          label="Name"
-          name="product_id"
-          // rules={[{ required: true, message: "Chọn Sản Phẩm" }]}
-        >
-          <Select placeholder="Chọn Sản Phẩm">
+        <Form.Item label="Name" name="product_id" className="w-full">
+          <Select placeholder="Chọn Sản Phẩm" defaultValue={id} >
             {productData &&
-              productData?.map((product:IProducts) => (
+              productData?.map((product: IProducts) => (
                 <Option key={product._id} value={product._id}>
                   {product.name}
-                  
                 </Option>
               ))}
           </Select>
         </Form.Item>
 
-        {/* <Form.Item
-          label="product_id"
-          name="product_id"
-          rules={[{ required: true, message: "Nhập id Product" }]}
-        >
-          <Input />
-        </Form.Item> */}
-
-
-        <Form.Item<FieldType>
+        <Form.Item
           label="Size"
           name="size"
           rules={[{ required: true, message: "Nhập Size Sản Phẩm" }]}
         >
-          <Input type="number" />
+          <Input type="number" className="bg-red-500" />
         </Form.Item>
+
         <Form.Item
           label="quantity"
           name="quantity"
@@ -95,7 +116,7 @@ const ProductAdd = () => {
         >
           <Input />
         </Form.Item>
-        
+
         <Form.Item
           label="Color"
           name="color"
@@ -103,8 +124,13 @@ const ProductAdd = () => {
         >
           <Input />
         </Form.Item>
+
         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" style={{ backgroundColor: "blue" }}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ backgroundColor: "blue" }}
+          >
             Thêm
           </Button>
           <Button htmlType="reset">reset</Button>

@@ -6,6 +6,7 @@ import {
   useUpdateProductsDetailMutation,
 } from "../../../services/productDetail.service";
 import { IProductDetail } from "../../../types/product";
+import { useGetProductsQuery } from "../../../services/product.service";
 
 type FieldType = {
   _id?: string;
@@ -18,8 +19,12 @@ type FieldType = {
 const ProductProductEdit = () => {
   const { idProduct } = useParams<{ idProduct: string }>();
   // console.log(idProduct)
+  const handleGoBack = () => {
+    navigate(-1); 
+  };
 
   const { data: productData } = useGetProductDetailByIdQuery(idProduct || "");
+  const { data: productsData } = useGetProductsQuery();
   console.log(idProduct);
   console.log(productData);
 
@@ -50,8 +55,8 @@ const ProductProductEdit = () => {
           message: "Success",
           description: "Sửa Chi Tiết Sản Phẩm Thành Công!",
         });
-        navigate("/admin/product/detail");
-        window.location.reload();
+        const productId = values.product_id;
+        navigate(`/admin/product/detail/${productId}`);
       })
       .catch((error) => {
         console.error("Error in promise:", error);
@@ -76,7 +81,7 @@ const ProductProductEdit = () => {
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item<FieldType> label="id" name="_id">
+        <Form.Item<FieldType> label="id" name="_id" style={{ display: "none" }}>
           <Input disabled />
         </Form.Item>
 
@@ -94,8 +99,15 @@ const ProductProductEdit = () => {
         >
           <Input />
         </Form.Item>
-        <Form.Item label="product_id" name="product_id">
-          <Input disabled />
+        <Form.Item label="Tên sản Phẩm" name="product_id">
+          <Select disabled placeholder="Chọn Sản Phẩm">
+            {productsData &&
+              productsData?.map((product) => (
+                <Option key={product._id} value={product._id}>
+                  {product.name}
+                </Option>
+              ))}
+          </Select>
         </Form.Item>
         <Form.Item
           label="Color"
@@ -114,11 +126,13 @@ const ProductProductEdit = () => {
             Cập nhật
           </Button>
           <Button
-            type='primary'
+            type="primary"
             danger
-            onClick={() => navigate("/admin/product/detail")}
-            className='ml-2'
-          >Quay lại</Button>
+            onClick={handleGoBack}
+            className="ml-2"
+          >
+            Quay lại
+          </Button>
         </Form.Item>
       </Form>
     </div>

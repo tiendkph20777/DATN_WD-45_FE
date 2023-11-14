@@ -92,7 +92,6 @@ const ProductAdd: React.FC = () => {
             <div className="row">
                 <div className="card-body">
                     <h5 className="card-title fw-semibold mb-4">Thêm Sản Phẩm</h5>
-                    {/* {contextHolder} */}
                     <Form
                         form={form}
                         name="validate_other"
@@ -218,5 +217,3 @@ const ProductAdd: React.FC = () => {
     )
 }
 export default ProductAdd
-
-

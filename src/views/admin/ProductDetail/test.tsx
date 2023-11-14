@@ -9,7 +9,7 @@ import {
   notification,
 } from "antd";
 import { IProduct } from "../types/product";
-import { Link, useParams } from "react-router-dom"; // Import thêm useParams
+import { Link } from "react-router-dom";
 import {
   SearchOutlined,
   CloseOutlined,
@@ -20,12 +20,7 @@ import {
   useGetProductDetailQuery,
   useGetAllProductsDetailQuery,
   useRemoveProductsDetailMutation,
-  useGetProductDetailByIdQuery,
 } from "../../../services/productDetail.service";
-import {
-  useGetProductByIdQuery,
-  useGetProductsQuery,
-} from "../../../services/product.service";
 
 const { Option } = Select;
 
@@ -38,8 +33,6 @@ interface DataType {
 }
 
 const Dashboard = (props: Props) => {
-  const { id } = useParams();
-  console.log("ID:", id);
   const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     undefined
@@ -54,12 +47,9 @@ const Dashboard = (props: Props) => {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState<DataType[]>([]);
   const [showNoProductsAlert, setShowNoProductsAlert] = useState(false);
-
   const { data: product } = useGetProductDetailQuery();
   const { data: productData, refetch: refetchProductData } =
     useGetAllProductsDetailQuery();
-  const { data: productDetailData } = useGetProductByIdQuery(id);
-
   const [removeProduct] = useRemoveProductsDetailMutation();
 
   const confirm = async (id: any) => {
@@ -79,18 +69,11 @@ const Dashboard = (props: Props) => {
       });
     }
   };
+
   useEffect(() => {
-    if (productDetailData) {
+    if (productData) {
       if (product) {
-        const productIdToFind = id;
-
-        const filteredProducts = productData?.filter(
-          (product) => product.product_id === productIdToFind
-        );
-
-        console.log(filteredProducts);
-
-        const updatedDataSource = filteredProducts?.map(
+        const updatedDataSource = productData.map(
           ({ _id, size, color, quantity, product_id }: IProduct) => ({
             key: _id,
             size,
@@ -99,16 +82,15 @@ const Dashboard = (props: Props) => {
             product_id: product.find((role) => role?._id === product_id)?.name,
           })
         );
-
         setDataSourceToRender(updatedDataSource);
 
         const updatedUniqueSizes = Array.from(
-          new Set(updatedDataSource?.map((item) => item.size))
+          new Set(updatedDataSource.map((item) => item.size))
         );
         setUniqueSizes(updatedUniqueSizes);
       }
     }
-  }, [productDetailData, product, productData]);
+  }, [productData, product]);
 
   const onSearch = (e) => {
     const inputValue = e.target.value;
@@ -215,7 +197,7 @@ const Dashboard = (props: Props) => {
                 <CloseOutlined />
               </Button>
             </Popconfirm>
-            <Link to={`edit/${id}`}>
+            <Link to={`${id}/edit`}>
               <Button
                 type="primary"
                 style={{
@@ -299,6 +281,18 @@ const Dashboard = (props: Props) => {
         >
           Reset
         </Button>
+        <Link to={`add`}>
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: "blue",
+              margin: "4px",
+              minWidth: "4em",
+            }}
+          >
+            <PlusOutlined /> Thêm Sản Phẩm
+          </Button>
+        </Link>
       </div>
       <Table
         columns={columns}

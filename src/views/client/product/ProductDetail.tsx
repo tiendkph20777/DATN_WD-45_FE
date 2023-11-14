@@ -11,7 +11,7 @@ import { IProducts } from "../../../types/product.service";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { message as messageApi } from 'antd';
+import { message as messageApi } from "antd";
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
 
@@ -80,7 +80,23 @@ const ProductDetail = () => {
     setSelectedColor("");
     setSelectedColorName("");
     setHasSelectedColor(false);
+    setShowColors(false);
   };
+  useEffect(() => {
+    if (selectedSize) {
+      const detailsForSelectedSize = productDataDetail?.filter(
+        (detail) => detail?.size === selectedSize
+      );
+
+      // Lấy danh sách màu của sản phẩm hiện tại
+      const colorsForCurrentProduct = detailsForSelectedSize
+        .filter((detail) => detail?.product_id === prodetailData?._id)
+        .map((detail) => detail?.color);
+
+      setColorsForSelectedSize(colorsForCurrentProduct);
+      setShowColors(true);
+    }
+  }, [selectedSize, productDataDetail, prodetailData]);
 
   const handleColorChange = (color: any) => {
     setSelectedColor(color);
@@ -111,8 +127,8 @@ const ProductDetail = () => {
   };
 
   ////////////////////////////////
-  const profileUser = JSON.parse(localStorage.getItem("user")!)
-  const user = profileUser?.user
+  const profileUser = JSON.parse(localStorage.getItem("user")!);
+  const user = profileUser?.user;
   const [addCart, isLoading] = useCreateCartMutation();
 
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -123,7 +139,8 @@ const ProductDetail = () => {
         setIsAddingToCart(true);
         const filteredProducts = productDataDetail?.map(async (product) => {
           if (
-            typeof product?.size === "number" && product?.size === selectedSize
+            typeof product?.size === "number" &&
+            product?.size === selectedSize
           ) {
             if (product?.color === selectedColor) {
               const cartItem = {
@@ -159,8 +176,8 @@ const ProductDetail = () => {
           margin: "10px",
           fontSize: "20px",
           lineHeight: "30px",
-        }
-      })
+        },
+      });
     }
   };
   const sliderSettings = {
@@ -283,8 +300,9 @@ const ProductDetail = () => {
                       {productSizes?.map((size, index) => (
                         <button
                           key={index}
-                          className={`size-button ${selectedSize === size ? "active" : ""
-                            }`}
+                          className={`size-button ${
+                            selectedSize === size ? "active" : ""
+                          }`}
                           onClick={() => handleSizeChange(size)}
                         >
                           {size}
@@ -300,8 +318,9 @@ const ProductDetail = () => {
                           {colorsForSelectedSize.map((color, index) => (
                             <button
                               key={index}
-                              className={`color-button ${selectedColor === color ? "active" : ""
-                                } ${hasSelectedColor ? "with-color" : ""}`}
+                              className={`color-button ${
+                                selectedColor === color ? "active" : ""
+                              } ${hasSelectedColor ? "with-color" : ""}`}
                               style={{ backgroundColor: color }}
                               onClick={() => handleColorChange(color)}
                             ></button>
@@ -335,7 +354,9 @@ const ProductDetail = () => {
                     onClick={onSubmitCart}
                     disabled={isAddingToCart}
                   >
-                    {isAddingToCart ? "Thêm vào giỏ hàng..." : "Thêm vào giỏ hàng"}
+                    {isAddingToCart
+                      ? "Thêm vào giỏ hàng..."
+                      : "Thêm vào giỏ hàng"}
                   </button>
                 </div>
               </div>
@@ -395,7 +416,9 @@ const ProductDetail = () => {
                                 <div className="product-vendor">
                                   {brandName}
                                 </div>
-                                <h4 className="product-name ellipsis">{item.name}</h4>
+                                <h4 className="product-name ellipsis">
+                                  {item.name}
+                                </h4>
                                 {item.price_sale > 0 ? (
                                   <div className="product-price row">
                                     <strong className="col-12">
@@ -419,9 +442,17 @@ const ProductDetail = () => {
                                 )}
                               </div>
                               <div className="product-action pt-5 row text-center justify-content-center">
-                                <div className="col-6"><img src="/src/assets/images/products/icons/read.svg" alt="" />
+                                <div className="col-6">
+                                  <img
+                                    src="/src/assets/images/products/icons/read.svg"
+                                    alt=""
+                                  />
                                 </div>
-                                <div className="col-6"><img src="/src/assets/images/products/icons/cart.svg" alt="" />
+                                <div className="col-6">
+                                  <img
+                                    src="/src/assets/images/products/icons/cart.svg"
+                                    alt=""
+                                  />
                                 </div>
                               </div>
                             </a>

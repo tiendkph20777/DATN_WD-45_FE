@@ -42,14 +42,6 @@ const SideBar = () => {
                         <span className="hide-menu">Sản Phẩm</span>
                     </li>
                     <li className="sidebar-item">
-                        <Link className="sidebar-link" to="/admin/product/detail" aria-expanded="false">
-                            <span>
-                                <i className="ti ti-alert-circle"></i>
-                            </span>
-                            <span className="hide-menu">Quản lí chi tiết sản phẩm</span>
-                        </Link>
-                    </li>
-                    <li className="sidebar-item">
                         <Link className="sidebar-link" to="/admin/product" aria-expanded="false">
                             <span>
                                 <i className="ti ti-alert-circle"></i>
