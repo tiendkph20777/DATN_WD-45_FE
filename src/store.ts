@@ -21,6 +21,7 @@ export const store = configureStore({
     "cart": cartAPI.reducer,
     "payment": paymentAPI.reducer,
     "checkout": checkoutAPI.reducer,
+    
   },
 
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(productAPI.middleware, brandAPI.middleware, authAPI.middleware, roleAPI.middleware, productAPIDetall.middleware, voucherAPI.middleware, cartAPI.middleware, paymentAPI.middleware, checkoutAPI.middleware),
