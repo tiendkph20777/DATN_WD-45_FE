@@ -3,8 +3,11 @@ import { Select, Table } from 'antd';
 import { Button, Input, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { CloseOutlined } from '@ant-design/icons';
-import { useFetchCommentQuery, useGetProductsQuery, useRemoveCommentMutation } from "../../../services/product.service";
 import { useFetchUserQuery } from '../../../services/user.service';
+import { message as messageApi } from 'antd';
+import { useFetchCommentQuery, useRemoveCommentMutation } from '../../../services/comment.service';
+import { useGetProductsQuery } from '../../../services/product.service';
+
 interface DataType {
     _id: string;
     content: string;
@@ -24,7 +27,7 @@ export default function CommentView() {
     useEffect(() => {
         if (dataCmt && dataPro && dataUser) {
             const updatedDataSource = dataCmt.map(
-                ({ _id, content, id_product, id_user, rate }: DataType, key: any) => ({
+                ({ _id, content, id_product, id_user, rate }: DataType, key: string) => ({
                     key,
                     _id,
                     content,
@@ -47,7 +50,16 @@ export default function CommentView() {
         }
         );
         if (filteredData.length == 0) {
-            alert('Không có bình luận nào cả!');
+            messageApi.error({
+                type: 'error',
+                content: "Không có bình luận nào cả ",
+                className: 'custom-class',
+                style: {
+                    marginTop: '0',
+                    fontSize: "15px",
+                    lineHeight: "50px"
+                },
+            });
         }
         setSearchResult(filteredData);
     };
@@ -96,14 +108,14 @@ export default function CommentView() {
         }
     ];
     return (
-        <div className='pt-6'>
+        <div style={{ paddingTop: "70px" }}>
             <Search
                 placeholder="Tìm kiếm"
                 onSearch={onSearch}
-                style={{ width: 200 }} />
+                style={{ width: 200, marginLeft: 10 }} />
 
             <Select
-                style={{ width: 200, marginBottom: 8 }}
+                style={{ width: 200, marginBottom: 8, marginLeft: 10 }}
                 placeholder="Chọn sản phẩm"
                 onChange={onSearch}
                 options={dataPro?.map((item) =>
@@ -114,7 +126,7 @@ export default function CommentView() {
                     }
                 ))} />
             <Select
-                style={{ width: 200, marginBottom: 8 }}
+                style={{ width: 200, marginBottom: 8, marginLeft: 10 }}
                 placeholder="Chọn người dùng"
                 onChange={onSearch}
                 options={dataUser?.map((item) => (
@@ -124,7 +136,7 @@ export default function CommentView() {
                     }
                 ))} />
             <Select
-                style={{ width: 200, marginBottom: 8 }}
+                style={{ width: 200, marginBottom: 8, marginLeft: 10 }}
                 placeholder="Chọn đánh giá"
                 onChange={onSearch}
                 options={[
@@ -141,7 +153,7 @@ export default function CommentView() {
                     rowExpandable: (record) => record.content !== 'Not Expandable',
                 }}
                 dataSource={searchResult.length > 0 ? searchResult : dataSourceToRender}
-                pagination={{ pageSize: 7, showQuickJumper: true }} />
+                pagination={{ pageSize: 10, showQuickJumper: true }} />
         </div>
 
     );

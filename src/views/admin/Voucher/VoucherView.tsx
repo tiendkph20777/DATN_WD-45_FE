@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Input, Popconfirm, notification } from 'antd';
+import { Button, Table, Input, Popconfirm, notification, Tag } from 'antd';
 import { IVouchers } from "../../../types/voucher";
 import { useGetVouchersQuery, useRemoveVoucherMutation } from '../../../services/voucher.service';
 import { Link } from 'react-router-dom';
@@ -10,7 +10,7 @@ const VoucherView: React.FC = () => {
     const [removeVoucher] = useRemoveVoucherMutation();
     const [searchTerm, setSearchTerm] = useState('');
     const [dataSource, setDataSource] = useState<Array<any>>([]);
-    const confirm = async (id) => {
+    const confirm = async (id: any) => {
         try {
             // Gọi API xóa sản phẩm bất đồng bộ
             await removeVoucher(id);
@@ -46,15 +46,6 @@ const VoucherView: React.FC = () => {
         }
     }, [voucherData, searchTerm]);
 
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Khi người dùng nhấn Enter để tìm kiếm
-        // useEffect sẽ được gọi và cập nhật dataSource
-    };
-
-
-
-
     const columns = [
         {
             title: 'Mã giảm giá',
@@ -65,6 +56,13 @@ const VoucherView: React.FC = () => {
             title: 'Value',
             dataIndex: 'value',
             key: 'value',
+            render: (value: number) => (
+                <>
+                    <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>
+                        {value?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    </Tag>
+                </>
+            ),
         },
         {
             title: 'Số lượng',
@@ -81,15 +79,13 @@ const VoucherView: React.FC = () => {
             dataIndex: 'date_end',
             key: 'date_end',
         },
-
-
         {
             render: ({ key: id }: { key: number | string }) => {
                 return (
                     <>
-                        <Button>
-                            <Link to={`/admin/voucher/${id}/edit`}>Update</Link>
-                        </Button>
+                        <Link to={`/admin/voucher/${id}/edit`}>
+                            <Button>Update</Button>
+                        </Link>
                         <Popconfirm
                             title="Bạn có chắc chắn muốn xóa voucher này ?"
                             onConfirm={() => {
@@ -101,7 +97,7 @@ const VoucherView: React.FC = () => {
                             <Button type="primary" style={{ backgroundColor: 'red', margin: '4px', minWidth: '8em' }}>
                                 <CloseOutlined /> Remove
                             </Button>
-                        </Popconfirm>
+                        </Popconfirm >
 
                     </>
                 );

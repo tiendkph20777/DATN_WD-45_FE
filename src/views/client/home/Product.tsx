@@ -62,7 +62,7 @@ const Product = () => {
         sliderRef?.current?.slickNext()
     }
     return (
-        <div>
+        <div className="w-[90%] container">
             <section className="our-team position-relative">
                 <div className="container">
                     <div className="fs-2 mb-4 section-heading text-uppercase fw-bold text-center">

@@ -485,11 +485,6 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
-            {/* Bootstrap core JavaScript*/}
-            {/* Core plugin JavaScript*/}
-            {/* Custom scripts for all pages*/}
-            {/* Page level plugins */}
-            {/* Page level custom scripts */}
         </div>
     )
 }

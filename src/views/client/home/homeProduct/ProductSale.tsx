@@ -82,6 +82,7 @@ const ProductSale = () => {
                                                 <a href={"/product/" + item._id + "/detail"} className="d-block overflow-hidden no-underline">
                                                     <div className="position-relative product-image overflow-hidden">
                                                         <img src={item.images[0]} alt="" width="100%" className=" inset-0 object-cover" />
+                                                        <div className="product-sale" />
                                                     </div>
                                                     <div className="bg-white content-product w-100 p-2">
                                                         <div className="product-detail px-3 row ">
