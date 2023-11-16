@@ -283,15 +283,15 @@ const Cart = () => {
                                                     type="primary"
                                                     onClick={() => handleEditClick(item.idCartDetail)}
                                                 >
-                                                    Edit
+                                                    Chỉnh sửa
                                                 </Button>
                                                 <Popconfirm
                                                     title="Bạn có chắc muốn xóa sản phẩm này không?"
                                                     onConfirm={() => {
                                                         removeProduct(item.idCartDetail);
                                                     }}
-                                                    okText="Yes"
-                                                    cancelText="No"
+                                                    okText="Xóa"
+                                                    cancelText="Hủy"
                                                 >
                                                     <Button type="primary" style={{ backgroundColor: 'red', margin: '4px' }}>
                                                         <CloseOutlined />

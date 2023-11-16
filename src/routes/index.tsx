@@ -36,6 +36,9 @@ import Oops404 from "../views/client/Oops404/Oops404";
 import OrderMane from "../views/admin/OrderMane/OrderMane";
 import HistoryOrder from "../views/admin/OrderMane/HistoryOrder/HistoryOrder";
 import Abortorder from "../views/admin/OrderMane/Abortorder/Abortorder";
+import Ordersuccess from "../views/client/home/ordersuccess";
+import historyOrder from "../views/client/profile/orderhistory";
+import Orderhistory from "../views/client/profile/orderhistory";
 
 const routes: RouteObject[] = [
     {
@@ -157,6 +160,14 @@ const routes: RouteObject[] = [
             {
                 path: 'profile',
                 element: <Profile />
+            },
+            {
+                path:'ordersuccess',
+                element:<Ordersuccess/>
+            },
+            {
+                path:'orderhistory',
+                element:<Orderhistory/>
             },
         ]
     },

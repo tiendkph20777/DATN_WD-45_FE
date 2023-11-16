@@ -22,6 +22,7 @@ const CheckOut = () => {
 
 
     useEffect(() => {
+        
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
             const matchingIds = cartDetailIds?.filter((id: any) => ProductDetailUser.some((product) => product._id === id));
@@ -48,6 +49,8 @@ const CheckOut = () => {
             });
             setCartDetail(modifiedProductDetails);
         }
+       
+
     }, [cartUser, ProductDetailUser]);
 
 
@@ -115,8 +118,10 @@ const CheckOut = () => {
                 const date = new Date()
                 const newData = { ...data, products: cartDetail, payment_id: selectedPayment, shipping: "", total: totalSum - voucher?.value, voucherCode, dateCreate: date, status: 'Đang xác nhận đơn hàng' };
                 console.log(newData);
+                localStorage.setItem('currentOrder', JSON.stringify(newData));
+
                 await addCheckout(newData);
-                navigation("/profile")
+                navigation("/ordersuccess")
             } catch (error) {
                 console.error('Lỗi khi tạo checkout:', error);
             }
@@ -314,7 +319,7 @@ const CheckOut = () => {
             </div >
         </section >
         </div >
-    )
 
+    )
 }
 export default CheckOut
