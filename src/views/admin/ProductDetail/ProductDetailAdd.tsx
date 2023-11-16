@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
 import { IProducts } from "../../../types/product.service";
-
 const { Option } = Select;
 
 type FieldType = {
@@ -38,8 +37,8 @@ const ProductAdd = () => {
 
   const onFinish = async (values) => {
     try {
+      
       const response = await addProduct(values);
-
       if (response.data) {
         console.log("Sản phẩm đã được thêm thành công");
 
@@ -76,66 +75,74 @@ const ProductAdd = () => {
   };
 
   return (
-    <div className="navbar-collapse">
-      <h1 style={{ paddingTop: "200px",color:"blue" }} className="text-center">Thêm Chi Tiết Sản Phẩm</h1>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-        className="timeline-badge-border rounded-sm rounded product-main"
-      >
-
-        <Form.Item label="Name" name="product_id" className="w-full" has>
-          <Select placeholder="Chọn Sản Phẩm" defaultValue={id} >
-            {productData &&
-              productData?.map((product: IProducts) => (
-                <Option key={product._id} value={product._id}>
-                  {product.name}
-                </Option>
-              ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="Size"
-          name="size"
-          rules={[{ required: true, message: "Nhập Size Sản Phẩm" }]}
-        >
-          <Input type="number" className="bg-red-500" />
-        </Form.Item>
-
-        <Form.Item
-          label="quantity"
-          name="quantity"
-          rules={[{ required: true, message: "Nhập Số Lượng Sản Phẩm" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item
-          label="Color"
-          name="color"
-          rules={[{ required: true, message: "Nhập màu sản phẩm" }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ backgroundColor: "blue" }}
+    <div className="container mt-5 custom-container">
+      <div className="text-center">
+        <h1 className="page-title">Thêm Chi Tiết Sản Phẩm</h1>
+      </div>
+      <div className="form-container mt-3">
+        <div className="col-md-6 offset-md-3">
+          <Form
+            form={form}
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            style={{ maxWidth: 600 }}
+            initialValues={{ remember: true }}
+            autoComplete="off"
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            className="custom-form"
           >
-            Thêm
-          </Button>
-          <Button htmlType="reset">reset</Button>
-        </Form.Item>
-      </Form>
+            <Form.Item label="Tên" name="product_id">
+              <Select
+                className=""
+                placeholder="Chọn Sản Phẩm"
+                defaultValue={id}
+              >
+                {productData &&
+                  productData.map((product) => (
+                    <Select.Option key={product._id} value={product._id}>
+                      {product.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Size"
+              name="size"
+              rules={[{ required: true, message: "Nhập Size Sản Phẩm" }]}
+            >
+              <Input type="number" className="form-control" />
+            </Form.Item>
+
+            <Form.Item
+              label="Quantity"
+              name="quantity"
+              rules={[{  message: "Nhập Số Lượng Sản Phẩm" }]}
+            >
+              <Input type="number" className="form-control" />
+            </Form.Item>
+
+            <Form.Item
+              label="Color"
+              name="color"
+              rules={[{ required: true, message: "Nhập màu sản phẩm" }]}
+            >
+              <Input className="form-control" />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Thêm
+              </Button>
+              <Button htmlType="reset" className="reset-button">
+                Reset
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 };

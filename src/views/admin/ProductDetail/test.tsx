@@ -1,312 +1,150 @@
-import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Popconfirm,
-  Button,
-  Select,
-  Alert,
-  Input,
-  notification,
-} from "antd";
-import { IProduct } from "../types/product";
-import { Link } from "react-router-dom";
-import {
-  SearchOutlined,
-  CloseOutlined,
-  EditOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
-import {
-  useGetProductDetailQuery,
-  useGetAllProductsDetailQuery,
-  useRemoveProductsDetailMutation,
-} from "../../../services/productDetail.service";
-
+import React, { useEffect } from "react";
+import { Form, Input, Select, Button, notification } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
+import { useGetProductsQuery } from "../../../services/product.service";
+import { IProducts } from "../../../types/product.service";
 const { Option } = Select;
 
-interface DataType {
-  key: React.Key;
-  size: number;
-  color: string;
-  quantity: number;
-  product_id: string;
-}
+type FieldType = {
+  name?: string;
+  size?: number;
+  product_id?: string;
+  quantity?: number;
+  color?: string;
+};
 
-const Dashboard = (props: Props) => {
-  const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
-  const [selectedColor, setSelectedColor] = useState<string | undefined>(
-    undefined
-  );
-  const [selectedSize, setSelectedSize] = useState<string | undefined>(
-    undefined
-  );
-  const [searchProductId, setSearchProductId] = useState<string | undefined>(
-    undefined
-  );
-  const [uniqueSizes, setUniqueSizes] = useState<string[]>([]);
-  const [searchText, setSearchText] = useState("");
-  const [searchResult, setSearchResult] = useState<DataType[]>([]);
-  const [showNoProductsAlert, setShowNoProductsAlert] = useState(false);
-  const { data: product } = useGetProductDetailQuery();
+const ProductAdd = () => {
+  const { id } = useParams();
+  const [addProduct] = useAddProductsDetailMutation();
+  const navigate = useNavigate();
+  const [form] = Form.useForm();
+
   const { data: productData, refetch: refetchProductData } =
-    useGetAllProductsDetailQuery();
-  const [removeProduct] = useRemoveProductsDetailMutation();
-
-  const confirm = async (id: any) => {
-    try {
-      await removeProduct(id);
-      const updatedData = dataSourceToRender.filter((item) => item.key !== id);
-      setDataSourceToRender(updatedData);
-      notification.success({
-        message: "Success",
-        description: "Xóa sản phẩm thành công!",
-      });
-    } catch (error) {
-      console.error("Error deleting product", error);
-      notification.error({
-        message: "Error",
-        description: "Xóa sản phẩm không thành công. Vui lòng thử lại!",
-      });
-    }
-  };
+    useGetProductsQuery();
 
   useEffect(() => {
-    if (productData) {
-      if (product) {
-        const updatedDataSource = productData.map(
-          ({ _id, size, color, quantity, product_id }: IProduct) => ({
-            key: _id,
-            size,
-            color,
-            quantity,
-            product_id: product.find((role) => role?._id === product_id)?.name,
-          })
-        );
-        setDataSourceToRender(updatedDataSource);
+    if (productData && id) {
+      const selectedProduct = productData.find(
+        (product: IProducts) => product._id === id
+      );
 
-        const updatedUniqueSizes = Array.from(
-          new Set(updatedDataSource.map((item) => item.size))
-        );
-        setUniqueSizes(updatedUniqueSizes);
+      if (selectedProduct) {
+        form.setFieldsValue({ product_id: selectedProduct._id });
       }
     }
-  }, [productData, product]);
+  }, [productData, id, form]);
 
-  const onSearch = (e) => {
-    const inputValue = e.target.value;
-    setSearchProductId(inputValue);
+  const onFinish = async (values) => {
+    try {
+      const response = await addProduct(values);
 
-    let filteredData = dataSourceToRender;
+      if (response.data) {
+        console.log("Sản phẩm đã được thêm thành công");
 
-    if (selectedColor) {
-      filteredData = filteredData.filter(
-        (item) =>
-          item.color &&
-          item.color.toLowerCase().includes(selectedColor.toLowerCase())
-      );
-    }
+        form.resetFields();
 
-    if (selectedSize) {
-      filteredData = filteredData.filter(
-        (item) => item.size === parseInt(selectedSize)
-      );
-    }
+        notification.success({
+          message: "Success",
+          description: "Sản phẩm đã được thêm thành công!",
+        });
 
-    if (searchProductId) {
-      filteredData = filteredData.filter((item) => {
-        return (
-          item &&
-          item.product_id &&
-          item.product_id.toLowerCase().includes(searchProductId.toLowerCase())
-        );
+        handleAdditionalTasks(response.data);
+      }
+      const productId = values.product_id;
+      // console.log('New product ID:', productId);
+      navigate(`/admin/product/detail/${productId}`);
+    } catch (error) {
+      console.error("Lỗi khi thêm sản phẩm", error);
+      notification.error({
+        message: "Error",
+        description: "Thêm sản phẩm không thành công. Vui lòng thử lại!",
       });
     }
-    setSearchResult(filteredData);
-    setShowNoProductsAlert(filteredData.length === 0);
   };
 
-  const resetSearch = () => {
-    setSelectedColor(undefined);
-    setSelectedSize(undefined);
-    setSearchProductId(undefined);
-    setSearchResult([]);
-    setSearchText("");
-    setShowNoProductsAlert(false);
+  const handleAdditionalTasks = (productData) => {
+    console.log(
+      "Thực hiện các tác vụ bổ sung với dữ liệu sản phẩm",
+      productData
+    );
   };
 
-  const handleAddProduct = async (newProduct) => {
-    // Gọi API hoặc thực hiện thêm sản phẩm tại đây
-    // Sau khi thêm sản phẩm thành công, gọi lại dữ liệu để cập nhật danh sách sản phẩm
-    await refetchProductData();
-    notification.success({
-      message: "Success",
-      description: "Thêm sản phẩm thành công!",
-    });
+  const onFinishFailed = (errorInfo: any) => {
+    console.log("Failed:", errorInfo);
   };
-
-  const columns = [
-    {
-      title: "Name",
-      dataIndex: "product_id",
-      key: "product_id",
-    },
-    {
-      title: "Size",
-      dataIndex: "size",
-      key: "size",
-      render: (size) => {
-        if (typeof size === "number") {
-          return size;
-        } else if (typeof size === "string" && !isNaN(Number(size))) {
-          return Number(size);
-        }
-        return size;
-      },
-    },
-    {
-      title: "Color",
-      dataIndex: "color",
-      key: "color",
-    },
-    {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: ({ key: id }: any) => (
-        <>
-          <div>
-            <Popconfirm
-              title="Delete the task"
-              description="Are you sure to delete this product ?"
-              onConfirm={() => confirm(id)}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "red",
-                  margin: "4px",
-                  minWidth: "4em",
-                }}
-              >
-                <CloseOutlined />
-              </Button>
-            </Popconfirm>
-            <Link to={`${id}/edit`}>
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "blue",
-                  margin: "4px",
-                  minWidth: "4em",
-                }}
-              >
-                <EditOutlined /> Sửa
-              </Button>
-            </Link>
-          </div>
-        </>
-      ),
-    },
-  ];
 
   return (
-    <div style={{ paddingTop: "100px" }}>
-      {showNoProductsAlert && (
-        <Alert
-          message="Không tìm thấy sản phẩm"
-          type="info"
-          showIcon
-          style={{
-            marginTop: "20px",
-            backgroundColor: "red",
-          }}
-        />
-      )}
-      <div className="search-bar">
-        <Input
-          placeholder="Tìm kiếm sản phẩm"
-          value={searchProductId}
-          onChange={(e) => setSearchProductId(e.target.value)}
-        />
-        <Select
-          style={{ width: 200, marginRight: 8 }}
-          placeholder="Chọn Màu"
-          value={selectedColor}
-          onChange={(value) => setSelectedColor(value)}
-          style={{ marginBottom: "20px", marginTop: "40px" }}
-        >
-          <Option value={undefined}>All Color</Option>
-          {dataSourceToRender && dataSourceToRender.length > 0 ? (
-            dataSourceToRender.map((item) => (
-              <Option key={item.color} value={item.color}>
-                {item.color}
-              </Option>
-            ))
-          ) : (
-            <Option value={undefined}>No colors available</Option>
-          )}
-        </Select>
-        <Select
-          style={{ width: 200, marginRight: 8 }}
-          placeholder="Chọn Kích Thước"
-          value={selectedSize}
-          onChange={(value) => setSelectedSize(value)}
-        >
-          <Option value={undefined}>Tất cả kích thước</Option>
-          {uniqueSizes.map((size) => (
-            <Option key={size} value={size}>
-              {size}
-            </Option>
-          ))}
-        </Select>
-        <Button
-          type="primary"
-          icon={<SearchOutlined />}
-          onClick={onSearch}
-          style={{ backgroundColor: "#33CCFF" }}
-        >
-          Tìm Kiếm
-        </Button>
-        <Button
-          type="primary"
-          icon={<CloseOutlined />}
-          onClick={resetSearch}
-          style={{ backgroundColor: "#33CCFF" }}
-        >
-          Reset
-        </Button>
-        <Link to={`add`}>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "blue",
-              margin: "4px",
-              minWidth: "4em",
-            }}
-          >
-            <PlusOutlined /> Thêm Sản Phẩm
-          </Button>
-        </Link>
+    <div className="container mt-5 custom-container">
+      <div className="text-center">
+        <h1 className="page-title">Thêm Chi Tiết Sản Phẩm</h1>
       </div>
-      <Table
-        columns={columns}
-        expandable={{
-          expandedRowRender: (record) => (
-            <p style={{ margin: 0 }}>{record.description}</p>
-          ),
-          rowExpandable: (record) => record.name !== "Not Expandable",
-        }}
-        dataSource={searchResult.length > 0 ? searchResult : dataSourceToRender}
-        pagination={{ pageSize: 10, showQuickJumper: true }}
-      />
+      <div className="form-container mt-3">
+        <div className="col-md-6 offset-md-3">
+          <Form
+            form={form}
+            name="basic"
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 16 }}
+            style={{ maxWidth: 600 }}
+            initialValues={{ remember: true }}
+            autoComplete="off"
+            onFinish={onFinish}
+            onFinishFailed={onFinishFailed}
+            className="custom-form"
+          >
+            <Form.Item label="Tên" name="product_id">
+              <Select
+                className=""
+                placeholder="Chọn Sản Phẩm"
+                defaultValue={id}
+              >
+                {productData &&
+                  productData.map((product) => (
+                    <Select.Option key={product._id} value={product._id}>
+                      {product.name}
+                    </Select.Option>
+                  ))}
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Size"
+              name="size"
+              rules={[{ required: true, message: "Nhập Size Sản Phẩm" }]}
+            >
+              <Input type="number" className="form-control" />
+            </Form.Item>
+
+            <Form.Item
+              label="Quantity"
+              name="quantity"
+              rules={[{ required: true, message: "Nhập Số Lượng Sản Phẩm" }]}
+            >
+              <Input type="number" className="form-control" />
+            </Form.Item>
+
+            <Form.Item
+              label="Color"
+              name="color"
+              rules={[{ required: true, message: "Nhập màu sản phẩm" }]}
+            >
+              <Input className="form-control" />
+            </Form.Item>
+
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Thêm
+              </Button>
+              <Button htmlType="reset" className="reset-button">
+                Reset
+              </Button>
+            </Form.Item>
+          </Form>
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default ProductAdd;
