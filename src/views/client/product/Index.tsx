@@ -376,17 +376,9 @@ const Index = () => {
                           )}
                         </div>
                         <div className="product-action pt-5 row text-center justify-content-center">
-                          <div className="col-6">
-                            <img
-                              src="/src/assets/images/products/icons/read.svg"
-                              alt=""
-                            />
+                          <div className="col-6"><img src="/src/assets/icons/read.svg" alt="" />
                           </div>
-                          <div className="col-6">
-                            <img
-                              src="/src/assets/images/products/icons/cart.svg"
-                              alt=""
-                            />
+                          <div className="col-6"><img src="/src/assets/icons/cart.svg" alt="" />
                           </div>
                         </div>
                       </a>
