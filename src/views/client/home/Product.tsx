@@ -62,7 +62,7 @@ const Product = () => {
         sliderRef?.current?.slickNext()
     }
     return (
-        <div>
+        <div className="w-[90%] container">
             <section className="our-team position-relative">
                 <div className="container">
                     <div className="fs-2 mb-4 section-heading text-uppercase fw-bold text-center">
@@ -138,7 +138,6 @@ const Product = () => {
                                                         <strong className="col-12">{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</strong>
                                                     </div>
                                                 )}
-
                                             </div>
                                             <div className="product-action pt-5 row text-center justify-content-center">
                                                 <div className="col-6"><img src="/src/assets/icons/read.svg" alt="" />

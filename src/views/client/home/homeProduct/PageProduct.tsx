@@ -49,9 +49,9 @@ const PageProduct = () => {
 
     return (
         <div>
-            <section className="our-team position-relative pt-2">
+            <section className="our-team position-relative">
                 <div className="container_home">
-                    <div className="d-flex mb-3 py-5">
+                    <div className="d-flex pb-5">
                         <div className="fs-5 text-uppercase fw-bold">
                             - SẢN PHẨM MỚI
                         </div>
@@ -80,11 +80,11 @@ const PageProduct = () => {
                                                 <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                             </div>
                                             <div className="bg-white content-product w-100 p-2">
-                                                <div className="product-detail px-3 row ">
+                                                {/* <div className="product-detail px-3 row ">
                                                     <div className="col-12 row px-2">
                                                         <div className="col-1 m-1 product-color color-1" />
                                                     </div>
-                                                </div>
+                                                </div> */}
                                                 <div className="product-vendor">{brandName(item)}</div>
                                                 <h4 className="product-name ellipsis">
                                                     {item.name}

@@ -20,7 +20,6 @@ const Ordersuccess = () => {
     const { data: Product } = useGetProductsQuery();
     console.log(cartDetail)
 
-
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
@@ -183,10 +182,9 @@ const Ordersuccess = () => {
                                         <div className="payment_item active">
                                             <div className='row mt-3'>
                                                 <label htmlFor="" className='col-8 m-2'>Tổng Thanh Toán</label>
-                                                <input type="text" disabled className='col-2 text-danger w-25 total-checkout' name='total' value={total} />
+                                                <h5 className='col-3 text-danger w-25 total-checkout'>{total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div >
                             </div>

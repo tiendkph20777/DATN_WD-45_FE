@@ -14,7 +14,7 @@ const HistoryOrder: React.FC = () => {
         setOpen(false);
     };
     ///////
-    const { data: orderDa } = useFetchCheckoutQuery()
+    const { data: orderDa, isLoading } = useFetchCheckoutQuery()
     const [roleMane, setRoleMane] = useState<any>({});
 
     const handleEditClick = (id: string) => {
@@ -29,12 +29,16 @@ const HistoryOrder: React.FC = () => {
     const handleFullNameSearchChange = (value: string) => {
         setSearchFullName(value.toLowerCase());
     };
-    const nonSuccessfulOrder = orderDa?.map((order, index) => {
-        const totals = order.products.reduce((acc: any, product: any) => acc + (product.total || 0), 0);
+    const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
+        const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
+        const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
+        const totals = order.products.reduce((acc: number, product: any) => acc + (product.total || 0), 0);
         return {
             ...order,
             index: index + 1,
             totals,
+            date: date,
+            datehis: datehis,
         };
     });
     const successfulOrders = nonSuccessfulOrder
@@ -43,6 +47,9 @@ const HistoryOrder: React.FC = () => {
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     // console.log(successfulOrders)
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
     const columns: ColumnsType<any> = [
         {
             title: '#',
@@ -82,8 +89,23 @@ const HistoryOrder: React.FC = () => {
         },
         {
             title: 'Ngày mua hàng',
-            dataIndex: 'dateCreate',
-            key: 'dateCreate',
+            dataIndex: 'date',
+            key: 'date',
+            render: (date: any) => (
+                <span className='container'>
+                    {date}
+                </span>
+            ),
+        },
+        {
+            title: 'Ngày giao hàng',
+            dataIndex: 'datehis',
+            key: 'datehis',
+            render: (datehis: any) => (
+                <span className='container'>
+                    {datehis}
+                </span>
+            ),
         },
         {
             title: "Action",

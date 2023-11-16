@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SettingAddress from './SettingAddress';
 import SettingAbout from './SettingAbout';
 import SettingInformation from './SettingInformation';
@@ -58,7 +58,6 @@ const Profile = () => {
                                             </h3>
                                             <hr className="my-4" />
                                             <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p>
-                                            
                                             <Link to="/orderhistory" className="btn btn-sm btn-primary">Đơn hàng đã mua</Link>
                                         </div>
                                     </div>
@@ -84,6 +83,7 @@ const Profile = () => {
                                         {/* Description */}
                                         <SettingAbout />
                                         {/* </form> */}
+
                                     </div>
                                 </div>
                             </div>

@@ -20,7 +20,7 @@ const Index = () => {
 
   const onSearch = (value: string | number) => {
     let filteredData = dataSourceToRender;
-    filteredData = filteredData.filter((item) => {
+    filteredData = filteredData.filter((item: any) => {
       return (
         item.id_product == value || item.id_user == value || item.rate == value
       );
@@ -327,7 +327,7 @@ const Index = () => {
                   100 - (item.price_sale / item.price) * 100
                 );
                 return (
-                  <div className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
+                  <div className="product col-xxl-3 border-2 col-xl-3 col-lg-4 col-sm-6 col-12 p-2">
                     <div className="card product-main">
                       <a
                         href={"/product/" + item._id + "/detail"}
@@ -376,17 +376,9 @@ const Index = () => {
                           )}
                         </div>
                         <div className="product-action pt-5 row text-center justify-content-center">
-                          <div className="col-6">
-                            <img
-                              src="/src/assets/images/products/icons/read.svg"
-                              alt=""
-                            />
+                          <div className="col-6"><img src="/src/assets/icons/read.svg" alt="" />
                           </div>
-                          <div className="col-6">
-                            <img
-                              src="/src/assets/images/products/icons/cart.svg"
-                              alt=""
-                            />
+                          <div className="col-6"><img src="/src/assets/icons/cart.svg" alt="" />
                           </div>
                         </div>
                       </a>

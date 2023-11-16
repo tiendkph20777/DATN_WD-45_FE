@@ -1,14 +1,14 @@
-// OrderDetails.tsx
-import React, { useEffect, useState } from 'react';
-import { useGetAllProductsDetailQuery } from '../../../services/productDetail.service';
-import { useGetProductsQuery } from '../../../services/product.service';
+import React from 'react';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
-
-    const total = roleMane.products.reduce((acc, product) => {
+    // console.log(roleMane)
+    const total = roleMane.products.reduce((acc: number, product: any) => {
         const productTotal = product.total || 0;
         return acc + productTotal;
     }, 0);
+    const date = new Date(roleMane?.dateCreate)?.toLocaleDateString('en-US');
+    const formattedTime = new Date(roleMane?.dateCreate).toTimeString().slice(0, 5);
+    // console.log(formattedTime);
 
     return (
         <div className="col-lg-12">
@@ -42,9 +42,18 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                                 <span>{roleMane?.shipping}</span>
                             </th>
                             <th>
-                                <span>{roleMane?.dateCreate}</span>
+                                <span>{formattedTime} : {date}</span>
                             </th>
                         </tr>
+                        {roleMane?.noteCancel !== "" ? (
+                            <tr>
+                                {roleMane?.noteCancel && (
+                                    <th colSpan={6}>
+                                        <span>Lý do hủy đơn hàng : {roleMane?.noteCancel}</span>
+                                    </th>
+                                )}
+                            </tr>
+                        ) : null}
                     </tbody>
                 </table>
             </div>
@@ -63,7 +72,6 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                     </thead>
                     <tbody>
                         {roleMane?.products?.map((item: any) => (
-
                             <tr key={item?._id} style={{ height: "100px", lineHeight: "100px" }} >
                                 <td style={{ width: "100px", padding: "0" }}>
                                     <img

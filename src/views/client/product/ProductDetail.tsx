@@ -85,7 +85,7 @@ const ProductDetail = () => {
   const handleColorChange = (color: any) => {
     setSelectedColor(color);
     const selectedColorDetail = productDataDetail?.find(
-      (detail) => detail?.color === color && detail?.size === selectedSize
+      (detail: any) => detail?.color === color && detail?.size === selectedSize
     );
     if (selectedColorDetail) {
       setSelectedColorName(selectedColorDetail?.color);
@@ -215,21 +215,18 @@ const ProductDetail = () => {
                 {prodetailData?.price_sale > 0 ? (
                   <div className="product-price row">
                     <strong className="col-12">
-                      {prodetailData?.price_sale}
-                      <span>VND</span>
+                      {prodetailData?.price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </strong>
                     <div className="d-flex">
                       <del className="price-del">
-                        {prodetailData?.price}
-                        <span>VND</span>
+                        {prodetailData?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                       </del>
                     </div>
                   </div>
                 ) : (
                   <div className="product-price row">
                     <strong className="col-12">
-                      {prodetailData?.price}
-                      <span>VND</span>
+                      {prodetailData?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </strong>
                   </div>
                 )}
@@ -335,7 +332,7 @@ const ProductDetail = () => {
                     onClick={onSubmitCart}
                     disabled={isAddingToCart}
                   >
-                    {isAddingToCart ? "Thêm vào giỏ hàng..." : "Thêm vào giỏ hàng"}
+                    {isAddingToCart ? "Loading..." : "Thêm vào giỏ hàng"}
                   </button>
                 </div>
               </div>
@@ -373,7 +370,7 @@ const ProductDetail = () => {
 
                       return (
                         <div
-                          className="product col-xxl-4 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2"
+                          className="product col-xxl-3 border-2 col-xl-3 col-lg-3 col-sm-4 col-6 p-2"
                           key={item._id}
                         >
                           <div className="card product-main">

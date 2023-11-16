@@ -8,7 +8,6 @@ import { useGetVoucherByCodeQuery } from '../../../services/voucher.service';
 import { useGetPaymentQuery } from '../../../services/payment.service';
 import { useNavigate } from 'react-router-dom';
 
-
 const CheckOut = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
@@ -76,7 +75,7 @@ const CheckOut = () => {
     const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
     const [addCheckout] = useCreateCheckoutMutation();
     const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
-    const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item.total, 0);
+    const totalSum = cartDetail.reduce((accumulator, item: any) => accumulator + item.total, 0);
     const total = totalSum - valueVoucher;
 
     // Payment ID
@@ -161,12 +160,6 @@ const CheckOut = () => {
                                     <input type="text" className="form-control" id="address" placeholder='Địa chỉ giao hàng' name="address" value={usersOne?.address} />
                                     <span className="placeholder" ></span>
                                 </div>
-                                {/* <div className="col-md-12 form-group">
-                                    <div className="creat_account">
-                                        <input type="checkbox" id="f-option2" name="selector" />
-                                        <label htmlFor={"f-option2"}>Create an account?</label>
-                                    </div>
-                                </div> */}
                                 <div className="col-md-12 form-group">
                                     <div className="creat_account">
                                         <label htmlFor="">Ghi chú</label>
@@ -265,20 +258,20 @@ const CheckOut = () => {
                                     <div className="payment_item active">
                                         <form className='row mt-3'>
                                             <label htmlFor="" className='col-8 m-2'>Trước Khuyến Mại</label>
-                                            <input type="text" disabled className='col-2 money-checkout w-25' value={totalSum} />
+                                            <input type="text" disabled className='col-2 money-checkout w-25' value={totalSum?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} />
                                         </form>
                                     </div>
                                     <div className="payment_item active">
                                         <form className='row mt-3'>
                                             <label htmlFor="" className='col-8 m-2'>Sau Khuyến Mại(*Voucher)</label>
-                                            <input type="text" disabled className='col-2 money-checkout w-25' placeholder='*Giá trị voucher' value={voucher ? voucher.value : ''} />
+                                            <input type="text" disabled className='col-2 money-checkout w-25' placeholder='*Giá trị voucher' value={voucher ? parseFloat(voucher?.value).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : ''} />
                                         </form>
                                     </div>
 
                                     <div className="payment_item active">
                                         <form className='row mt-3'>
                                             <label htmlFor="" className='col-8 m-2'>Tổng Thanh Toán</label>
-                                            <input type="text" disabled className='col-2 text-danger w-25 total-checkout' name='total' value={total} />
+                                            <input type="text" disabled className='col-2 text-danger w-25 total-checkout' name='total' value={total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} />
                                         </form>
                                     </div>
 

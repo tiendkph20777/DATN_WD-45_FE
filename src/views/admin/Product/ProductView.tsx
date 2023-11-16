@@ -125,11 +125,25 @@ const ProductView = () => {
             title: 'Giá niêm yết',
             dataIndex: 'price',
             key: 'price',
+            render: (price: number) => {
+                return (
+                    <>
+                        <h5>{price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                    </>
+                );
+            },
         },
         {
             title: 'Giá bán',
             dataIndex: 'price_sale',
             key: 'price_sale',
+            render: (price_sale: number) => {
+                return (
+                    <>
+                        <h5>{price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                    </>
+                );
+            },
         },
         // {
         //     title: 'Mô tả sản phẩm',

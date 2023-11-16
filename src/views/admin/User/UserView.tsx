@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Popconfirm, Select, Table, notification } from 'antd';
-import { useFetchUserQuery, useRemoveUserMutation, useUpdateUserMutation } from '../../../services/user.service';
+import { Button, Popconfirm, Table, Tag, notification } from 'antd';
+import { useFetchUserQuery, useRemoveUserMutation } from '../../../services/user.service';
 import Search from 'antd/es/input/Search';
 import { Link } from 'react-router-dom';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
 import { useFetchRoleQuery } from '../../../services/role.service';
-import { Controller, useForm } from 'react-hook-form';
-import MenuItem from 'antd/es/menu/MenuItem';
 import { message as messageApi } from 'antd';
 
 
@@ -18,29 +16,6 @@ const App: React.FC = () => {
     const [removeUserMutation] = useRemoveUserMutation()
     const { data: roles } = useFetchRoleQuery()
     const [searchResult, setSearchResult] = useState([]);
-    const [updateUsser] = useUpdateUserMutation()
-
-
-    // update role
-    const { handleSubmit, register, setValue, control } = useForm()
-    const [rowStates, setRowStates] = useState<any>({});
-
-    const handleButtonClick = (key: any) => {
-        setRowStates((prevState: any) => ({
-            ...prevState,
-            [key]: !prevState[key]
-        }));
-    };
-
-    const onSubmit = (roledata: any) => {
-        const selectedGender = roledata.role;
-        console.log('Dữ liệu đã lấy:', selectedGender);
-        localStorage.setItem('successMessage', "Chúc mừng bạn đã cập nhật thành công 🎉🎉🎉");
-        // setTimeout(() => {
-        //     window.location.reload();
-        // }, 0);
-        updateUsser(selectedGender)
-    };
 
     useEffect(() => {
         const successMessage = localStorage.getItem('successMessage');
@@ -58,7 +33,6 @@ const App: React.FC = () => {
             localStorage.removeItem('successMessage');
         }
     }, []);
-
 
     // hiển thị dữ liệu
     useEffect(() => {
@@ -115,7 +89,7 @@ const App: React.FC = () => {
     const removeProduct = async (id: string) => {
         try {
             const response = await removeUserMutation(id);
-            if (response.error) {
+            if (response?.error) {
                 messageApi.open({
                     type: 'error',
                     content: "Bạn không có quyền thực hiện chức năng này 😈😈😈",
@@ -150,7 +124,6 @@ const App: React.FC = () => {
         return <div>Loading...</div>;
     }
 
-
     const columns = [
         { title: 'Tên người dùng', dataIndex: 'userName', key: 'userName' },
         { title: 'Tên đầy đủ', dataIndex: 'fullName', key: 'fullName' },
@@ -161,49 +134,19 @@ const App: React.FC = () => {
             title: 'Vai trò',
             dataIndex: 'role',
             key: 'role',
-            render: (role: any, record: any) => (
-                <div style={{ width: "" }}>
-                    {rowStates[record.key] ? (
-                        <span>
-                            <form action="" onSubmit={handleSubmit(onSubmit)} className='row'>
-                                <section className="col-7">
-                                    <Controller
-                                        render={({ field }) => (
-                                            <Select {...field} style={{ width: "100%" }}>
-                                                {roles && roles?.map((role) => (
-                                                    <MenuItem value={role?._id}>
-                                                        {role?.name}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        )}
-                                        name="role"
-                                        control={control}
-                                    />
-                                </section>
-                                <Button type='primary' className='col-5' htmlType="submit">
-                                    Cập nhật
-                                </Button>
-                            </form>
-                        </span>
-                    ) : (
-                        <span className='row'>
-                            <Button className=''>
-                                <span className='col-12'>{role}</span>
-                            </Button>
-                            {/* <Button type='primary' onClick={() => handleButtonClick(record.key)} className='col-5'>
-                                Setting
-                            </Button> */}
-                        </span>
-                    )}
-                </div>
+            render: (role: string) => (
+                <>
+                    <Tag className='py-1' color='green'>
+                        {role}
+                    </Tag>
+                </>
             ),
         },
         {
             title: 'Ảnh',
             dataIndex: 'image',
             key: 'image',
-            render: (image: any) => <img src={image} alt="" style={{ width: '100px', height: "70px" }} />,
+            render: (image: string) => <img src={image} alt="" style={{ width: '100px', height: "70px" }} />,
         },
         {
             title: <p><Link to={"add"}><Button type='primary'>Thêm người dùng mới</Button></Link></p>,

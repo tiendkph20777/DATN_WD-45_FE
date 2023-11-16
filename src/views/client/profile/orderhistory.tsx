@@ -21,10 +21,10 @@ const OrderReview = () => {
       <h1>Order Review</h1>
       <h3>Order Details</h3>
       <p>
-        <strong>Order ID:</strong> {orderDetails.orderId}
+        <strong>Order ID:</strong> {orderDetails?.orderId}
       </p>
       <p>
-        <strong>Date:</strong> {orderDetails.dateCreate}
+        <strong>Date:</strong> {orderDetails?.dateCreate}
       </p>
       <h3>Products</h3>
       <table>
@@ -37,35 +37,35 @@ const OrderReview = () => {
           </tr>
         </thead>
         <tbody>
-          {orderDetails.products.map((product) => (
-            <tr key={product.product_id}>
-              <td>{product.name}</td>
-              <td>{product.quantity}</td>
-              <td>{product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
-              <td>{product.total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+          {orderDetails?.products?.map((product) => (
+            <tr key={product?.product_id}>
+              <td>{product?.name}</td>
+              <td>{product?.quantity}</td>
+              <td>{product?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+              <td>{product?.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
             </tr>
           ))}
         </tbody>
       </table>
-      
+
       <p>
         <strong>Tổng tiền:</strong>{' '}
-        {orderDetails.PaymentAmount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+        {orderDetails?.PaymentAmount?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
       </p>
-    <h3>Thông tin thanh toán</h3>
+      <h3>Thông tin thanh toán</h3>
       <p>
-        <strong>Tên người nhận:</strong> {orderDetails.fullname}
-      </p>
-      <p>
-        <strong>Email:</strong> {orderDetails.email}
+        <strong>Tên người nhận:</strong> {orderDetails?.fullname}
       </p>
       <p>
-        <strong>Số điện thoại:</strong> {orderDetails.tel}
+        <strong>Email:</strong> {orderDetails?.email}
       </p>
       <p>
-        <strong>Địa chỉ:</strong> {orderDetails.address}
+        <strong>Số điện thoại:</strong> {orderDetails?.tel}
       </p>
-      
+      <p>
+        <strong>Địa chỉ:</strong> {orderDetails?.address}
+      </p>
+
     </div>
   );
 };
