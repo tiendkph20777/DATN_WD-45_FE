@@ -222,9 +222,7 @@ const Purchase: React.FC = () => {
                         <TopUserPurchase />
                     </div>
                 </div>
-                <div style={{ paddingTop: "70px" }}>
-
-
+                <div>
                     <Table columns={columns} dataSource={searchResult.length > 0 ? searchResult : nonSuccessfulOrders} />
                     {/* modal chi tiết hàng */}
                     <Modal

@@ -54,6 +54,8 @@ const OrderMane: React.FC = () => {
             totals,
         };
     });
+
+
     // console.log(searchResult)
     // console.log(nonSuccessfulOrder);
     const onSearch = (value: string) => {
@@ -85,9 +87,14 @@ const OrderMane: React.FC = () => {
     };
     // console.log(searchResult)
 
+    // 
+    const [cancellationOrderId, setCancellationOrderId] = useState<string | null>(null);
+    const [cancellationOrderStatus, setCancellationOrderStatus] = useState<string | null>(null);
+
     const nonSuccessfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status !== 'Giao hàng thành công' && order.status !== 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
+        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     const onFinish = async (values: any, id: string) => {
@@ -110,7 +117,8 @@ const OrderMane: React.FC = () => {
                 await updateCheck(updatedData).unwrap();
             } else if (values.status === 'Hủy đơn hàng') {
                 setIsModalOpen(true);
-                // await updateCheck(updatedData).unwrap();
+                setCancellationOrderId(id);
+                setCancellationOrderStatus(values?.status)
             } else {
                 messageApi.success({
                     type: 'error',
@@ -129,9 +137,30 @@ const OrderMane: React.FC = () => {
             console.error("Error updating checkout status:", error);
         }
     };
+    // modal xóa
+    const onFinish1 = (value: any) => {
+        const orderId = cancellationOrderId;
+        const noteDe = {
+            _id: orderId,
+            noteCancel: value?.note,
+            status: cancellationOrderStatus,
+        }
+        updateCheck(noteDe).unwrap();
+        setIsModalOpen(false);
+        messageApi.error({
+            type: 'error',
+            content: "Đơn hàng đã bị hủy ",
+            className: 'custom-class',
+            style: {
+                marginTop: '0',
+                fontSize: "15px",
+                lineHeight: "50px"
+            },
+        });
+    };
     // bảng dữ liệu
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div style={{ paddingTop: "70px" }}>Loading...</div>;
     }
     const columns: ColumnsType<any> = [
         {
@@ -139,6 +168,11 @@ const OrderMane: React.FC = () => {
             dataIndex: 'index',
             key: 'index',
             render: (text) => <a>{text}</a>,
+        },
+        {
+            title: 'STT',
+            dataIndex: '',
+            key: '',
         },
         {
             title: 'Tên người nhận',
@@ -188,6 +222,7 @@ const OrderMane: React.FC = () => {
                                         <Select.Option value="Giao hàng thành công">Giao hàng thành công</Select.Option>
                                         <Select.Option value="" disabled > </Select.Option>
                                         <Select.Option value="Hủy đơn hàng">Hủy đơn hàng</Select.Option>
+                                        <Select.Option value="" disabled ></Select.Option>
                                     </Select>
                                 </Form.Item>
                             </Space.Compact>
@@ -259,14 +294,24 @@ const OrderMane: React.FC = () => {
                 <OrderDetails roleMane={roleMane} />
             </Modal>
             {/* modal hủy hàng */}
-            <Modal title="Lý do hủy đơn hàng" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+            <Modal
+                title="Lý do hủy đơn hàng"
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            >
                 <Form
                     name="nest-messages"
-                    // onFinish={onFinish}
-                    style={{ maxWidth: 600 }}
+                    onFinish={onFinish1}
+                    style={{ maxWidth: 600, paddingTop: 60, paddingBottom: 20 }}
                 >
-                    <Form.Item name={['user', 'introduction']}>
+                    <Form.Item name={'note'} rules={[{ required: true, message: 'Please enter the reason for cancellation!' }]}>
                         <Input.TextArea rows={6} placeholder='Nhập lý do hủy đơn hàng ...' />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
                     </Form.Item>
                 </Form>
             </Modal>

@@ -225,6 +225,9 @@ const ProductDetail = () => {
                   ))}
                 </div>
               </Slider>
+              {/* <div>
+                <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lkxjv2he3fm3a7" alt="" />
+              </div> */}
             </div>
             <div className="col-lg-5 offset-lg-1">
               <div className="s_product_text">
@@ -306,9 +309,8 @@ const ProductDetail = () => {
                       {productSizes?.map((size, index) => (
                         <button
                           key={index}
-                          className={`size-button ${
-                            selectedSize === size ? "active" : ""
-                          }`}
+                          className={`size-button ${selectedSize === size ? "active" : ""
+                            }`}
                           onClick={() => handleSizeChange(size)}
                         >
                           {size}
@@ -323,13 +325,11 @@ const ProductDetail = () => {
                       {[...uniqueColors].map((color, index) => (
                         <button
                           key={index}
-                          className={`color-button all-color ${
-                            selectedColor === color ? "active" : ""
-                          } ${
-                            selectedSizeColors.includes(color)
+                          className={`color-button all-color ${selectedColor === color ? "active" : ""
+                            } ${selectedSizeColors.includes(color)
                               ? "selected-size"
                               : ""
-                          }`}
+                            }`}
                           style={{ backgroundColor: color }}
                           onClick={() => handleColorChange(color)}
                         ></button>

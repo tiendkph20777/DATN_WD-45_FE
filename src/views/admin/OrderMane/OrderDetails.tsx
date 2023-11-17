@@ -42,7 +42,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                                 <span>{roleMane?.shipping}</span>
                             </th>
                             <th>
-                                <span>{formattedTime} : {date}</span>
+                                <span>{formattedTime} - {date}</span>
                             </th>
                         </tr>
                         {roleMane?.noteCancel !== "" ? (

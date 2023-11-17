@@ -110,7 +110,7 @@ const Index = () => {
               </div>
             </div>
 
-            <div className="row col-xxl-12 border-2 col-xl-12 col-lg-12 col-sm-12 col-12 p-2">
+            <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
               {dataSourceToRender?.map((item) => {
                 const brandName = brandData?.find(
                   (brand: any) => brand._id == item.brand_id
@@ -119,8 +119,7 @@ const Index = () => {
                   100 - (item.price_sale / item.price) * 100
                 );
                 return (
-
-                  <div className="product col-xxl-3 border-2 col-xl-3 col-lg-4 col-sm-6 col-12 p-2">
+                  <div className="product border-2 p-2">
                     <div className="card product-main">
                       <a
                         href={"/product/" + item._id + "/detail"}
