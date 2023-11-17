@@ -40,7 +40,6 @@ export default function CommentView() {
     const onSearch = (value: string | number) => {
         let filteredData = dataSourceToRender;
         filteredData = filteredData.filter((item) => {
-            console.log(item.id_product)
             return (
                 item.id_product == value || item.id_user == value || item.rate == value
             );

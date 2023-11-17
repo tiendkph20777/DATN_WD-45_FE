@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IProducts } from "../../../../types/product.service";
 import { useGetProductsQuery } from "../../../../services/product.service";
 import { useGetBrandsQuery } from "../../../../services/brand.service";
@@ -22,6 +22,7 @@ const PageProduct = () => {
                 ...IProducts,
             }));
             setDataSourceToRender(updatedDataSource);
+            setSearchResult(updatedDataSource)
         }
     }, [productData, currentPage]);
 
@@ -29,12 +30,6 @@ const PageProduct = () => {
         setCurrentPage(page);
     };
 
-    useEffect(() => {
-        if (productData) {
-            const updatedDataSource = productData.map(({ ...IProducts }) => ({ ...IProducts }));
-            setSearchResult(updatedDataSource)
-        }
-    }, [productData]);
     const onHandleClick = (value: string | number) => {
         let filteredData = dataSourceToRender;
         filteredData = filteredData.filter((item) => item.brand_id == value);
