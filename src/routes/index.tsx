@@ -37,8 +37,9 @@ import OrderMane from "../views/admin/OrderMane/OrderMane";
 import HistoryOrder from "../views/admin/OrderMane/HistoryOrder/HistoryOrder";
 import Abortorder from "../views/admin/OrderMane/Abortorder/Abortorder";
 import Ordersuccess from "../views/client/home/ordersuccess";
-import historyOrder from "../views/client/profile/orderhistory";
+import History from "../views/client/profile/userpurchase/history";
 import Orderhistory from "../views/client/profile/orderhistory";
+import Purchase from "../views/client/profile/userpurchase/purchase";
 
 const routes: RouteObject[] = [
     {
@@ -162,13 +163,23 @@ const routes: RouteObject[] = [
                 element: <Profile />
             },
             {
-                path:'ordersuccess',
-                element:<Ordersuccess/>
+                path: 'ordersuccess',
+                element: <Ordersuccess />
+            },
+            //user purchase
+            {
+                path: 'orderhistory',
+                element: <Orderhistory />
             },
             {
-                path:'orderhistory',
-                element:<Orderhistory/>
+                path: 'purchase',
+                element: <Purchase />
             },
+            {
+                path: 'history',
+                element: <History />
+            },
+
         ]
     },
     {

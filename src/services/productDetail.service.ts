@@ -15,7 +15,10 @@ const productAPIDetall = createApi({
       query: () => `api/productdetail`,
       providesTags: ["ProductDetail"],
     }),
-
+    getAllsProductsDetail: builder.query<any, void>({
+      query: (id: any) => `api/productdetail/${id}`,
+      providesTags: ["ProductDetail"],
+    }),
     getProductDetail: builder.query<IProductDetail[], void>({
       query: () => `api/product`,
       providesTags: ["ProductDetail"],
@@ -74,6 +77,7 @@ export const {
   useAddProductsDetailMutation,
   useUpdateProductsDetailMutation,
   useGetProductDetailQuery,
+  useGetAllsProductsDetailQuery
 } = productAPIDetall;
 export const productReducer = productAPIDetall.reducer;
 export default productAPIDetall;

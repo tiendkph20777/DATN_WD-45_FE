@@ -178,7 +178,13 @@
 }
 
 /* product search */
-
+.form-select-product {
+  width: 150px;
+  height: 40px;
+  position: relative;
+  box-sizing: border-box;
+  margin: 0 5px;
+}
 
 .product-color {
   width: 0.5em;
