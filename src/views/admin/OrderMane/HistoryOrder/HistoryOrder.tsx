@@ -41,9 +41,11 @@ const HistoryOrder: React.FC = () => {
             datehis: datehis,
         };
     });
+
     const successfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status === 'Giao hàng thành công')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
+        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     // console.log(successfulOrders)

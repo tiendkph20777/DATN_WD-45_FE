@@ -27,6 +27,7 @@ const Profile = () => {
                                     <h1 className="display-2 text-white">Xin Chào {usersOne?.userName}</h1>
                                     <p className="text-white mt-0 mb-5">Đây là trang hồ sơ của bạn. Bạn có thể thấy tiến độ bạn đã đạt được trong công việc và quản lý các dự án hoặc nhiệm vụ được giao</p>
                                     <a href="#!" className="btn btn-info">Chỉnh sửa hồ sơ</a>
+                                    <Link to="/purchase" className="btn btn-info">Đơn hàng đã mua</Link>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +84,6 @@ const Profile = () => {
                                         {/* Description */}
                                         <SettingAbout />
                                         {/* </form> */}
-
                                     </div>
                                 </div>
                             </div>
