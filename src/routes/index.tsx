@@ -71,13 +71,13 @@ const routes: RouteObject[] = [
             },
             // Product Detail
             {
-                path: 'product/detail', element: <ProductDetailView />
+                path: 'product/detail/:id', element: <ProductDetailView />
             },
             {
-                path: 'product/detail/add', element: <ProductDetailAdd />
+                path: 'product/detail/add/:id', element: <ProductDetailAdd />
             },
             {
-                path: 'product/detail/:idProduct/edit', element: <ProductProductEdit />
+                path: 'product/detail/:idProduct/edit/:idProduct', element: <ProductProductEdit />
             },
             // Comment
             {

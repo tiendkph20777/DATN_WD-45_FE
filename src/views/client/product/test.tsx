@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  useGetProductByIdQuery,
-  useGetProductsQuery,
-} from "../../../services/product.service";
+import { useGetProductByIdQuery, useGetProductsQuery } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import Slider from "react-slick";
@@ -30,9 +27,7 @@ const ProductDetail = () => {
   const { _id } = useParams();
   const { data: prodetailData } = useGetProductByIdQuery(_id);
 
-  const brandName = brandData?.find(
-    (brand) => brand._id === prodetailData?.brand_id
-  )?.name;
+  const brandName = brandData?.find((brand) => brand._id === prodetailData?.brand_id)?.name;
   const { data: productDataDetail } = useGetAllProductsDetailQuery();
 
   const [productSizes, setProductSizes] = useState([]);
@@ -40,22 +35,20 @@ const ProductDetail = () => {
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedColorName, setSelectedColorName] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [showColors, setShowColors] = useState(true); // Hiển thị màu từ đầu
+  const [showColors, setShowColors] = useState(false);
   const [colorsForSelectedSize, setColorsForSelectedSize] = useState([]);
   const [hasSelectedColor, setHasSelectedColor] = useState(false);
   const [mainImage, setMainImage] = useState(prodetailData?.images[0]);
-  const [selectedSizeColors, setSelectedSizeColors] = useState([]);
 
   useEffect(() => {
     if (selectedSize) {
-      const detailsForSelectedSize = productDataDetail?.filter(
-        (detail) => detail?.size === selectedSize
-      );
+      const detailsForSelectedSize = productDataDetail?.filter((detail) => detail?.size === selectedSize);
       const colorsForCurrentProduct = detailsForSelectedSize
         .filter((detail) => detail?.product_id === prodetailData?._id)
         .map((detail) => detail?.color);
 
       setColorsForSelectedSize(colorsForCurrentProduct);
+      setShowColors(true);
     }
   }, [selectedSize, productDataDetail, prodetailData]);
 
@@ -69,9 +62,7 @@ const ProductDetail = () => {
         (detail) => detail.product_id === prodetailData._id
       );
 
-      const sizesForCurrentProduct = productDetailsForCurrentProduct.map(
-        (detail) => detail.size
-      );
+      const sizesForCurrentProduct = productDetailsForCurrentProduct.map((detail) => detail.size);
 
       const uniqueSizes = Array.from(new Set(sizesForCurrentProduct));
 
@@ -84,14 +75,7 @@ const ProductDetail = () => {
     setSelectedColor("");
     setSelectedColorName("");
     setHasSelectedColor(false);
-    setShowColors(true);
-
-    // Lọc ra danh sách màu sắc cho kích thước đã chọn
-    const colorsForSize = productDataDetail
-      ?.filter((detail) => detail?.size === size)
-      .map((detail) => detail?.color);
-
-    setSelectedSizeColors(colorsForSize);
+    setShowColors(true); // Hiển thị màu khi chọn kích thước
   };
 
   const handleColorChange = (color) => {
@@ -131,10 +115,7 @@ const ProductDetail = () => {
       if (!isAddingToCart) {
         setIsAddingToCart(true);
         const filteredProducts = productDataDetail?.map(async (product) => {
-          if (
-            typeof product?.size === "number" &&
-            product?.size === selectedSize
-          ) {
+          if (typeof product?.size === "number" && product?.size === selectedSize) {
             if (product?.color === selectedColor) {
               const cartItem = {
                 product_id: product._id,
@@ -180,14 +161,6 @@ const ProductDetail = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
   };
-  const uniqueColors = new Set();
-
-  // Lặp qua productDataDetail để thêm các màu sắc vào tập hợp
-  productDataDetail?.forEach((detail) => {
-    if (detail.product_id === prodetailData?._id) {
-      uniqueColors.add(detail.color);
-    }
-  });
 
   return (
     <div>
@@ -266,9 +239,7 @@ const ProductDetail = () => {
                     <i>{prodetailData?.content}</i>
                   </li>
                 </ul>
-                <p className="description-product">
-                  {prodetailData?.description}
-                </p>
+                <p className="description-product">{prodetailData?.description}</p>
                 <div className="product-blocks-details product-blocks-443 grid-rows">
                   <div className="grid-row grid-row-443-1">
                     <div className="grid-cols">
@@ -284,8 +255,7 @@ const ProductDetail = () => {
                                         KHUYẾN MẠI ĐẶC BIỆT EXTRA SALE
                                       </div>
                                       <div className="info-block-text">
-                                        Giảm thêm 200.000đ với đơn hàng từ 4
-                                        triệu. Nhập mã: MYS200K
+                                        Giảm thêm 200.000đ với đơn hàng từ 4 triệu. Nhập mã: MYS200K
                                       </div>
                                     </div>
                                   </div>
@@ -306,9 +276,7 @@ const ProductDetail = () => {
                       {productSizes?.map((size, index) => (
                         <button
                           key={index}
-                          className={`size-button ${
-                            selectedSize === size ? "active" : ""
-                          }`}
+                          className={`size-button ${selectedSize === size ? "active" : ""}`}
                           onClick={() => handleSizeChange(size)}
                         >
                           {size}
@@ -316,25 +284,24 @@ const ProductDetail = () => {
                       ))}
                     </div>
                   </div>
-
-                  <div className="all-colors">
-                    <p>Màu Sắc</p>
-                    <div className="color-buttons">
-                      {[...uniqueColors].map((color, index) => (
-                        <button
-                          key={index}
-                          className={`color-button all-color ${
-                            selectedColor === color ? "active" : ""
-                          } ${
-                            selectedSizeColors.includes(color)
-                              ? "selected-size"
-                              : ""
-                          }`}
-                          style={{ backgroundColor: color }}
-                          onClick={() => handleColorChange(color)}
-                        ></button>
-                      ))}
-                    </div>
+                  <div className="product-colors">
+                    {showColors && (
+                      <div>
+                        <p>Màu Sắc</p>
+                        <div className="color-buttons">
+                          {colorsForSelectedSize.map((color, index) => (
+                            <button
+                              key={index}
+                              className={`color-button ${selectedColor === color ? "active" : ""} ${
+                                hasSelectedColor ? "with-color" : ""
+                              }`}
+                              style={{ backgroundColor: color }}
+                              onClick={() => handleColorChange(color)}
+                            ></button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="product_count flex-1">
@@ -361,9 +328,7 @@ const ProductDetail = () => {
                     onClick={onSubmitCart}
                     disabled={isAddingToCart}
                   >
-                    {isAddingToCart
-                      ? "Thêm vào giỏ hàng..."
-                      : "Thêm vào giỏ hàng"}
+                    {isAddingToCart ? "Thêm vào giỏ hàng..." : "Thêm vào giỏ hàng"}
                   </button>
                 </div>
               </div>
