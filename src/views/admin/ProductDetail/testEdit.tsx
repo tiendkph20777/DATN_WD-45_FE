@@ -81,7 +81,7 @@ const ProductProductEdit = () => {
         <div className="col-md-6 offset-md-3">
           <div className="card custom-card">
             <div className="card-body">
-              <h1 className="card-title fw-semibold mb-4 text-center">
+              <h1 className="card-title fw-semibold mb-4">
                 Sửa Chi Tiết Sản Phẩm
               </h1>
               <Form
@@ -103,7 +103,7 @@ const ProductProductEdit = () => {
                   <Input disabled />
                 </Form.Item>
 
-                <Form.Item<FieldType> name="size" label="Size">
+                <Form.Item<FieldType> name="size" label="size">
                   
                   <input
                     type="number"
@@ -112,7 +112,7 @@ const ProductProductEdit = () => {
                     }`}
                   />
                 </Form.Item>
-                <Form.Item label="Quantity" name="quantity" rules={[]}>
+                <Form.Item label="quantity" name="quantity" rules={[]}>
                   <input
                     type="number"
                     className={`form-control ${

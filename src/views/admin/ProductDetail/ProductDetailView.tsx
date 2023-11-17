@@ -9,31 +9,37 @@ import {
   notification,
 } from "antd";
 import { IProduct } from "../types/product";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom"; // Import thêm useParams
 import {
   SearchOutlined,
   CloseOutlined,
   EditOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-
 import {
   useGetProductDetailQuery,
   useGetAllProductsDetailQuery,
-  useRemoveProductsDetailMutation
+  useRemoveProductsDetailMutation,
+  useGetProductDetailByIdQuery,
 } from "../../../services/productDetail.service";
+import {
+  useGetProductByIdQuery,
+  useGetProductsQuery,
+} from "../../../services/product.service";
+
+const { Option } = Select;
 
 interface DataType {
   key: React.Key;
   size: number;
   color: string;
   quantity: number;
-  product_id: string; // Change from id_product to match your data structure
+  product_id: string;
 }
 
-const { Option } = Select;
-
 const Dashboard = (props: Props) => {
+  const { id } = useParams();
+  console.log("ID:", id);
   const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     undefined
@@ -48,35 +54,43 @@ const Dashboard = (props: Props) => {
   const [searchText, setSearchText] = useState("");
   const [searchResult, setSearchResult] = useState<DataType[]>([]);
   const [showNoProductsAlert, setShowNoProductsAlert] = useState(false);
+
   const { data: product } = useGetProductDetailQuery();
-  const { data: productData } = useGetAllProductsDetailQuery();
+  const { data: productData, refetch: refetchProductData } =
+    useGetAllProductsDetailQuery();
+  const { data: productDetailData } = useGetProductByIdQuery(id);
+
   const [removeProduct] = useRemoveProductsDetailMutation();
 
-  const confirm = async (id) => {
+  const confirm = async (id: any) => {
     try {
-      // Gọi API xóa sản phẩm bất đồng bộ
       await removeProduct(id);
-
-      // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
       const updatedData = dataSourceToRender.filter((item) => item.key !== id);
       setDataSourceToRender(updatedData);
-
-      // Hiển thị thông báo thành công
       notification.success({
         message: "Success",
         description: "Xóa sản phẩm thành công!",
       });
     } catch (error) {
-      // Xử lý lỗi nếu cần
       console.error("Error deleting product", error);
+      notification.error({
+        message: "Error",
+        description: "Xóa sản phẩm không thành công. Vui lòng thử lại!",
+      });
     }
   };
-
   useEffect(() => {
-    if (productData) {
-      // Kiểm tra xem product đã được load
+    if (productDetailData) {
       if (product) {
-        const updatedDataSource = productData.map(
+        const productIdToFind = id;
+
+        const filteredProducts = productData?.filter(
+          (product) => product.product_id === productIdToFind
+        );
+
+        console.log(filteredProducts);
+
+        const updatedDataSource = filteredProducts?.map(
           ({ _id, size, color, quantity, product_id }: IProduct) => ({
             key: _id,
             size,
@@ -85,16 +99,16 @@ const Dashboard = (props: Props) => {
             product_id: product.find((role) => role?._id === product_id)?.name,
           })
         );
+
         setDataSourceToRender(updatedDataSource);
 
         const updatedUniqueSizes = Array.from(
-          new Set(updatedDataSource.map((item) => item.size))
+          new Set(updatedDataSource?.map((item) => item.size))
         );
         setUniqueSizes(updatedUniqueSizes);
       }
     }
-  }, [productData, product]); // Thêm product vào danh sách dependencies
-
+  }, [productDetailData, product, productData]);
 
   const onSearch = (e) => {
     const inputValue = e.target.value;
@@ -103,8 +117,10 @@ const Dashboard = (props: Props) => {
     let filteredData = dataSourceToRender;
 
     if (selectedColor) {
-      filteredData = filteredData.filter((item) =>
-        item.color.toLowerCase().includes(selectedColor.toLowerCase())
+      filteredData = filteredData.filter(
+        (item) =>
+          item.color &&
+          item.color.toLowerCase().includes(selectedColor.toLowerCase())
       );
     }
 
@@ -115,15 +131,17 @@ const Dashboard = (props: Props) => {
     }
 
     if (searchProductId) {
-      filteredData = filteredData.filter((item) =>
-        item.product_id.toLowerCase().includes(searchProductId.toLowerCase())
-      );
+      filteredData = filteredData.filter((item) => {
+        return (
+          item &&
+          item.product_id &&
+          item.product_id.toLowerCase().includes(searchProductId.toLowerCase())
+        );
+      });
     }
-
     setSearchResult(filteredData);
     setShowNoProductsAlert(filteredData.length === 0);
   };
-
 
   const resetSearch = () => {
     setSelectedColor(undefined);
@@ -134,9 +152,19 @@ const Dashboard = (props: Props) => {
     setShowNoProductsAlert(false);
   };
 
+  const handleAddProduct = async (newProduct) => {
+    // Gọi API hoặc thực hiện thêm sản phẩm tại đây
+    // Sau khi thêm sản phẩm thành công, gọi lại dữ liệu để cập nhật danh sách sản phẩm
+    await refetchProductData();
+    notification.success({
+      message: "Success",
+      description: "Thêm sản phẩm thành công!",
+    });
+  };
+
   const columns = [
     {
-      title: "Tên Sản phẩm",
+      title: "Name",
       dataIndex: "product_id",
       key: "product_id",
     },
@@ -154,74 +182,75 @@ const Dashboard = (props: Props) => {
       },
     },
     {
-      title: "Màu sắc",
+      title: "Color",
       dataIndex: "color",
       key: "color",
     },
     {
-      title: "Số lượng",
+      title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
-      title: "Hành động",
+      title: "Action",
       key: "action",
-      render: ({ key: id }: any) => {
-        return (
-          <>
-            <div>
-              <Popconfirm
-                title="Xóa sản phẩm này"
-                description="Bạn có chắc chắn muốn xóa sản phẩm này ?"
-                onConfirm={() => confirm(id)}
-                okText="Xóa"
-                cancelText="Hủy"
+      render: ({ key: id }: any) => (
+        <>
+          <div>
+            <Popconfirm
+              title="Delete the task"
+              description="Are you sure to delete this product ?"
+              onConfirm={() => confirm(id)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "red",
+                  margin: "4px",
+                  minWidth: "4em",
+                }}
               >
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "red",
-                    margin: "4px",
-                    minWidth: "4em",
-                  }}
-                >
-                  <CloseOutlined />
-                </Button>
-              </Popconfirm>
-              <Link to={`${id}/edit`} >
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "blue",
-                    margin: "4px",
-                    minWidth: "4em",
-                  }}
-                >
-
-                  <EditOutlined /> Sửa
-                </Button>
-              </Link>
-
-            </div>
-          </>
-        );
-      },
+                <CloseOutlined />
+              </Button>
+            </Popconfirm>
+            <Link to={`edit/${id}`}>
+              <Button
+                type="primary"
+                style={{
+                  backgroundColor: "blue",
+                  margin: "4px",
+                  minWidth: "4em",
+                }}
+              >
+                <EditOutlined /> Sửa
+              </Button>
+            </Link>
+          </div>
+        </>
+      ),
     },
   ];
 
   return (
-    <div style={{ paddingTop: "70px" }}>
+    <div style={{ paddingTop: "100px" }}>
       {showNoProductsAlert && (
-        <Alert message="Không tìm thấy sản phẩm" type="info" showIcon style={{
-          marginTop: "20px", backgroundColor: "red"
-        }} />
+        <Alert
+          message="Không tìm thấy sản phẩm"
+          type="info"
+          showIcon
+          style={{
+            marginTop: "20px",
+            backgroundColor: "red",
+          }}
+        />
       )}
       <div className="search-bar">
         <Input
           placeholder="Tìm kiếm sản phẩm"
           value={searchProductId}
-          onChange={(e) => setSearchProductId(e.target.value)} // ấn để tìm kiếm
-        // onChange={onSearch} // tìm kiếm luôn
+          onChange={(e) => setSearchProductId(e.target.value)}
         />
         <Select
           style={{ width: 200, marginRight: 8 }}
@@ -230,7 +259,7 @@ const Dashboard = (props: Props) => {
           onChange={(value) => setSelectedColor(value)}
           style={{ marginBottom: "20px", marginTop: "40px" }}
         >
-          <Option value={undefined}>Tất cả màu sắc</Option>
+          <Option value={undefined}>All Color</Option>
           {dataSourceToRender && dataSourceToRender.length > 0 ? (
             dataSourceToRender.map((item) => (
               <Option key={item.color} value={item.color}>
@@ -262,7 +291,6 @@ const Dashboard = (props: Props) => {
         >
           Tìm Kiếm
         </Button>
-
         <Button
           type="primary"
           icon={<CloseOutlined />}
@@ -271,18 +299,6 @@ const Dashboard = (props: Props) => {
         >
           Reset
         </Button>
-        <Link to={`add`}>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "blue",
-              margin: "4px",
-              minWidth: "4em",
-            }}
-          >
-            <PlusOutlined /> Thêm Sản Phẩm
-          </Button>
-        </Link>
       </div>
       <Table
         columns={columns}

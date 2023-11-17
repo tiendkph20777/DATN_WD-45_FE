@@ -20590,3 +20590,136 @@ ul {
 .timeline-widget .timeline-item .timeline-badge.badge-primary {
     border: 2px solid #5D87FF
 }
+/* YourComponent.css */
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .header {
+    text-align: center;
+    padding-bottom: 20px;
+  }
+  
+  .page-title {
+    color: #1890ff; /* Màu xanh dương của Ant Design */
+    font-size: 24px;
+  }
+  
+  .form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+  }
+  
+  .form-container:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .custom-form {
+    margin-top: 20px;
+  }
+  
+  .reset-button {
+    margin-left: 10px;
+  }
+  
+  /* Style for the primary button */
+  .ant-btn-primary {
+    background-color: #1890ff;
+    border-color: #1890ff;
+  }
+  
+  .ant-btn-primary:hover,
+  .ant-btn-primary:focus {
+    background-color: #096dd9;
+    border-color: #096dd9;
+  }
+  
+  /* Style for the reset button */
+  .reset-button {
+    color: #fff;
+    background-color: #f5222d; /* Màu đỏ của Ant Design */
+    border-color: #f5222d;
+  }
+  
+  .reset-button:hover,
+  .reset-button:focus {
+    background-color: #ff4d4f;
+    border-color: #ff4d4f;
+  }
+  .ant-form-item-label {
+    text-align: left;
+    font-size: 16px; /* Điều chỉnh kích thước font của label */
+    margin-bottom: 8px; /* Tạo khoảng cách giữa label và input */
+  }
+  
+  /* Tùy chỉnh kích thước và vị trí của input */
+  .ant-form-item-control-input {
+    height: 40px; /* Điều chỉnh chiều cao của input */
+  }
+  
+  /* Tùy chỉnh kiểu dáng nút */
+  .ant-btn {
+    height: 40px; /* Điều chỉnh chiều cao của nút */
+    margin-top: 10px; /* Tạo khoảng cách giữa input và nút */
+  } 
+  .container {
+    padding-top: 50px; /* Khoảng cách giữa đỉnh trang và nội dung */
+  }
+  
+  /* Phần tiêu đề */
+  .page-title {
+    color: blue;
+  }
+  
+  /* Phần form container */
+  .form-container {
+    margin-top: 30px;
+  }
+  
+  /* Phần nút Reset */
+  .reset-button {
+    margin-left: 10px;
+  }
+  .custom-container {
+      margin-top: 50px;
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 50px;
+    }
+
+    .form-container {
+      margin-top: 30px;
+    }
+
+    .custom-form {
+      margin-top: 20px;
+    }
+
+    .reset-button {
+      margin-left: 8px;
+    }
+
+    .color-buttons .color-button.selected-size {
+        opacity: 1;
+      }
+      
+      .color-buttons .color-button:not(.selected-size) {
+        opacity: 0.2;
+        cursor: not-allowed;
+      }
+      
+      .color-buttons .color-button.active {
+        border: 2px solid blue; 
+      }
+  .custom-card {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
