@@ -58,7 +58,7 @@ const Profile = () => {
                                             </h3>
                                             <hr className="my-4" />
                                             <p>Ryan — the name taken by Melbourne-raised, Brooklyn-based Nick Murphy — writes, performs and records all of his own music.</p>
-                                            <Link to="/orderhistory" className="btn btn-sm btn-primary">Đơn hàng đã mua</Link>
+                                            <Link to="/purchase" className="btn btn-sm btn-primary">Đơn hàng đã mua</Link>
                                         </div>
                                     </div>
                                 </div>

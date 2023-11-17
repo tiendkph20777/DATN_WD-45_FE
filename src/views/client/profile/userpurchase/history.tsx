@@ -132,23 +132,22 @@ const History: React.FC = () => {
                         <TopUserPurchase />
                     </div>
                 </div>
-        <div style={{ paddingTop: "70px" }}>
-            
-            <Table columns={columns} dataSource={successfulOrders} />
-            <Modal
-                title="Chi tiết đơn hàng"
-                open={open}
-                onOk={hideModal}
-                onCancel={hideModal}
-                okText="ok"
-                cancelText="cancel"
-                width={1000}
-                style={{ top: 20 }}
-            >
-                <OrderDetails roleMane={roleMane} />
-            </Modal>
-        </div>
-        </div>
+                <div>
+                    <Table columns={columns} dataSource={successfulOrders} />
+                    <Modal
+                        title="Chi tiết đơn hàng"
+                        open={open}
+                        onOk={hideModal}
+                        onCancel={hideModal}
+                        okText="ok"
+                        cancelText="cancel"
+                        width={1000}
+                        style={{ top: 20 }}
+                    >
+                        <OrderDetails roleMane={roleMane} />
+                    </Modal>
+                </div>
+            </div>
         </section>
     )
 };

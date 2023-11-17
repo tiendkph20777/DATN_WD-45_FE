@@ -131,7 +131,7 @@ const OrderMane: React.FC = () => {
     };
     // bảng dữ liệu
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div style={{ paddingTop: "70px" }}>Loading...</div>;
     }
     const columns: ColumnsType<any> = [
         {
