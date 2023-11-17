@@ -46,7 +46,7 @@ const VoucherEdit: React.FC = () => {
                     content: "Ngày kết thúc phải sau ngày bắt đầu",
                 })
             })
-             window.location.reload();
+             
             
     }
     const onFinishFailed = (errorInfo: any) => {
