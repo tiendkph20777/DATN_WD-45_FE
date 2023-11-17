@@ -125,11 +125,25 @@ const ProductView = () => {
             title: 'Giá niêm yết',
             dataIndex: 'price',
             key: 'price',
+            render: (price: number) => {
+                return (
+                    <>
+                        <h5>{price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                    </>
+                );
+            },
         },
         {
             title: 'Giá bán',
             dataIndex: 'price_sale',
             key: 'price_sale',
+            render: (price_sale: number) => {
+                return (
+                    <>
+                        <h5>{price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                    </>
+                );
+            },
         },
         // {
         //     title: 'Mô tả sản phẩm',
@@ -195,13 +209,12 @@ const ProductView = () => {
         };
     });
     return (
-        <div className="">
+        <div style={{ paddingTop: "70px" }}>
             <div className="row">
-
                 <div className="col-lg-12 d-flex align-items-stretch">
                     <div className="card w-100">
-                        <div className="card-body mt-5">
-                            <h5 className="card-title fw-semibold mb-4">Sản Phẩm</h5>
+                        <div className="card-body">
+                            <h5 className="card-title fw-semibold">Sản Phẩm</h5>
                             <a className="text-white" href="/admin/product/add">
                                 <button type="button" className="btn btn-success m-1">Thêm</button>
                             </a>
@@ -221,7 +234,7 @@ const ProductView = () => {
                                             ))}
                                         </select>
                                     </div>
-                                    <div className="mt-2 col-5">
+                                    <div className="mt-2 col-7">
                                         <Input
                                             type="text"
                                             className="form-control"
@@ -231,7 +244,7 @@ const ProductView = () => {
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                         />
                                     </div>
-                                    <button type="submit" className="col-4 p-2 btn btn-secondary mt-2">Tìm kiếm</button>
+                                    <button type="submit" className="col-2 p-2 btn btn-secondary mt-2">Tìm kiếm</button>
 
                                 </form>
                             </div>

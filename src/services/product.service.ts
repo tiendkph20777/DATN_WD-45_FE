@@ -10,7 +10,6 @@ const productAPI = createApi({
         baseUrl: "http://localhost:8080/api"
     }),
     endpoints: builder => ({
-
         getProducts: builder.query<IProducts[], void>({
             query: () => `/product`,
         }),
@@ -54,55 +53,55 @@ const productAPI = createApi({
             }),
             invalidatesTags: ["Product"]
         }),
-        fetchComment: builder.query<any, void>({
-            query: () => "/comment",
-        }),
-        getComment: builder.query<{ product: any | null }, number>({
-            query: id => ({
-                url: `/comment/${id}`,
-                method: "GET",
-            }),
-        }),
-        removeComment: builder.mutation<void, any>({
-            query: ({ id }) => {
-                return {
-                    url: `/comment/${id}`,
-                    method: "DELETE",
-                    headers: {
-                        "content-type": "application/json",
-                        'authorization': `Bearer ${token}`
-                    }
-                }
-            }
-        }),
-        addComment: builder.mutation({
-            query: (data) => {
-                console.log(data)
-                return {
-                    url: `/comment/add`,
-                    method: "POST",
-                    body: data,
-                    headers: {
-                        "content-type": "application/json",
-                        'authorization': `Bearer ${token}`
-                    }
-                }
-            },
-        }),
-        updateComment: builder.mutation<void, any>({
-            query: comment => ({
-                url: `/comment/${comment.id}`,
-                method: "PUT",
-                body: comment,
+        // fetchComment: builder.query<any, void>({
+        //     query: () => "/comment",
+        // }),
+        // getComment: builder.query<{ product: any | null }, number>({
+        //     query: id => ({
+        //         url: `/comment/${id}`,
+        //         method: "GET",
+        //     }),
+        // }),
+        // removeComment: builder.mutation<void, any>({
+        //     query: ({ id }) => {
+        //         return {
+        //             url: `/comment/${id}`,
+        //             method: "DELETE",
+        //             headers: {
+        //                 "content-type": "application/json",
+        //                 'authorization': `Bearer ${token}`
+        //             }
+        //         }
+        //     }
+        // }),
+        // addComment: builder.mutation({
+        //     query: (data) => {
+        //         console.log(data)
+        //         return {
+        //             url: `/comment/add`,
+        //             method: "POST",
+        //             body: data,
+        //             headers: {
+        //                 "content-type": "application/json",
+        //                 'authorization': `Bearer ${token}`
+        //             }
+        //         }
+        //     },
+        // }),
+        // updateComment: builder.mutation<void, any>({
+        //     query: comment => ({
+        //         url: `/comment/${comment.id}`,
+        //         method: "PUT",
+        //         body: comment,
 
-            }),
-        }),
-        getUser: builder.query<{ product: any | null }, string>({
-            query: id => ({
-                url: `/user/${id}`,
-                method: "GET",
-            }),
-        }),
+        //     }),
+        // }),
+        // getUser: builder.query<{ product: any | null }, string>({
+        //     query: id => ({
+        //         url: `/user/${id}`,
+        //         method: "GET",
+        //     }),
+        // }),
     })
 });
 
@@ -113,12 +112,12 @@ export const {
     useRemoveProductMutation,
     useAddProductMutation,
     useUpdateProductMutation,
-    useFetchCommentQuery,
-    useGetCommentQuery,
-    useAddCommentMutation,
-    useRemoveCommentMutation,
-    useUpdateCommentMutation,
-    useGetUserQuery
+    // useFetchCommentQuery,
+    // useGetCommentQuery,
+    // useAddCommentMutation,
+    // useRemoveCommentMutation,
+    // useUpdateCommentMutation,
+    // useGetUserQuery
 } = productAPI;
 
 

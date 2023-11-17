@@ -116,14 +116,14 @@ const SettingInformation = () => {
                                 <div className='col-lg-5'>
                                     <label className="form-control-label" htmlFor="input-first-name">Tên người dùng</label>
                                     <Form.Item
-                                        rules={[{ required: true, message: 'Please input your username!' }]}
+                                        rules={[{ required: true, message: 'Vui lòng nhập tên người dùng!' }]}
                                         className='form-control form-control-alternative form-control-label text-black'
                                     >
                                         <Controller
                                             name="userName"
                                             control={control}
                                             defaultValue={usersOne?.username || ''}
-                                            render={({ field }) => <Input {...field} placeholder="Username" />}
+                                            render={({ field }) => <Input {...field} placeholder="Tên người dùng" />}
                                         />
                                     </Form.Item>
                                 </div>
@@ -131,14 +131,14 @@ const SettingInformation = () => {
                                     <div className="form-group focused">
                                         <label className="form-control-label" htmlFor="input-first-name">Tên đầy đủ</label>
                                         <Form.Item
-                                            rules={[{ required: true, message: 'Please input your fullName!' }]}
+                                            rules={[{ required: true, message: 'Vui lòng nhập tên đầy đue!' }]}
                                             className='form-control form-control-alternative form-control-label p-2'
                                         >
                                             <Controller
                                                 name="fullName"
                                                 control={control}
                                                 defaultValue={usersOne?.fullName || ''}
-                                                render={({ field }) => <Input {...field} placeholder="fullName" />}
+                                                render={({ field }) => <Input {...field} placeholder="Tên Đầy đủ" />}
                                             />
                                         </Form.Item>
                                     </div>
@@ -150,8 +150,8 @@ const SettingInformation = () => {
                                             <Controller
                                                 render={({ field }) => (
                                                     <Select {...field} style={{ width: "100%" }} className='form-control p-2'>
-                                                        <MenuItem value={"Men"}>Nam</MenuItem>
-                                                        <MenuItem value={"Women"}>Nữ</MenuItem>
+                                                        <MenuItem value={"Nam"}>Nam</MenuItem>
+                                                        <MenuItem value={"Nữ"}>Nữ</MenuItem>
                                                     </Select>
                                                 )}
                                                 name="gender"
@@ -173,7 +173,7 @@ const SettingInformation = () => {
                                                 name="email"
                                                 control={control}
                                                 defaultValue={usersOne?.email || ''}
-                                                render={({ field }) => <Input {...field} placeholder="email" />}
+                                                render={({ field }) => <Input {...field} placeholder="Email" />}
                                             />
                                         </Form.Item>
                                     </div>
@@ -189,7 +189,7 @@ const SettingInformation = () => {
                                                 name="tel"
                                                 control={control}
                                                 defaultValue={usersOne?.tel || ''}
-                                                render={({ field }) => <Input {...field} placeholder="tel" />}
+                                                render={({ field }) => <Input {...field} placeholder="Số Điện thoại" />}
                                             />
                                         </Form.Item>
                                     </div>

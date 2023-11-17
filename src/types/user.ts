@@ -4,7 +4,6 @@ export interface IAuth {
     email: string;
     password: string;
     confirmPassword: string;
-    userName: string;
     fullName: string;
     gender: string;
     address: string;

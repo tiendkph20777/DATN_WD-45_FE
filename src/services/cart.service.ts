@@ -41,10 +41,6 @@ const cartAPI = createApi({
             query: (_id) => ({
                 url: `/cartDetail/${_id}`,
                 method: "DELETE",
-                // headers: {
-                //     "content-type": "application/json",
-                //     'authorization': `Bearer ${token}`
-                // }
             }),
             invalidatesTags: ["Cart"],
         }),
@@ -54,10 +50,6 @@ const cartAPI = createApi({
                 url: `/cartDetail/${Cart.idCartDetail}/update`,
                 method: 'PUT',
                 body: Cart,
-                // headers: {
-                //     "content-type": "application/json",
-                //     'authorization': `Bearer ${token}`
-                // }
             }),
             invalidatesTags: ["Cart"],
         }),

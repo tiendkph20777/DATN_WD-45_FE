@@ -86,7 +86,7 @@ const SideBar = () => {
                         <span className="hide-menu">Đơn Hàng</span>
                     </li>
                     <li className="sidebar-item">
-                        <Link className="sidebar-link" to="#" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/orderManagement" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
@@ -94,11 +94,19 @@ const SideBar = () => {
                         </Link>
                     </li>
                     <li className="sidebar-item">
-                        <Link className="sidebar-link" to="#" aria-expanded="false">
+                        <Link className="sidebar-link" to="/admin/historyOrder" aria-expanded="false">
                             <span>
                                 <i className="ti ti-mood-happy"></i>
                             </span>
                             <span className="hide-menu">Lịch Sử Đơn Hàng</span>
+                        </Link>
+                    </li>
+                    <li className="sidebar-item">
+                        <Link className="sidebar-link" to="/admin/abortOrder" aria-expanded="false">
+                            <span>
+                                <i className="ti ti-mood-happy"></i>
+                            </span>
+                            <span className="hide-menu">Đơn Hàng Bị Hủy</span>
                         </Link>
                     </li>
                     <li className="sidebar-item">

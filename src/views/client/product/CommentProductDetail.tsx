@@ -1,10 +1,11 @@
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useAddCommentMutation, useFetchCommentQuery, useGetProductByIdQuery, useGetProductsQuery } from '../../../services/product.service';
+import { useGetProductByIdQuery, useGetProductsQuery } from '../../../services/product.service';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useFetchUserQuery } from '../../../services/user.service';
+import { useAddCommentMutation, useFetchCommentQuery } from "../../../services/comment.service";
 interface DataType {
     _id: string;
     content: string;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Table, Input, Popconfirm, notification } from 'antd';
+import { Button, Table, Input, Popconfirm, notification, Tag } from 'antd';
 import { IVouchers } from "../../../types/voucher";
 import { useGetVouchersQuery, useRemoveVoucherMutation } from '../../../services/voucher.service';
 import { Link } from 'react-router-dom';
@@ -10,50 +10,41 @@ const VoucherView: React.FC = () => {
     const [removeVoucher] = useRemoveVoucherMutation();
     const [searchTerm, setSearchTerm] = useState('');
     const [dataSource, setDataSource] = useState<Array<any>>([]);
-    const confirm = async (id) => {
+    const confirm = async (id: any) => {
         try {
-          // Gọi API xóa sản phẩm bất đồng bộ
-          await  removeVoucher(id);
-    
-          // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
-          const updatedData = dataSource.filter((item) => item.key !== id);
-          setDataSource(updatedData);
-    
-          // Hiển thị thông báo thành công
-          notification.success({
-            message: "Success",
-            description: "Xóa voucher thành công!",
-          });
+            // Gọi API xóa sản phẩm bất đồng bộ
+            await removeVoucher(id);
+
+            // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
+            const updatedData = dataSource.filter((item) => item.key !== id);
+            setDataSource(updatedData);
+
+            // Hiển thị thông báo thành công
+            notification.success({
+                message: "Success",
+                description: "Xóa voucher thành công!",
+            });
         } catch (error) {
-          // Xử lý lỗi nếu cần
-          console.error("Error deleting product", error);
+            // Xử lý lỗi nếu cần
+            console.error("Error deleting product", error);
         }
-      };
+    };
     useEffect(() => {
         if (voucherData) {
             const updatedDataSource = voucherData.map(
-              ({ _id,code, value, quantity, date_start, date_end}: IVouchers) => ({
-                key: _id,
-                code,
-                value,
-                quantity,
-                date_start,
-                date_end,
-                
-              })
+                ({ _id, code, value, quantity, date_start, date_end }: IVouchers) => ({
+                    key: _id,
+                    code,
+                    value,
+                    quantity,
+                    date_start,
+                    date_end,
+
+                })
             );
             setDataSource(updatedDataSource);
         }
     }, [voucherData, searchTerm]);
-
-    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        // Khi người dùng nhấn Enter để tìm kiếm
-        // useEffect sẽ được gọi và cập nhật dataSource
-    };
-
-   
-    
 
     const columns = [
         {
@@ -65,6 +56,13 @@ const VoucherView: React.FC = () => {
             title: 'Value',
             dataIndex: 'value',
             key: 'value',
+            render: (value: number) => (
+                <>
+                    <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>
+                        {value?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    </Tag>
+                </>
+            ),
         },
         {
             title: 'Số lượng',
@@ -81,28 +79,26 @@ const VoucherView: React.FC = () => {
             dataIndex: 'date_end',
             key: 'date_end',
         },
-       
-        
         {
             render: ({ key: id }: { key: number | string }) => {
                 return (
                     <>
-                        <Button>
-                            <Link to={`/admin/voucher/${id}/edit`}>Update</Link>
-                        </Button>
+                        <Link to={`/admin/voucher/${id}/edit`}>
+                            <Button>Update</Button>
+                        </Link>
                         <Popconfirm
-                        title="Bạn có chắc chắn muốn xóa voucher này ?"
-                        onConfirm={() => {
-                            confirm(id);
-                        }}
-                        okText="Xóa"
-                        cancelText="Hủy"
-                    >
-                        <Button type="primary" style={{ backgroundColor: 'red', margin: '4px', minWidth: '8em' }}>
-                            <CloseOutlined /> Remove
-                        </Button>
-                    </Popconfirm>
-                        
+                            title="Bạn có chắc chắn muốn xóa voucher này ?"
+                            onConfirm={() => {
+                                confirm(id);
+                            }}
+                            okText="Xóa"
+                            cancelText="Hủy"
+                        >
+                            <Button type="primary" style={{ backgroundColor: 'red', margin: '4px', minWidth: '8em' }}>
+                                <CloseOutlined /> Remove
+                            </Button>
+                        </Popconfirm >
+
                     </>
                 );
             },
@@ -114,13 +110,13 @@ const VoucherView: React.FC = () => {
             <div className="row">
                 <div className="col-lg-12 d-flex align-items-stretch">
                     <div className="card w-100">
-                        <div className="card-body mt-5" style={{ height: "100vh" }}>
-                            <h5 className="card-title fw-semibold mb-4">Mã giảm giá</h5>
+                        <div className="card-body" style={{ paddingTop: "70px" }}>
+                            <h5 className="card-title fw-semibold ">Mã giảm giá</h5>
                             <a className="text-white" href="/admin/voucher/add">
                                 <button type="button" className="btn btn-success m-1">Thêm</button>
                             </a>
                             <div className="col-lg-12 d-flex align-items-stretch">
-                                
+
                             </div>
                             <div className="table-responsive">
                                 <Table dataSource={dataSource} columns={columns} />

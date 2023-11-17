@@ -57,6 +57,7 @@ const Index = () => {
       filteredDataDT = dataDTResult;
       filteredDataDT = filteredDataDT.filter((itemm) => filteredData?.find((item) => item._id == itemm.product_id)?._id)
       setDataDTToRender(filteredDataDT)
+
     }
   };
 
@@ -118,7 +119,8 @@ const Index = () => {
                   100 - (item.price_sale / item.price) * 100
                 );
                 return (
-                  <div className="product col-xxl-3 border-2 col-xl-4 col-lg-4 col-sm-6 col-12 p-2">
+
+                  <div className="product col-xxl-3 border-2 col-xl-3 col-lg-4 col-sm-6 col-12 p-2">
                     <div className="card product-main">
                       <a
                         href={"/product/" + item._id + "/detail"}
@@ -144,10 +146,10 @@ const Index = () => {
                           {item.price_sale > 0 ? (
                             <div className="product-price row">
                               <strong className="col-12">
-                                {item.price_sale}đ
+                                {item.price_sale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </strong>
                               <div className="d-flex">
-                                <del className="price-del">{item.price}đ</del>
+                                <del className="price-del">{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</del>
                                 <span className="product-discount">
                                   -{discount}%
                                 </span>
@@ -155,7 +157,7 @@ const Index = () => {
                             </div>
                           ) : (
                             <div className="product-price row">
-                              <strong className="col-12">{item.price}đ</strong>
+                              <strong className="col-12">{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</strong>
                             </div>
                           )}
                         </div>
