@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useFetchOneCartQuery, useRemoveCartDetailMutation, useUpdateCartDetailMutation } from '../../../../services/cart.service'
-import { useGetAllProductsDetailQuery } from '../../../../services/productDetail.service'
-import { useGetProductsQuery } from '../../../../services/product.service';
-import { Button, Form, Input, Modal, Popconfirm, Select, notification } from 'antd';
+import { useFetchOneCartQuery, useRemoveCartDetailMutation, useUpdateCartDetailMutation } from '../../../services/cart.service'
+import { useGetAllProductsDetailQuery } from '../../../services/productDetail.service'
+import { useGetProductsQuery } from '../../../services/product.service';
+import { Button, Popconfirm, notification } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { message as messageApi } from 'antd';
-import { Controller, useForm } from 'react-hook-form';
-import ProductSale from '../homeProduct/ProductSale';
+import { useForm } from 'react-hook-form';
+import ProductSale from '../home/homeProduct/ProductSale';
 import EditProductModal from './CartModel';
 
 const Cart = () => {
@@ -160,11 +160,9 @@ const Cart = () => {
             setValue('quantity', newQuantity);
         }
     };
-
     // Lấy ra danh sách các size và màu duy nhất từ sản phẩm đã chọn
     const targetProduct = ProductDetailUser?.filter((item) => item?.product_id === editingProduct?.product_id);
     const selectedProductSizes = [...new Set(targetProduct?.map((product) => product.size))];
-    const selectedProductColors = [...new Set(targetProduct?.map((product) => product.color))];
 
     const selectedSize = watch('size');
     const selectedColor = watch('color');
@@ -302,40 +300,6 @@ const Cart = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    {/* <Form.Item
-                                        label="Color"
-                                        name="color"
-                                        rules={[{ required: true, message: 'Vui lòng chọn màu!' }]}
-                                        className='col-xl-7 col-lg-7 col-sm-7 col-12'
-                                    >
-                                        <Controller
-                                            render={({ field }) => (
-                                                <Select {...field} style={{ width: "100%" }} className='form-control p-0'>
-                                                    {targetProduct
-                                                        ?.filter((product) => product.size === watch('size'))
-                                                        .map((product) => (
-                                                            <option key={product.color} value={product.color}>
-                                                                {product.color}
-                                                            </option>
-                                                        ))}
-                                                </Select>
-                                            )}
-                                            name="color"
-                                            control={control}
-                                        />
-                                    </Form.Item>
-                                    <Form.Item
-                                        label="quantity"
-                                        name="quantity"
-                                        rules={[{ required: true, message: 'Vui lòng nhập số lượng!' }]}
-                                    >
-                                        <Controller
-                                            name="quantity"
-                                            control={control}
-                                            defaultValue={editingProduct?.quantity || ''}
-                                            render={({ field }) => <Input {...field} placeholder="quantity" />}
-                                        />
-                                    </Form.Item> */}
                                 </tbody>
                             </table>
                         </div>

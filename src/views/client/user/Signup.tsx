@@ -7,7 +7,7 @@ import axios from 'axios';
 import { IAuth } from '../../../types/user';
 
 const Signup = () => {
-    const [createUserSignup, { isLoading, isError }] = useSignUpMutation();
+    const [createUserSignup] = useSignUpMutation();
     const navigate = useNavigate();
     const { data: users } = useFetchUserQuery();
     const {
@@ -129,9 +129,6 @@ const Signup = () => {
                                     // noValidate="novalidate"
                                     onSubmit={handleSubmit(submitSignup)}
                                 >
-                                    <label htmlFor="fullName" className="form-label col-md-1 ">
-                                        {errors.image && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
-                                    </label>
                                     <div className=" col-md-11 " style={{ display: "flex", justifyContent: "space-between" }}>
                                         <div className="form-group mb-3" style={{ width: "50%" }}>
                                             <label htmlFor="project-image">Thêm ảnh đại diện cho bạn </label>
@@ -153,7 +150,7 @@ const Signup = () => {
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
                                         {errors.fullName && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
                                     </label>
-                                    <div className="col-md-5 form-group mb-3">
+                                    <div className="col-md-11 form-group mb-3">
                                         <input
                                             type="text"
                                             className="form-control"
@@ -162,32 +159,6 @@ const Signup = () => {
                                             {...register("fullName", { required: true })}
                                         />
                                     </div>
-                                    <label htmlFor="fullName" className="form-label col-md-1 ">
-                                        {errors.userName && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
-                                    </label>
-                                    <div className="col-md-5 form-group mb-3">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="userName"
-                                            placeholder="Nhập tên người dùng"
-                                            {...register("userName",
-                                                { required: true })}
-                                        />
-                                    </div>
-                                    {/* <label htmlFor="fullName" className="form-label col-md-1 ">
-                                        {errors.gender && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
-                                    </label>
-                                    <div className="col-md-11 form-group mb-3">
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="gender"
-                                            placeholder="Nhập address"
-                                            {...register("gender",
-                                                { required: true })}
-                                        />
-                                    </div> */}
                                     <label htmlFor="fullName" className="form-label col-md-1 ">
                                         {errors.email && <span className="error-message" style={{ color: "red", lineHeight: "60px", paddingLeft: "20px" }}>*</span>}
                                     </label>

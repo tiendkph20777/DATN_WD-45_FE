@@ -20707,4 +20707,19 @@ ul {
     .reset-button {
       margin-left: 8px;
     }
-  
+
+    .color-buttons .color-button.selected-size {
+        opacity: 1;
+      }
+      
+      .color-buttons .color-button:not(.selected-size) {
+        opacity: 0.2;
+        cursor: not-allowed;
+      }
+      
+      .color-buttons .color-button.active {
+        border: 2px solid blue; 
+      }
+  .custom-card {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}

@@ -87,141 +87,126 @@ const ProductAdd: React.FC = () => {
       range: "Không là số âm",
     },
   };
+  const handleReset = () => {
+    form.resetFields(); // Đặt lại tất cả các trường trong form
+    setImage(""); // Đặt lại trạng thái của ảnh
+  };
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="card-body">
-          <h5 className="card-title fw-semibold mb-4">Thêm Sản Phẩm</h5>
-          <Form
-            form={form}
-            name="validate_other"
-            {...formItemLayout}
-            onFinish={onFinish}
-            initialValues={{
-              "input-number": 3,
-              "checkbox-group": ["A", "B"],
-              rate: 3.5,
-              "color-picker": null,
-            }}
-            style={{ maxWidth: 600 }}
-            validateMessages={validateMessages}
-          >
-            <Form.Item
-              label="Category"
-              name="brand_id"
-              rules={[
-                { required: true, message: "Vui lòng chọn thương hiệu!" },
-              ]}
-            >
-              <Select placeholder="Thương Hiệu">
-                {categories?.map((category) => (
-                  <Option key={category._id} value={category._id}>
-                    {category.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Tên sản phẩm"
-              name="name"
-              rules={[
-                { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                { min: 3, message: "ít nhất 3 ký tự" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Giá niêm yết"
-              name="price"
-              rules={[
-                {
-                  required: true,
-                  type: "number",
-                  message: "Phải nhập vào là 1 số",
-                },
-              ]}
-            >
-              <InputNumber />
-            </Form.Item>
-            <Form.Item
-              label="Giá bán"
-              name="price_sale"
-              rules={[
-                {
-                  required: true,
-                  type: "number",
-                  message: "Phải nhập vào là 1 số",
-                },
-              ]}
-            >
-              <InputNumber />
-            </Form.Item>
-
-            <Form.Item
-              label="Ảnh"
-              name="images"
-              id="preview-image"
-              required
-              rules={[
-                { required: true, message: "Vui lòng chọn ít nhất 1 ảnh!" },
-                {
-                  validator: (_, value) =>
-                    value
-                      ? Promise.resolve()
-                      : Promise.reject("Please select an image!"),
-                },
-              ]}
-              valuePropName="file"
-            >
-              <div>
-                <div className="image-upload">
-                  <label htmlFor="file-input">
-                    <i className="bx bx-image-add"></i>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title fw-semibold mb-4">Thêm Sản Phẩm</h5>
+              <Form action="" method="post" onFinish={onFinish}>
+                <div class="mb-3">
+                  <label for="productCategory" class="form-label">
+                    Thương Hiệu
+                  </label>
+                  <select
+                    id="productCategory"
+                    name="brand_id"
+                    class="form-select"
+                    required
+                  >
+                    <option disabled selected>
+                      [Chọn thương hiệu]
+                    </option>
+                    {categories?.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="productName" class="form-label">
+                    Tên sản phẩm
                   </label>
                   <input
-                    id="file-input"
-                    type="file"
-                    onChange={(e: any) => setImage(e.target.files[0])}
+                    type="text"
+                    name="name"
+                    class="form-control"
+                    id="productName"
+                    required
                   />
                 </div>
-                <img src="" alt="" id="preview-image"></img>
-              </div>
-            </Form.Item>
-            {/* <Form.Item label="Nội dung" name="content">
-                            <TextArea rows={4} />
-                        </Form.Item> */}
-            <Form.Item
-              label="Mô tả sản phẩm"
-              name="description"
-              rules={[
-                { required: true, message: "Vui lòng nhập mô tả sản phẩm!" },
-                { min: 3, message: "ít nhất 3 ký tự" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Nội dung"
-              name="content"
-              rules={[
-                { required: true, message: "Vui lòng nhập nôi dung sản phẩm!" },
-              ]}
-            >
-              <TextArea rows={4} />
-            </Form.Item>
-            <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-              <Space>
-                <Button type="primary" htmlType="submit">
-                  Thêm
-                </Button>
-
-                <Button htmlType="reset">reset</Button>
-              </Space>
-            </Form.Item>
-          </Form>
+                <div class="mb-3">
+                  <label for="productPrice" class="form-label">
+                    Giá niêm yết
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    class="form-control"
+                    id="productPrice"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="productSalePrice" class="form-label">
+                    Giá bán
+                  </label>
+                  <input
+                    type="number"
+                    name="price_sale"
+                    class="form-control"
+                    id="productSalePrice"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="productImage" class="form-label">
+                    Ảnh sản phẩm
+                  </label>
+                  <input
+                    type="file"
+                    name="images"
+                    class="form-control"
+                    id="productImage"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="productDescription" class="form-label">
+                    Mô tả sản phẩm
+                  </label>
+                  <textarea
+                    name="description"
+                    id="productDescription"
+                    cols="30"
+                    rows="5"
+                    class="w-100 form-control p-2"
+                    required
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="productContent" class="form-label">
+                    Nội dung sản phẩm
+                  </label>
+                  <textarea
+                    name="content"
+                    id="productContent"
+                    cols="30"
+                    rows="5"
+                    class="w-100 form-control p-2"
+                    required
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <button type="submit" class="btn btn-primary">
+                    Thêm
+                  </button>
+                  <button
+                    type="reset"
+                    class="btn btn-secondary"
+                    onClick={handleReset}
+                  >
+                    Reset
+                  </button>
+                </div>
+              </Form>
+            </div>
+          </div>
         </div>
       </div>
     </div>

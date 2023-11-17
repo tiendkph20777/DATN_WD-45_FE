@@ -149,10 +149,12 @@ const TheHeader = () => {
                                     <img src="/src/assets/images/cart.svg" alt="" className="cart-icon" />
                                     <span className="count-cart">{cartlength}</span>
                                 </Link>
-                                <div className="login d-block align-items-center" id="sing">
+                                <div className="login d-block align-items-center mr-8" id="sing">
                                     {isLoggedIn ? (
                                         <div className="dropdown">
-                                            <button className="btn btn1">{user?.userName}</button>
+                                            {/* <button className="btn btn1"> */}
+                                            <img src={user?.image} alt="Lỗi ảnh" width={40} height={40} style={{ borderRadius: "50%" }} />
+                                            {/* </button> */}
                                             <div className="dropdown-content" style={{ width: "100px", borderRadius: "10px" }}>
                                                 <Link to="/profile" className='link1'>
                                                     <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512" style={{ margin: "5px" }}>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, Input, Modal, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery } from '../../../../services/checkout.service';
-import { useGetAllProductsDetailQuery } from '../../../../services/productDetail.service';
 import OrderDetails from '../OrderDetails';
 
 const Abortorder: React.FC = () => {
@@ -15,8 +14,7 @@ const Abortorder: React.FC = () => {
         setOpen(false);
     };
     ///////
-    const { data: orderDa } = useFetchCheckoutQuery()
-    const { data: proDetail } = useGetAllProductsDetailQuery()
+    const { data: orderDa, isLoading } = useFetchCheckoutQuery()
     const [roleMane, setRoleMane] = useState<any>({});
 
     const handleEditClick = (id: string) => {
@@ -30,12 +28,16 @@ const Abortorder: React.FC = () => {
     const handleFullNameSearchChange = (value: string) => {
         setSearchFullName(value.toLowerCase());
     };
-    const nonSuccessfulOrder = orderDa?.map((order, index) => {
+    const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
+        const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
+        const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
         const totals = order.products.reduce((acc: any, product: any) => acc + (product.total || 0), 0);
         return {
             ...order,
             index: index + 1,
             totals,
+            date: date,
+            datehis: datehis,
         };
     });
     const successfulOrders = nonSuccessfulOrder
@@ -43,7 +45,9 @@ const Abortorder: React.FC = () => {
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
         ?.map((order, index) => ({ ...order, index: index + 1 }));
     // console.log(successfulOrders)
-
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
     const columns: ColumnsType<any> = [
         {
             title: '#',
@@ -83,8 +87,23 @@ const Abortorder: React.FC = () => {
         },
         {
             title: 'Ngày mua hàng',
-            dataIndex: 'dateCreate',
-            key: 'dateCreate',
+            dataIndex: 'date',
+            key: 'date',
+            render: (date: any) => (
+                <span className='container'>
+                    {date}
+                </span>
+            ),
+        },
+        {
+            title: 'Ngày hủy hàng',
+            dataIndex: 'datehis',
+            key: 'datehis',
+            render: (datehis: any) => (
+                <span className='container'>
+                    {datehis}
+                </span>
+            ),
         },
         {
             title: "Action",

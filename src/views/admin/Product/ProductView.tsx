@@ -215,6 +215,7 @@ const ProductView = () => {
                   <EditOutlined />
                 </Button>
               </Link>
+
             </div>
           </>
         );

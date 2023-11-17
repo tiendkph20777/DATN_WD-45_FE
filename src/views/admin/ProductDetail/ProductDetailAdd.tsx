@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
 import { Form, Input, Select, Button, notification } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
@@ -6,22 +7,18 @@ import { useGetProductsQuery } from "../../../services/product.service";
 import { IProducts } from "../../../types/product.service";
 const { Option } = Select;
 
-type FieldType = {
-  name?: string;
-  size?: number;
-  product_id?: string;
-  quantity?: number;
-  color?: string;
+type FormData = {
+  size: number;
+  quantity: number;
+  color: string;
 };
 
 const ProductAdd = () => {
   const { id } = useParams();
   const [addProduct] = useAddProductsDetailMutation();
   const navigate = useNavigate();
-  const [form] = Form.useForm();
-
-  const { data: productData, refetch: refetchProductData } =
-    useGetProductsQuery();
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
+  const { data: productData, refetch: refetchProductData } = useGetProductsQuery();
 
   useEffect(() => {
     if (productData && id) {
@@ -30,19 +27,16 @@ const ProductAdd = () => {
       );
 
       if (selectedProduct) {
-        form.setFieldsValue({ product_id: selectedProduct._id });
+        setValue("product_id", selectedProduct._id);
       }
     }
-  }, [productData, id, form]);
+  }, [productData, id, setValue]);
 
-  const onFinish = async (values) => {
+  const onSubmit: SubmitHandler<FormData> = async (values) => {
     try {
-      
       const response = await addProduct(values);
       if (response.data) {
         console.log("Sản phẩm đã được thêm thành công");
-
-        form.resetFields();
 
         notification.success({
           message: "Success",
@@ -52,7 +46,6 @@ const ProductAdd = () => {
         handleAdditionalTasks(response.data);
       }
       const productId = values.product_id;
-      // console.log('New product ID:', productId);
       navigate(`/admin/product/detail/${productId}`);
     } catch (error) {
       console.error("Lỗi khi thêm sản phẩm", error);
@@ -70,77 +63,96 @@ const ProductAdd = () => {
     );
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
-
   return (
-    <div className="container mt-5 custom-container">
-      <div className="text-center">
-        <h1 className="page-title">Thêm Chi Tiết Sản Phẩm</h1>
-      </div>
-      <div className="form-container mt-3">
+    <div className="container-fluid">
+      <div className="row">
         <div className="col-md-6 offset-md-3">
-          <Form
-            form={form}
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            style={{ maxWidth: 600 }}
-            initialValues={{ remember: true }}
-            autoComplete="off"
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            className="custom-form"
-          >
-            <Form.Item label="Tên" name="product_id">
-              <Select
-                className=""
-                placeholder="Chọn Sản Phẩm"
-                defaultValue={id}
+          <div className="card custom-card">
+            <div className="card-body">
+              <h5 className="card-title fw-semibold mb-4">
+                Thêm Chi Tiết Sản Phẩm
+              </h5>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="custom-form"
               >
-                {productData &&
-                  productData.map((product) => (
-                    <Select.Option key={product._id} value={product._id}>
-                      {product.name}
-                    </Select.Option>
-                  ))}
-              </Select>
-            </Form.Item>
+                <div className="mb-3">
+                  <label htmlFor="productName" className="form-label">
+                    Tên
+                  </label>
+                  <select
+                    className="form-select"
+                    defaultValue={id}
+                    {...register("product_id")}
+                  >
+                    {productData &&
+                      productData.map((product) => (
+                        <option key={product._id} value={product._id}>
+                          {product.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
 
-            <Form.Item
-              label="Size"
-              name="size"
-              rules={[{ required: true, message: "Nhập Size Sản Phẩm" }]}
-            >
-              <Input type="number" className="form-control" />
-            </Form.Item>
+                <div className="mb-3">
+                  <label htmlFor="productSize" className="form-label">
+                    Size
+                  </label>
+                  <input
+                    type="number"
+                    id="size"
+                    {...register("size", { required: true })}
+                    className={`form-control ${errors.size ? "is-invalid" : ""}`}
+                  />
+                  {errors.size && (
+                    <div id="emailHelp" className="form-text text-danger">
+                      {errors.size.message}
+                    </div>
+                  )}
+                </div>
 
-            <Form.Item
-              label="Quantity"
-              name="quantity"
-              rules={[{  message: "Nhập Số Lượng Sản Phẩm" }]}
-            >
-              <Input type="number" className="form-control" />
-            </Form.Item>
+                <div className="mb-3">
+                  <label htmlFor="productQuantity" className="form-label">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    {...register("quantity", { required: true })}
+                    className={`form-control ${errors.quantity ? "is-invalid" : ""}`}
+                  />
+                  {errors.quantity && (
+                    <div id="emailHelp" className="form-text text-danger">
+                      {errors.quantity.message}
+                    </div>
+                  )}
+                </div>
 
-            <Form.Item
-              label="Color"
-              name="color"
-              rules={[{ required: true, message: "Nhập màu sản phẩm" }]}
-            >
-              <Input className="form-control" />
-            </Form.Item>
+                <div className="mb-3">
+                  <label htmlFor="productColor" className="form-label">
+                    Color
+                  </label>
+                  <input
+                    {...register("color")}
+                    className={`form-control ${errors.color ? "is-invalid" : ""}`}
+                  />
+                  {errors.color && (
+                    <div id="emailHelp" className="form-text text-danger">
+                      {errors.color.message}
+                    </div>
+                  )}
+                </div>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                Thêm
-              </Button>
-              <Button htmlType="reset" className="reset-button">
-                Reset
-              </Button>
-            </Form.Item>
-          </Form>
+                <div className="mb-3">
+                  <Button type="primary" htmlType="submit">
+                    Thêm
+                  </Button>
+                  <Button type="reset" htmlType="reset" className="reset-button">
+                    Reset
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>

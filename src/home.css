@@ -275,6 +275,20 @@
   z-index: 1;
 }
 
+.product-sale {
+  width: 100%;
+  height: 4em;
+  background: url('/src/assets/images/sales/sale.png') no-repeat;
+  position: absolute;
+  top: 5%;
+  right: -70%;
+  max-width: 100%;
+  min-height: 60px;
+  background-size: contain;
+  z-index: 1;
+}
+
+
 .product-new {
   width: 100%;
   height: 4em;
@@ -340,7 +354,7 @@
 }
 
 .product-image img {
-  height: 400px;
+  height: 300px;
   transition: transform 0.3s ease;
   padding-bottom: 50%;
   display: inline-block;
@@ -13084,7 +13098,7 @@ fieldset:disabled .btn {
 }
 
 .main-header {
-  padding-top: 20px;
+  padding-top: 5px;
   transition: all 0.5s ease;
   z-index: 99;
   background-color: white;
@@ -13719,7 +13733,7 @@ fieldset:disabled .btn {
 }
 
 .awasome-feature .row {
-  padding-top: 150px;
+  padding-top: 100px;
 }
 
 .awasome-feature .row .feature-card img {

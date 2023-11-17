@@ -19,10 +19,10 @@ import Signup from "../views/client/user/Signup";
 import UserView from "../views/admin/User/UserView";
 import UserUpdate from "../views/admin/User/UserUpdate";
 import ProductDetail from "../views/client/product/ProductDetail";
-import Cart from "../views/client/home/Cart/Cart";
+import Cart from "../views/client/Cart/Cart";
 import CheckOut from "../views/client/home/CheckOut";
-import Blog from "../views/client/home/Blog";
-import BlogDetail from "../views/client/home/BlogDetail";
+import Blog from "../views/client/Blog/Blog";
+import BlogDetail from "../views/client/Blog/BlogDetail";
 import Profile from "../views/client/profile/Profile";
 import { VoucherView } from "../views/admin/Voucher";
 import VoucherAdd from "../views/admin/Voucher/VoucherAdd";
@@ -36,6 +36,9 @@ import Oops404 from "../views/client/Oops404/Oops404";
 import OrderMane from "../views/admin/OrderMane/OrderMane";
 import HistoryOrder from "../views/admin/OrderMane/HistoryOrder/HistoryOrder";
 import Abortorder from "../views/admin/OrderMane/Abortorder/Abortorder";
+import Ordersuccess from "../views/client/home/ordersuccess";
+import historyOrder from "../views/client/profile/orderhistory";
+import Orderhistory from "../views/client/profile/orderhistory";
 
 const routes: RouteObject[] = [
     {
@@ -157,6 +160,14 @@ const routes: RouteObject[] = [
             {
                 path: 'profile',
                 element: <Profile />
+            },
+            {
+                path:'ordersuccess',
+                element:<Ordersuccess/>
+            },
+            {
+                path:'orderhistory',
+                element:<Orderhistory/>
             },
         ]
     },
