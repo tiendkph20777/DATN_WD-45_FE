@@ -24,6 +24,8 @@ const VoucherView: React.FC = () => {
                 message: "Success",
                 description: "Xóa voucher thành công!",
             });
+            window.location.reload();
+             
         } catch (error) {
             // Xử lý lỗi nếu cần
             console.error("Error deleting product", error);

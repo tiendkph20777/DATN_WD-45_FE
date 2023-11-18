@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Button, Input, Modal, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery } from '../../../../services/checkout.service';
-import OrderDetails from '../OrderDetails';
+import OrderDetails from './OrderDetails';
+import TopUserPurchase from '../../../../components/main/TopUserPurchase';
+import { useFetchOneUserQuery } from '../../../../services/user.service';
 
-const HistoryOrder: React.FC = () => {
+const History: React.FC = () => {
     /////// modal
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -41,11 +43,13 @@ const HistoryOrder: React.FC = () => {
             datehis: datehis,
         };
     });
-
+    const profileUser = JSON.parse(localStorage.getItem("user")!);
+    const idUs = profileUser?.user;
+    const { data: usersOne } = useFetchOneUserQuery(idUs)
     const successfulOrders = nonSuccessfulOrder
+        ?.filter((order) => order.user_id === usersOne?._id)
         ?.filter((order: any) => order.status === 'Giao hàng thành công')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     // console.log(successfulOrders)
@@ -110,7 +114,7 @@ const HistoryOrder: React.FC = () => {
             ),
         },
         {
-            title: "Action",
+            title: "Xem chi tiết",
             dataIndex: '',
             key: 'action',
             render: (record: any) => (
@@ -125,27 +129,32 @@ const HistoryOrder: React.FC = () => {
     ];
 
     return (
-        <div style={{ paddingTop: "70px" }}>
-            <Input
-                placeholder="Search by full name"
-                style={{ width: 400, marginBottom: 16, marginLeft: 30 }}
-                onChange={(e) => handleFullNameSearchChange(e.target.value)}
-            />
-            <Table columns={columns} dataSource={successfulOrders} />
-            <Modal
-                title="Chi tiết đơn hàng"
-                open={open}
-                onOk={hideModal}
-                onCancel={hideModal}
-                okText="ok"
-                cancelText="cancel"
-                width={1000}
-                style={{ top: 20 }}
-            >
-                <OrderDetails roleMane={roleMane} />
-            </Modal>
-        </div>
+        <section className="our-team position-relative">
+            <div className="container">
+                <div className="d-flex justify-content-between">
+                    <div className="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+                        data-sidebar-position="fixed" data-header-position="fixed">
+                        <TopUserPurchase />
+                    </div>
+                </div>
+                <div>
+                    <Table columns={columns} dataSource={successfulOrders} />
+                    <Modal
+                        title="Chi tiết đơn hàng"
+                        open={open}
+                        onOk={hideModal}
+                        onCancel={hideModal}
+                        okText="ok"
+                        cancelText="cancel"
+                        width={1000}
+                        style={{ top: 20 }}
+                    >
+                        <OrderDetails roleMane={roleMane} />
+                    </Modal>
+                </div>
+            </div>
+        </section>
     )
 };
 
-export default HistoryOrder;
+export default History;

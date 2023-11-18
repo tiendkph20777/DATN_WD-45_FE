@@ -37,8 +37,13 @@ import OrderMane from "../views/admin/OrderMane/OrderMane";
 import HistoryOrder from "../views/admin/OrderMane/HistoryOrder/HistoryOrder";
 import Abortorder from "../views/admin/OrderMane/Abortorder/Abortorder";
 import Ordersuccess from "../views/client/home/ordersuccess";
-import historyOrder from "../views/client/profile/orderhistory";
+import History from "../views/client/profile/userpurchase/history";
 import Orderhistory from "../views/client/profile/orderhistory";
+import Purchase from "../views/client/profile/userpurchase/purchase";
+import Shipway from "../views/client/profile/userpurchase/shipway";
+import Transport from "../views/client/profile/userpurchase/transport";
+import Receive from "../views/client/profile/userpurchase/receive";
+import Canceled from "../views/client/profile/userpurchase/canceled";
 
 const routes: RouteObject[] = [
     {
@@ -70,13 +75,13 @@ const routes: RouteObject[] = [
             },
             // Product Detail
             {
-                path: 'product/detail', element: <ProductDetailView />
+                path: 'product/detail/:id', element: <ProductDetailView />
             },
             {
-                path: 'product/detail/add', element: <ProductDetailAdd />
+                path: 'product/detail/add/:id', element: <ProductDetailAdd />
             },
             {
-                path: 'product/detail/:idProduct/edit', element: <ProductProductEdit />
+                path: 'product/detail/:idProduct/edit/:idProduct', element: <ProductProductEdit />
             },
             // Comment
             {
@@ -162,13 +167,39 @@ const routes: RouteObject[] = [
                 element: <Profile />
             },
             {
-                path:'ordersuccess',
-                element:<Ordersuccess/>
+                path: 'ordersuccess',
+                element: <Ordersuccess />
+            },
+            //user purchase
+            {
+                path: 'orderhistory',
+                element: <Orderhistory />
             },
             {
-                path:'orderhistory',
-                element:<Orderhistory/>
+                path: 'purchase',
+                element: <Purchase />
             },
+            {
+                path: 'receive',
+                element: <Receive />
+            },
+            {
+                path: 'transport',
+                element: <Transport />
+            },
+            {
+                path: 'shipway',
+                element: <Shipway />
+            },
+            {
+                path: 'history',
+                element: <History />
+            },
+            {
+                path: 'canceled',
+                element: <Canceled />
+            },
+
         ]
     },
     {

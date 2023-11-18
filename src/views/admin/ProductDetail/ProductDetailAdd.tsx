@@ -1,115 +1,160 @@
-import { Button, Form, Input, notification,Select } from "antd";
-import { IProductDetail } from "../../../types/product";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useForm, SubmitHandler, FieldValues } from "react-hook-form";
+import { Form, Input, Select, Button, notification } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
 import { IProducts } from "../../../types/product.service";
+const { Option } = Select;
 
-
-type FieldType = {
-  name?: string;
-  size?: number;
-  product_id?: string;
-  quantity?: number;
-  color?: string;
+type FormData = {
+  size: number;
+  quantity: number;
+  color: string;
 };
 
 const ProductAdd = () => {
+  const { id } = useParams();
   const [addProduct] = useAddProductsDetailMutation();
   const navigate = useNavigate();
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<FormData>();
+  const { data: productData, refetch: refetchProductData } = useGetProductsQuery();
 
-  const { data:productData } = useGetProductsQuery()
-  console.log(productData)
+  useEffect(() => {
+    if (productData && id) {
+      const selectedProduct = productData.find(
+        (product: IProducts) => product._id === id
+      );
 
-  const onFinish = (values: IProductDetail) => {
-    
-    values.product_id = values.product_id?.toString();
-    addProduct(values)
-      .unwrap()
-      .then(() => {
+      if (selectedProduct) {
+        setValue("product_id", selectedProduct._id);
+      }
+    }
+  }, [productData, id, setValue]);
+
+  const onSubmit: SubmitHandler<FormData> = async (values) => {
+    try {
+      const response = await addProduct(values);
+      if (response.data) {
+        console.log("Sản phẩm đã được thêm thành công");
+
         notification.success({
           message: "Success",
-          description: "Thêm Chi Tiết Sản Phẩm Thành Công!",
+          description: "Sản phẩm đã được thêm thành công!",
         });
-        navigate("/admin/product/detail");
-      })
-      .catch((error) => {
-        console.error("Error adding product:", error);
+
+        handleAdditionalTasks(response.data);
+      }
+      const productId = values.product_id;
+      navigate(`/admin/product/detail/${productId}`);
+    } catch (error) {
+      console.error("Lỗi khi thêm sản phẩm", error);
+      notification.error({
+        message: "Error",
+        description: "Thêm sản phẩm không thành công. Vui lòng thử lại!",
       });
+    }
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+  const handleAdditionalTasks = (productData) => {
+    console.log(
+      "Thực hiện các tác vụ bổ sung với dữ liệu sản phẩm",
+      productData
+    );
   };
 
   return (
-    <div >
-      <h1 style={{paddingTop:"200px"}}>Thêm Chi Tiết Sản Phẩm</h1>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        initialValues={{ remember: true }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-6 offset-md-3">
+          <div className="card custom-card">
+            <div className="card-body">
+              <h5 className="card-title fw-semibold mb-4">
+                Thêm Chi Tiết Sản Phẩm
+              </h5>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="custom-form"
+              >
+                <div className="mb-3">
+                  <label htmlFor="productName" className="form-label">
+                    Tên
+                  </label>
+                  <select
+                    className="form-select"
+                    defaultValue={id}
+                    {...register("product_id")}
+                  >
+                    {productData &&
+                      productData.map((product) => (
+                        <option key={product._id} value={product._id}>
+                          {product.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
 
-        <Form.Item
-          label="Name"
-          name="product_id"
-          // rules={[{ required: true, message: "Chọn Sản Phẩm" }]}
-        >
-          <Select placeholder="Chọn Sản Phẩm">
-            {productData &&
-              productData?.map((product:IProducts) => (
-                <Option key={product._id} value={product._id}>
-                  {product.name}
-                  
-                </Option>
-              ))}
-          </Select>
-        </Form.Item>
+                <div className="mb-3">
+                  <label htmlFor="productSize" className="form-label">
+                    Size
+                  </label>
+                  <input
+                    type="number"
+                    id="size"
+                    {...register("size", { required: true })}
+                    className={`form-control ${errors.size ? "is-invalid" : ""}`}
+                  />
+                  {errors.size && (
+                    <div id="emailHelp" className="form-text text-danger">
+                      {errors.size.message}
+                    </div>
+                  )}
+                </div>
 
-        {/* <Form.Item
-          label="product_id"
-          name="product_id"
-          rules={[{ required: true, message: "Nhập id Product" }]}
-        >
-          <Input />
-        </Form.Item> */}
+                <div className="mb-3">
+                  <label htmlFor="productQuantity" className="form-label">
+                    Quantity
+                  </label>
+                  <input
+                    type="number"
+                    {...register("quantity", { required: true })}
+                    className={`form-control ${errors.quantity ? "is-invalid" : ""}`}
+                  />
+                  {errors.quantity && (
+                    <div id="emailHelp" className="form-text text-danger">
+                      {errors.quantity.message}
+                    </div>
+                  )}
+                </div>
 
+                <div className="mb-3">
+                  <label htmlFor="productColor" className="form-label">
+                    Color
+                  </label>
+                  <input
+                    {...register("color")}
+                    className={`form-control ${errors.color ? "is-invalid" : ""}`}
+                  />
+                  {errors.color && (
+                    <div id="emailHelp" className="form-text text-danger">
+                      {errors.color.message}
+                    </div>
+                  )}
+                </div>
 
-        <Form.Item<FieldType>
-          label="Size"
-          name="size"
-          rules={[{ required: true, message: "Nhập Size Sản Phẩm" }]}
-        >
-          <Input type="number" />
-        </Form.Item>
-        <Form.Item
-          label="quantity"
-          name="quantity"
-          rules={[{ required: true, message: "Nhập Số Lượng Sản Phẩm" }]}
-        >
-          <Input />
-        </Form.Item>
-        
-        <Form.Item
-          label="Color"
-          name="color"
-          rules={[{ required: true, message: "Nhập màu sản phẩm" }]}
-        >
-          <Input />
-        </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit" style={{ backgroundColor: "blue" }}>
-            Thêm
-          </Button>
-          <Button htmlType="reset">reset</Button>
-        </Form.Item>
-      </Form>
+                <div className="mb-3">
+                  <Button type="primary" htmlType="submit">
+                    Thêm
+                  </Button>
+                  <Button type="reset" htmlType="reset" className="reset-button">
+                    Reset
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

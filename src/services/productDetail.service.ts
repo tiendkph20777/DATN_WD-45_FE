@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { IProductDetail } from "../types/product";
 
-const data = JSON.parse(localStorage.getItem('user')!);
+const data = JSON.parse(localStorage.getItem("user")!);
 const token = data?.accessToKen;
 
 const productAPIDetall = createApi({
@@ -35,8 +35,8 @@ const productAPIDetall = createApi({
 
         headers: {
           "content-type": "application/json",
-          'authorization': `Bearer ${token}`
-        }
+          authorization: `Bearer ${token}`,
+        },
       }),
       invalidatesTags: ["ProductDetail"],
     }),
@@ -49,9 +49,10 @@ const productAPIDetall = createApi({
         body: product,
         headers: {
           "content-type": "application/json",
-          'authorization': `Bearer ${token}`
-        }
+          authorization: `Bearer ${token}`,
+        },
       }),
+      invalidatesTags: ["ProductDetail"],
     }),
 
     updateProductsDetail: builder.mutation<IProductDetail, IProductDetail>({
@@ -61,8 +62,8 @@ const productAPIDetall = createApi({
         body: product,
         headers: {
           "content-type": "application/json",
-          'authorization': `Bearer ${token}`
-        }
+          authorization: `Bearer ${token}`,
+        },
       }),
       invalidatesTags: ["ProductDetail"],
     }),

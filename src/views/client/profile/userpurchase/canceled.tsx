@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Button, Input, Modal, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery } from '../../../../services/checkout.service';
-import OrderDetails from '../OrderDetails';
+import OrderDetails from './OrderDetails';
+import TopUserPurchase from '../../../../components/main/TopUserPurchase';
+import { useFetchOneUserQuery } from '../../../../services/user.service';
 
-const HistoryOrder: React.FC = () => {
+const Abortorder: React.FC = () => {
     /////// modal
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -25,14 +27,13 @@ const HistoryOrder: React.FC = () => {
     // console.log(roleMane)
     // bảng dữ liệu
     const [searchFullName, setSearchFullName] = useState<string | undefined>(undefined);
-
     const handleFullNameSearchChange = (value: string) => {
         setSearchFullName(value.toLowerCase());
     };
     const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
         const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
         const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
-        const totals = order.products.reduce((acc: number, product: any) => acc + (product.total || 0), 0);
+        const totals = order.products.reduce((acc: any, product: any) => acc + (product.total || 0), 0);
         return {
             ...order,
             index: index + 1,
@@ -41,13 +42,15 @@ const HistoryOrder: React.FC = () => {
             datehis: datehis,
         };
     });
-
+    const profileUser = JSON.parse(localStorage.getItem("user")!);
+    const idUs = profileUser?.user;
+    const { data: usersOne } = useFetchOneUserQuery(idUs)
     const successfulOrders = nonSuccessfulOrder
-        ?.filter((order: any) => order.status === 'Giao hàng thành công')
+        ?.filter((order) => order.user_id === usersOne?._id)
+        ?.filter((order: any) => order.status === 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
         ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
-
     // console.log(successfulOrders)
     if (isLoading) {
         return <div>Loading...</div>;
@@ -83,7 +86,7 @@ const HistoryOrder: React.FC = () => {
             key: 'status',
             render: (_, { status }) => (
                 <>
-                    <Tag className='py-1' color='green'>
+                    <Tag className='py-1' color='red'>
                         {status}
                     </Tag>
                 </>
@@ -100,7 +103,7 @@ const HistoryOrder: React.FC = () => {
             ),
         },
         {
-            title: 'Ngày giao hàng',
+            title: 'Ngày hủy hàng',
             dataIndex: 'datehis',
             key: 'datehis',
             render: (datehis: any) => (
@@ -110,7 +113,7 @@ const HistoryOrder: React.FC = () => {
             ),
         },
         {
-            title: "Action",
+            title: "Xem chi tiết",
             dataIndex: '',
             key: 'action',
             render: (record: any) => (
@@ -118,34 +121,39 @@ const HistoryOrder: React.FC = () => {
                     <Button type='primary' onClick={() => handleEditClick(record?._id)} >
                         Xem Chi Tiết
                     </Button>
-                    {/* </Link> */}
                 </span>
             ),
         },
     ];
 
     return (
-        <div style={{ paddingTop: "70px" }}>
-            <Input
-                placeholder="Search by full name"
-                style={{ width: 400, marginBottom: 16, marginLeft: 30 }}
-                onChange={(e) => handleFullNameSearchChange(e.target.value)}
-            />
-            <Table columns={columns} dataSource={successfulOrders} />
-            <Modal
-                title="Chi tiết đơn hàng"
-                open={open}
-                onOk={hideModal}
-                onCancel={hideModal}
-                okText="ok"
-                cancelText="cancel"
-                width={1000}
-                style={{ top: 20 }}
-            >
-                <OrderDetails roleMane={roleMane} />
-            </Modal>
-        </div>
+        <section className="our-team position-relative">
+            <div className="container">
+                <div className="d-flex justify-content-between">
+                    <div className="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+                        data-sidebar-position="fixed" data-header-position="fixed">
+                        <TopUserPurchase />
+                    </div>
+                </div>
+                <div style={{ paddingTop: "70px" }}>
+                   
+                    <Table columns={columns} dataSource={successfulOrders} />
+                    <Modal
+                        title="Chi tiết đơn hàng"
+                        open={open}
+                        onOk={hideModal}
+                        onCancel={hideModal}
+                        okText="ok"
+                        cancelText="cancel"
+                        width={1000}
+                        style={{ top: 20 }}
+                    >
+                        <OrderDetails roleMane={roleMane} />
+                    </Modal>
+                </div>
+            </div>
+        </section>
     )
 };
 
-export default HistoryOrder;
+export default Abortorder;
