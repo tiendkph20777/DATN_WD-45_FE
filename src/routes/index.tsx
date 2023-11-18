@@ -40,6 +40,10 @@ import Ordersuccess from "../views/client/home/ordersuccess";
 import History from "../views/client/profile/userpurchase/history";
 import Orderhistory from "../views/client/profile/orderhistory";
 import Purchase from "../views/client/profile/userpurchase/purchase";
+import Shipway from "../views/client/profile/userpurchase/shipway";
+import Transport from "../views/client/profile/userpurchase/transport";
+import Receive from "../views/client/profile/userpurchase/receive";
+import Canceled from "../views/client/profile/userpurchase/canceled";
 
 const routes: RouteObject[] = [
     {
@@ -176,8 +180,24 @@ const routes: RouteObject[] = [
                 element: <Purchase />
             },
             {
+                path: 'receive',
+                element: <Receive />
+            },
+            {
+                path: 'transport',
+                element: <Transport />
+            },
+            {
+                path: 'shipway',
+                element: <Shipway />
+            },
+            {
                 path: 'history',
                 element: <History />
+            },
+            {
+                path: 'canceled',
+                element: <Canceled />
             },
 
         ]

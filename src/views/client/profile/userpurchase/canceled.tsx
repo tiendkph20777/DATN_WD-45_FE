@@ -6,7 +6,7 @@ import OrderDetails from './OrderDetails';
 import TopUserPurchase from '../../../../components/main/TopUserPurchase';
 import { useFetchOneUserQuery } from '../../../../services/user.service';
 
-const History: React.FC = () => {
+const Abortorder: React.FC = () => {
     /////// modal
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -27,14 +27,13 @@ const History: React.FC = () => {
     // console.log(roleMane)
     // bảng dữ liệu
     const [searchFullName, setSearchFullName] = useState<string | undefined>(undefined);
-
     const handleFullNameSearchChange = (value: string) => {
         setSearchFullName(value.toLowerCase());
     };
     const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
         const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
         const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
-        const totals = order.products.reduce((acc: number, product: any) => acc + (product.total || 0), 0);
+        const totals = order.products.reduce((acc: any, product: any) => acc + (product.total || 0), 0);
         return {
             ...order,
             index: index + 1,
@@ -48,10 +47,10 @@ const History: React.FC = () => {
     const { data: usersOne } = useFetchOneUserQuery(idUs)
     const successfulOrders = nonSuccessfulOrder
         ?.filter((order) => order.user_id === usersOne?._id)
-        ?.filter((order: any) => order.status === 'Giao hàng thành công')
+        ?.filter((order: any) => order.status === 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
+        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
-
     // console.log(successfulOrders)
     if (isLoading) {
         return <div>Loading...</div>;
@@ -87,7 +86,7 @@ const History: React.FC = () => {
             key: 'status',
             render: (_, { status }) => (
                 <>
-                    <Tag className='py-1' color='green'>
+                    <Tag className='py-1' color='red'>
                         {status}
                     </Tag>
                 </>
@@ -104,7 +103,7 @@ const History: React.FC = () => {
             ),
         },
         {
-            title: 'Ngày giao hàng',
+            title: 'Ngày hủy hàng',
             dataIndex: 'datehis',
             key: 'datehis',
             render: (datehis: any) => (
@@ -122,7 +121,6 @@ const History: React.FC = () => {
                     <Button type='primary' onClick={() => handleEditClick(record?._id)} >
                         Xem Chi Tiết
                     </Button>
-                    {/* </Link> */}
                 </span>
             ),
         },
@@ -137,7 +135,8 @@ const History: React.FC = () => {
                         <TopUserPurchase />
                     </div>
                 </div>
-                <div>
+                <div style={{ paddingTop: "70px" }}>
+                   
                     <Table columns={columns} dataSource={successfulOrders} />
                     <Modal
                         title="Chi tiết đơn hàng"
@@ -157,4 +156,4 @@ const History: React.FC = () => {
     )
 };
 
-export default History;
+export default Abortorder;
