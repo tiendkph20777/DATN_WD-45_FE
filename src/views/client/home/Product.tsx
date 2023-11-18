@@ -53,7 +53,7 @@ const Product = () => {
                 }
             ]
     };
-    const [sliderRef0, sliderRef1] = useRefs<{ slickNext(): Function, slickPrev(): Function }>()
+    const [sliderRef] = useRefs<{ slickNext(): Function, slickPrev(): Function }>()
 
     const gotoPrev = (sliderRef: any) => {
         sliderRef?.current?.slickPrev();
@@ -101,11 +101,11 @@ const Product = () => {
                             - Sản phẩm bán chạy
                         </div>
                         <div>
-                            <button className="button_slide" onClick={() => gotoPrev(sliderRef1)}><img src="/src/assets/icons/prev.svg" /></button>
-                            <button className="button_slide" onClick={() => gotoNext(sliderRef1)}><img src="/src/assets/icons/next.svg" /></button>
+                            <button className="button_slide" onClick={() => gotoPrev(sliderRef)}><img src="/src/assets/icons/prev.svg" /></button>
+                            <button className="button_slide" onClick={() => gotoNext(sliderRef)}><img src="/src/assets/icons/next.svg" /></button>
                         </div>
                     </div>
-                    <Slider ref={sliderRef1 as any} {...settings}>
+                    <Slider ref={sliderRef as any} {...settings}>
                         {dataSourceToRender?.slice(0, 6).map((item) => {
                             return (
                                 <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
