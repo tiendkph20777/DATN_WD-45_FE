@@ -1,51 +1,48 @@
 import React, { useState } from "react";
 import { useAddProductMutation } from "../../../services/product.service";
-import {
-  Button,
-  Form,
-  InputNumber,
-  Select,
-  Space,
-  Input,
-  notification,
-} from "antd";
+import { Button, Form, Input, notification, Upload } from "antd";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import { IProducts } from "../../../types/product.service";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import TextArea from "antd/es/input/TextArea";
-const { Option } = Select;
-
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 14 },
-};
 
 const ProductAdd: React.FC = () => {
-  const [form] = Form.useForm();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm<IProducts>();
+
+  const [fileList, setFileList] = useState<any[]>([]);
   const [addProduct] = useAddProductMutation();
-  const [images, setImage] = useState("");
-  // const [messageApi, contextHolder] = message.useMessage();
   const { data: categories } = useGetBrandsQuery();
-  // const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const SubmitImage = async () => {
-    const data = new FormData();
-    const cloud_name = "ddbdu6zip";
-    const upload_preset = "vithoang";
-    data.append("file", images);
-    data.append("upload_preset", upload_preset);
-    data.append("cloud_name", cloud_name);
-    data.append("folder", "portfolio");
-    const takeData = await axios
-      .post(`https://api.cloudinary.com/v1_1/ddbdu6zip/image/upload`, data)
-      .then((data: any) => data);
-    return takeData.data.secure_url;
+    const uploadPromises = fileList.map(async (file) => {
+      const data = new FormData();
+      const cloud_name = "ddbdu6zip";
+      const upload_preset = "vithoang";
+      data.append("file", file.originFileObj);
+      data.append("upload_preset", upload_preset);
+      data.append("cloud_name", cloud_name);
+      data.append("folder", "portfolio");
+
+      const takeData = await axios
+        .post(`https://api.cloudinary.com/v1_1/ddbdu6zip/image/upload`, data)
+        .then((data: any) => data);
+
+      return takeData.data.secure_url;
+    });
+
+    return Promise.all(uploadPromises);
   };
 
-  const onFinish = async (product: IProducts) => {
-    product.images = await SubmitImage();
+  const onSubmit: SubmitHandler<IProducts> = async (product) => {
+    const fileUrls = await SubmitImage();
+    product.images = fileUrls;
     addProduct(product)
       .unwrap()
       .then(() => {
@@ -60,56 +57,36 @@ const ProductAdd: React.FC = () => {
       });
   };
 
-  // Preview image
-  const inputFile: any = document.getElementById("file-input");
-  const previewImage: any = document.getElementById("preview-image");
-
-  inputFile?.addEventListener("change", function () {
-    const file = inputFile.files[0];
-    const reader = new FileReader();
-
-    reader?.addEventListener("load", function () {
-      previewImage.src = reader.result;
-    });
-
-    if (file) {
-      reader.readAsDataURL(file);
-    } else {
-      previewImage.src = "";
-    }
-  });
-  const validateMessages = {
-    required: "Không được bỏ trống!",
-    types: {
-      number: "Phải nhập vào là một số!",
-    },
-    number: {
-      range: "Không là số âm",
-    },
+  const onFileChange = ({ fileList }: any) => {
+    setFileList(fileList);
   };
+
   const handleReset = () => {
+    setFileList([]);
+    setValue("brand_id", ""); // Đặt giá trị mặc định cho select
     form.resetFields(); // Đặt lại tất cả các trường trong form
-    setImage(""); // Đặt lại trạng thái của ảnh
   };
+
   return (
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-6 offset-md-3">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title fw-semibold mb-4">Thêm Sản Phẩm</h5>
-              <Form action="" method="post" onFinish={onFinish}>
-                <div class="mb-3">
-                  <label for="productCategory" class="form-label">
+    <div className="container-fluid">
+      <div className="row">
+        <div className="col-md-6 offset-md-3">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title fw-semibold mb-4">Thêm Sản Phẩm</h5>
+              <Form onFinish={handleSubmit(onSubmit)} className="custom-form">
+                <div className="mb-3">
+                  <label htmlFor="productCategory" className="form-label">
                     Thương Hiệu
                   </label>
                   <select
-                    id="productCategory"
-                    name="brand_id"
-                    class="form-select"
+                    {...register("brand_id", { required: true })}
+                    className={`form-select ${
+                      errors.brand_id ? "is-invalid" : ""
+                    }`}
                     required
                   >
-                    <option disabled selected>
+                    <option disabled value="">
                       [Chọn thương hiệu]
                     </option>
                     {categories?.map((category) => (
@@ -118,91 +95,119 @@ const ProductAdd: React.FC = () => {
                       </option>
                     ))}
                   </select>
+                  {errors.brand_id && (
+                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                  )}
                 </div>
-                <div class="mb-3">
-                  <label for="productName" class="form-label">
+                <div className="mb-3">
+                  <label htmlFor="productName" className="form-label">
                     Tên sản phẩm
                   </label>
                   <input
+                    {...register("name", { required: true })}
                     type="text"
-                    name="name"
-                    class="form-control"
+                    className={`form-control ${
+                      errors.name ? "is-invalid" : ""
+                    }`}
                     id="productName"
-                    required
                   />
+                  {errors.name && (
+                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                  )}
                 </div>
-                <div class="mb-3">
-                  <label for="productPrice" class="form-label">
+                <div className="mb-3">
+                  <label htmlFor="productPrice" className="form-label">
                     Giá niêm yết
                   </label>
                   <input
+                    {...register("price", {
+                      required: true,
+                      valueAsNumber: true,
+                    })}
                     type="number"
-                    name="price"
-                    class="form-control"
+                    className={`form-control ${
+                      errors.price ? "is-invalid" : ""
+                    }`}
                     id="productPrice"
-                    required
                   />
+                  {errors.price && (
+                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                  )}
                 </div>
-                <div class="mb-3">
-                  <label for="productSalePrice" class="form-label">
+                <div className="mb-3">
+                  <label htmlFor="productPrice" className="form-label">
                     Giá bán
                   </label>
                   <input
+                    {...register("price_sale", {
+                      required: true,
+                      valueAsNumber: true,
+                    })}
                     type="number"
-                    name="price_sale"
-                    class="form-control"
-                    id="productSalePrice"
-                    required
+                    className={`form-control ${
+                      errors.price ? "is-invalid" : ""
+                    }`}
+                    id="productPrice"
                   />
+                  {errors.price && (
+                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                  )}
                 </div>
-                <div class="mb-3">
-                  <label for="productImage" class="form-label">
+                <div className="mb-3">
+                  <label htmlFor="productImage" className="form-label">
                     Ảnh sản phẩm
                   </label>
-                  <input
-                    type="file"
-                    name="images"
-                    class="form-control"
-                    id="productImage"
-                  />
+                  <Upload
+                    customRequest={() => {}}
+                    onChange={onFileChange}
+                    fileList={fileList}
+                    listType="picture"
+                    beforeUpload={() => false}
+                  >
+                    <Button>Chọn ảnh</Button>
+                  </Upload>
                 </div>
-                <div class="mb-3">
-                  <label for="productDescription" class="form-label">
+                <div className="mb-3">
+                  <label htmlFor="productDescription" className="form-label">
                     Mô tả sản phẩm
                   </label>
                   <textarea
-                    name="description"
+                    {...register("description", { required: true })}
                     id="productDescription"
-                    cols="30"
-                    rows="5"
-                    class="w-100 form-control p-2"
-                    required
-                  ></textarea>
+                    cols={30}
+                    rows={5}
+                    className={`w-100 form-control p-2 ${
+                      errors.description ? "is-invalid" : ""
+                    }`}
+                  />
+                  {errors.description && (
+                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                  )}
                 </div>
-                <div class="mb-3">
-                  <label for="productContent" class="form-label">
+                <div className="mb-3">
+                  <label htmlFor="productContent" className="form-label">
                     Nội dung sản phẩm
                   </label>
                   <textarea
-                    name="content"
+                    {...register("content", { required: true })}
                     id="productContent"
-                    cols="30"
-                    rows="5"
-                    class="w-100 form-control p-2"
-                    required
-                  ></textarea>
+                    cols={30}
+                    rows={5}
+                    className={`w-100 form-control p-2 ${
+                      errors.content ? "is-invalid" : ""
+                    }`}
+                  />
+                  {errors.content && (
+                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                  )}
                 </div>
-                <div class="mb-3">
-                  <button type="submit" class="btn btn-primary">
+                <div className="mb-3">
+                  <Button type="primary" htmlType="submit">
                     Thêm
-                  </button>
-                  <button
-                    type="reset"
-                    class="btn btn-secondary"
-                    onClick={handleReset}
-                  >
+                  </Button>
+                  <Button type="default" onClick={handleReset}>
                     Reset
-                  </button>
+                  </Button>
                 </div>
               </Form>
             </div>
@@ -212,4 +217,5 @@ const ProductAdd: React.FC = () => {
     </div>
   );
 };
+
 export default ProductAdd;
