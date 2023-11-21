@@ -178,11 +178,10 @@ const ProductView = () => {
                 </Button>
               </Popconfirm>
               <Link to={`detail/${id}`}>
-                {/* Modify the Link component above to include the correct path */}
                 <Button
                   type="primary"
                   style={{
-                    backgroundColor: "green", // Change the color as needed
+                    backgroundColor: "green", 
                     margin: "4px",
                     minWidth: "4em",
                   }}
