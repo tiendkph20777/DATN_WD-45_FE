@@ -15,7 +15,7 @@ const productAPIDetall = createApi({
       query: () => `api/productdetail`,
       providesTags: ["ProductDetail"],
     }),
-    getAllsProductsDetail: builder.query<any, void>({
+    getAllsProductsDetail: builder.query<any, any>({
       query: (id: any) => `api/productdetail/${id}`,
       providesTags: ["ProductDetail"],
     }),

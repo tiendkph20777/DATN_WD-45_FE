@@ -5,7 +5,7 @@ import {
   useGetProductsQuery,
 } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
+import { useGetAllProductsDetailQuery, useGetAllsProductsDetailQuery } from "../../../services/productDetail.service";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -33,7 +33,7 @@ const ProductDetail = () => {
   const brandName = brandData?.find(
     (brand) => brand._id === prodetailData?.brand_id
   )?.name;
-  const { data: productDataDetail } = useGetAllProductsDetailQuery();
+  const { data: productDataDetail } = useGetAllsProductsDetailQuery(_id);
 
   const [productSizes, setProductSizes] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
@@ -141,6 +141,7 @@ const ProductDetail = () => {
                 user_id: profileUser,
                 quantity: quantity,
               };
+              console.log(cartItem);
               const result = await addCart(cartItem);
               messageApi.success({
                 type: "error",
@@ -157,7 +158,7 @@ const ProductDetail = () => {
           }
         });
 
-        const results = await Promise.all(filteredProducts);
+        await Promise.all(filteredProducts);
         setIsAddingToCart(false);
       }
     } else {
