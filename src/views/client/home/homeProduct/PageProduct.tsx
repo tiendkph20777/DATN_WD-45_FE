@@ -74,12 +74,14 @@ const PageProduct = () => {
                                             <div className="position-relative product-image overflow-hidden">
                                                 <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                             </div>
-                                            <div className="bg-white content-product w-100 p-2">
-                                                {/* <div className="product-detail px-3 row ">
+                                            <div className="bg-white content-product w-100 p-2 pt-4">
+                                                <div className="product-detail px-3 row ">
                                                     <div className="col-12 row px-2">
                                                         <div className="col-1 m-1 product-color color-1" />
+                                                        <div className="col-1 m-1 product-color color-2" />
+                                                        <div className="col-1 m-1 product-color color-3" />
                                                     </div>
-                                                </div> */}
+                                                </div>
                                                 <div className="product-vendor">{brandName(item)}</div>
                                                 <h4 className="product-name ellipsis">
                                                     {item.name}

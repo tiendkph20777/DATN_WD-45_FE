@@ -181,9 +181,11 @@
 .form-select-product {
   width: 150px;
   height: 40px;
-  position: relative;
-  box-sizing: border-box;
   margin: 0 5px;
+  border: none;
+  background-color: whitesmoke;
+  border-radius: 40px;
+  padding: 0 37px 0 17px;
 }
 
 .product-color {
@@ -20849,10 +20851,10 @@ label {
 ============================================================================================ */
 /* Cart Area css
 ============================================================================================ */
-.cart_area {
+/* .cart_area {
   padding-top: 30px;
   padding-bottom: 100px;
-}
+} */
 
 .cart_inner .table thead tr th {
   border-top: 0px;

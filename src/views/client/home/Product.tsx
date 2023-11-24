@@ -53,7 +53,7 @@ const Product = () => {
                 }
             ]
     };
-    const [sliderRef0, sliderRef1] = useRefs<{ slickNext(): Function, slickPrev(): Function }>()
+    const [sliderRef] = useRefs<{ slickNext(): Function, slickPrev(): Function }>()
 
     const gotoPrev = (sliderRef: any) => {
         sliderRef?.current?.slickPrev();
@@ -101,11 +101,11 @@ const Product = () => {
                             - Sản phẩm bán chạy
                         </div>
                         <div>
-                            <button className="button_slide" onClick={() => gotoPrev(sliderRef1)}><img src="/src/assets/icons/prev.svg" /></button>
-                            <button className="button_slide" onClick={() => gotoNext(sliderRef1)}><img src="/src/assets/icons/next.svg" /></button>
+                            <button className="button_slide" onClick={() => gotoPrev(sliderRef)}><img src="/src/assets/icons/prev.svg" /></button>
+                            <button className="button_slide" onClick={() => gotoNext(sliderRef)}><img src="/src/assets/icons/next.svg" /></button>
                         </div>
                     </div>
-                    <Slider ref={sliderRef1 as any} {...settings}>
+                    <Slider ref={sliderRef as any} {...settings}>
                         {dataSourceToRender?.slice(0, 6).map((item) => {
                             return (
                                 <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
@@ -115,10 +115,12 @@ const Product = () => {
                                                 <img src={item.images[0]} alt="" width="100%" height="300" className=" inset-0 object-cover" />
                                                 <div className="product-hot" />
                                             </div>
-                                            <div className="bg-white content-product w-100 p-2">
+                                            <div className="bg-white content-product w-100 p-2 pt-4">
                                                 <div className="product-detail px-3 row ">
                                                     <div className="col-12 row px-2">
                                                         <div className="col-1 m-1 product-color color-1" />
+                                                        <div className="col-1 m-1 product-color color-2" />
+                                                        <div className="col-1 m-1 product-color color-3" />
                                                     </div>
                                                 </div>
                                                 <div className="product-vendor">{brandName(item)}</div>

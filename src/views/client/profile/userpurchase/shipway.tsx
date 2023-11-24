@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal, Select, Table, Tag, Space, Input } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useFetchCheckoutQuery, useUpdateCheckoutMutation } from '../../../services/checkout.service';
+import { useFetchCheckoutQuery, useUpdateCheckoutMutation } from '../../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
 import { message as messageApi } from 'antd';
+import TopUserPurchase from '../../../../components/main/TopUserPurchase';
+import { useFetchOneUserQuery } from '../../../../services/user.service';
 
-const OrderMane: React.FC = () => {
+const Shipway: React.FC = () => {
     /////// modal chi tiết
     const [open, setOpen] = useState(false);
     const showModal = () => {
@@ -23,6 +25,10 @@ const OrderMane: React.FC = () => {
         setIsModalOpen(false);
     };
     ///////
+    const profileUser = JSON.parse(localStorage.getItem("user")!);
+    const idUs = profileUser?.user;
+    const { data: usersOne } = useFetchOneUserQuery(idUs)
+    
     const { data: orderDa, isLoading, isFetching } = useFetchCheckoutQuery()
     const [updateCheck] = useUpdateCheckoutMutation()
     const [roleMane, setRoleMane] = useState<any>({});
@@ -54,8 +60,6 @@ const OrderMane: React.FC = () => {
             totals,
         };
     });
-
-
     // console.log(searchResult)
     // console.log(nonSuccessfulOrder);
     const onSearch = (value: string) => {
@@ -87,12 +91,9 @@ const OrderMane: React.FC = () => {
     };
     // console.log(searchResult)
 
-    // 
-    const [cancellationOrderId, setCancellationOrderId] = useState<string | null>(null);
-    const [cancellationOrderStatus, setCancellationOrderStatus] = useState<string | null>(null);
-
     const nonSuccessfulOrders = nonSuccessfulOrder
-        ?.filter((order: any) => order.status !== 'Giao hàng thành công' && order.status !== 'Hủy đơn hàng')
+        ?.filter((order) => order.user_id === usersOne?._id)
+        ?.filter((order: any) => order.status === 'Đang giao hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
         ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
@@ -117,8 +118,7 @@ const OrderMane: React.FC = () => {
                 await updateCheck(updatedData).unwrap();
             } else if (values.status === 'Hủy đơn hàng') {
                 setIsModalOpen(true);
-                setCancellationOrderId(id);
-                setCancellationOrderStatus(values?.status)
+                // await updateCheck(updatedData).unwrap();
             } else {
                 messageApi.success({
                     type: 'error',
@@ -137,30 +137,9 @@ const OrderMane: React.FC = () => {
             console.error("Error updating checkout status:", error);
         }
     };
-    // modal xóa
-    const onFinish1 = (value: any) => {
-        const orderId = cancellationOrderId;
-        const noteDe = {
-            _id: orderId,
-            noteCancel: value?.note,
-            status: cancellationOrderStatus,
-        }
-        updateCheck(noteDe).unwrap();
-        setIsModalOpen(false);
-        messageApi.error({
-            type: 'error',
-            content: "Đơn hàng đã bị hủy ",
-            className: 'custom-class',
-            style: {
-                marginTop: '0',
-                fontSize: "15px",
-                lineHeight: "50px"
-            },
-        });
-    };
     // bảng dữ liệu
     if (isLoading) {
-        return <div style={{ paddingTop: "70px" }}>Loading...</div>;
+        return <div>Loading...</div>;
     }
     const columns: ColumnsType<any> = [
         {
@@ -168,11 +147,6 @@ const OrderMane: React.FC = () => {
             dataIndex: 'index',
             key: 'index',
             render: (text) => <a>{text}</a>,
-        },
-        {
-            title: 'STT',
-            dataIndex: '',
-            key: '',
         },
         {
             title: 'Tên người nhận',
@@ -212,24 +186,11 @@ const OrderMane: React.FC = () => {
                                     noStyle
                                     rules={[{ required: true, message: 'Province is required' }]}
                                 >
-                                    <Select placeholder="Select province" style={{ width: "250px" }}>
-                                        {/* <Select.Option value="Đang xác nhận đơn hàng">{status}</Select.Option> */}
-                                        <Select.Option value="Đang xác nhận đơn hàng">Đang xác nhận đơn hàng</Select.Option>
-                                        <Select.Option value="Tiếp nhận đơn hàng">Tiếp nhận đơn hàng</Select.Option>
-                                        <Select.Option value="Đã giao cho đơn vị vận chuyển">Đã giao cho đơn vị vận chuyển</Select.Option>
-                                        <Select.Option value="Đang giao hàng">Đang giao hàng</Select.Option>
-                                        <Select.Option value="Giao hàng thành công">Giao hàng thành công</Select.Option>
-                                        <Select.Option value="Hủy đơn hàng">Hủy đơn hàng</Select.Option>
-                                        <Select.Option value="" disabled ></Select.Option>
-                                    </Select>
+                                    <Input placeholder="Enter status" style={{ width: "250px" }} readOnly />
                                 </Form.Item>
                             </Space.Compact>
                         </Form.Item>
-                        <Form.Item label=" " colon={false}>
-                            <Button type="primary" htmlType="submit">
-                                Cập nhật
-                            </Button>
-                        </Form.Item>
+
                     </Form>
                 </>
             ),
@@ -245,7 +206,7 @@ const OrderMane: React.FC = () => {
             ),
         },
         {
-            title: "Action",
+            title: "Xem chi tiết",
             dataIndex: '',
             key: 'action',
             render: (record: any) => (
@@ -260,61 +221,46 @@ const OrderMane: React.FC = () => {
     ];
 
     return (
-        <div style={{ paddingTop: "70px" }}>
-            <Input
-                placeholder="Search by full name"
-                style={{ width: 400, marginBottom: 16, marginLeft: 30 }}
-                onChange={(e) => handleFullNameSearchChange(e.target.value)}
-            />
-            <Select
-                style={{ width: 300, margin: 16 }}
-                placeholder="Chọn trạng thái"
-                onChange={onSearch}
-                options={[
-                    { value: "", label: "All" },
-                    { value: "Đang xác nhận đơn hàng", label: "Đang xác nhận đơn hàng" },
-                    { value: "Tiếp nhận đơn hàng", label: "Tiếp nhận đơn hàng" },
-                    { value: "Đã giao cho đơn vị vận chuyển", label: "Đã giao cho đơn vị vận chuyển" },
-                    { value: "Đang giao hàng", label: "Đang giao hàng" },
-                ]} />
-            <Table columns={columns} dataSource={searchResult.length > 0 ? searchResult : nonSuccessfulOrders} />
-            {/* modal chi tiết hàng */}
-            <Modal
-                title="Chi tiết đơn hàng"
-                open={open}
-                onOk={hideModal}
-                onCancel={hideModal}
-                okText="ok"
-                cancelText="cancel"
-                width={1000}
-                style={{ top: 20 }}
-            >
-                <OrderDetails roleMane={roleMane} />
-            </Modal>
-            {/* modal hủy hàng */}
-            <Modal
-                title="Lý do hủy đơn hàng"
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-            >
-                <Form
-                    name="nest-messages"
-                    onFinish={onFinish1}
-                    style={{ maxWidth: 600, paddingTop: 60, paddingBottom: 20 }}
-                >
-                    <Form.Item name={'note'} rules={[{ required: true, message: 'Please enter the reason for cancellation!' }]}>
-                        <Input.TextArea rows={6} placeholder='Nhập lý do hủy đơn hàng ...' />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Modal>
-        </div>
+        <section className="our-team position-relative">
+            <div className="container">
+                <div className="d-flex justify-content-between">
+                    <div className="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+                        data-sidebar-position="fixed" data-header-position="fixed">
+                        <TopUserPurchase />
+                    </div>
+                </div>
+                <div>
+                    <Table columns={columns} dataSource={searchResult.length > 0 ? searchResult : nonSuccessfulOrders} />
+                    {/* modal chi tiết hàng */}
+                    <Modal
+                        title="Chi tiết đơn hàng"
+                        open={open}
+                        onOk={hideModal}
+                        onCancel={hideModal}
+                        okText="ok"
+                        cancelText="cancel"
+                        width={1000}
+                        style={{ top: 20 }}
+                    >
+                        <OrderDetails roleMane={roleMane} />
+                    </Modal>
+                    {/* modal hủy hàng */}
+                    <Modal title="Lý do hủy đơn hàng" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                        <Form
+                            name="nest-messages"
+                            // onFinish={onFinish}
+                            style={{ maxWidth: 600 }}
+                        >
+                            <Form.Item name={['user', 'introduction']}>
+                                <Input.TextArea rows={6} placeholder='Nhập lý do hủy đơn hàng ...' />
+                            </Form.Item>
+                        </Form>
+                    </Modal>
+                </div>
+            </div>
+        </section>
+
     )
 };
 
-export default OrderMane;
+export default Shipway;

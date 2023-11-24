@@ -25,7 +25,7 @@ interface DataType {
 }
 
 const ProductView = () => {
-  const { id:idProduct } = useParams();
+  const { id: idProduct } = useParams();
   const { data: productData } = useGetProductsQuery();
   const { data: productDetailData } = useGetProductByIdQuery();
   // console.log(productData)
@@ -177,31 +177,6 @@ const ProductView = () => {
                   <CloseOutlined />
                 </Button>
               </Popconfirm>
-              <Link to={`detail/${id}`}>
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "green", 
-                    margin: "4px",
-                    minWidth: "4em",
-                  }}
-                >
-                  Chi tiết
-                </Button>
-              </Link>
-              <Link to={`detail/add/${id}`}>
-                {/* Modify the Link component above to include the correct path */}
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "green", // Change the color as needed
-                    margin: "4px",
-                    minWidth: "4em",
-                  }}
-                >
-                  Thêm Chi tiết
-                </Button>
-              </Link>
               <Link to={`${id}/edit`}>
                 <Button
                   type="primary"
@@ -214,7 +189,30 @@ const ProductView = () => {
                   <EditOutlined />
                 </Button>
               </Link>
-
+              <Link to={`detail/${id}`}>
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "green", // Change the color as needed
+                    margin: "4px",
+                    minWidth: "4em",
+                  }}
+                >
+                  Chi tiết màu size
+                </Button>
+              </Link>
+              <Link to={`detail/add/${id}`}>
+                <Button
+                  type="primary"
+                  style={{
+                    backgroundColor: "green", // Change the color as needed
+                    margin: "4px",
+                    minWidth: "4em",
+                  }}
+                >
+                  Thêm màu size
+                </Button>
+              </Link>
             </div>
           </>
         );
@@ -285,7 +283,7 @@ const ProductView = () => {
                       record.firstName !== "Not Expandable",
                   }}
                   dataSource={dataSource}
-                  pagination={{ pageSize: 5, showQuickJumper: true }}
+                  pagination={{ pageSize: 10, showQuickJumper: true }}
                 />
               </div>
             </div>

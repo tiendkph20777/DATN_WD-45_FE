@@ -96,7 +96,7 @@ const Purchase: React.FC = () => {
 
     const nonSuccessfulOrders = nonSuccessfulOrder
         ?.filter((order) => order.user_id === usersOne?._id)
-        ?.filter((order: any) => order.status === 'Đang xác nhận đơn hàng')
+        ?.filter((order: any) => order.status === 'Tiếp nhận đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
         ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
@@ -243,7 +243,6 @@ const Purchase: React.FC = () => {
                                     noStyle
                                     rules={[{ required: true, message: 'Province is required' }]}
                                 >
-                                    
                                     <Select placeholder="Chọn Hủy Đơn" style={{ width: "250px" }}>
                                         <Select.Option value="Hủy đơn hàng">Hủy đơn hàng</Select.Option>
                                     </Select>

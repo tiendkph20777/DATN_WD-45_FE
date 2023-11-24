@@ -5,7 +5,7 @@ import {
   useGetProductsQuery,
 } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
+import { useGetAllProductsDetailQuery, useGetAllsProductsDetailQuery } from "../../../services/productDetail.service";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -33,7 +33,7 @@ const ProductDetail = () => {
   const brandName = brandData?.find(
     (brand) => brand._id === prodetailData?.brand_id
   )?.name;
-  const { data: productDataDetail } = useGetAllProductsDetailQuery();
+  const { data: productDataDetail } = useGetAllsProductsDetailQuery(_id);
 
   const [productSizes, setProductSizes] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
@@ -141,6 +141,7 @@ const ProductDetail = () => {
                 user_id: profileUser,
                 quantity: quantity,
               };
+              console.log(cartItem);
               const result = await addCart(cartItem);
               messageApi.success({
                 type: "error",
@@ -157,7 +158,7 @@ const ProductDetail = () => {
           }
         });
 
-        const results = await Promise.all(filteredProducts);
+        await Promise.all(filteredProducts);
         setIsAddingToCart(false);
       }
     } else {
@@ -225,6 +226,9 @@ const ProductDetail = () => {
                   ))}
                 </div>
               </Slider>
+              {/* <div>
+                <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lkxjv2he3fm3a7" alt="" />
+              </div> */}
             </div>
             <div className="col-lg-5 offset-lg-1">
               <div className="s_product_text">
@@ -306,9 +310,8 @@ const ProductDetail = () => {
                       {productSizes?.map((size, index) => (
                         <button
                           key={index}
-                          className={`size-button ${
-                            selectedSize === size ? "active" : ""
-                          }`}
+                          className={`size-button ${selectedSize === size ? "active" : ""
+                            }`}
                           onClick={() => handleSizeChange(size)}
                         >
                           {size}
@@ -323,13 +326,11 @@ const ProductDetail = () => {
                       {[...uniqueColors].map((color, index) => (
                         <button
                           key={index}
-                          className={`color-button all-color ${
-                            selectedColor === color ? "active" : ""
-                          } ${
-                            selectedSizeColors.includes(color)
+                          className={`color-button all-color ${selectedColor === color ? "active" : ""
+                            } ${selectedSizeColors.includes(color)
                               ? "selected-size"
                               : ""
-                          }`}
+                            }`}
                           style={{ backgroundColor: color }}
                           onClick={() => handleColorChange(color)}
                         ></button>
