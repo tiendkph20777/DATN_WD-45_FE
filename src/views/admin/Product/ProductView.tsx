@@ -55,7 +55,15 @@ const ProductView = () => {
       const filteredData = productData.filter((brand: IProducts) =>
         brand.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      const updatedDataSource = filteredData.map((product: IProducts) => ({
+
+      // Sort by creation date in descending order
+      const sortedData = filteredData.sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
+      });
+
+      const updatedDataSource = sortedData.map((product: IProducts) => ({
         key: product._id,
         name: product.name,
         brand_id: product.brand_id,
@@ -65,9 +73,11 @@ const ProductView = () => {
         description: product.description,
         content: product.content,
       }));
+
       setDataSource(updatedDataSource);
     }
   }, [productData, searchTerm]);
+
 
   // lọc theo danh mục
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -226,12 +236,12 @@ const ProductView = () => {
       },
     },
   ];
-  const data = productData?.map((product: any) => {
-    return {
-      key: product._id,
-      ...product,
-    };
-  });
+  // const data = productData?.map((product: any) => {
+  //   return {
+  //     key: product._id,
+  //     ...product,
+  //   };
+  // });
   return (
     <div className="">
       <div className="row">

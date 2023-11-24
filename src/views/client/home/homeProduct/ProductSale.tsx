@@ -73,7 +73,7 @@ const ProductSale = () => {
         </div>;
     }
     return (
-        <div>
+        <div className="container">
             <section className="our-team position-relative pt-2">
                 <div className="container_home">
                     <div>
