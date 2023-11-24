@@ -1,242 +1,213 @@
 import React, { useEffect, useState } from "react";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { Button, Select, Space, notification, Upload, List } from "antd";
+import { useGetBrandsQuery } from "../../../services/brand.service";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
 } from "../../../services/product.service";
-// import { UploadOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Form,
-  InputNumber,
-  Select,
-  Space,
-  Input,
-  message,
-  notification,
-} from "antd";
-import { useGetBrandsQuery } from "../../../services/brand.service";
-
-import { useNavigate, useParams } from "react-router-dom";
-import TextArea from "antd/es/input/TextArea";
-import { IProducts } from "../../../types/product.service";
 
 const { Option } = Select;
 
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 14 },
-};
-
 type FieldType = {
-  name?: string;
   brand_id?: string;
-  price_sale?: number | string;
-  images?: string;
+  name?: string;
   price?: number;
+  price_sale?: number;
   description?: string;
   content?: string;
+  images: string[];
 };
-const ProductAdd: React.FC = () => {
-  const [form] = Form.useForm();
+
+const ProductEdit: React.FC = () => {
+  const { control, handleSubmit, setValue, register } = useForm<FieldType>();
   const [updateProduct] = useUpdateProductMutation();
-  const [, contextHolder] = message.useMessage();
   const { idProduct } = useParams<{ idProduct: string }>();
   const { data: productData } = useGetProductByIdQuery(idProduct || "");
-  const [, setImage] = useState("");
   const navigate = useNavigate();
+
+  const [selectedImages, setSelectedImages] = useState<string[]>(
+    productData?.images || []
+  );
 
   useEffect(() => {
     if (productData) {
-      form.setFieldsValue({
-        _id: productData._id,
-        name: productData.name,
-        brand_id: productData.brand_id,
-        price_sale: productData.price_sale,
-        images: productData.images,
-        price: productData.price,
-        description: productData.description,
-        content: productData.content,
+      Object.keys(productData).forEach((key) => {
+        setValue(key as keyof FieldType, productData[key]);
       });
+      console.log("Product Images:", productData?.images);
     }
-  }, [productData, form]);
-  console.log(productData);
-  // const [brands, setBrands] = useState<any[]>([]);
-  // const [brandId, setBrandId] = useState<number | string | undefined>(undefined);
-  const { data: categories } = useGetBrandsQuery();
+  }, [productData, setValue]);
 
-  const onFinish = (values: IProducts) => {
-    updateProduct({ ...values, _id: idProduct })
-      .unwrap()
-      .then(() => {
-        notification.success({
-          message: "Success",
-          description: "Sửa Sản Phẩm Thành Công!",
-        });
-        navigate("/admin/product");
-      })
-      .catch((error) => {
-        console.error("Error adding product:", error);
-      });
+  const handleImageChange = async (file: File) => {
+    try {
+      const data = new FormData();
+      const cloudName = "ddbdu6zip"; // Thay bằng cloud_name của bạn
+      const uploadPreset = "vithoang"; // Thay bằng upload_preset của bạn
+
+      data.append("file", file);
+      data.append("upload_preset", uploadPreset);
+      data.append("cloud_name", cloudName);
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        data
+      );
+
+      const imageUrl = response.data.secure_url;
+
+      setSelectedImages((prevImages) => [...prevImages, imageUrl]);
+      setValue("images", [...selectedImages, imageUrl]);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
+  const handleRemoveImage = (imageUrl: string) => {
+    setSelectedImages((prevImages) =>
+      prevImages.filter((image) => image !== imageUrl)
+    );
   };
-  // Preview image
-  const inputFile: any = document.getElementById("file-input");
-  const previewImage: any = document.getElementById("preview-image");
 
-  inputFile?.addEventListener("change", function () {
-    const file = inputFile.files[0];
-    const reader = new FileReader();
+  const onSubmit: SubmitHandler<FieldType> = async (data) => {
+    try {
+      console.log("Images before update:", selectedImages);
+      const newImageUrls = await Promise.all(
+        selectedImages.map(async (image) => {
+          if (image.includes("cloudinary")) {
+            return image;
+          }
 
-    reader?.addEventListener("load", function () {
-      previewImage.src = reader.result;
-    });
+          const data = new FormData();
+          const cloudName = "ddbdu6zip"; // Thay bằng cloud_name của bạn
+          const uploadPreset = "vithoang"; // Thay bằng upload_preset của bạn
 
-    if (file) {
-      reader.readAsDataURL(file);
-    } else {
-      previewImage.src = "";
+          data.append("file", image);
+          data.append("upload_preset", uploadPreset);
+          data.append("cloud_name", cloudName);
+
+          const response = await axios.post(
+            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+            data
+          );
+
+          return response.data.secure_url;
+        })
+      );
+
+      const updatedValues = { ...data, images: newImageUrls };
+      await updateProduct({ ...updatedValues, _id: idProduct }).unwrap();
+
+      notification.success({
+        message: "Success",
+        description: "Sửa Sản Phẩm Thành Công!",
+      });
+
+      navigate("/admin/product");
+    } catch (error) {
+      console.error("Error updating product:", error);
     }
-  });
+  };
+
   return (
-    <div className="container-fluid">
+    <div className="container-xxl">
       <div className="row">
         <div className="col-md-6 offset-md-3">
           <div className="card custom-card">
-            <div  className="card-body">
+            <div className="card-body">
               <h5 className="card-title fw-semibold mb-4">Sửa Sản Phẩm</h5>
-              {contextHolder}
-              <Form
-                form={form}
-                name="validate_other"
-                {...formItemLayout}
-                onFinish={onFinish}
-                onFinishFailed={onFinishFailed}
-                initialValues={{
-                  "input-number": 3,
-                  "checkbox-group": ["A", "B"],
-                  rate: 3.5,
-                  "color-picker": null,
-                }}
-                style={{ maxWidth: 600 }}
-                autoComplete="off"
-              >
-                <Form.Item<FieldType>
-                  label="Category"
-                  name="brand_id"
-                  
-                >
-                  <Select placeholder="Thương Hiệu">
-                    {categories?.map((category) => (
-                      <Option key={category._id} value={category._id}>
-                        {category.name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
-
-                <Form.Item<FieldType>
-                  label="Tên sản phẩm"
-                  name="name"
-                  rules={[
-                    { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                    { min: 3, message: "ít nhất 3 ký tự" },
-                  ]}
-                >
-                 <input
-                    type="text"
-                    className={`form-control `}
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="form-group">
+                  <label>Category</label>
+                  <Controller
+                    name="brand_id"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        placeholder="Thương Hiệu"
+                        className="form-control"
+                      >
+                        {useGetBrandsQuery()?.data?.map((brand) => (
+                          <Option key={brand._id} value={brand._id}>
+                            {brand.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
                   />
-                </Form.Item>
+                </div>
 
-                <Form.Item
-                  name="price"
-                  label="Giá niêm yết"
-                  rules={[
-                    { required: true, message: "Vui lòng nhập giá sản phẩm!" },
-                  ]}
-                >
-                  <Form.Item name="price" noStyle>
+                <div className="form-group">
+                  <label>Tên sản phẩm</label>
                   <input
-                    type="number"
-                    className={`form-control `}
+                    {...register("name", { required: true })}
+                    className={`form-control`}
                   />
-                  </Form.Item>
-                </Form.Item>
-                <Form.Item<FieldType>
-                  label="Giá bán"
-                  name="price_sale"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng nhập giá bán sản phẩm!",
-                    },
-                  ]}
-                >
-                 <input
-                    type="number"
-                    className={`form-control `}
-                  />
-                </Form.Item>
+                </div>
 
-                <Form.Item
-                  label="Ảnh"
-                  name="images"
-                  valuePropName="file"
-                  id="preview-image"
-                >
-                  <div>
-                    <div className="image-upload">
-                      <label htmlFor="file-input">
-                        <i className="bx bx-image-add"></i>
-                      </label>
-                      <input
-                        id="file-input"
-                        type="file"
-                        onChange={(e: any) => setImage(e.target.files[0])}
-                      />
-                    </div>
-                    <img
-                      src={productData?.images}
-                      alt=""
-                      id="preview-image"
-                    ></img>
-                  </div>
-                </Form.Item>
-                <Form.Item<FieldType>
-                  label="Mô tả sản phẩm"
-                  name="description"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng nhập mô tả sản phẩm!",
-                    },
-                    { min: 3, message: "ít nhất 3 ký tự" },
-                  ]}
-                >
+                <div className="form-group">
+                  <label>Giá niêm yết</label>
                   <input
-                    type="text"
-                    className={`form-control `}
+                    {...register("price", { required: true })}
+                    type="number"
+                    className={`form-control`}
                   />
-                </Form.Item>
-                <Form.Item
-                  label="Nội dung"
-                  name="content"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng nhập nôi dung sản phẩm!",
-                    },
-                  ]}
-                >
-                 <input
+                </div>
+
+                <div className="form-group">
+                  <label>Giá bán</label>
+                  <input
+                    {...register("price_sale", { required: true })}
+                    type="number"
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Mô tả sản phẩm</label>
+                  <input
+                    {...register("description", { required: true })}
+                    type="text"
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Nội dung</label>
+                  <input
+                    {...register("content", { required: true })}
                     type="textarea"
-                    className={`form-control `}
+                    className={`form-control`}
                   />
-                </Form.Item>
-                <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+                </div>
+
+                <div className="form-group">
+                  <label>Ảnh</label>
+                  <Upload
+                    listType="picture-card"
+                    fileList={selectedImages.map((url, index) => ({
+                      uid: String(index),
+                      status: "done",
+                      url: url,
+                    }))}
+                    beforeUpload={(file) => {
+                      handleImageChange(file);
+                      return false;
+                    }}
+                    onRemove={(file) => handleRemoveImage(file.url as string)}
+                  >
+                    <div>
+                      <i className="bx bx-image-add"></i> Upload ảnh
+                    </div>
+                  </Upload>
+             
+                </div>
+
+                <div className="form-group">
                   <Space>
                     <Button type="primary" htmlType="submit">
                       Cập nhật
@@ -250,8 +221,8 @@ const ProductAdd: React.FC = () => {
                       Quay lại
                     </Button>
                   </Space>
-                </Form.Item>
-              </Form>
+                </div>
+              </form>
             </div>
           </div>
         </div>
@@ -260,4 +231,4 @@ const ProductAdd: React.FC = () => {
   );
 };
 
-export default ProductAdd;
+export default ProductEdit;

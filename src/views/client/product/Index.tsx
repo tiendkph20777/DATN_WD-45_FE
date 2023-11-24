@@ -22,6 +22,7 @@ const Index = () => {
       setSearchResult(updatedDataSource)
     }
   }, [productData]);
+  
   useEffect(() => {
     if (productDTData) {
       const updatedDataDT = productDTData.map(({ ...IProductDetail }) => ({

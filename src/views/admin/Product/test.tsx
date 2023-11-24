@@ -1,231 +1,256 @@
-import React, { useState } from "react";
-import { useAddProductMutation } from "../../../services/product.service";
-import {
-  Button,
-  Form,
-  InputNumber,
-  Select,
-  Space,
-  Input,
-  notification,
-} from "antd";
+import React, { useEffect, useState } from "react";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { Button, Select, Space, notification, Upload, List } from "antd";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import { IProducts } from "../../../types/product.service";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { useNavigate } from "react-router";
-import TextArea from "antd/es/input/TextArea";
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "../../../services/product.service";
+
 const { Option } = Select;
 
-const formItemLayout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 14 },
+type FieldType = {
+  brand_id?: string;
+  name?: string;
+  price?: number;
+  price_sale?: number;
+  description?: string;
+  content?: string;
+  images: string[];
 };
 
-const ProductAdd: React.FC = () => {
-  const [form] = Form.useForm();
-  const [addProduct] = useAddProductMutation();
-  const [images, setImage] = useState("");
-  // const [messageApi, contextHolder] = message.useMessage();
-  const { data: categories } = useGetBrandsQuery();
-  // const [isLoading, setIsLoading] = useState(false);
+const ProductEdit: React.FC = () => {
+  const { control, handleSubmit, setValue, register } = useForm<FieldType>();
+  const [updateProduct] = useUpdateProductMutation();
+  const { idProduct } = useParams<{ idProduct: string }>();
+  const { data: productData } = useGetProductByIdQuery(idProduct || "");
   const navigate = useNavigate();
 
-  const SubmitImage = async () => {
-    const data = new FormData();
-    const cloud_name = "ddbdu6zip";
-    const upload_preset = "vithoang";
-    data.append("file", images);
-    data.append("upload_preset", upload_preset);
-    data.append("cloud_name", cloud_name);
-    data.append("folder", "portfolio");
-    const takeData = await axios
-      .post(`https://api.cloudinary.com/v1_1/ddbdu6zip/image/upload`, data)
-      .then((data: any) => data);
-    return takeData.data.secure_url;
-  };
+  const [selectedImages, setSelectedImages] = useState<string[]>(
+    productData?.images || []
+  );
 
-  const onFinish = async (product: IProducts) => {
-    product.images = await SubmitImage();
-    addProduct(product)
-      .unwrap()
-      .then(() => {
-        notification.success({
-          message: "Success",
-          description: "Thêm Sản Phẩm Thành Công!",
-        });
-        navigate("/admin/product");
-      })
-      .catch((error) => {
-        console.error("Error adding product:", error);
+  useEffect(() => {
+    if (productData) {
+      Object.keys(productData).forEach((key) => {
+        setValue(key as keyof FieldType, productData[key]);
       });
-  };
-
-  // Preview image
-  const inputFile: any = document.getElementById("file-input");
-  const previewImage: any = document.getElementById("preview-image");
-
-  inputFile?.addEventListener("change", function () {
-    const file = inputFile.files[0];
-    const reader = new FileReader();
-
-    reader?.addEventListener("load", function () {
-      previewImage.src = reader.result;
-    });
-
-    if (file) {
-      reader.readAsDataURL(file);
-    } else {
-      previewImage.src = "";
+      console.log("Product Images:", productData?.images);
     }
-  });
-  const validateMessages = {
-    required: "Không được bỏ trống!",
-    types: {
-      number: "Phải nhập vào là một số!",
-    },
-    number: {
-      range: "Không là số âm",
-    },
+  }, [productData, setValue]);
+
+  const handleImageChange = async (file: File) => {
+    try {
+      const data = new FormData();
+      const cloudName = "ddbdu6zip"; // Thay bằng cloud_name của bạn
+      const uploadPreset = "vithoang"; // Thay bằng upload_preset của bạn
+
+      data.append("file", file);
+      data.append("upload_preset", uploadPreset);
+      data.append("cloud_name", cloudName);
+
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        data
+      );
+
+      const imageUrl = response.data.secure_url;
+
+      setSelectedImages((prevImages) => [...prevImages, imageUrl]);
+      setValue("images", [...selectedImages, imageUrl]);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
   };
-  
+
+  const handleRemoveImage = (imageUrl: string) => {
+    setSelectedImages((prevImages) =>
+      prevImages.filter((image) => image !== imageUrl)
+    );
+  };
+
+  const onSubmit: SubmitHandler<FieldType> = async (data) => {
+    try {
+      console.log("Images before update:", selectedImages);
+      const newImageUrls = await Promise.all(
+        selectedImages.map(async (image) => {
+          if (image.includes("cloudinary")) {
+            return image;
+          }
+
+          const data = new FormData();
+          const cloudName = "ddbdu6zip"; // Thay bằng cloud_name của bạn
+          const uploadPreset = "vithoang"; // Thay bằng upload_preset của bạn
+
+          data.append("file", image);
+          data.append("upload_preset", uploadPreset);
+          data.append("cloud_name", cloudName);
+
+          const response = await axios.post(
+            `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+            data
+          );
+
+          return response.data.secure_url;
+        })
+      );
+
+      const updatedValues = { ...data, images: newImageUrls };
+      await updateProduct({ ...updatedValues, _id: idProduct }).unwrap();
+
+      notification.success({
+        message: "Success",
+        description: "Sửa Sản Phẩm Thành Công!",
+      });
+
+      navigate("/admin/product");
+    } catch (error) {
+      console.error("Error updating product:", error);
+    }
+  };
+
   return (
-    <div className="container-fluid">
+    <div className="container-xxl">
       <div className="row">
-        <div className="card-body">
-          <h5 className="card-title fw-semibold mb-4">Thêm Sản Phẩm</h5>
-          <Form
-            form={form}
-            name="validate_other"
-            {...formItemLayout}
-            onFinish={onFinish}
-            initialValues={{
-              "input-number": 3,
-              "checkbox-group": ["A", "B"],
-              rate: 3.5,
-              "color-picker": null,
-            }}
-            style={{ maxWidth: 600 }}
-            validateMessages={validateMessages}
-          >
-            <Form.Item
-              label="Category"
-              name="brand_id"
-              rules={[
-                { required: true, message: "Vui lòng chọn thương hiệu!" },
-              ]}
-            >
-              <Select placeholder="Thương Hiệu">
-                {categories?.map((category) => (
-                  <Option key={category._id} value={category._id}>
-                    {category.name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              label="Tên sản phẩm"
-              name="name"
-              rules={[
-                { required: true, message: "Vui lòng nhập tên sản phẩm!" },
-                { min: 3, message: "ít nhất 3 ký tự" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item
-              label="Giá niêm yết"
-              name="price"
-              rules={[
-                {
-                  required: true,
-                  type: "number",
-                  message: "Phải nhập vào là 1 số",
-                },
-              ]}
-            >
-              <InputNumber />
-            </Form.Item>
-            <Form.Item
-              label="Giá bán"
-              name="price_sale"
-              rules={[
-                {
-                  required: true,
-                  type: "number",
-                  message: "Phải nhập vào là 1 số",
-                },
-              ]}
-            >
-              <InputNumber />
-            </Form.Item>
-
-            <Form.Item
-              label="Ảnh"
-              name="images"
-              id="preview-image"
-              required
-              rules={[
-                { required: true, message: "Vui lòng chọn ít nhất 1 ảnh!" },
-                {
-                  validator: (_, value) =>
-                    value
-                      ? Promise.resolve()
-                      : Promise.reject("Please select an image!"),
-                },
-              ]}
-              valuePropName="file"
-            >
-              <div>
-                <div className="image-upload">
-                  <label htmlFor="file-input">
-                    <i className="bx bx-image-add"></i>
-                  </label>
-                  <input
-                    id="file-input"
-                    type="file"
-                    onChange={(e: any) => setImage(e.target.files[0])}
+        <div className="col-md-6 offset-md-3">
+          <div className="card custom-card">
+            <div className="card-body">
+              <h5 className="card-title fw-semibold mb-4">Sửa Sản Phẩm</h5>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="form-group">
+                  <label>Category</label>
+                  <Controller
+                    name="brand_id"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        placeholder="Thương Hiệu"
+                        className="form-control"
+                      >
+                        {useGetBrandsQuery()?.data?.map((brand) => (
+                          <Option key={brand._id} value={brand._id}>
+                            {brand.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
                   />
                 </div>
-                <img src="" alt="" id="preview-image"></img>
-              </div>
-            </Form.Item>
-            {/* <Form.Item label="Nội dung" name="content">
-                            <TextArea rows={4} />
-                        </Form.Item> */}
-            <Form.Item
-              label="Mô tả sản phẩm"
-              name="description"
-              rules={[
-                { required: true, message: "Vui lòng nhập mô tả sản phẩm!" },
-                { min: 3, message: "ít nhất 3 ký tự" },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              label="Nội dung"
-              name="content"
-              rules={[
-                { required: true, message: "Vui lòng nhập nôi dung sản phẩm!" },
-              ]}
-            >
-              <TextArea rows={4} />
-            </Form.Item>
-            <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-              <Space>
-                <Button type="primary" htmlType="submit">
-                  Thêm
-                </Button>
 
-                <Button htmlType="reset">reset</Button>
-              </Space>
-            </Form.Item>
-          </Form>
+                <div className="form-group">
+                  <label>Tên sản phẩm</label>
+                  <input
+                    {...register("name", { required: true })}
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Giá niêm yết</label>
+                  <input
+                    {...register("price", { required: true })}
+                    type="number"
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Giá bán</label>
+                  <input
+                    {...register("price_sale", { required: true })}
+                    type="number"
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Mô tả sản phẩm</label>
+                  <input
+                    {...register("description", { required: true })}
+                    type="text"
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Nội dung</label>
+                  <input
+                    {...register("content", { required: true })}
+                    type="textarea"
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Ảnh</label>
+                  <Upload
+                    listType="picture-card"
+                    fileList={selectedImages.map((url, index) => ({
+                      uid: String(index),
+                      status: "done",
+                      url: url,
+                    }))}
+                    beforeUpload={(file) => {
+                      handleImageChange(file);
+                      return false;
+                    }}
+                    onRemove={(file) => handleRemoveImage(file.url as string)}
+                  >
+                    <div>
+                      <i className="bx bx-image-add"></i> Upload ảnh
+                    </div>
+                  </Upload>
+                  {/* <List
+                    grid={{ gutter: 16, column: 4 }}
+                    dataSource={selectedImages}
+                    renderItem={(item, index) => (
+                      <List.Item>
+                        <div className="selected-image">
+                          <img
+                            src={item}
+                            alt={`Selected ${index + 1}`}
+                            className="selected-image w-100 h-30 mt-4"
+                          />
+                          <Button
+                            type="text"
+                            danger
+                            className="remove-button bg-red-500"
+                            onClick={() => handleRemoveImage(item)}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </List.Item>
+                    )}
+                  /> */}
+                </div>
+
+                <div className="form-group">
+                  <Space>
+                    <Button type="primary" htmlType="submit">
+                      Cập nhật
+                    </Button>
+                    <Button
+                      type="primary"
+                      danger
+                      onClick={() => navigate("/admin/product")}
+                      className="ml-2"
+                    >
+                      Quay lại
+                    </Button>
+                  </Space>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
-export default ProductAdd;
+
+export default ProductEdit;

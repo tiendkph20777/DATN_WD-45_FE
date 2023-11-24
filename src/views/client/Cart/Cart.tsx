@@ -273,10 +273,10 @@ const Cart = () => {
                                                 <h5>{item.quantity}</h5>
                                             </td>
                                             <td>
-                                                <h5>{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                                                <h5>{item.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                             </td>
                                             <td>
-                                                <h5>{item.total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                                                <h5>{item.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                             </td>
                                             <td>
                                                 <Button
