@@ -5,6 +5,7 @@ import { useFetchCheckoutQuery } from '../../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
 import TopUserPurchase from '../../../../components/main/TopUserPurchase';
 import { useFetchOneUserQuery } from '../../../../services/user.service';
+import ProductSale from '../../home/homeProduct/ProductSale';
 
 const History: React.FC = () => {
     /////// modal
@@ -63,12 +64,12 @@ const History: React.FC = () => {
             key: 'index',
             render: (text) => <a>{text}</a>,
         },
-        {
-            title: 'Tên người nhận',
-            dataIndex: 'fullName',
-            key: 'fullName',
-            render: (text) => <a>{text}</a>,
-        },
+        // {
+        //     title: 'Tên người nhận',
+        //     dataIndex: 'fullName',
+        //     key: 'fullName',
+        //     render: (text) => <a>{text}</a>,
+        // },
         {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'totals',
@@ -152,6 +153,7 @@ const History: React.FC = () => {
                         <OrderDetails roleMane={roleMane} />
                     </Modal>
                 </div>
+                <ProductSale />
             </div>
         </section>
     )

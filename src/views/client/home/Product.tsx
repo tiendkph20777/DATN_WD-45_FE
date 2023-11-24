@@ -9,7 +9,7 @@ import useRefs from "react-use-refs";
 import PageProduct from "./homeProduct/PageProduct";
 import ProductSale from "./homeProduct/ProductSale";
 const Product = () => {
-    const { data: productData } = useGetProductsQuery();
+    const { data: productData, isLoading } = useGetProductsQuery();
     const { data: brandData } = useGetBrandsQuery();
     const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
     const brandName = (item: any) => brandData?.find((brand: any) => brand._id == item.brand_id)?.name
@@ -60,6 +60,18 @@ const Product = () => {
     }
     const gotoNext = (sliderRef: any) => {
         sliderRef?.current?.slickNext()
+    }
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
     }
     return (
         <div className="w-[90%] container">

@@ -110,6 +110,9 @@ const MyComponent: React.FC = (props: any) => {
                 lineHeight: "50px"
             }
         })
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
         updateUser(add)
     };
 

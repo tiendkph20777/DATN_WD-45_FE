@@ -17,7 +17,7 @@ const CommentProductDetail = () => {
     const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
     const { handleSubmit, register } = useForm<any>();
     const { _id } = useParams();
-    const { data: prodetailData } = useGetProductByIdQuery(_id);
+    const { data: prodetailData, isLoading } = useGetProductByIdQuery(_id);
     const { user: id_user } = JSON.parse(localStorage.getItem("user") || "{}");
     const [addProduct] = useAddCommentMutation();
     const { data: dataCmtt } = useFetchCommentQuery();
@@ -40,7 +40,18 @@ const CommentProductDetail = () => {
         addProduct(dataCmt);
         window.location.reload();
     };
-
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     return (
         <div className="mx-auto w-70 row h-50 my-5">
             <h3>XEM ĐÁNH GIÁ</h3>

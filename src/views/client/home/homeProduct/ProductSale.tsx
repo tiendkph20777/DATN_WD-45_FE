@@ -8,7 +8,7 @@ import { useGetBrandsQuery } from "../../../../services/brand.service";
 import { IProducts } from "../../../../types/product.service";
 
 const ProductSale = () => {
-    const { data: productData } = useGetProductsQuery();
+    const { data: productData, isLoading } = useGetProductsQuery();
     const { data: brandData } = useGetBrandsQuery();
     const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
     const brandName = (item: any) => brandData?.find((brand: any) => brand._id == item.brand_id)?.name
@@ -58,6 +58,19 @@ const ProductSale = () => {
     }
     const gotoNext = (sliderRef: any) => {
         sliderRef?.current?.slickNext()
+    }
+
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
     }
     return (
         <div>

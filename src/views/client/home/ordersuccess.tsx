@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useCreateCheckoutMutation } from "../../../services/checkout.service";
 import { useFetchOneUserQuery } from '../../../services/user.service';
 import { useFetchOneCartQuery } from '../../../services/cart.service';
@@ -13,7 +12,7 @@ const Ordersuccess = () => {
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
     // console.log(cartDetail)
-    const { data: usersOne } = useFetchOneUserQuery(idUs)
+    const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: paymentQuery } = useGetPaymentQuery();
@@ -73,13 +72,25 @@ const Ordersuccess = () => {
     const total = totalSum - valueVoucher;
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     return (
         <div>
 
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <h2>Đặt hàng thành công!</h2>
                 <p>Cảm ơn bạn đã mua sắm. Chúng tôi sẽ xử lý đơn hàng của bạn ngay lập tức.</p>
+                <a href="/purchase"> Xem đơn hàng của bạn </a>
             </div>
             <section className="checkout_area section_gap">
                 <div className="container">

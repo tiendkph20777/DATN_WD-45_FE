@@ -5,7 +5,7 @@ import { useGetBrandsQuery } from "../../../../services/brand.service";
 import { Pagination } from "antd";
 
 const PageProduct = () => {
-    const { data: productData } = useGetProductsQuery();
+    const { data: productData, isLoading } = useGetProductsQuery();
     const { data: brandData } = useGetBrandsQuery();
     const brandName = (item: any) => brandData?.find((brand: any) => brand._id == item.brand_id)?.name
     const discount = (item: any) => Math.round(100 - (item.price_sale / item.price * 100))
@@ -41,6 +41,18 @@ const PageProduct = () => {
             setDataSourceToRender(filteredData);
         }
     };
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
 
     return (
         <div>
@@ -55,9 +67,9 @@ const PageProduct = () => {
                                 {brandData?.map((item) => {
                                     return (
                                         <div className="brandIcon " key={item._id}>
-                                            <div onClick={() => onHandleClick(item._id)} >
-                                                {item.name}
-                                            </div>
+                                            {/* <div onClick={() => onHandleClick(item._id)} > */}
+                                            {item.name}
+                                            {/* </div> */}
                                         </div>
                                     )
                                 })}

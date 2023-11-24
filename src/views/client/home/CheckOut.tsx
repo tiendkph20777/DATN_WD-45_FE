@@ -13,16 +13,16 @@ const CheckOut = () => {
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
     // console.log(cartDetail)
-    const { data: usersOne } = useFetchOneUserQuery(idUs)
+    const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: paymentQuery } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
-    console.log(cartDetail)
+    // console.log(cartDetail)
 
 
     useEffect(() => {
-        
+
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
             const matchingIds = cartDetailIds?.filter((id: any) => ProductDetailUser.some((product) => product._id === id));
@@ -49,7 +49,7 @@ const CheckOut = () => {
             });
             setCartDetail(modifiedProductDetails);
         }
-       
+
 
     }, [cartUser, ProductDetailUser]);
 
@@ -97,7 +97,7 @@ const CheckOut = () => {
         setSelectedPayment(paymentId);
         // Thêm logic xử lý khi phương thức thanh toán được chọn
     };
-    console.log(selectedPayment);
+    // console.log(selectedPayment);
     const navigation = useNavigate()
     const handleOnClick = async () => {
         const form = document.querySelector('#form_checkout') as HTMLFormElement | null;
@@ -127,7 +127,20 @@ const CheckOut = () => {
             }
         }
     };
+    const addre = usersOne?.city + " , " + usersOne?.district + " , " + usersOne?.commune + " , " + usersOne?.address
 
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     return (
         <div><section className="checkout_area section_gap">
             <div className="container">
@@ -154,17 +167,27 @@ const CheckOut = () => {
                                     <input type="text" className="form-control" id="number" placeholder='Số điện thoại' name="tel" value={usersOne?.tel} />
                                     <span className="placeholder" ></span>
                                 </div>
-
                                 <div className="col-md-12 form-group p_star">
                                     <label htmlFor="">Địa chỉ</label>
-                                    <input type="text" className="form-control" id="address" placeholder='Địa chỉ giao hàng' name="address" value={usersOne?.address} />
-                                    <span className="placeholder" ></span>
+                                    <textarea
+                                        className="form-control"
+                                        id="address"
+                                        placeholder='Địa chỉ giao hàng'
+                                        name="address"
+                                        value={addre}
+                                    ></textarea>
+                                    <span className="placeholder"></span>
                                 </div>
                                 <div className="col-md-12 form-group">
                                     <div className="creat_account">
                                         <label htmlFor="">Ghi chú</label>
                                     </div>
-                                    <input className="form-control" name="Note" id="Note" placeholder="#giao giờ hàng chính"></input>
+                                    <textarea
+                                        className="form-control"
+                                        name="Note"
+                                        id="Note"
+                                        placeholder="#giao giờ hàng chính"
+                                    ></textarea>
                                 </div>
                             </div>
                         </div>

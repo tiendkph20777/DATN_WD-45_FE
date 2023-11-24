@@ -8,12 +8,13 @@ import { message as messageApi } from 'antd';
 import { useForm } from 'react-hook-form';
 import ProductSale from '../home/homeProduct/ProductSale';
 import EditProductModal from './CartModel';
+import { Link } from 'react-router-dom';
 
 const Cart = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
-    const { data: cartUser } = useFetchOneCartQuery(idUs);
+    const { data: cartUser, isLoading } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: Product } = useGetProductsQuery();
     const [removeCartDetailMutation] = useRemoveCartDetailMutation();
@@ -219,7 +220,18 @@ const Cart = () => {
             });
         }
     };
-
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     return (
         <div>
             <section className="cart_area">
@@ -314,8 +326,7 @@ const Cart = () => {
                                         <td>
                                             <div className="checkout_btn_inner d-flex align-items-center">
                                                 <a className="gray_btn" href="/">Continue Shopping</a>
-
-                                                <a className="primary-btn" href="/checkout">Thanh toán</a>
+                                                <Link to="/checkout" className="primary-btn">Thanh toán</Link>
                                             </div>
                                         </td>
                                     </tr>
