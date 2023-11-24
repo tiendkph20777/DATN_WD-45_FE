@@ -204,29 +204,7 @@ const ProductEdit: React.FC = () => {
                       <i className="bx bx-image-add"></i> Upload ảnh
                     </div>
                   </Upload>
-                  {/* <List
-                    grid={{ gutter: 16, column: 4 }}
-                    dataSource={selectedImages}
-                    renderItem={(item, index) => (
-                      <List.Item>
-                        <div className="selected-image">
-                          <img
-                            src={item}
-                            alt={`Selected ${index + 1}`}
-                            className="selected-image w-100 h-30 mt-4"
-                          />
-                          <Button
-                            type="text"
-                            danger
-                            className="remove-button bg-red-500"
-                            onClick={() => handleRemoveImage(item)}
-                          >
-                            Remove
-                          </Button>
-                        </div>
-                      </List.Item>
-                    )}
-                  /> */}
+             
                 </div>
 
                 <div className="form-group">
