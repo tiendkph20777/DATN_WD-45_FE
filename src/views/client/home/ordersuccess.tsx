@@ -68,9 +68,10 @@ const Ordersuccess = () => {
     const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
     const [addCheckout] = useCreateCheckoutMutation();
     const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
-    const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item.total, 0);
+    const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item?.total, 0);
     const total = totalSum - valueVoucher;
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+    const addre = usersOne?.city + " , " + usersOne?.district + " , " + usersOne?.commune + " , " + usersOne?.address
 
     if (isLoading) {
         return <div>
@@ -90,7 +91,7 @@ const Ordersuccess = () => {
             <div style={{ textAlign: 'center', marginTop: '20px' }}>
                 <h2>Đặt hàng thành công!</h2>
                 <p>Cảm ơn bạn đã mua sắm. Chúng tôi sẽ xử lý đơn hàng của bạn ngay lập tức.</p>
-                <a href="/purchase"> Xem đơn hàng của bạn </a>
+                <a href="/purchase"><button className='btn btn-primary'> Xem đơn hàng của bạn </button></a>
             </div>
             <section className="checkout_area section_gap">
                 <div className="container">
@@ -117,23 +118,27 @@ const Ordersuccess = () => {
                                         <input type="text" className="form-control" id="number" placeholder='Số điện thoại' name="tel" value={usersOne?.tel} />
                                         <span className="placeholder" ></span>
                                     </div>
-
                                     <div className="col-md-12 form-group p_star">
                                         <label htmlFor="">Địa chỉ</label>
-                                        <input type="text" className="form-control" id="address" placeholder='Địa chỉ giao hàng' name="address" value={usersOne?.address} />
-                                        <span className="placeholder" ></span>
+                                        <textarea
+                                            className="form-control"
+                                            id="address"
+                                            placeholder='Địa chỉ giao hàng'
+                                            name="address"
+                                            value={addre}
+                                        ></textarea>
+                                        <span className="placeholder"></span>
                                     </div>
-                                    {/* <div className="col-md-12 form-group">
-                                    <div className="creat_account">
-                                        <input type="checkbox" id="f-option2" name="selector" />
-                                        <label htmlFor={"f-option2"}>Create an account?</label>
-                                    </div>
-                                </div> */}
                                     <div className="col-md-12 form-group">
                                         <div className="creat_account">
                                             <label htmlFor="">Ghi chú</label>
                                         </div>
-                                        <input className="form-control" name="Note" id="Note" placeholder="#giao giờ hàng chính"></input>
+                                        <textarea
+                                            className="form-control"
+                                            name="Note"
+                                            id="Note"
+                                            placeholder="#giao giờ hàng chính"
+                                        ></textarea>
                                     </div>
                                 </div>
                             </div>

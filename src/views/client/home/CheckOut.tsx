@@ -119,7 +119,7 @@ const CheckOut = () => {
                 const newData = { ...data, products: cartDetail, payment_id: selectedPayment, shipping: "", total: totalSum - voucher?.value, voucherCode, dateCreate: date, status: 'Đang xác nhận đơn hàng' };
                 console.log(newData);
                 localStorage.setItem('currentOrder', JSON.stringify(newData));
-
+                // 
                 await addCheckout(newData);
                 navigation("/ordersuccess")
             } catch (error) {
@@ -165,6 +165,10 @@ const CheckOut = () => {
                                 <div className="col-md-12 form-group p_star">
                                     <label htmlFor="">Số điện thoại</label>
                                     <input type="text" className="form-control" id="number" placeholder='Số điện thoại' name="tel" value={usersOne?.tel} />
+                                    <span className="placeholder" ></span>
+                                </div>
+                                <div className="col-md-12 form-group p_star">
+                                    <input hidden type="text" className="form-control" id="address" name="address" value={usersOne?.address} />
                                     <span className="placeholder" ></span>
                                 </div>
                                 <div className="col-md-12 form-group p_star">
@@ -263,19 +267,19 @@ const CheckOut = () => {
                                         <form className='row mt-3' id='form-voucher'>
                                             <input
                                                 type="text"
-                                                className='col-8 m-1'
+                                                className='col-8 m-1 form-control'
                                                 name='voucherCode'
                                                 placeholder='Nhập mã khuyến mại tại đây!'
                                                 value={voucherCode}
                                                 onChange={(e) => setVoucherCode(e.target.value)}
                                             />
-                                            <button
+                                            {/* <button
                                                 type='button'
                                                 className='col-3 btn btn-dark bg-dark text-light m-1'
                                                 onClick={getCodeVoucher}
                                             >
                                                 Kiểm Tra
-                                            </button>
+                                            </button> */}
                                         </form>
                                     </div>
                                     <div className="payment_item active">
