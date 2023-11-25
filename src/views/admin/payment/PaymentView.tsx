@@ -54,7 +54,19 @@ const PaymentView: React.FC = () => {
         // Khi người dùng nhấn Enter để tìm kiếm
         // useEffect sẽ được gọi và cập nhật dataSource
     };
-
+    // 
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     const columns: ColumnsType<DataType> = [
         {
             title: 'Phương Thức Thanh Toán',

@@ -94,8 +94,9 @@ const OrderMane: React.FC = () => {
     const nonSuccessfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status !== 'Giao hàng thành công' && order.status !== 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
+        ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
+
 
     const onFinish = async (values: any, id: string) => {
         try {
@@ -160,7 +161,16 @@ const OrderMane: React.FC = () => {
     };
     // bảng dữ liệu
     if (isLoading) {
-        return <div style={{ paddingTop: "70px" }}>Loading...</div>;
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
     }
     const columns: ColumnsType<any> = [
         {
@@ -168,11 +178,6 @@ const OrderMane: React.FC = () => {
             dataIndex: 'index',
             key: 'index',
             render: (text) => <a>{text}</a>,
-        },
-        {
-            title: 'STT',
-            dataIndex: '',
-            key: '',
         },
         {
             title: 'Tên người nhận',
@@ -220,7 +225,6 @@ const OrderMane: React.FC = () => {
                                         <Select.Option value="Đang giao hàng">Đang giao hàng</Select.Option>
                                         <Select.Option value="Giao hàng thành công">Giao hàng thành công</Select.Option>
                                         <Select.Option value="Hủy đơn hàng">Hủy đơn hàng</Select.Option>
-                                        <Select.Option value="" disabled ></Select.Option>
                                     </Select>
                                 </Form.Item>
                             </Space.Compact>

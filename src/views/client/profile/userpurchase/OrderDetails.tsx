@@ -1,7 +1,7 @@
 import React from 'react';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
-    // console.log(roleMane)
+    console.log(roleMane)
     const total = roleMane.products.reduce((acc: number, product: any) => {
         const productTotal = product.total || 0;
         return acc + productTotal;
@@ -20,7 +20,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <th scope="col">Đại chỉ nhận hàng</th>
                             <th scope="col">Trạng thái </th>
                             <th scope="col">SĐT</th>
-                            <th scope="col">shipping</th>
+                            <th scope="col">Phương thức thanh toán</th>
                             <th scope="col">Ngày mua hàng</th>
                         </tr>
                     </thead>
@@ -39,7 +39,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                                 <span>{roleMane?.tel}</span>
                             </th>
                             <th>
-                                <span>{roleMane?.shipping}</span>
+                                <span>{roleMane?.paymentCart}</span>
                             </th>
                             <th>
                                 <span>{formattedTime} - {date}</span>

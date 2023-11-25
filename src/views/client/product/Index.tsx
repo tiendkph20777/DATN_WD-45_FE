@@ -6,7 +6,7 @@ import { useGetAllProductsDetailQuery } from "../../../services/productDetail.se
 import { IProductDetail } from "../../../types/product";
 
 const Index = () => {
-  const { data: productData } = useGetProductsQuery();
+  const { data: productData, isLoading } = useGetProductsQuery();
   const { data: productDTData } = useGetAllProductsDetailQuery();
   const { data: brandData } = useGetBrandsQuery();
   const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
@@ -22,7 +22,7 @@ const Index = () => {
       setSearchResult(updatedDataSource)
     }
   }, [productData]);
-  
+
   useEffect(() => {
     if (productDTData) {
       const updatedDataDT = productDTData.map(({ ...IProductDetail }) => ({
@@ -61,20 +61,29 @@ const Index = () => {
 
     }
   };
-
+  if (isLoading) {
+    return <div>
+      <div className="right-wrapper">
+        <div className="spinnerIconWrapper">
+          <div className="spinnerIcon"></div>
+        </div>
+        <div className="finished-text">
+          Xin vui lòng chờ một chút 🥰🥰🥰
+        </div>
+      </div>
+    </div>;
+  }
   return (
     <div>
       <section className="our-team position-relative">
         <div className="container">
           <div>
             <div className="d-flex justify-content-between">
-              <div>
-                hehe
-              </div>
               <div className="mb-3 d-flex">
-                <select onChange={onHandleClick} className="form-select-product">
+                <span style={{ color: "black", fontSize: "20px", padding: "10px" }}>Tìm kiếm theo : </span>
+                <select onChange={onHandleClick} className="form-select-product ">
                   <option selected disabled >
-                    thương hiệu
+                    Thương hiệu
                   </option>
                   {brandData?.map((item) => {
                     return (
@@ -86,7 +95,7 @@ const Index = () => {
                 </select>
                 <select onChange={onHandleClick} className="form-select-product">
                   <option selected disabled>
-                    mau sac
+                    Màu sắc
                   </option>
                   {color?.map((item) => {
                     return (
@@ -98,7 +107,7 @@ const Index = () => {
                 </select>
                 <select onChange={onHandleClick} className="form-select-product">
                   <option selected disabled>
-                    Size
+                    Kích cỡ
                   </option>
                   {Size?.map((item) => {
                     return (
@@ -110,7 +119,7 @@ const Index = () => {
                 </select>
               </div>
             </div>
-
+            <br />
             <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
               {dataSourceToRender?.map((item) => {
                 const brandName = brandData?.find(

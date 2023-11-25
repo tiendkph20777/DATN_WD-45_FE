@@ -22,7 +22,7 @@ export default function CommentView() {
     const [Product_Remove] = useRemoveCommentMutation();
     const { data: dataPro } = useGetProductsQuery();
     const { data: dataUser } = useFetchUserQuery();
-    const { data: dataCmt } = useFetchCommentQuery();
+    const { data: dataCmt, isLoading } = useFetchCommentQuery();
     const { Search } = Input;
     useEffect(() => {
         if (dataCmt && dataPro && dataUser) {
@@ -63,6 +63,19 @@ export default function CommentView() {
         setSearchResult(filteredData);
     };
 
+    // 
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     const columns: ColumnsType<DataType> = [
         {
             title: 'Người dùng',

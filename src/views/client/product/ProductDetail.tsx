@@ -13,6 +13,7 @@ import { message as messageApi } from "antd";
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
 import ProductLienQuan from "./ProductLienQuan";
+import ProductSale from "../home/homeProduct/ProductSale";
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -33,7 +34,7 @@ const ProductDetail = () => {
   const brandName = brandData?.find(
     (brand) => brand._id === prodetailData?.brand_id
   )?.name;
-  const { data: productDataDetail } = useGetAllsProductsDetailQuery(_id);
+  const { data: productDataDetail, isLoading } = useGetAllsProductsDetailQuery(_id);
 
   const [productSizes, setProductSizes] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
@@ -123,7 +124,7 @@ const ProductDetail = () => {
   };
 
   const profileUser = JSON.parse(localStorage.getItem("user"))?.user;
-  const [addCart, isLoading] = useCreateCartMutation();
+  const [addCart] = useCreateCartMutation();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
 
   const onSubmitCart = async () => {
@@ -189,7 +190,18 @@ const ProductDetail = () => {
       uniqueColors.add(detail.color);
     }
   });
-
+  if (isLoading) {
+    return <div>
+      <div className="right-wrapper">
+        <div className="spinnerIconWrapper">
+          <div className="spinnerIcon"></div>
+        </div>
+        <div className="finished-text">
+          Xin vui lòng chờ một chút 🥰🥰🥰
+        </div>
+      </div>
+    </div>;
+  }
   return (
     <div>
       <div className="product_image_area">
@@ -375,6 +387,7 @@ const ProductDetail = () => {
       <div>
         <CommentProductDetail />
         <ProductLienQuan />
+        <ProductSale />
       </div>
       <div></div>
     </div>

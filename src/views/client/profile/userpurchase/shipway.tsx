@@ -6,6 +6,7 @@ import OrderDetails from './OrderDetails';
 import { message as messageApi } from 'antd';
 import TopUserPurchase from '../../../../components/main/TopUserPurchase';
 import { useFetchOneUserQuery } from '../../../../services/user.service';
+import ProductSale from '../../home/homeProduct/ProductSale';
 
 const Shipway: React.FC = () => {
     /////// modal chi tiết
@@ -16,19 +17,11 @@ const Shipway: React.FC = () => {
     const hideModal = () => {
         setOpen(false);
     };
-    // model hủy hàng
-    const handleOk = () => {
-        setIsModalOpen(false);
-    };
-
-    const handleCancel = () => {
-        setIsModalOpen(false);
-    };
     ///////
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const { data: usersOne } = useFetchOneUserQuery(idUs)
-    
+
     const { data: orderDa, isLoading, isFetching } = useFetchCheckoutQuery()
     const [updateCheck] = useUpdateCheckoutMutation()
     const [roleMane, setRoleMane] = useState<any>({});
@@ -45,11 +38,6 @@ const Shipway: React.FC = () => {
 
     const [searchFullName, setSearchFullName] = useState<string | undefined>(undefined);
 
-    const handleFullNameSearchChange = (value: string) => {
-        setSearchFullName(value.toLowerCase());
-    };
-    // console.log(dateCreateArray);
-
     const nonSuccessfulOrder = orderDa?.map((order: any, index: number) => {
         const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
         const totals = order.products.reduce((acc: number, product: any) => acc + (product.total || 0), 0);
@@ -61,41 +49,12 @@ const Shipway: React.FC = () => {
         };
     });
     // console.log(searchResult)
-    // console.log(nonSuccessfulOrder);
-    const onSearch = (value: string) => {
-        if (value === "") {
-            setSearchResult(nonSuccessfulOrders);
-        } else {
-            let filteredData = nonSuccessfulOrders;
-            filteredData = filteredData?.filter((item: any) => {
-                // console.log(item?.status)
-                return (
-                    item?.status === value
-                );
-            }
-            );
-            if (filteredData?.length == 0) {
-                messageApi.error({
-                    type: 'error',
-                    content: "Không có đơn hàng nào trạng thái này",
-                    className: 'custom-class',
-                    style: {
-                        marginTop: '0',
-                        fontSize: "15px",
-                        lineHeight: "50px"
-                    },
-                });
-            }
-            setSearchResult(filteredData);
-        }
-    };
-    // console.log(searchResult)
 
     const nonSuccessfulOrders = nonSuccessfulOrder
         ?.filter((order) => order.user_id === usersOne?._id)
         ?.filter((order: any) => order.status === 'Đang giao hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
+        ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     const onFinish = async (values: any, id: string) => {
@@ -148,12 +107,12 @@ const Shipway: React.FC = () => {
             key: 'index',
             render: (text) => <a>{text}</a>,
         },
-        {
-            title: 'Tên người nhận',
-            dataIndex: 'fullName',
-            key: 'fullName',
-            render: (text) => <a>{text}</a>,
-        },
+        // {
+        //     title: 'Tên người nhận',
+        //     dataIndex: 'fullName',
+        //     key: 'fullName',
+        //     render: (text) => <a>{text}</a>,
+        // },
         {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'totals',
@@ -244,19 +203,8 @@ const Shipway: React.FC = () => {
                     >
                         <OrderDetails roleMane={roleMane} />
                     </Modal>
-                    {/* modal hủy hàng */}
-                    <Modal title="Lý do hủy đơn hàng" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                        <Form
-                            name="nest-messages"
-                            // onFinish={onFinish}
-                            style={{ maxWidth: 600 }}
-                        >
-                            <Form.Item name={['user', 'introduction']}>
-                                <Input.TextArea rows={6} placeholder='Nhập lý do hủy đơn hàng ...' />
-                            </Form.Item>
-                        </Form>
-                    </Modal>
                 </div>
+                <ProductSale />
             </div>
         </section>
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Popconfirm, notification } from "antd";
 import {
-  useGetProductByIdQuery,
   useGetProductsQuery,
 } from "../../../services/product.service";
 import { IProducts } from "../../../types/product.service";
@@ -10,7 +9,6 @@ import { useGetBrandsQuery } from "../../../services/brand.service";
 import Table, { ColumnsType } from "antd/es/table";
 import { CloseOutlined, EditOutlined } from "@ant-design/icons";
 import { useRemoveProductMutation } from "../../../services/product.service";
-import { useParams } from "react-router-dom";
 
 interface DataType {
   key: string | number;
@@ -25,19 +23,15 @@ interface DataType {
 }
 
 const ProductView = () => {
-  const { id: idProduct } = useParams();
-  const { data: productData } = useGetProductsQuery();
-  const { data: productDetailData } = useGetProductByIdQuery();
+  const { data: productData, isLoading } = useGetProductsQuery();
   // console.log(productData)
   const { data: brands } = useGetBrandsQuery();
   const [searchTerm, setSearchTerm] = useState("");
-  // const [searchResult, setSearchResult] = useState([]);
 
   const [dataSource, setDataSource] = useState<Array<any>>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const { data: categories } = useGetBrandsQuery();
   const [removeProduct] = useRemoveProductMutation();
-  // const [dataSourceToRenders, setDataSourceToRenders] = useState<DataType[]>([]);
 
   const confirm = async (id: number | string) => {
     try {
@@ -61,7 +55,15 @@ const ProductView = () => {
       const filteredData = productData.filter((brand: IProducts) =>
         brand.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      const updatedDataSource = filteredData.map((product: IProducts) => ({
+
+      // Sort by creation date in descending order
+      const sortedData = filteredData.sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime();
+        const dateB = new Date(b.createdAt).getTime();
+        return dateB - dateA;
+      });
+
+      const updatedDataSource = sortedData.map((product: IProducts) => ({
         key: product._id,
         name: product.name,
         brand_id: product.brand_id,
@@ -71,9 +73,11 @@ const ProductView = () => {
         description: product.description,
         content: product.content,
       }));
+
       setDataSource(updatedDataSource);
     }
   }, [productData, searchTerm]);
+
 
   // lọc theo danh mục
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -100,6 +104,19 @@ const ProductView = () => {
       setDataSource(updatedDataSource);
     }
   };
+  // 
+  if (isLoading) {
+    return <div>
+      <div className="right-wrapper">
+        <div className="spinnerIconWrapper">
+          <div className="spinnerIcon"></div>
+        </div>
+        <div className="finished-text">
+          Xin vui lòng chờ một chút 🥰🥰🥰
+        </div>
+      </div>
+    </div>;
+  }
   const columns: ColumnsType<DataType> = [
     {
       title: "Tên sản phẩm",
@@ -219,12 +236,12 @@ const ProductView = () => {
       },
     },
   ];
-  const data = productData?.map((product: any) => {
-    return {
-      key: product._id,
-      ...product,
-    };
-  });
+  // const data = productData?.map((product: any) => {
+  //   return {
+  //     key: product._id,
+  //     ...product,
+  //   };
+  // });
   return (
     <div className="">
       <div className="row">

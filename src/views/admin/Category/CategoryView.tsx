@@ -14,7 +14,7 @@ interface DataType {
 
 }
 const CategoryView: React.FC = () => {
-    const { data: brandData } = useGetBrandsQuery();
+    const { data: brandData, isLoading } = useGetBrandsQuery();
     const [removeBrand] = useRemoveBrandMutation();
     const [searchTerm, setSearchTerm] = useState('');
     const [dataSource, setDataSource] = useState<Array<any>>([]);
@@ -58,13 +58,18 @@ const CategoryView: React.FC = () => {
         // useEffect sẽ được gọi và cập nhật dataSource
     };
 
-    // const handleDelete = (id?: number | string) => {
-    //     if (id) {
-    //         removeBrand(id);
-
-    //     }
-    // };
-
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     const columns: ColumnsType<DataType> = [
         {
             title: 'Thương Hiệu',

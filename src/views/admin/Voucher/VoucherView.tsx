@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { CloseOutlined } from '@ant-design/icons';
 
 const VoucherView: React.FC = () => {
-    const { data: voucherData } = useGetVouchersQuery();
+    const { data: voucherData, isLoading } = useGetVouchersQuery();
     const [removeVoucher] = useRemoveVoucherMutation();
     const [searchTerm, setSearchTerm] = useState('');
     const [dataSource, setDataSource] = useState<Array<any>>([]);
@@ -25,7 +25,7 @@ const VoucherView: React.FC = () => {
                 description: "Xóa voucher thành công!",
             });
             window.location.reload();
-             
+
         } catch (error) {
             // Xử lý lỗi nếu cần
             console.error("Error deleting product", error);
@@ -48,6 +48,18 @@ const VoucherView: React.FC = () => {
         }
     }, [voucherData, searchTerm]);
 
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     const columns = [
         {
             title: 'Mã giảm giá',

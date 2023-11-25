@@ -13,7 +13,7 @@ import "slick-carousel/slick/slick-theme.css";
 import useRefs from "react-use-refs";
 
 const ProductLienQuan = () => {
-  const { data: productData } = useGetProductsQuery();
+  const { data: productData, isLoading } = useGetProductsQuery();
   const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
   useEffect(() => {
     if (productData) {
@@ -35,6 +35,18 @@ const ProductLienQuan = () => {
   }
   const gotoNext = (sliderRef: any) => {
     sliderRef?.current?.slickNext()
+  }
+  if (isLoading) {
+    return <div>
+      <div className="right-wrapper">
+        <div className="spinnerIconWrapper">
+          <div className="spinnerIcon"></div>
+        </div>
+        <div className="finished-text">
+          Xin vui lòng chờ một chút 🥰🥰🥰
+        </div>
+      </div>
+    </div>;
   }
   return (
     <div>

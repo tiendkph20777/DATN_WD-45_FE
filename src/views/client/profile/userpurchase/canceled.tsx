@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Input, Modal, Table, Tag } from 'antd';
+import React, { useState } from 'react';
+import { Button, Modal, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery } from '../../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
 import TopUserPurchase from '../../../../components/main/TopUserPurchase';
 import { useFetchOneUserQuery } from '../../../../services/user.service';
+import ProductSale from '../../home/homeProduct/ProductSale';
 
 const Abortorder: React.FC = () => {
     /////// modal
@@ -27,9 +28,6 @@ const Abortorder: React.FC = () => {
     // console.log(roleMane)
     // bảng dữ liệu
     const [searchFullName, setSearchFullName] = useState<string | undefined>(undefined);
-    const handleFullNameSearchChange = (value: string) => {
-        setSearchFullName(value.toLowerCase());
-    };
     const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
         const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
         const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
@@ -49,8 +47,9 @@ const Abortorder: React.FC = () => {
         ?.filter((order) => order.user_id === usersOne?._id)
         ?.filter((order: any) => order.status === 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
+        ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
+
     // console.log(successfulOrders)
     if (isLoading) {
         return <div>Loading...</div>;
@@ -62,12 +61,12 @@ const Abortorder: React.FC = () => {
             key: 'index',
             render: (text) => <a>{text}</a>,
         },
-        {
-            title: 'Tên người nhận',
-            dataIndex: 'fullName',
-            key: 'fullName',
-            render: (text) => <a>{text}</a>,
-        },
+        // {
+        //     title: 'Tên người nhận',
+        //     dataIndex: 'fullName',
+        //     key: 'fullName',
+        //     render: (text) => <a>{text}</a>,
+        // },
         {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'totals',
@@ -135,8 +134,8 @@ const Abortorder: React.FC = () => {
                         <TopUserPurchase />
                     </div>
                 </div>
-                <div style={{ paddingTop: "70px" }}>
-                   
+                <div>
+
                     <Table columns={columns} dataSource={successfulOrders} />
                     <Modal
                         title="Chi tiết đơn hàng"
@@ -151,6 +150,7 @@ const Abortorder: React.FC = () => {
                         <OrderDetails roleMane={roleMane} />
                     </Modal>
                 </div>
+                <ProductSale />
             </div>
         </section>
     )

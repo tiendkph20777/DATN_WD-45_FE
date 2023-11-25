@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Modal, Select, Table, Tag, Space, Input } from 'antd';
+import { Button, Form, Modal, Select, Table, Tag, Space, Input, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery, useUpdateCheckoutMutation } from '../../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
 import { message as messageApi } from 'antd';
 import TopUserPurchase from '../../../../components/main/TopUserPurchase';
 import { useFetchOneUserQuery } from '../../../../services/user.service';
+import ProductSale from '../../home/homeProduct/ProductSale';
 
 const Purchase: React.FC = () => {
     /////// modal chi tiết
@@ -61,36 +62,7 @@ const Purchase: React.FC = () => {
             totals,
         };
     });
-    // console.log(searchResult)
-    // console.log(nonSuccessfulOrder);
-    // const onSearch = (value: string) => {
-    //     if (value === "") {
-    //         setSearchResult(nonSuccessfulOrders);
-    //     } else {
-    //         let filteredData = nonSuccessfulOrders;
-    //         filteredData = filteredData?.filter((item: any) => {
-    //             // console.log(item?.status)
-    //             return (
-    //                 item?.status === value
-    //             );
-    //         }
-    //         );
-    //         if (filteredData?.length == 0) {
-    //             messageApi.error({
-    //                 type: 'error',
-    //                 content: "Không có đơn hàng nào trạng thái này",
-    //                 className: 'custom-class',
-    //                 style: {
-    //                     marginTop: '0',
-    //                     fontSize: "15px",
-    //                     lineHeight: "50px"
-    //                 },
-    //             });
-    //         }
-    //         setSearchResult(filteredData);
-    //     }
-    // };
-    // console.log(searchResult)
+
     const [cancellationOrderId, setCancellationOrderId] = useState<string | null>(null);
     const [cancellationOrderStatus, setCancellationOrderStatus] = useState<string | null>(null);
 
@@ -98,8 +70,9 @@ const Purchase: React.FC = () => {
         ?.filter((order) => order.user_id === usersOne?._id)
         ?.filter((order: any) => order.status === 'Đang xác nhận đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
+        ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
+
 
     const onFinish = async (values: any, id: string) => {
         try {
@@ -141,7 +114,16 @@ const Purchase: React.FC = () => {
     };
     // bảng dữ liệu
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
     }
     const columns: ColumnsType<any> = [
         {
@@ -150,12 +132,12 @@ const Purchase: React.FC = () => {
             key: 'index',
             render: (text) => <a>{text}</a>,
         },
-        {
-            title: 'Tên người nhận',
-            dataIndex: 'fullName',
-            key: 'fullName',
-            render: (text) => <a>{text}</a>,
-        },
+        // {
+        //     title: 'Tên người nhận',
+        //     dataIndex: 'fullName',
+        //     key: 'fullName',
+        //     render: (text) => <a>{text}</a>,
+        // },
         {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'totals',
@@ -231,34 +213,20 @@ const Purchase: React.FC = () => {
             align: 'center',
             render: (_, { status, _id }) => (
                 <>
-                    <Form
-                        name="complex-form"
-                        onFinish={(values) => onFinish(values, _id)}
-                        style={{ display: "flex", justifyContent: "right" }}
+                    <Popconfirm
+                        title="Bạn có chắc muốn hủy đơn hàng không?"
+                        onConfirm={() => onFinish({ status: 'Hủy đơn hàng' }, _id)}
+                        okText="OK"
+                        cancelText="Hủy"
                     >
-                        <Form.Item label="">
-                            <Space.Compact>
-                                <Form.Item
-                                    name={'status'}
-                                    noStyle
-                                    rules={[{ required: true, message: 'Province is required' }]}
-                                >
-                                    
-                                    <Select placeholder="Chọn Hủy Đơn" style={{ width: "250px" }}>
-                                        <Select.Option value="Hủy đơn hàng">Hủy đơn hàng</Select.Option>
-                                    </Select>
-                                </Form.Item>
-                            </Space.Compact>
-                        </Form.Item>
-                        <Form.Item label=" " colon={false}>
-                            <Button type="primary" htmlType="submit">
-                                OK
-                            </Button>
-                        </Form.Item>
-                    </Form>
+                        <Button type="primary" danger>
+                            Hủy đơn
+                        </Button>
+                    </Popconfirm>
                 </>
             ),
         },
+
     ];
 
     return (
@@ -289,7 +257,7 @@ const Purchase: React.FC = () => {
                     <Modal
                         title="Lý do hủy đơn hàng"
                         open={isModalOpen}
-                        onOk={handleOk}
+                        onOk={onFinish1}
                         onCancel={handleCancel}
                     >
                         <Form
@@ -300,17 +268,12 @@ const Purchase: React.FC = () => {
                             <Form.Item name={'note'} rules={[{ required: true, message: 'Please enter the reason for cancellation!' }]}>
                                 <Input.TextArea rows={6} placeholder='Nhập lý do hủy đơn hàng ...' />
                             </Form.Item>
-                            <Form.Item>
-                                <Button type="primary" htmlType="submit">
-                                    Submit
-                                </Button>
-                            </Form.Item>
                         </Form>
                     </Modal>
                 </div>
+                <ProductSale />
             </div>
         </section>
-
     )
 };
 

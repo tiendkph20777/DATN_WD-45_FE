@@ -55,7 +55,7 @@ const Dashboard = (props: Props) => {
   const [searchResult, setSearchResult] = useState<DataType[]>([]);
   const [showNoProductsAlert, setShowNoProductsAlert] = useState(false);
 
-  const { data: product } = useGetProductDetailQuery();
+  const { data: product, isLoading } = useGetProductDetailQuery();
   const { data: productData, refetch: refetchProductData } =
     useGetAllProductsDetailQuery();
   const { data: productDetailData } = useGetProductByIdQuery(id);
@@ -162,6 +162,19 @@ const Dashboard = (props: Props) => {
     });
   };
 
+  // 
+  if (isLoading) {
+    return <div>
+      <div className="right-wrapper">
+        <div className="spinnerIconWrapper">
+          <div className="spinnerIcon"></div>
+        </div>
+        <div className="finished-text">
+          Xin vui lòng chờ một chút 🥰🥰🥰
+        </div>
+      </div>
+    </div>;
+  }
   const columns = [
     {
       title: "Name",

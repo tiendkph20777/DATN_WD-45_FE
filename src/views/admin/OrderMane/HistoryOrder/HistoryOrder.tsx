@@ -45,12 +45,21 @@ const HistoryOrder: React.FC = () => {
     const successfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status === 'Giao hàng thành công')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((a, b) => new Date(a.dateCreate).getTime() - new Date(b.dateCreate).getTime())
+        ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     // console.log(successfulOrders)
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
     }
     const columns: ColumnsType<any> = [
         {
