@@ -21,6 +21,7 @@
     "axios": "^1.4.0",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.1",
+    "bootstrap4": "^0.0.1-security",
     "cloudinary": "^1.41.0",
     "concurrently": "^8.2.1",
     "firebase": "^10.6.0",

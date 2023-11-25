@@ -3,6 +3,9 @@ import { Outlet } from 'react-router-dom'
 import SideBar from '../../components/main/SideBar'
 import TopSideBar from '../../components/main/TopSideBar'
 
+import '/public/AdminTemplate/src/assets/js/app.min'
+import '/public/AdminTemplate/src/assets/js/dashboard'
+import '/public/AdminTemplate/src/assets/js/sidebarmenu'
 type Props = {}
 
 const Dashboard = (props: Props) => {

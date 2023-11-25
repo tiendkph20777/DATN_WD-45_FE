@@ -1,5 +1,7 @@
 import React from 'react'
-
+import '/public/AdminTemplate/src/assets/js/app.min'
+import '/public/AdminTemplate/src/assets/js/dashboard'
+import '/public/AdminTemplate/src/assets/js/sidebarmenu'
 
 const TopSideBar = () => {
     return (

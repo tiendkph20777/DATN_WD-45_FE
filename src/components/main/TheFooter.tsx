@@ -1,5 +1,7 @@
 import React from 'react'
-
+import '/public/HomeTemplate/dist/js/jquery.min'
+import '/public/HomeTemplate/dist/js/bootstrap.min'
+import '/public/HomeTemplate/dist/js/custom'
 
 const TheFooter = () => {
     return (

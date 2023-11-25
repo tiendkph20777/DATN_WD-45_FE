@@ -1,5 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import '/public/AdminTemplate/src/assets/js/app.min'
+import '/public/AdminTemplate/src/assets/js/dashboard'
+import '/public/AdminTemplate/src/assets/js/sidebarmenu'
 
 
 const SideBar = () => {
