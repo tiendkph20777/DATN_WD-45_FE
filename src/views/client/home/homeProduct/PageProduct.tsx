@@ -16,15 +16,24 @@ const PageProduct = () => {
 
     useEffect(() => {
         if (productData) {
+            // Sort products by the creation date in descending order (newest first)
+            const sortedProductData = [...productData].sort((a, b) => {
+                const dateA = new Date(a.createdAt).getTime();
+                const dateB = new Date(b.createdAt).getTime();
+                return dateB - dateA;
+            });
+
             const startIndex = (currentPage - 1) * productsPerPage;
             const endIndex = startIndex + productsPerPage;
-            const updatedDataSource = productData.slice(startIndex, endIndex).map(({ ...IProducts }) => ({
+            const updatedDataSource = sortedProductData.slice(startIndex, endIndex).map(({ ...IProducts }) => ({
                 ...IProducts,
             }));
+
             setDataSourceToRender(updatedDataSource);
-            setSearchResult(updatedDataSource)
+            setSearchResult(updatedDataSource);
         }
-    }, [productData, currentPage]);
+    }, [productData, currentPage, productsPerPage]);
+
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);

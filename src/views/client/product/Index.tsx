@@ -129,7 +129,6 @@ const Index = () => {
                   100 - (item.price_sale / item.price) * 100
                 );
                 return (
-
                   <div className="product border-2 p-2">
                     <div className="card product-main">
                       <a

@@ -55,7 +55,16 @@ const History: React.FC = () => {
 
     // console.log(successfulOrders)
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
     }
     const columns: ColumnsType<any> = [
         {

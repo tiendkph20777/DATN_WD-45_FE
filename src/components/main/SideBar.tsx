@@ -10,11 +10,15 @@ const SideBar = () => {
         <aside className="left-sidebar">
             {/* <!-- Sidebar scroll--> */}
             <div className="brand-logo d-flex align-items-center justify-content-between">
-                <Link to="/" className="text-nowrap logo-img">
+                {/* <Link to="/" className="text-nowrap logo-img">
                     <img src="" width="180" alt="" />
                 </Link>
                 <div className="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                     <i className="ti ti-x fs-8"></i>
+                </div> */}
+                <div className="logo">
+                    <a className="navbar-brand py-0 me-0" href="#"><img src="/src/assets/images/logo.png" width="auto"
+                        height="70px" alt="" /></a>
                 </div>
             </div>
             {/* <!-- Sidebar navigation--> */}
@@ -126,22 +130,15 @@ const SideBar = () => {
                     </li>
                     <li className="sidebar-item">
                         <Link className="sidebar-link" to="#" aria-expanded="false">
-                            <span>
-                                <i className="ti ti-aperture"></i>
-                            </span>
-                            <span className="hide-menu">Danh Sách</span>
+                            <span className="hide-menu"></span>
                         </Link>
                     </li>
                     <li className="nav-small-cap">
-                        <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
-                        <span className="hide-menu">Lịch Sử Giao Dịch</span>
+                        <span className="hide-menu"></span>
                     </li>
                     <li className="sidebar-item">
                         <Link className="sidebar-link" to="#" aria-expanded="false">
-                            <span>
-                                <i className="ti ti-mood-happy"></i>
-                            </span>
-                            <span className="hide-menu">Lịch Sử Nhận Hoa Hồng</span>
+                            <span className="hide-menu"></span>
                         </Link>
                     </li>
                 </ul>
