@@ -3,7 +3,7 @@ import { useFetchOneCartQuery } from '../../../services/cart.service';
 import { useGetAllProductsDetailQuery } from '../../../services/productDetail.service'
 import { useGetProductsQuery } from '../../../services/product.service';
 import { useFetchOneUserQuery } from '../../../services/user.service';
-import { useCreateCheckoutMutation } from "../../../services/checkout.service";
+import { useCreateCheckoutMutation, useReductionProductMutation } from "../../../services/checkout.service";
 import { useGetVoucherByCodeQuery } from '../../../services/voucher.service';
 import { useGetPaymentQuery } from '../../../services/payment.service';
 import { useNavigate } from 'react-router-dom';
@@ -12,13 +12,11 @@ const CheckOut = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
-    // console.log(cartDetail)
     const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: paymentQuery } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
-    // console.log(cartDetail)
 
 
     useEffect(() => {
@@ -74,6 +72,7 @@ const CheckOut = () => {
 
     const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
     const [addCheckout] = useCreateCheckoutMutation();
+    const [quantityCheckout] = useReductionProductMutation();
     const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
     const totalSum = cartDetail.reduce((accumulator, item: any) => accumulator + item.total, 0);
     const total = totalSum - valueVoucher;
@@ -97,7 +96,6 @@ const CheckOut = () => {
         setSelectedPayment(paymentId);
         // Thêm logic xử lý khi phương thức thanh toán được chọn
     };
-    // console.log(selectedPayment);
     const navigation = useNavigate()
     const handleOnClick = async () => {
         const form = document.querySelector('#form_checkout') as HTMLFormElement | null;
@@ -117,10 +115,11 @@ const CheckOut = () => {
             try {
                 const date = new Date()
                 const newData = { ...data, products: cartDetail, payment_id: selectedPayment, shipping: "", total: totalSum - voucher?.value, voucherCode, dateCreate: date, status: 'Đang xác nhận đơn hàng' };
-                console.log(newData);
                 localStorage.setItem('currentOrder', JSON.stringify(newData));
-                // 
                 await addCheckout(newData);
+                if (newData) {
+                    newData.products.map((item) => quantityCheckout(item))
+                }
                 navigation("/ordersuccess")
             } catch (error) {
                 console.error('Lỗi khi tạo checkout:', error);

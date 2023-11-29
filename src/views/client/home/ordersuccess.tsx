@@ -11,13 +11,11 @@ const Ordersuccess = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
-    // console.log(cartDetail)
     const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
     const { data: cartUser, } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: paymentQuery } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
-    console.log(cartDetail)
 
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
