@@ -56,18 +56,12 @@ const ProductLienQuan = () => {
             <div className="fs-5  text-uppercase fw-bold text-center">
               - Sản Phẩm Liên Quan
             </div>
-            <div>
-              <button className="button_slide" onClick={() => gotoNext(sliderRef0)}><img src="/src/assets/icons/prev.svg" /></button>
-              <button className="button_slide" onClick={() => gotoPrev(sliderRef0)}><img src="/src/assets/icons/next.svg" /></button>
-            </div>
           </div>
-          {/* <div className="row ourteam-row position-relative"> */}
-          {/* <div className=""> */}
           <Slider
-            dots={true} // Hiển thị dấu chấm chỉ định trang hiện tại
+            // dots={true} // Hiển thị dấu chấm chỉ định trang hiện tại
             infinite={true} // Lặp vô tận qua các ảnh
             speed={300} // Tốc độ chuyển đổi (milliseconds)
-            slidesToShow={4} // Số ảnh được hiển thị cùng một lúc
+            slidesToShow={5} // Số ảnh được hiển thị cùng một lúc
             slidesToScroll={1} // Số ảnh được chuyển đổi khi bạn di chuyển slide
             autoplay={true}
             autoplaySpeed={2000} // Thời gian chuyển ảnh

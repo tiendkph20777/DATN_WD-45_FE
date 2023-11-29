@@ -77,7 +77,7 @@ const ProductSale = () => {
             <section className="our-team position-relative pt-2">
                 <div className="container_home">
                     <div>
-                        <div className="d-flex justify-content-between py-5">
+                        <div className="d-flex justify-content-between pb-5">
                             <div className="fs-5  text-uppercase fw-bold text-center">
                                 - SẢN PHẨM KHUYẾN MÃI
                             </div>
