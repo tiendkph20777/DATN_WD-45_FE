@@ -162,7 +162,7 @@ const OrderMane: React.FC = () => {
     // bảng dữ liệu
     if (isLoading) {
         return <div>
-            <div className="right-wrapper mt-20">
+            <div className="right-wrapper" style={{ paddingTop: "100px" }}>
                 <div className="spinnerIconWrapper">
                     <div className="spinnerIcon"></div>
                 </div>

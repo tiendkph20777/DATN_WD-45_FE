@@ -122,7 +122,7 @@ const App: React.FC = () => {
 
     if (isLoading) {
         return <div>
-            <div className="right-wrapper">
+            <div className="right-wrapper" style={{ paddingTop: "100px" }}>
                 <div className="spinnerIconWrapper">
                     <div className="spinnerIcon"></div>
                 </div>
@@ -134,8 +134,8 @@ const App: React.FC = () => {
     }
 
     const columns = [
-        { title: 'Tên người dùng', dataIndex: 'userName', key: 'userName' },
-        { title: 'Tên đầy đủ', dataIndex: 'fullName', key: 'fullName' },
+        // { title: 'Tên người dùng', dataIndex: 'userName', key: 'userName' },
+        { title: 'Tên người dùng', dataIndex: 'fullName', key: 'fullName' },
         { title: 'Email', dataIndex: 'email', key: 'email' },
         { title: 'Giới tính', dataIndex: 'gender', key: 'gender' },
         { title: 'Điện thoại ', dataIndex: 'tel', key: 'tel' },

@@ -9,11 +9,14 @@ import { useGetAllProductsDetailQuery, useGetAllsProductsDetailQuery } from "../
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { message as messageApi } from "antd";
+import { Tabs, message as messageApi } from "antd";
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
 import ProductLienQuan from "./ProductLienQuan";
 import ProductSale from "../home/homeProduct/ProductSale";
+import RelatedInformation from "./RelatedInformation";
+
+const { TabPane } = Tabs;
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -132,6 +135,7 @@ const ProductDetail = () => {
       if (!isAddingToCart) {
         setIsAddingToCart(true);
         const filteredProducts = productDataDetail?.map(async (product) => {
+          console.log("bạn chưa chọn size")
           if (
             typeof product?.size === "number" &&
             product?.size === selectedSize
@@ -278,13 +282,12 @@ const ProductDetail = () => {
                       <span>Thương Hiệu</span> : {brandName}
                     </a>
                   </li>
+                  <hr />
                   <li>
-                    <i>{prodetailData?.content}</i>
+                    <i>{prodetailData?.description}</i>
                   </li>
                 </ul>
-                <p className="description-product">
-                  {prodetailData?.description}
-                </p>
+
                 <div className="product-blocks-details product-blocks-443 grid-rows">
                   <div className="grid-row grid-row-443-1">
                     <div className="grid-cols">
@@ -315,23 +318,20 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                <div className="product-detail d-flex size">
-                  <div className="product-size w-25">
-                    <p>Kích Cỡ</p>
-                    <div className="size-buttons">
-                      {productSizes?.map((size, index) => (
-                        <button
-                          key={index}
-                          className={`size-button ${selectedSize === size ? "active" : ""
-                            }`}
-                          onClick={() => handleSizeChange(size)}
-                        >
-                          {size}
-                        </button>
-                      ))}
-                    </div>
+                <div className="product-detail  size">
+                  <p>Kích Cỡ</p>
+                  <div className="size-buttons">
+                    {productSizes?.map((size, index) => (
+                      <button
+                        key={index}
+                        className={`size-button ${selectedSize === size ? "active" : ""
+                          }`}
+                        onClick={() => handleSizeChange(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
                   </div>
-
                   <div className="all-colors">
                     <p>Màu Sắc</p>
                     <div className="color-buttons">
@@ -385,7 +385,14 @@ const ProductDetail = () => {
         </div>
       </div>
       <div>
-        <CommentProductDetail />
+        <Tabs defaultActiveKey="1" className="container">
+          <TabPane tab="Thông tin liên quan" key="1">
+            <RelatedInformation />
+          </TabPane>
+          <TabPane tab="Xem đánh giá " key="2">
+            <CommentProductDetail />
+          </TabPane>
+        </Tabs>
         <ProductLienQuan />
         <ProductSale />
       </div>

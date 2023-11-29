@@ -22,31 +22,41 @@ const Ordersuccess = () => {
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
+
             const matchingIds = cartDetailIds?.filter((id: any) => ProductDetailUser.some((product) => product._id === id));
             const productIds = ProductDetailUser?.map((item) => item.product_id);
             const filteredProducts = Product?.filter((product: any) => productIds.includes(product?._id));
             const matchingProductDetailUser = ProductDetailUser?.filter((item) => matchingIds.includes(item._id));
+
             const modifiedProductDetails = matchingProductDetailUser?.map((item: any) => {
                 const matchingProduct = filteredProducts?.find((product) => product._id === item.product_id);
 
                 if (matchingProduct) {
                     const price = matchingProduct.price;
                     const quantity = cartUser.products.find((product: any) => product.productDetailId === item._id).quantity;
-                    return {
-                        ...item,
-                        name: matchingProduct.name,
-                        image: matchingProduct.images[0],
-                        price: price,
-                        quantity: quantity,
-                        total: price * quantity,
-                    };
+                    const status = cartUser.products.find((product: any) => product.productDetailId === item._id).status;
+
+                    if (status) { // Check if status is true
+                        return {
+                            ...item,
+                            name: matchingProduct.name,
+                            image: matchingProduct.images[0],
+                            price: price,
+                            quantity: quantity,
+                            total: price * quantity,
+                            status: status,
+                        };
+                    } else {
+                        return null; // Exclude items with status false
+                    }
                 } else {
                     return item;
                 }
-            });
+            }).filter(Boolean); // Remove null values from the array
+
             setCartDetail(modifiedProductDetails);
         }
-    }, [cartUser, ProductDetailUser]);
+    }, [cartUser, ProductDetailUser, Product]);
 
 
     const [voucherCode, setVoucherCode] = useState('');
