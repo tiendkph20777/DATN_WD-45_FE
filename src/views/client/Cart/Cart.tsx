@@ -22,7 +22,12 @@ const Cart = () => {
     const { data: Product } = useGetProductsQuery();
     const [removeCartDetailMutation] = useRemoveCartDetailMutation();
     const [updateCartDetailMutation] = useUpdateCartDetailMutation();
-    // console.log(cartDetail)
+    // const [cartDetailCheckbot, setCartDetailCheckbot] = useState([]);
+
+    // sản phẩm dược chọn 
+    const productsWithTrueStatus = cartDetail.filter(product => product.status === true);
+    const totalCost = productsWithTrueStatus?.reduce((acc, product) => acc + (product.quantity * product.price), 0);
+    // 
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
@@ -254,12 +259,13 @@ const Cart = () => {
         <div>
             <section className="cart_area">
                 <div className="container">
+                    <hr />
                     <div className="cart_inner">
                         <div className="table-responsive">
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th>#</th>
                                         <th scope="col">Hình Ảnh</th>
                                         <th scope="col">Tên Sản Phẩm</th>
                                         <th scope="col">Kích Cỡ</th>
@@ -275,8 +281,6 @@ const Cart = () => {
                                             <td>
                                                 <input
                                                     type="checkbox"
-                                                    name=""
-                                                    id=""
                                                     checked={item?.status}
                                                     onChange={(e) => handleCheckboxChange(e, item)}
                                                 />
@@ -344,18 +348,39 @@ const Cart = () => {
                             <table className="table">
                                 <tbody>
                                     <tr className="out_button_area">
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <h3>
+                                                Số sản phẩm đã chọn: {productsWithTrueStatus?.length}
+                                            </h3>
+                                        </td>
                                         <td></td>
                                         <td>
-                                            <div className="checkout_btn_inner d-flex align-items-center">
-                                                <a className="gray_btn" href="/">Continue Shopping</a>
-                                                <Link to="/checkout" className="primary-btn">Thanh toán</Link>
+                                            {productsWithTrueStatus?.length > 0 ? (
+                                                <h3>
+                                                    Tổng tiền thanh toán: {totalCost?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                                </h3>
+                                            ) : (
+                                                <p>Không có sản phẩm nào để thanh toán</p>
+                                            )}
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <div className="align-items-center">
+                                                {productsWithTrueStatus?.length > 0 ? (
+                                                    <Link to="/checkout" className="primary-btn">
+                                                        Thanh toán
+                                                    </Link>
+                                                ) : (
+                                                    <a className="gray_btn" href="/">
+                                                        Tiếp tuc mua sắm
+                                                    </a>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
                         <div>
                             <ProductSale />

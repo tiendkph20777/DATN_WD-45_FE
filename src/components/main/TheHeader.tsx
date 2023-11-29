@@ -155,7 +155,8 @@ const TheHeader = () => {
                                     {isLoggedIn ? (
                                         <div className="dropdown">
                                             {/* <button className="btn btn1"> */}
-                                            <img src={user?.image} alt="Lỗi ảnh" width={40} height={40} style={{ borderRadius: "50%" }} />
+
+                                            <img src={user?.image} alt="Lỗi ảnh" width={40} height={40} style={{ borderRadius: "50%", marginRight: "50px" }} />
                                             {/* </button> */}
                                             <div className="dropdown-content" style={{ borderRadius: "10px" }}>
                                                 <Link to="/profile" className='link1'>
