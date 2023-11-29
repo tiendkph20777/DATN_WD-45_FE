@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal, Select, Table, Tag, Space, Input } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useFetchCheckoutQuery, useUpdateCheckoutMutation } from '../../../services/checkout.service';
+import { useFetchCheckoutQuery, useIncreaseProductMutation, useUpdateCheckoutMutation } from '../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
 import { message as messageApi } from 'antd';
 
@@ -26,6 +26,7 @@ const OrderMane: React.FC = () => {
     const { data: orderDa, isLoading, isFetching } = useFetchCheckoutQuery()
     const [updateCheck] = useUpdateCheckoutMutation()
     const [roleMane, setRoleMane] = useState<any>({});
+    const [increaseProduct] = useIncreaseProductMutation();
     const [searchResult, setSearchResult] = useState<any>([]);
 
     const handleEditClick = (id: string) => {
@@ -141,11 +142,13 @@ const OrderMane: React.FC = () => {
     // modal xóa
     const onFinish1 = (value: any) => {
         const orderId = cancellationOrderId;
+        const increase = orderDa?.find((item: any) => item?._id === orderId);
         const noteDe = {
             _id: orderId,
             noteCancel: value?.note,
             status: cancellationOrderStatus,
         }
+        increase?.products.map((item: any) => increaseProduct(item))
         updateCheck(noteDe).unwrap();
         setIsModalOpen(false);
         messageApi.error({

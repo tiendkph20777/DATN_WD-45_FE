@@ -20,7 +20,7 @@ const checkoutAPI = createApi({
             invalidatesTags: ["Checkout"],
         }),
 
-        fetchCheckout: builder.query<IAuth[], void>({
+        fetchCheckout: builder.query<any[], void>({
             query: () => "/checkout",
             providesTags: ["Checkout"]
         }),
@@ -57,11 +57,24 @@ const checkoutAPI = createApi({
             }),
             invalidatesTags: ["Checkout"],
         }),
-
+        reductionProduct: builder.mutation<void, any>({
+            query: (item) => ({
+                url: `/reductionProduct/${item._id}/${item.quantity}`,
+                method: 'GET',
+            }),
+            invalidatesTags: ["Checkout"],
+        }),
+        increaseProduct: builder.mutation<void, any>({
+            query: (item) => ({
+                url: `/increaseProduct/${item._id}/${item.quantity}`,
+                method: 'GET',
+            }),
+            invalidatesTags: ["Checkout"],
+        })
     }),
 });
 
-export const { useCreateCheckoutMutation, useFetchCheckoutQuery, useFetchOneCheckoutQuery, useRemoveCheckoutMutation, useUpdateCheckoutMutation } = checkoutAPI;
+export const { useCreateCheckoutMutation, useFetchCheckoutQuery, useFetchOneCheckoutQuery, useRemoveCheckoutMutation, useUpdateCheckoutMutation, useReductionProductMutation, useIncreaseProductMutation } = checkoutAPI;
 
 
 export default checkoutAPI;
