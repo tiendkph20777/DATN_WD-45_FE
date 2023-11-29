@@ -165,7 +165,7 @@ const OrderMane: React.FC = () => {
     // bảng dữ liệu
     if (isLoading) {
         return <div>
-            <div className="right-wrapper">
+            <div className="right-wrapper" style={{ paddingTop: "100px" }}>
                 <div className="spinnerIconWrapper">
                     <div className="spinnerIcon"></div>
                 </div>
@@ -302,7 +302,7 @@ const OrderMane: React.FC = () => {
             <Modal
                 title="Lý do hủy đơn hàng"
                 open={isModalOpen}
-                onOk={handleOk}
+                onOk={onFinish1}
                 onCancel={handleCancel}
             >
                 <Form
@@ -312,11 +312,6 @@ const OrderMane: React.FC = () => {
                 >
                     <Form.Item name={'note'} rules={[{ required: true, message: 'Please enter the reason for cancellation!' }]}>
                         <Input.TextArea rows={6} placeholder='Nhập lý do hủy đơn hàng ...' />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                            Submit
-                        </Button>
                     </Form.Item>
                 </Form>
             </Modal>

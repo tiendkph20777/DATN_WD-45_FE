@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { useFetchUserQuery } from '../../../services/user.service';
 import { useAddCommentMutation, useFetchCommentQuery } from "../../../services/comment.service";
+import { Rate, Space } from "antd";
 interface DataType {
     _id: string;
     content: string;
@@ -52,18 +53,19 @@ const CommentProductDetail = () => {
             </div>
         </div>;
     }
+    // 
+    const desc = ['xấu 😭', 'ổn 😥', 'tạm được 😔', 'đẹp 😊', 'tuyệt vời 🥰'];
     return (
-        <div className="mx-auto w-70 row h-50 my-5">
-            <h3>XEM ĐÁNH GIÁ</h3>
-            <div className='w-50'>
-                <div className="scroll">
+        <div className="mx-auto row">
+            <div className='w-60'>
+                <div className="">
                     {dataSourceToRender.map((item) => {
                         const nameUser = dataUser?.find((role) => role?._id === item.id_user)?.fullName
                         return (
-                            <div className="border p-3">
+                            <div className="border p-3 " key={item._id}>
                                 <h5>{nameUser}</h5>
                                 <div>{item.content}</div>
-                                <div>{item.rate}⭐</div>
+                                <div className="pt-3"><Rate tooltips={desc} disabled defaultValue={item.rate} /> <span>{desc[item.rate - 1]}</span></div>
                             </div>
                         )
                     })
@@ -76,7 +78,7 @@ const CommentProductDetail = () => {
                         className="form-control"
                         {...register("content", { required: true, minLength: 2 })}
                     ></textarea>
-                    <label className='fs-6'>Đánh giá</label>
+                    <label className='fs-6  '>Bình luận</label>
                     <div className='my-2'>
                         <span>Xấu</span>
                         <input className="form-check-input mx-1" type="radio" value="1" {...register("rate", { required: true })} />

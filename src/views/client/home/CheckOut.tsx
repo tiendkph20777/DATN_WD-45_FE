@@ -13,43 +13,50 @@ const CheckOut = () => {
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
     const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs)
-    const { data: cartUser, } = useFetchOneCartQuery(idUs);
+    const { data: cartUser } = useFetchOneCartQuery(idUs);
     const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
     const { data: paymentQuery } = useGetPaymentQuery();
     const { data: Product } = useGetProductsQuery();
 
 
     useEffect(() => {
-
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
+
             const matchingIds = cartDetailIds?.filter((id: any) => ProductDetailUser.some((product) => product._id === id));
             const productIds = ProductDetailUser?.map((item) => item.product_id);
             const filteredProducts = Product?.filter((product: any) => productIds.includes(product?._id));
             const matchingProductDetailUser = ProductDetailUser?.filter((item) => matchingIds.includes(item._id));
+
             const modifiedProductDetails = matchingProductDetailUser?.map((item: any) => {
                 const matchingProduct = filteredProducts?.find((product) => product._id === item.product_id);
 
                 if (matchingProduct) {
                     const price = matchingProduct.price;
                     const quantity = cartUser.products.find((product: any) => product.productDetailId === item._id).quantity;
-                    return {
-                        ...item,
-                        name: matchingProduct.name,
-                        image: matchingProduct.images[0],
-                        price: price,
-                        quantity: quantity,
-                        total: price * quantity,
-                    };
+                    const status = cartUser.products.find((product: any) => product.productDetailId === item._id).status;
+
+                    if (status) { // Check if status is true
+                        return {
+                            ...item,
+                            name: matchingProduct.name,
+                            image: matchingProduct.images[0],
+                            price: price,
+                            quantity: quantity,
+                            total: price * quantity,
+                            status: status,
+                        };
+                    } else {
+                        return null; // Exclude items with status false
+                    }
                 } else {
                     return item;
                 }
-            });
+            }).filter(Boolean); // Remove null values from the array
+
             setCartDetail(modifiedProductDetails);
         }
-
-
-    }, [cartUser, ProductDetailUser]);
+    }, [cartUser, ProductDetailUser, Product]);
 
 
     const [voucherCode, setVoucherCode] = useState('');
@@ -62,12 +69,11 @@ const CheckOut = () => {
         }
     };
     if (voucher) {
-        console.log('Thông tin voucher:', voucher);
+        // console.log('Thông tin voucher:', voucher);
     }
     if (error) {
         console.error('Lỗi khi truy vấn mã khuyến mãi:', error);
     }
-
 
 
     const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
@@ -80,18 +86,6 @@ const CheckOut = () => {
     // Payment ID
     const [selectedPayment, setSelectedPayment] = useState(null);
 
-    // Prepare the data for creating a checkout
-    // const checkoutData = {
-    //     product_id: cartDetail.map(item => item.product_id),
-    //     user_id: idUs,
-    //     address: profileUser.map((item: { address: any; }) => item.address),
-    //     fullname: profileUser.map((item: { fullName: any; }) => item.fullName),
-    //     email: profileUser.map((item: { email: any; }) => item.email),
-    //     tel: profileUser.map((item: { tel: any; }) => item.tel),
-    //     total: cartDetail.map(item => item.total),
-    //     PaymentAmount: totalSum,
-    //     // Add other checkout-related data here
-    // };
     const handlePaymentSelect = (paymentId: any) => {
         setSelectedPayment(paymentId);
         // Thêm logic xử lý khi phương thức thanh toán được chọn
@@ -127,7 +121,21 @@ const CheckOut = () => {
         }
     };
     const addre = usersOne?.city + " , " + usersOne?.district + " , " + usersOne?.commune + " , " + usersOne?.address
-
+    // 
+    // const amount = total;
+    // const language = "vn";
+    // const bankCode = "INTCARD"
+    // Gọi createPaymentUrl từ một chỗ khác
+    // createPaymentUrl(amount, language, bankCode)
+    //     .then((result) => {
+    //         console.log('Kết quả từ server:', result);
+    //         // Xử lý kết quả ở đây
+    //     })
+    //     .catch((error) => {
+    //         console.error('Lỗi khi gửi yêu cầu:', error.message);
+    //         // Xử lý lỗi ở đây
+    //     });
+    // 
     if (isLoading) {
         return <div>
             <div className="right-wrapper">

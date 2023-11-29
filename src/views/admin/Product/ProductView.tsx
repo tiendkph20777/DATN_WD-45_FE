@@ -107,7 +107,7 @@ const ProductView = () => {
   // 
   if (isLoading) {
     return <div>
-      <div className="right-wrapper">
+      <div className="right-wrapper" style={{ paddingTop: "100px" }}>
         <div className="spinnerIconWrapper">
           <div className="spinnerIcon"></div>
         </div>
