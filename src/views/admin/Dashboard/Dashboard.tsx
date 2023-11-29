@@ -1,7 +1,52 @@
-import React from 'react'
+import { useFetchCheckoutQuery } from "../../../services/checkout.service";
+import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
+import { useFetchUserQuery } from "../../../services/user.service";
+
 
 const Dashboard = () => {
 
+    const { data: dataUser } = useFetchUserQuery();
+    const { data: orderDa, isLoading } = useFetchCheckoutQuery();
+    const { data: dataProduct } = useGetAllProductsDetailQuery()
+    const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
+        const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
+        const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
+        const totals = order.products.reduce((acc: number, product: any) => acc + (product.total || 0), 0);
+        return {
+            ...order,
+            index: index + 1,
+            totals,
+            date: date,
+            datehis: datehis,
+        };
+    });
+
+    const successfulOrders = nonSuccessfulOrder?.filter((order: any) => order.status === 'Giao hàng thành công');
+
+    let fullTotal = 0;
+    successfulOrders?.forEach((item: any) => fullTotal = fullTotal + item.totals);
+
+    let TotalSuccessfulOrder = 0;
+    successfulOrders?.map((item) => item.products?.map((item_product: any) => {
+        return (TotalSuccessfulOrder = TotalSuccessfulOrder + item_product.quantity)
+    }))
+
+    let TotalProduct = 0;
+    dataProduct?.map((item: any) => TotalProduct = TotalProduct + item.quantity)
+
+
+    if (isLoading) {
+        return <div>
+            <div className="right-wrapper">
+                <div className="spinnerIconWrapper">
+                    <div className="spinnerIcon"></div>
+                </div>
+                <div className="finished-text">
+                    Xin vui lòng chờ một chút 🥰🥰🥰
+                </div>
+            </div>
+        </div>;
+    }
     return (
         <div style={{ paddingTop: "70px" }}>
             {/* Page Wrapper */}
@@ -33,10 +78,10 @@ const Dashboard = () => {
                                             <div className="row no-gutters align-items-center">
                                                 <div className="col mr-2">
                                                     <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                        Earnings (Monthly)
+                                                        Số người dùng
                                                     </div>
                                                     <div className="h5 mb-0 font-weight-bold text-gray-800">
-                                                        $40,000
+                                                        {dataUser?.length}
                                                     </div>
                                                 </div>
                                                 <div className="col-auto">
@@ -53,10 +98,10 @@ const Dashboard = () => {
                                             <div className="row no-gutters align-items-center">
                                                 <div className="col mr-2">
                                                     <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                        Earnings (Annual)
+                                                        Tổng tiền bán được
                                                     </div>
                                                     <div className="h5 mb-0 font-weight-bold text-gray-800">
-                                                        $215,000
+                                                        {fullTotal?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                                     </div>
                                                 </div>
                                                 <div className="col-auto">
@@ -73,24 +118,12 @@ const Dashboard = () => {
                                             <div className="row no-gutters align-items-center">
                                                 <div className="col mr-2">
                                                     <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                                        Tasks
+                                                        Số sản phẩm đã bán được
                                                     </div>
                                                     <div className="row no-gutters align-items-center">
                                                         <div className="col-auto">
                                                             <div className="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                                                                50%
-                                                            </div>
-                                                        </div>
-                                                        <div className="col">
-                                                            <div className="progress progress-sm mr-2">
-                                                                <div
-                                                                    className="progress-bar bg-info"
-                                                                    role="progressbar"
-                                                                    style={{ width: "50%" }}
-                                                                    aria-valuenow={50}
-                                                                    aria-valuemin={0}
-                                                                    aria-valuemax={100}
-                                                                />
+                                                                {TotalSuccessfulOrder}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -109,10 +142,10 @@ const Dashboard = () => {
                                             <div className="row no-gutters align-items-center">
                                                 <div className="col mr-2">
                                                     <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                        Pending Requests
+                                                        Sô sản phẩm còn lại trong kho
                                                     </div>
                                                     <div className="h5 mb-0 font-weight-bold text-gray-800">
-                                                        18
+                                                        {TotalProduct}
                                                     </div>
                                                 </div>
                                                 <div className="col-auto">

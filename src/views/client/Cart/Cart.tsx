@@ -11,6 +11,9 @@ import EditProductModal from './CartModel';
 import { Link } from 'react-router-dom';
 
 const Cart = () => {
+    // 
+
+    // 
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
@@ -19,11 +22,15 @@ const Cart = () => {
     const { data: Product } = useGetProductsQuery();
     const [removeCartDetailMutation] = useRemoveCartDetailMutation();
     const [updateCartDetailMutation] = useUpdateCartDetailMutation();
-    // console.log(cartDetail)
+    // const [cartDetailCheckbot, setCartDetailCheckbot] = useState([]);
+
+    // sản phẩm dược chọn 
+    const productsWithTrueStatus = cartDetail.filter(product => product.status === true);
+    const totalCost = productsWithTrueStatus?.reduce((acc, product) => acc + (product.quantity * product.price), 0);
+    // 
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
             const cartDetailIds = cartUser?.products.map((item: any) => item.productDetailId);
-
             const matchingIds = cartDetailIds?.filter((id: any) => ProductDetailUser.some((product) => product._id === id));
             // 
             const productIds = ProductDetailUser?.map((item) => item.product_id);
@@ -36,6 +43,8 @@ const Cart = () => {
 
                 if (matchingProduct) {
                     const price = matchingProduct.price;
+                    const status = cartUser?.products.find((product: any) => product.productDetailId === item._id).status;
+                    // console.log(status)
                     const quantity = cartUser?.products.find((product: any) => product.productDetailId === item._id).quantity;
                     const idCartDetail = cartUser?.products.find((product: any) => product.productDetailId === item._id)._id;
                     return {
@@ -46,6 +55,7 @@ const Cart = () => {
                         quantity: quantity,
                         total: price * quantity,
                         idCartDetail: idCartDetail,
+                        status: status,
                     };
                 } else {
                     return item;
@@ -138,6 +148,7 @@ const Cart = () => {
             setValue('quantity', editingProduct.quantity);
             setValue('size', editingProduct.size);
             setValue('total', editingProduct.total);
+            setValue('status', editingProduct.status);
         }
     }, [editingProduct, setValue]);
 
@@ -220,6 +231,17 @@ const Cart = () => {
             });
         }
     };
+
+    const handleCheckboxChange = (e: any, item: any) => {
+        const checkbox = {
+            idCartDetail: item?.idCartDetail,
+            status: e.target.checked
+        }
+        // console.log(checkbox)
+        updateCartDetailMutation(checkbox)
+    };
+
+
     if (isLoading) {
         return <div>
             <div className="right-wrapper">
@@ -232,16 +254,18 @@ const Cart = () => {
             </div>
         </div>;
     }
+    // console.log(cartDetail);
     return (
         <div>
             <section className="cart_area">
                 <div className="container">
+                    <hr />
                     <div className="cart_inner">
                         <div className="table-responsive">
                             <table className="table">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                        <th>#</th>
                                         <th scope="col">Hình Ảnh</th>
                                         <th scope="col">Tên Sản Phẩm</th>
                                         <th scope="col">Kích Cỡ</th>
@@ -255,7 +279,11 @@ const Cart = () => {
                                     {cartDetail?.map((item: any) => (
                                         <tr key={item?._id}>
                                             <td>
-                                                <input type="checkbox" name="" id="" />
+                                                <input
+                                                    type="checkbox"
+                                                    checked={item?.status}
+                                                    onChange={(e) => handleCheckboxChange(e, item)}
+                                                />
                                             </td>
                                             <td style={{ width: "100px" }}>
                                                 <img width={'100px'} src={item?.image} alt="" />
@@ -320,18 +348,39 @@ const Cart = () => {
                             <table className="table">
                                 <tbody>
                                     <tr className="out_button_area">
-                                        <td></td>
-                                        <td></td>
+                                        <td>
+                                            <h3>
+                                                Số sản phẩm đã chọn: {productsWithTrueStatus?.length}
+                                            </h3>
+                                        </td>
                                         <td></td>
                                         <td>
-                                            <div className="checkout_btn_inner d-flex align-items-center">
-                                                <a className="gray_btn" href="/">Continue Shopping</a>
-                                                <Link to="/checkout" className="primary-btn">Thanh toán</Link>
+                                            {productsWithTrueStatus?.length > 0 ? (
+                                                <h3>
+                                                    Tổng tiền thanh toán: {totalCost?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                                </h3>
+                                            ) : (
+                                                <p>Không có sản phẩm nào để thanh toán</p>
+                                            )}
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <div className="align-items-center">
+                                                {productsWithTrueStatus?.length > 0 ? (
+                                                    <Link to="/checkout" className="primary-btn">
+                                                        Thanh toán
+                                                    </Link>
+                                                ) : (
+                                                    <a className="gray_btn" href="/">
+                                                        Tiếp tuc mua sắm
+                                                    </a>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+
                         </div>
                         <div>
                             <ProductSale />

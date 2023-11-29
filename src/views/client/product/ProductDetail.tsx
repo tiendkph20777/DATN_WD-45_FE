@@ -9,11 +9,14 @@ import { useGetAllProductsDetailQuery, useGetAllsProductsDetailQuery } from "../
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { message as messageApi } from "antd";
+import { Tabs, message as messageApi } from "antd";
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
 import ProductLienQuan from "./ProductLienQuan";
 import ProductSale from "../home/homeProduct/ProductSale";
+import RelatedInformation from "./RelatedInformation";
+
+const { TabPane } = Tabs;
 
 const ProductDetail = () => {
   const { data: productData } = useGetProductsQuery();
@@ -50,28 +53,28 @@ const ProductDetail = () => {
   useEffect(() => {
     if (selectedSize) {
       const detailsForSelectedSize = productDataDetail?.filter(
-        (detail) => detail?.size === selectedSize
+        (detail: any) => detail?.size === selectedSize
       );
       const colorsForCurrentProduct = detailsForSelectedSize
-        .filter((detail) => detail?.product_id === prodetailData?._id)
-        .map((detail) => detail?.color);
+        .filter((detail: any) => detail?.product_id === prodetailData?._id)
+        .map((detail: any) => detail?.color);
 
       setColorsForSelectedSize(colorsForCurrentProduct);
     }
   }, [selectedSize, productDataDetail, prodetailData]);
 
-  const handleThumbnailClick = (image) => {
+  const handleThumbnailClick = (image: any) => {
     setMainImage(image);
   };
 
   useEffect(() => {
     if (productData && prodetailData && productDataDetail) {
       const productDetailsForCurrentProduct = productDataDetail.filter(
-        (detail) => detail.product_id === prodetailData._id
+        (detail: any) => detail.product_id === prodetailData._id
       );
 
       const sizesForCurrentProduct = productDetailsForCurrentProduct.map(
-        (detail) => detail.size
+        (detail: any) => detail.size
       );
 
       const uniqueSizes = Array.from(new Set(sizesForCurrentProduct));
@@ -80,7 +83,7 @@ const ProductDetail = () => {
     }
   }, [productData, prodetailData, productDataDetail]);
 
-  const handleSizeChange = (size) => {
+  const handleSizeChange = (size: any) => {
     setSelectedSize(size);
     setSelectedColor("");
     setSelectedColorName("");
@@ -89,16 +92,16 @@ const ProductDetail = () => {
 
     // Lọc ra danh sách màu sắc cho kích thước đã chọn
     const colorsForSize = productDataDetail
-      ?.filter((detail) => detail?.size === size)
-      .map((detail) => detail?.color);
+      ?.filter((detail: any) => detail?.size === size)
+      .map((detail: any) => detail?.color);
 
     setSelectedSizeColors(colorsForSize);
   };
 
-  const handleColorChange = (color) => {
+  const handleColorChange = (color: any) => {
     setSelectedColor(color);
     const selectedColorDetail = productDataDetail?.find(
-      (detail) => detail?.color === color && detail?.size === selectedSize
+      (detail: any) => detail?.color === color && detail?.size === selectedSize
     );
     if (selectedColorDetail) {
       setSelectedColorName(selectedColorDetail?.color);
@@ -106,7 +109,7 @@ const ProductDetail = () => {
     setHasSelectedColor(true);
   };
 
-  const handleQuantityChange = (event) => {
+  const handleQuantityChange = (event: any) => {
     const newQuantity = parseInt(event.target.value, 10);
     if (!isNaN(newQuantity) && newQuantity >= 1) {
       setQuantity(newQuantity);
@@ -130,32 +133,47 @@ const ProductDetail = () => {
   const onSubmitCart = async () => {
     if (profileUser) {
       if (!isAddingToCart) {
+        if (!selectedSize || !selectedColor) {
+          // Display an error message if size or color is not selected
+          messageApi.error({
+            type: "error",
+            content: "Vui lòng chọn màu và size trước khi thêm vào giỏ hàng !!!",
+            className: "custom-class",
+            style: {
+              margin: "10px",
+              fontSize: "20px",
+              lineHeight: "30px",
+            },
+          });
+          return;
+        }
+
         setIsAddingToCart(true);
         const filteredProducts = productDataDetail?.map(async (product) => {
           if (
             typeof product?.size === "number" &&
-            product?.size === selectedSize
+            product?.size === selectedSize &&
+            product?.color === selectedColor
           ) {
-            if (product?.color === selectedColor) {
-              const cartItem = {
-                product_id: product._id,
-                user_id: profileUser,
-                quantity: quantity,
-              };
-              console.log(cartItem);
-              const result = await addCart(cartItem);
-              messageApi.success({
-                type: "error",
-                content: "Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉",
-                className: "custom-class",
-                style: {
-                  margin: "10px",
-                  fontSize: "20px",
-                  lineHeight: "30px",
-                },
-              });
-              return result;
-            }
+            const cartItem = {
+              product_id: product._id,
+              user_id: profileUser,
+              quantity: quantity,
+            };
+            console.log(cartItem);
+            const result = await addCart(cartItem);
+            const successMessage = `Thêm sản phẩm vào trong giỏ hàng thành công 🎉🎉🎉`;
+            messageApi.success({
+              type: "success",
+              content: successMessage,
+              className: "custom-class",
+              style: {
+                margin: "10px",
+                fontSize: "20px",
+                lineHeight: "30px",
+              },
+            });
+            return result;
           }
         });
 
@@ -176,6 +194,7 @@ const ProductDetail = () => {
     }
   };
 
+
   const sliderSettings = {
     infinite: true,
     speed: 500,
@@ -185,7 +204,7 @@ const ProductDetail = () => {
   const uniqueColors = new Set();
 
   // Lặp qua productDataDetail để thêm các màu sắc vào tập hợp
-  productDataDetail?.forEach((detail) => {
+  productDataDetail?.forEach((detail: any) => {
     if (detail.product_id === prodetailData?._id) {
       uniqueColors.add(detail.color);
     }
@@ -218,7 +237,7 @@ const ProductDetail = () => {
               </div>
               <Slider {...sliderSettings}>
                 <div className="image-carosell d-flex p-2 mt-3">
-                  {prodetailData?.images?.map((item) => (
+                  {prodetailData?.images?.map((item: any) => (
                     <div
                       className="single-prd-item col-3 p-2"
                       key={item}
@@ -238,9 +257,6 @@ const ProductDetail = () => {
                   ))}
                 </div>
               </Slider>
-              {/* <div>
-                <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lkxjv2he3fm3a7" alt="" />
-              </div> */}
             </div>
             <div className="col-lg-5 offset-lg-1">
               <div className="s_product_text">
@@ -278,13 +294,12 @@ const ProductDetail = () => {
                       <span>Thương Hiệu</span> : {brandName}
                     </a>
                   </li>
+                  <hr />
                   <li>
-                    <i>{prodetailData?.content}</i>
+                    <i>{prodetailData?.description}</i>
                   </li>
                 </ul>
-                <p className="description-product">
-                  {prodetailData?.description}
-                </p>
+
                 <div className="product-blocks-details product-blocks-443 grid-rows">
                   <div className="grid-row grid-row-443-1">
                     <div className="grid-cols">
@@ -315,23 +330,20 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
-                <div className="product-detail d-flex size">
-                  <div className="product-size w-25">
-                    <p>Kích Cỡ</p>
-                    <div className="size-buttons">
-                      {productSizes?.map((size, index) => (
-                        <button
-                          key={index}
-                          className={`size-button ${selectedSize === size ? "active" : ""
-                            }`}
-                          onClick={() => handleSizeChange(size)}
-                        >
-                          {size}
-                        </button>
-                      ))}
-                    </div>
+                <div className="product-detail  size">
+                  <p>Kích Cỡ</p>
+                  <div className="size-buttons">
+                    {productSizes?.map((size, index) => (
+                      <button
+                        key={index}
+                        className={`size-button ${selectedSize === size ? "active" : ""
+                          }`}
+                        onClick={() => handleSizeChange(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
                   </div>
-
                   <div className="all-colors">
                     <p>Màu Sắc</p>
                     <div className="color-buttons">
@@ -385,12 +397,19 @@ const ProductDetail = () => {
         </div>
       </div>
       <div>
-        <CommentProductDetail />
+        <Tabs defaultActiveKey="1" className="container">
+          <TabPane tab="Thông tin liên quan" key="1">
+            <RelatedInformation />
+          </TabPane>
+          <TabPane tab="Xem đánh giá " key="2">
+            <CommentProductDetail />
+          </TabPane>
+        </Tabs>
         <ProductLienQuan />
         <ProductSale />
       </div>
       <div></div>
-    </div>
+    </div >
   );
 };
 
