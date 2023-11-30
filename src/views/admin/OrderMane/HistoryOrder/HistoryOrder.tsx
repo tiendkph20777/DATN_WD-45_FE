@@ -31,7 +31,7 @@ const HistoryOrder: React.FC = () => {
     };
     const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
         const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
-        const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
+        const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');    
         const totals = order.products.reduce((acc: number, product: any) => acc + (product.total || 0), 0);
         return {
             ...order,
