@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IBrands } from "../types/brand.service";
+import { IBrands } from "../types/brand";
 
 const data = JSON.parse(localStorage.getItem('user')!);
 const token = data?.accessToKen;

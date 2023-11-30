@@ -4,7 +4,7 @@ import { Form, Input, Select, Button, notification } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAddProductsDetailMutation } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
-import { IProducts } from "../../../types/product.service";
+import { IProducts } from "../../../types/product2";
 const { Option } = Select;
 
 type FormData = {

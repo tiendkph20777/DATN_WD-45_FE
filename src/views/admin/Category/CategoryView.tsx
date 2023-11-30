@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Input, notification, Popconfirm } from 'antd';
-import { IBrands } from "../../../types/brand.service";
+import { IBrands } from "../../../types/brand";
 import { useGetBrandsQuery, useRemoveBrandMutation } from '../../../services/brand.service';
 import { Link } from 'react-router-dom';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';

@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IPayment } from "../types/payment.service";
+import { IPayment } from "../types/payment";
 
 const data = JSON.parse(localStorage.getItem('user')!);
 const token = data?.accessToKen;
