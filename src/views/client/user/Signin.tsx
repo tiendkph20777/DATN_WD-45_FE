@@ -110,10 +110,10 @@ const Signin = () => {
                                         </button>
                                         <a href="#">Quên mật khẩu?</a>
                                     </div>
-                                    <div className='text-center'>
+                                    {/* <div className='text-center'>
                                         <p style={{ marginBottom: "" }}>Hoặc</p>
                                         <GoogleAuth />
-                                        0                                    </div>
+                                    </div> */}
                                 </form>
                             </div>
                         </div>
