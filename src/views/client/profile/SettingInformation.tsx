@@ -17,7 +17,7 @@ const SettingInformation = () => {
         return
     };
     // console.log(usersOne)
-    const { handleSubmit, register, setValue, control } = useForm()
+    const { handleSubmit, setValue, control } = useForm()
 
     useEffect(() => {
         if (usersOne) {
@@ -74,19 +74,13 @@ const SettingInformation = () => {
                     <div>
                         <form action="">
                             <div className="row">
-                                <div className="col-lg-5">
+                                <div className="col-lg-7">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-username">Tên người dùng</label>
-                                        <input type="text" id="input-username" className="form-control form-control-alternative font-bold" placeholder="Username" defaultValue={usersOne?.userName} readOnly />
-                                    </div>
-                                </div>
-                                <div className="col-lg-4">
-                                    <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-first-name">Tên đầy đủ</label>
+                                        <label className="form-control-label" htmlFor="input-first-name">Tên người dùng</label>
                                         <input type="text" id="input-first-name" className="form-control form-control-alternative" placeholder="Tên đầy đủ" defaultValue={usersOne?.fullName} readOnly />
                                     </div>
                                 </div>
-                                <div className="col-lg-3">
+                                <div className="col-lg-5">
                                     <div className="form-group focused">
                                         <label className="form-control-label" htmlFor="input-email">Giới tính</label>
                                         <input type="text" id="input-email" className="form-control form-control-alternative" placeholder="Giới tính" defaultValue={usersOne?.gender} readOnly />
@@ -113,7 +107,7 @@ const SettingInformation = () => {
                     <div>
                         <form action="" onSubmit={handleSubmit(onSubmit)}>
                             <div className="row">
-                                <div className='col-lg-5'>
+                                {/* <div className='col-lg-5'>
                                     <label className="form-control-label" htmlFor="input-first-name">Tên người dùng</label>
                                     <Form.Item
                                         rules={[{ required: true, message: 'Vui lòng nhập tên người dùng!' }]}
@@ -126,10 +120,10 @@ const SettingInformation = () => {
                                             render={({ field }) => <Input {...field} placeholder="Tên người dùng" />}
                                         />
                                     </Form.Item>
-                                </div>
-                                <div className="col-lg-4">
+                                </div> */}
+                                <div className="col-lg-7">
                                     <div className="form-group focused">
-                                        <label className="form-control-label" htmlFor="input-first-name">Tên đầy đủ</label>
+                                        <label className="form-control-label" htmlFor="input-first-name">Tên người dùng</label>
                                         <Form.Item
                                             rules={[{ required: true, message: 'Vui lòng nhập tên đầy đue!' }]}
                                             className='form-control form-control-alternative form-control-label p-2'
@@ -143,7 +137,7 @@ const SettingInformation = () => {
                                         </Form.Item>
                                     </div>
                                 </div>
-                                <div className="col-lg-3">
+                                <div className="col-lg-5">
                                     <div className="form-group focused">
                                         <label className="form-control-label" htmlFor="input-email">Giới tính</label>
                                         <section className=' className="form-control form-control-alternative form-control-label'>
