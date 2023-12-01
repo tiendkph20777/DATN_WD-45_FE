@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetProductByIdQuery, useGetProductsQuery } from '../../../services/product.service';
 import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useFetchUserQuery } from '../../../services/user.service';
 import { useAddCommentMutation, useFetchCommentQuery } from "../../../services/comment.service";
-import { Rate, message as messageApi, Pagination } from "antd";
+import { Rate, message as messageApi } from "antd";
+import { format } from 'date-fns';
+import { Button, Upload } from "antd";
+import axios from "axios";
 
 interface DataType {
     _id: string;
@@ -12,6 +15,8 @@ interface DataType {
     id_product: string;
     id_user: string;
     rate: number;
+    createdAt: string;
+    images: [];
 }
 
 const CommentProductDetail = () => {
@@ -24,15 +29,15 @@ const CommentProductDetail = () => {
     const { data: dataCmtt, isLoading: isLoadingComments } = useFetchCommentQuery();
     const { data: dataPro } = useGetProductsQuery();
     const { data: dataUser } = useFetchUserQuery();
-    console.log(dataSourceToRender)
     const [currentPage, setCurrentPage] = useState<number>(1);
-    const pageSize = 5; // Adjust the number as per your requirement
+    const [fileList, setFileList] = useState<any[]>([]);
+    const pageSize = 5;
 
     useEffect(() => {
         if (dataCmtt && dataPro && dataUser) {
             const updatedDataSource = dataCmtt
                 .filter((item: any) => item.id_product === _id)
-                .reverse(); // Reverse the order
+                .reverse();
 
             const startIndex = (currentPage - 1) * pageSize;
             const endIndex = startIndex + pageSize;
@@ -40,12 +45,36 @@ const CommentProductDetail = () => {
         }
     }, [dataCmtt, dataPro, dataUser, _id, currentPage]);
 
+    const SubmitImage = async () => {
+        const uploadPromises = fileList.map(async (file) => {
+            const data = new FormData();
+            const cloud_name = "ddbdu6zip";
+            const upload_preset = "vithoang";
+            data.append("file", file.originFileObj);
+            data.append("upload_preset", upload_preset);
+            data.append("cloud_name", cloud_name);
+            data.append("folder", "portfolio");
+
+            const takeData = await axios
+                .post(`https://api.cloudinary.com/v1_1/ddbdu6zip/image/upload`, data)
+                .then((data: any) => data);
+
+            return takeData.data.secure_url;
+        });
+
+        return Promise.all(uploadPromises);
+    };
+
+
     const onHandleSubmit = async ({ content, rate }: any) => {
+        const fileUrls = await SubmitImage();
+
         const dataCmt = {
             id_product: prodetailData?._id,
             id_user,
             rate,
             content,
+            images: fileUrls
         };
 
         // Call the mutation
@@ -74,6 +103,10 @@ const CommentProductDetail = () => {
         }
     };
 
+    const onFileChange = ({ fileList }: any) => {
+        setFileList(fileList);
+    };
+
     if (isLoadingProduct || isLoadingComments) {
         return (
             <div>
@@ -88,46 +121,44 @@ const CommentProductDetail = () => {
             </div>
         );
     }
-
-    const desc = ['xấu 😭', 'ổn 😥', 'tạm được 😔', 'đẹp 😊', 'tuyệt vời 🥰'];
-
     return (
         <div className="mx-auto row">
-            <div className='w-60'>
+            <div className='col-11'>
                 {dataSourceToRender.length === 0 ? (
                     <p>Không có bình luận nào cả !!!</p>
                 ) : (
                     <div>
                         {dataSourceToRender.map((item) => {
                             const nameUser = dataUser?.find((role) => role?._id === item.id_user)?.fullName;
+                            const imgUser = dataUser?.find((role) => role?._id === item.id_user)?.image;
                             return (
-                                <div className="border p-3 " key={item._id}>
-                                    {/* <img src={user?.image} alt="Lỗi ảnh" width={40} height={40} style={{ borderRadius: "50%", marginRight: "50px" }} /> */}
-
-                                    <h5>{nameUser}</h5>
-                                    <div>{item.content}</div>
-                                    <div className="pt-3">
-                                        <Rate tooltips={desc} disabled defaultValue={item.rate} /> <span>{desc[item.rate - 1]}</span>
+                                <div className="border-bottom mb-2 p-3 row " key={item._id}>
+                                    <div className='col-1'>
+                                        <img src={imgUser} alt="Lỗi ảnh" width={50} height={50} style={{ borderRadius: "50%", marginRight: "50px" }} />
                                     </div>
+                                    <div className='col-11'>
+                                        <h5>{nameUser}</h5>
+                                        <div>
+                                            <Rate style={{ fontSize: "15px" }} disabled defaultValue={item.rate} />
+                                        </div>
+                                        <div>{format(new Date(item.createdAt), 'dd/MM/yyyy hh:mm')}</div>
+                                        <div style={{ margin: "10px 0" }}>{item.content}</div>
+                                        <div style={{ margin: "15px 0" }}>
+                                            {item.images.map((image) => {
+                                                return (
+                                                    <img src={image} alt="Lỗi ảnh" width={70} height={70} style={{ marginRight: "5px" }} />
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
+
                                 </div>
                             );
                         })}
-                        {/* <Pagination
-                            current={currentPage}
-                            onChange={(page) => {
-                                setCurrentPage(page);
-                                // Clear the form values when changing the page
-                                setValue("content", "");
-                                setValue("rate", "");
-                            }}
-                            total={dataSourceToRender.length}
-                            pageSize={pageSize}
-                            disabled={isLoadingComments}
-                        /> */}
                     </div>
                 )}
             </div>
-            <div className='col'>
+            <div className='col-11 my-5'>
                 <form onSubmit={handleSubmit(onHandleSubmit)} className="form-floating">
                     <textarea
                         className="form-control"
@@ -143,13 +174,27 @@ const CommentProductDetail = () => {
                         <input className="form-check-input mx-1" type="radio" value="5" {...register("rate", { required: true })} />
                         <span> tuyệt vời 🥰 </span>
                     </div>
-
+                    <div className="mb-3">
+                        <label htmlFor="productImage" className="form-label">
+                            Ảnh sản phẩm
+                        </label>
+                        <Upload
+                            customRequest={() => { }}
+                            onChange={onFileChange}
+                            fileList={fileList}
+                            listType="picture"
+                            beforeUpload={() => false}
+                        >
+                            <Button>Chọn ảnh</Button>
+                        </Upload>
+                    </div>
                     <button type="submit" className="w-100 btn btn-primary">
                         Bình luận
                     </button>
                 </form>
             </div>
         </div>
+
     );
 };
 

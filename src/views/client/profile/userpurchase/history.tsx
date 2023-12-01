@@ -47,17 +47,12 @@ const History: React.FC = () => {
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const { data: usersOne } = useFetchOneUserQuery(idUs)
-    // const successfulOrders = nonSuccessfulOrder
-    //     ?.filter((order) => order.user_id === usersOne?._id)
-    //     ?.filter((order: any) => order.status === 'Giao hàng thành công')
-    //     ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-    //     ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     const successfulOrders = nonSuccessfulOrder
         ?.filter((order) => order.user_id === usersOne?._id)
         ?.filter((order: any) => order.status === 'Giao hàng thành công')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((orderA, orderB) => new Date(orderB.deliveryDate) - new Date(orderA.deliveryDate)) // Sort by delivery date in descending order
+        ?.sort((orderA: any, orderB: any) => new Date(orderB.deliveryDate) - new Date(orderA.deliveryDate)) // Sort by delivery date in descending order
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
 
