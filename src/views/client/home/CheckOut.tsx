@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Popconfirm, message } from 'antd';
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
@@ -201,8 +202,8 @@ const CheckOut = () => {
       setVoucherCode(voucherCode);
       setSelectedVoucher(voucherCode);
     } else {
-      if (voucherCode === "MYS200K") {
-        alert("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
+      if (voucherCode === "FREESHIP150K" || voucherCode === "THANHDZ") {
+        message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
       } else {
         setVoucherCode(voucherCode);
         setSelectedVoucher(voucherCode);
@@ -524,7 +525,7 @@ const CheckOut = () => {
                         onClick={handleOnClick}
                         disabled={isAddingToCheckout}
                       >
-                        {isAddingToCheckout ? "Ordering..." : "Order"}
+                        {isAddingToCheckout ? "Ordering..." : "Đặt Hàng"}
                       </button>
                     </div>
                   </div>
