@@ -12,6 +12,7 @@ interface DataType {
     name: string,
 }
 const PaymentView: React.FC = () => {
+
     const { data: paymentData, isLoading } = useGetPaymentQuery();
     const [removePayment] = useRemovePaymentMutation();
     const [searchTerm, setSearchTerm] = useState('');

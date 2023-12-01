@@ -22,6 +22,7 @@ type FieldType = {
 };
 
 const ProductEdit: React.FC = () => {
+  const [previewImage, setPreviewImage] = useState(null);
   const { control, handleSubmit, setValue, register } = useForm<FieldType>();
   const [updateProduct] = useUpdateProductMutation();
   const { idProduct } = useParams<{ idProduct: string }>();
@@ -40,6 +41,16 @@ const ProductEdit: React.FC = () => {
       console.log("Product Images:", productData?.images);
     }
   }, [productData, setValue]);
+  const handleImagechange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreviewImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+    }
+};
 
   const handleImageChange = async (file: File) => {
     try {
