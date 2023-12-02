@@ -7,6 +7,7 @@ import { useFetchOneUserQuery } from "../../../services/user.service";
 import {
   useCreateCheckoutMutation,
   useReductionProductMutation,
+  useRemoveCartIdMutation,
 } from "../../../services/checkout.service";
 import {
   useGetVoucherByCodeQuery,
@@ -14,6 +15,7 @@ import {
 } from "../../../services/voucher.service";
 import { useGetPaymentQuery } from "../../../services/payment.service";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const CheckOut = () => {
   const [allVouchers, setAllVouchers] = useState([]);
@@ -30,8 +32,10 @@ const CheckOut = () => {
   const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
 
+  console.log(cartDetail)
+  // console.log(cartUser)
   useEffect(() => {
-    console.log("All Vouchers:", allVouchers);
+    // console.log("All Vouchers:", allVouchers);
     if (allVouchersData) {
       setAllVouchers(allVouchersData);
     }
@@ -65,6 +69,9 @@ const CheckOut = () => {
             const quantity = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).quantity;
+            const cart_id = cartUser.products.find(
+              (product: any) => product.productDetailId === item._id
+            ).cart_id;
             const status = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).status;
@@ -79,6 +86,7 @@ const CheckOut = () => {
                 quantity: quantity,
                 total: price * quantity,
                 status: status,
+                cart_id: cart_id,
               };
             } else {
               return null; // Exclude items with status false
@@ -112,6 +120,7 @@ const CheckOut = () => {
   const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
   const [addCheckout] = useCreateCheckoutMutation();
   const [quantityCheckout] = useReductionProductMutation();
+  const [removeCartCheckout] = useRemoveCartIdMutation()
   const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
   const totalSum = cartDetail.reduce(
     (accumulator, item: any) => accumulator + item.total,
@@ -163,15 +172,23 @@ const CheckOut = () => {
         };
         localStorage.setItem("currentOrder", JSON.stringify(newData));
         await addCheckout(newData);
+        // xóa các sản phẩm đã được thanh toán ra khỏi giỏ hàng
+        if (newData) {
+          newData.products.map((item) => removeCartCheckout(item));
+        }
+        // 
         if (newData) {
           newData.products.map((item) => quantityCheckout(item));
         }
+        // 
         navigation("/ordersuccess");
       } catch (error) {
         console.error("Lỗi khi tạo checkout:", error);
       }
     }
   };
+
+
   const addre =
     usersOne?.city +
     " , " +
@@ -210,8 +227,8 @@ const CheckOut = () => {
       }
     }
   };
-  console.log("Selected Voucher in Render:", selectedVoucher);
-  console.log(valueVoucher);
+  // console.log("Selected Voucher in Render:", selectedVoucher);
+  // console.log(valueVoucher);
   if (isLoading) {
     return (
       <div>
@@ -455,9 +472,9 @@ const CheckOut = () => {
                           value={
                             voucher
                               ? parseFloat(voucher?.value).toLocaleString(
-                                  "vi-VN",
-                                  { style: "currency", currency: "VND" }
-                                )
+                                "vi-VN",
+                                { style: "currency", currency: "VND" }
+                              )
                               : ""
                           }
                         />

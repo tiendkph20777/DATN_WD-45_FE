@@ -23,14 +23,14 @@ const Ordersuccess = () => {
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
 
 
-  if(voucher && voucher.length > 0 ) {
-    voucher.map((items, index) => {
-      if(items && items.value){
-        console.log("Voucher value:", items.value);
-      }
-      return null;
-    })
-  }
+  // if(voucher && voucher.length > 0 ) {
+  //   voucher.map((items, index) => {
+  //     if(items && items.value){
+  //       // console.log("Voucher value:", items.value);
+  //     }
+  //     return null;
+  //   })
+  // }
 
 
   useEffect(() => {
@@ -110,7 +110,7 @@ const Ordersuccess = () => {
   const [addCheckout] = useCreateCheckoutMutation();
 
   const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
- 
+
   // console.log("voucher",voucher?.value);
   const totalSum = cartDetail.reduce(
     (accumulator, item) => accumulator + item?.total,
