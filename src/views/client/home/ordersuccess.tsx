@@ -32,6 +32,8 @@ const Ordersuccess = () => {
   //   })
   // }
 
+  // console.log(Product)
+
 
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
@@ -73,7 +75,8 @@ const Ordersuccess = () => {
                 image: matchingProduct.images[0],
                 price: price,
                 quantity: quantity,
-                total: price * quantity,
+                totalgoc: price * quantity,
+                // total: total,
                 status: status,
               };
             } else {
@@ -288,7 +291,7 @@ const Ordersuccess = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.total?.toLocaleString("vi-VN", {
+                          {item?.totalgoc?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}

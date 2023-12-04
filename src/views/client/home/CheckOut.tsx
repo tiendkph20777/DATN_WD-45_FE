@@ -139,6 +139,7 @@ const CheckOut = () => {
   const handlePaymentSelect = (paymentId: any) => {
     setSelectedPayment(paymentId);
     // Thêm logic xử lý khi phương thức thanh toán được chọn
+    console.log(paymentId)
   };
   const navigation = useNavigate();
   const handleOnClick = async () => {
@@ -165,7 +166,7 @@ const CheckOut = () => {
           products: cartDetail,
           payment_id: selectedPayment,
           shipping: "",
-          total: totalSum - voucher?.value,
+          total: total,
           voucherCode,
           dateCreate: date,
           status: "Đang xác nhận đơn hàng",
@@ -188,6 +189,74 @@ const CheckOut = () => {
     }
   };
 
+  // 
+  // const handleOnClick = async () => {
+  //   const form = document.querySelector("#form_checkout") as HTMLFormElement | null;
+  //   if (form) {
+  //     const formData = new FormData(form);
+  //     const data: { [key: string]: string } = {};
+  //     formData.forEach((value, key) => {
+  //       const inputElement = form.querySelector(`[name="${key}"]`);
+  //       if (inputElement && inputElement instanceof HTMLInputElement) {
+  //         const name = inputElement.getAttribute("name");
+  //         if (name) {
+  //           data[name] = value.toString();
+  //         }
+  //       }
+  //     });
+
+  //     try {
+  //       const date = new Date();
+  //       const newData = {
+  //         ...data,
+  //         products: cartDetail,
+  //         payment_id: selectedPayment,
+  //         shipping: "",
+  //         total: total,
+  //         voucherCode,
+  //         dateCreate: date,
+  //         status: "Đang xác nhận đơn hàng",
+  //       };
+
+  //       localStorage.setItem("currentOrder", JSON.stringify(newData));
+  //       // await addCheckout(newData);
+
+  //       // Remove cart items after successful checkout creation
+  //       if (newData) {
+  //         newData.products.map((item) => removeCartCheckout(item));
+  //       }
+
+  //       // Handle different payment methods
+  //       switch (selectedPayment) {
+  //         case '65411710961b807379221ec9':
+  //           // Handle credit card payment logic
+  //           // navigation("/ordersuccess");
+  //           console.log('chúc mừng bạn đã chọn thanh toán khi nhận hàng');
+  //           break;
+  //         case '2':
+  //           // Handle PayPal payment logic
+  //           console.log('chúc mừng bạn đẫ chọn thanh toán online ');
+  //           break;
+  //         // Add more cases for other payment methods as needed
+  //         default:
+  //           // Handle default payment logic
+  //           console.log('Processing default payment...');
+  //           break;
+  //       }
+
+  //       // Remove quantities from cart for each product
+  //       if (newData) {
+  //         newData.products.map((item) => quantityCheckout(item));
+  //       }
+
+  //       // navigation("/ordersuccess");
+  //     } catch (error) {
+  //       console.error("Error creating checkout:", error);
+  //     }
+  //   }
+  // };
+
+  // 
 
   const addre =
     usersOne?.city +
@@ -502,10 +571,21 @@ const CheckOut = () => {
                     <div className="row">
                       <div className="payment_item active col-5 m-2">
                         <div>
-                          <select
+                          {/* <select
                             onChange={(e) =>
                               handlePaymentSelect(e.target.value)
                             }
+                            name="payment_id"
+                            className="form-select"
+                          >
+                            {paymentQuery?.map((item) => (
+                              <option key={item._id} value={item._id}>
+                                {item.name}
+                              </option>
+                            ))}
+                          </select> */}
+                          <select
+                            onChange={(e) => handlePaymentSelect(e.target.value)}
                             name="payment_id"
                             className="form-select"
                           >
