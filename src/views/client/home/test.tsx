@@ -13,36 +13,26 @@ import {
 const Ordersuccess = () => {
   const profileUser = JSON.parse(localStorage.getItem("user")!);
   const idUs = profileUser?.user;
-  const [selectedVoucherCode, setSelectedVoucherCode] = useState(null);
-  const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [cartDetail, setCartDetail] = useState([]);
-  const [voucherCode, setVoucherCode] = useState("");
   const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs);
   const { data: cartUser } = useFetchOneCartQuery(idUs);
   const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
   const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
-  const { data: voucher, error } =
-    useGetVoucherByCodeQuery(selectedVoucherCode);
-  const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
-  const [addCheckout] = useCreateCheckoutMutation();
 
-  useEffect(() => {
-    if (voucher) {
-      setSelectedVoucher(voucher);
-      console.log("voucher:", voucher);
-    }
-  }, [voucher]);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
 
-  const saveCheckoutInfoToLocal = (total, selectedVoucherCode) => {
-    const checkoutInfo = {
-      total: total,
-      selectedVoucherCode: selectedVoucherCode,
-    
-    };
-    localStorage.setItem("checkoutInfo", JSON.stringify(checkoutInfo));
-  };
-
+  const [voucherCode, setVoucherCode] = useState("");
+  const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
+  
+  // if(voucher && voucher.length > 0 ) {
+  //   voucher.map((items, index) => {
+  //     if(items && items.value){
+  //       console.log("Voucher value:", items.value);
+  //     }
+  //     return null;
+  //   })
+  // }
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
       const cartDetailIds = cartUser?.products.map(
@@ -52,12 +42,10 @@ const Ordersuccess = () => {
       const matchingIds = cartDetailIds?.filter((id: any) =>
         ProductDetailUser.some((product) => product._id === id)
       );
-
       const productIds = ProductDetailUser?.map((item) => item.product_id);
       const filteredProducts = Product?.filter((product: any) =>
         productIds.includes(product?._id)
       );
-
       const matchingProductDetailUser = ProductDetailUser?.filter((item) =>
         matchingIds.includes(item._id)
       );
@@ -78,6 +66,7 @@ const Ordersuccess = () => {
             ).status;
 
             if (status) {
+              // Check if status is true
               return {
                 ...item,
                 name: matchingProduct.name,
@@ -88,49 +77,53 @@ const Ordersuccess = () => {
                 status: status,
               };
             } else {
-              return null;
+              return null; // Exclude items with status false
             }
           } else {
             return item;
           }
         })
-        .filter(Boolean);
+        .filter(Boolean); // Remove null values from the array
 
       setCartDetail(modifiedProductDetails);
-      saveCheckoutInfoToLocal(total, selectedVoucher);
     }
-  }, [cartUser, ProductDetailUser, Product, selectedVoucher]);
+  }, [cartUser, ProductDetailUser, Product]);
 
+  // const getCodeVoucher = () => {
+  //   if (!voucherCode) {
+  //     console.error("Mã khuyến mãi không được để trống");
+  //     return;
+  //   }
+  //   setVoucherCode(voucherCode)
+  // };
+  // useEffect(() => {
+  //   getCodeVoucher();
+  // }, [voucherCode]);
   useEffect(() => {
-    console.log("Type of selectedVoucherCode:", typeof selectedVoucherCode);
-    console.log("Selected Voucher Code:", selectedVoucherCode);
-  
-    const checkoutInfoString = localStorage.getItem("checkoutInfo");
-    
-    if (checkoutInfoString) {
-      const checkoutInfo = JSON.parse(checkoutInfoString);
-      
-      if (checkoutInfo && checkoutInfo.selectedVoucherCode) {
-        const selectedVoucherCodeFromStorage = checkoutInfo.selectedVoucherCode;
-        setSelectedVoucherCode(selectedVoucherCodeFromStorage);
-      }else{
-        console.log("Error")
-      }
+    if (voucher) {
+      setSelectedVoucher(voucher);
     }
-  }, []);
-  
-  
-  
+  }, [voucher]);
 
-  const valueVoucher =
-    selectedVoucher?.value !== undefined ? selectedVoucher.value : 0;
-  const totalSum = cartDetail.reduce(
-    (accumulator, item) => accumulator + item?.total,
-    0
-  );
-  console.log("giá trị voucher:", valueVoucher);
+  const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
+  const [addCheckout] = useCreateCheckoutMutation();
+  const handleVoucherChange = (event) => {
+    const selectedVoucherCode = event.target.value;
+    setVoucherCode(selectedVoucherCode);
+  };
+
+  const valueVoucher = selectedVoucher?.value !== undefined ? selectedVoucher.value : 0;
+  const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item?.total, 0);
   const total = totalSum - valueVoucher;
-
+  
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  // console.log("Tổng giá trị đơn hàng:", totalSum);
+  // console.log("Giá trị voucher:", valueVoucher);
+  // console.log("Tổng sau khi áp dụng mã giảm giá:", total);
+  // console.log(
+  //   "Trạng thái sản phẩm:",
+  //   cartDetail.map((item) => item.status)
+  // );
   const addre =
     usersOne?.city +
     " , " +
@@ -152,7 +145,6 @@ const Ordersuccess = () => {
       </div>
     );
   }
-
   return (
     <div>
       <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -244,83 +236,65 @@ const Ordersuccess = () => {
               <div className="col-lg-8">
                 <div className="order_box">
                   <h2>Thông tin đơn hàng</h2>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th scope="col">Hình Ảnh</th>
-                        <th scope="col">| Tên Sản Phẩm</th>
-                        <th scope="col">| Kích Cỡ</th>
-                        <th scope="col">| Màu Sắc</th>
-                        <th scope="col">| Số Lượng</th>
-                        <th scope="col">| Giá</th>
-                        <th scope="col">| Tạm Tính</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {cartDetail?.map((item: any) => (
-                        <tr key={item?._id} style={{ height: "100px" }}>
-                          <td style={{ width: "100px" }}>
-                            <img
-                              width={"100px"}
-                              height={"100px"}
-                              src={item?.image}
-                              alt=""
-                            />
-                          </td>
-                          <td style={{ width: "200px" }}>
-                            <h6>{item?.name}</h6>
-                          </td>
-                          <td style={{ width: "100px", textAlign: "center" }}>
-                            <h5>{item?.size}</h5>
-                          </td>
-                          <td style={{ width: "100px" }}>
-                            <div
-                              style={{ display: "flex", alignItems: "center" }}
-                            >
-                              <button
-                                style={{
-                                  backgroundColor: item?.color,
-                                  width: "20px",
-                                  height: "20px",
-                                  margin: "5px",
-                                }}
-                              ></button>
-                              <h5>{item?.color}</h5>
-                            </div>
-                          </td>
-                          <td style={{ width: "100px", textAlign: "center" }}>
-                            <h5>{item?.quantity}</h5>
-                          </td>
-                          <td style={{ width: "100px" }}>
-                            <h5>
-                              {item?.price?.toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              })}
-                            </h5>
-                          </td>
-                          <td style={{ width: "100px" }}>
-                            <h5>
-                              {item?.total?.toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              })}
-                            </h5>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-
-                  <div className="payment_item">
-                    <div className="payment_item active">
-                      <div className="row mt-3">
-                        <label htmlFor="" className="col-8 m-2">
-                          Mã Giảm Giá Mà Bạn Đã Chọn là:
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+                  <tr>
+                    <th scope="col">Hình Ảnh</th>
+                    <th scope="col">| Tên Sản Phẩm</th>
+                    <th scope="col">| Kích Cỡ</th>
+                    <th scope="col">| Màu Sắc</th>
+                    <th scope="col">| Số Lượng</th>
+                    <th scope="col">| Giá</th>
+                    <th scope="col">| Tạm Tính</th>
+                  </tr>
+                  {cartDetail?.map((item: any) => (
+                    <tr key={item?._id} style={{ height: "100px" }}>
+                      <td style={{ width: "100px" }}>
+                        <img
+                          width={"100px"}
+                          height={"100px"}
+                          src={item?.image}
+                          alt=""
+                        />
+                      </td>
+                      <td style={{ width: "200px" }}>
+                        <h6>{item?.name}</h6>
+                      </td>
+                      <td style={{ width: "100px", textAlign: "center" }}>
+                        <h5>{item?.size}</h5>
+                      </td>
+                      <td style={{ width: "100px" }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <button
+                            style={{
+                              backgroundColor: item?.color,
+                              width: "20px",
+                              height: "20px",
+                              margin: "5px",
+                            }}
+                          ></button>
+                          <h5>{item?.color}</h5>
+                        </div>
+                      </td>
+                      <td style={{ width: "100px", textAlign: "center" }}>
+                        <h5>{item?.quantity}</h5>
+                      </td>
+                      <td style={{ width: "100px" }}>
+                        <h5>
+                          {item?.price?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </h5>
+                      </td>
+                      <td style={{ width: "100px" }}>
+                        <h5>
+                          {item?.total?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
+                        </h5>
+                      </td>
+                    </tr>
+                  ))}
 
                   <div className="payment_item">
                     <div className="payment_item active">
