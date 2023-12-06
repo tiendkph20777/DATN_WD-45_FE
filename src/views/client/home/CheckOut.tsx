@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 import { Popconfirm, message } from "antd";
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -15,14 +14,12 @@ import {
 } from "../../../services/voucher.service";
 import { useGetPaymentQuery } from "../../../services/payment.service";
 import { useNavigate } from "react-router-dom";
-import { IVouchers } from "../../../types/voucher";
 
 const CheckOut = () => {
   const [allVouchers, setAllVouchers] = useState([]);
   const [selectedVoucher, setSelectedVoucher] = useState("");
   const { data: allVouchersData } = useGetVouchersQuery();
   const [isOverFourMillion, setIsOverFourMillion] = useState(false); // xem đơn hàng có trên 4 trịu hay không
-  const { data: voucherData } = useGetVouchersQuery();
 
   const profileUser = JSON.parse(localStorage.getItem("user")!);
   const idUs = profileUser?.user;
@@ -32,6 +29,7 @@ const CheckOut = () => {
   const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
   const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
+  const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
 
   useEffect(() => {
     console.log("All Vouchers:", allVouchers);
@@ -122,6 +120,7 @@ const CheckOut = () => {
   );
   const total = totalSum - valueVoucher;
   useEffect(() => {
+    // Bước 2: Cập nhật state dựa trên giá trị tổng đơn hàng
     if (totalSum) {
       setIsOverFourMillion(totalSum > 4000000);
     }
@@ -163,8 +162,7 @@ const CheckOut = () => {
           dateCreate: date,
           status: "Đang xác nhận đơn hàng",
         };
-
-        localStorage.setItem("selectedVoucherCode", voucherCode);
+        localStorage.setItem("currentOrder", JSON.stringify(newData));
         await addCheckout(newData);
         if (newData) {
           newData.products.map((item) => quantityCheckout(item));
@@ -198,43 +196,27 @@ const CheckOut = () => {
   //         // Xử lý lỗi ở đây
   //     });
   //
-  const handleVoucherSelect = async (voucherCode) => {
-    console.log("Selected Voucher Code:", voucherData);
-    try {
-      if (voucherData) {
-        // Lọc các mã giảm giá hết hạn
-        const expiredVouchers = voucherData.filter(
-          ({ date_end }: IVouchers) => {
-            const currentDate = new Date();
-            const expirationDate = new Date(date_end);
-            return expirationDate <= currentDate;
-          }
-        );
+  const handleVoucherSelect = (voucherCode) => {
+    console.log("Selected Voucher Code:", voucherCode);
 
-        const isExpired = expiredVouchers.some(
-          (voucher) => voucher.code === voucherCode
-        );
-
-        if (isExpired) {
-          message.warning("Voucher Đã hết hạn");
-        } else {
-          if (totalSum > 4000000) {
-            setVoucherCode(voucherCode);
-            setSelectedVoucher(voucherCode);
-          } else {
-            if (voucherCode === "FREESHIP150K" || voucherCode === "ABCXYZ1") {
-              message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
-            } else {
-              setVoucherCode(voucherCode);
-              setSelectedVoucher(voucherCode);
-            }
-          }
-        }
+    if (totalSum > 4000000) {
+      setVoucherCode(voucherCode);
+      setSelectedVoucher(voucherCode);
+    } else {
+      if (voucherCode === "FREESHIP150K" || voucherCode === "THANHDZ") {
+        message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
+      } else {
+        setVoucherCode(voucherCode);
+        setSelectedVoucher(voucherCode);
       }
-    } catch (error) {
-      console.error("Lỗi khi xử lý mã giảm giá hết hạn:", error);
-    }
+    } 
+   
   };
+  localStorage.setItem(
+    "selectedVoucher",
+    JSON.stringify({ voucherCode, value: voucher?.value })
+  );
+
   console.log("Selected Voucher in Render:", selectedVoucher);
   console.log(valueVoucher);
   if (isLoading) {
