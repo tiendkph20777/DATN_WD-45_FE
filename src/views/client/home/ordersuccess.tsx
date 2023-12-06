@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useCreateCheckoutMutation } from "../../../services/checkout.service";
 import { useFetchOneUserQuery } from "../../../services/user.service";
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -21,20 +20,9 @@ const Ordersuccess = () => {
   const { data: Product } = useGetProductsQuery();
   const [voucherCode, setVoucherCode] = useState("");
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
+  const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
 
-  console.log(cartDetail)
-
-  // if(voucher && voucher.length > 0 ) {
-  //   voucher.map((items, index) => {
-  //     if(items && items.value){
-  //       // console.log("Voucher value:", items.value);
-  //     }
-  //     return null;
-  //   })
-  // }
-
-  // console.log(Product)
-
+  
 
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
@@ -78,7 +66,7 @@ const Ordersuccess = () => {
                 price: price,
                 price_sale: price_sale,
                 quantity: quantity,
-                totalgoc: price_sale * quantity,
+                total: price_sale * quantity,
                 // total: total,
                 status: status,
               };
@@ -95,50 +83,17 @@ const Ordersuccess = () => {
     }
   }, [cartUser, ProductDetailUser, Product]);
 
-  // const getCodeVoucher = () => {
-  //   if (!voucherCode) {
-  //     console.error("Mã khuyến mãi không được để trống");
-  //     return;
-  //   }
-  //   setVoucherCode(voucherCode)
-  // };
-  // useEffect(() => {
-  //   getCodeVoucher();
-  // }, [voucherCode]);
-  if (voucher) {
-    // console.log("Thông tin voucher:", voucher);
-  }
-  if (error) {
-    console.error("Lỗi khi truy vấn mã khuyến mãi:", error);
-  }
+ 
+  useEffect(() => {
+    const selectedVoucher = JSON.parse(localStorage.getItem("selectedVoucher"));
 
-  const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
-  const [addCheckout] = useCreateCheckoutMutation();
+    // Kiểm tra xem có voucher được chọn hay không
+    if (selectedVoucher && selectedVoucher.voucherCode) {
+      setVoucherCode(selectedVoucher.voucherCode);
+      setSelectedVoucherValue(selectedVoucher.value);
+    }
+  }, []);
 
-  const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
-
-  // console.log("voucher",voucher?.value);
-  const totalSum = cartDetail.reduce(
-    (accumulator, item) => accumulator + item?.totalgoc,
-    0
-  );
-  const total = totalSum - valueVoucher;
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  // console.log("Tổng giá trị đơn hàng:", totalSum);
-  // console.log("Giá trị voucher:", valueVoucher);
-  // console.log("Tổng sau khi áp dụng mã giảm giá:", total);
-  // console.log(
-  //   "Trạng thái sản phẩm:",
-  //   cartDetail.map((item) => item.status)
-  // );
-  const addre =
-    usersOne?.city +
-    " , " +
-    usersOne?.district +
-    " , " +
-    usersOne?.commune +
-    " , " +
-    usersOne?.address;
 
   if (isLoading) {
     return (
@@ -152,6 +107,25 @@ const Ordersuccess = () => {
       </div>
     );
   }
+
+  const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
+
+  const totalSum = cartDetail.reduce(
+    (accumulator, item) => accumulator + item?.total,
+    0
+  );
+  const total = totalSum - valueVoucher;
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+
+  const addre =
+    usersOne?.city +
+    " , " +
+    usersOne?.district +
+    " , " +
+    usersOne?.commune +
+    " , " +
+    usersOne?.address;
+
   return (
     <div>
       <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -310,7 +284,7 @@ const Ordersuccess = () => {
                           Tổng Thanh Toán
                         </label>
                         <h5 className="col-3 text-danger w-25 total-checkout">
-                          {totalSum?.toLocaleString("vi-VN", {
+                          {total?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -318,6 +292,8 @@ const Ordersuccess = () => {
                       </div>
                     </div>
                   </div>
+
+                 
                 </div>
               </div>
             </div>

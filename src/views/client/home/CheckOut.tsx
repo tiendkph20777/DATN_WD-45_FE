@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { message } from 'antd';
-import { message as messageApi } from 'antd';
+import { Popconfirm, message } from "antd";
 
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -32,6 +31,7 @@ const CheckOut = () => {
   const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
   const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
+  const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
 
   // console.log(cartDetail)
   // console.log(cartUser)
@@ -123,7 +123,7 @@ const CheckOut = () => {
   const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
   const [addCheckout] = useCreateCheckoutMutation();
   const [quantityCheckout] = useReductionProductMutation();
-  const [removeCartCheckout] = useRemoveCartIdMutation()
+  const [removeCartCheckout] = useRemoveCartIdMutation();
   const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
   const totalSum = cartDetail.reduce(
     (accumulator, item: any) => accumulator + item.total,
@@ -142,7 +142,7 @@ const CheckOut = () => {
   const handlePaymentSelect = (paymentId: any) => {
     setSelectedPayment(paymentId);
     // Thêm logic xử lý khi phương thức thanh toán được chọn
-    console.log(paymentId)
+    console.log(paymentId);
   };
   const navigation = useNavigate();
   const handleOnClick = async () => {
@@ -175,9 +175,9 @@ const CheckOut = () => {
           status: "Đang xác nhận đơn hàng",
         };
         localStorage.setItem("currentOrder", JSON.stringify(newData));
-        console.log(newData)
+        console.log(newData);
         if (newData.payment === "Thanh toán online") {
-          console.log('bạn chọn phương thức thanh toán online')
+          console.log("bạn chọn phương thức thanh toán online");
           const s = (await addCheckout(newData)) as any;
           console.log(s);
           window.location.replace(s.data);
@@ -189,13 +189,13 @@ const CheckOut = () => {
           if (newData) {
             newData.products.map((item) => removeCartCheckout(item));
           }
-          // 
+          //
           if (newData) {
             newData.products.map((item) => quantityCheckout(item));
           }
           return;
         } else if (newData.payment === "Thanh toán khi nhận hàng") {
-          console.log("bạn chọn phương thức thanh toán khi nhận hàng")
+          console.log("bạn chọn phương thức thanh toán khi nhận hàng");
           await addCheckout(newData);
           navigation("/ordersuccess");
           if (newData) {
@@ -205,21 +205,21 @@ const CheckOut = () => {
           if (newData) {
             newData.products.map((item) => removeCartCheckout(item));
           }
-          // 
+          //
           if (newData) {
             newData.products.map((item) => quantityCheckout(item));
           }
           return;
         } else {
-          console.log("bạn chưa chọn phương thức thanh toán")
+          console.log("bạn chưa chọn phương thức thanh toán");
           messageApi.info({
-            type: 'error',
+            type: "error",
             content: "Bạn chưa chọn phương thức thanh toán ",
-            className: 'custom-class',
+            className: "custom-class",
             style: {
-              marginTop: '0',
+              marginTop: "0",
               fontSize: "20px",
-              lineHeight: "50px"
+              lineHeight: "50px",
             },
           });
           return;
@@ -229,7 +229,6 @@ const CheckOut = () => {
       }
     }
   };
-
 
   const addre =
     usersOne?.city +
@@ -247,7 +246,7 @@ const CheckOut = () => {
       setVoucherCode(voucherCode);
       setSelectedVoucher(voucherCode);
     } else {
-      if (voucherCode === "FREESHIP150K" || voucherCode === "THANHDZ") {
+      if (voucherCode === "FREESHIP150K" || voucherCode === "TTTTT") {
         message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
       } else {
         setVoucherCode(voucherCode);
@@ -255,8 +254,14 @@ const CheckOut = () => {
       }
     }
   };
-  // console.log("Selected Voucher in Render:", selectedVoucher);
-  // console.log(valueVoucher);
+  localStorage.setItem(
+    "selectedVoucher",
+    JSON.stringify({ voucherCode, value: voucher?.value })
+  );
+
+  console.log("Selected Voucher in Render:", selectedVoucher);
+  console.log(valueVoucher);
+
   if (isLoading) {
     return (
       <div>
@@ -498,9 +503,9 @@ const CheckOut = () => {
                           value={
                             voucher
                               ? parseFloat(voucher?.value).toLocaleString(
-                                "vi-VN",
-                                { style: "currency", currency: "VND" }
-                              )
+                                  "vi-VN",
+                                  { style: "currency", currency: "VND" }
+                                )
                               : ""
                           }
                         />
@@ -529,13 +534,21 @@ const CheckOut = () => {
                       <div className="payment_item active col-6 m-2">
                         <div>
                           <select
-                            onChange={(e) => handlePaymentSelect(e.target.value)}
+                            onChange={(e) =>
+                              handlePaymentSelect(e.target.value)
+                            }
                             name="payment"
                             className="form-select"
                           >
-                            <option value="">-- Chọn phương thức thanh toán  --</option>
-                            <option value="Thanh toán khi nhận hàng">-- Thanh toán khi nhận hàng  --</option>
-                            <option value="Thanh toán online">-- Thanh toán online  --</option>
+                            <option value="">
+                              -- Chọn phương thức thanh toán --
+                            </option>
+                            <option value="Thanh toán khi nhận hàng">
+                              -- Thanh toán khi nhận hàng --
+                            </option>
+                            <option value="Thanh toán online">
+                              -- Thanh toán online --
+                            </option>
                             {/* {paymentQuery?.map((item) => (
                               <option key={item._id} value={item._id}>
                                 {item.name}

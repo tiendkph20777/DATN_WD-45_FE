@@ -37,7 +37,6 @@ const VoucherView: React.FC = () => {
     const handleExpiredVouchers = async () => {
       try {
         if (voucherData) {
-          // Lọc các mã giảm giá hết hạn
           const expiredVouchers = voucherData.filter(
             ({ date_end }: IVouchers) => {
               const currentDate = new Date();
@@ -46,7 +45,6 @@ const VoucherView: React.FC = () => {
             }
           );
 
-          // Xóa mã giảm giá hết hạn
           if (expiredVouchers.length > 0) {
             await Promise.all(
               expiredVouchers.map(async (voucher) => {
