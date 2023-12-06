@@ -70,11 +70,19 @@ const checkoutAPI = createApi({
                 method: 'GET',
             }),
             invalidatesTags: ["Checkout"],
-        })
+        }),
+        // xóa số lượng
+        removeCartId: builder.mutation<void, any>({
+            query: (item) => ({
+                url: `/checkout/${item.cart_id}/${item._id}`,
+                method: 'GET',
+            }),
+            invalidatesTags: ["Checkout"],
+        }),
     }),
 });
 
-export const { useCreateCheckoutMutation, useFetchCheckoutQuery, useFetchOneCheckoutQuery, useRemoveCheckoutMutation, useUpdateCheckoutMutation, useReductionProductMutation, useIncreaseProductMutation } = checkoutAPI;
+export const { useCreateCheckoutMutation, useFetchCheckoutQuery, useFetchOneCheckoutQuery, useRemoveCheckoutMutation, useUpdateCheckoutMutation, useReductionProductMutation, useIncreaseProductMutation, useRemoveCartIdMutation } = checkoutAPI;
 
 
 export default checkoutAPI;

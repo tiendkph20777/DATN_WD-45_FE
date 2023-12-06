@@ -3,7 +3,7 @@ import { Button, Form, Input, notification } from 'antd';
 import { useAddBrandMutation } from '../../../services/brand.service';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { IBrands } from '../../../types/brand.service';
+import { IBrands } from '../../../types/brand';
 
 const CategoryAdd: React.FC = () => {
     const [form] = Form.useForm();

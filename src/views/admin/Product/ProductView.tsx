@@ -3,7 +3,7 @@ import { Button, Input, Popconfirm, notification } from "antd";
 import {
   useGetProductsQuery,
 } from "../../../services/product.service";
-import { IProducts } from "../../../types/product.service";
+import { IProducts } from "../../../types/product2";
 import { Link } from "react-router-dom";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import Table, { ColumnsType } from "antd/es/table";
@@ -149,14 +149,21 @@ const ProductView = () => {
       ),
     },
     {
-      title: "Giá niêm yết",
+      title: "Giá bán",
       dataIndex: "price",
       key: "price",
+      render: (text, record) => (
+        <span>{record.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
+      ),
     },
+
     {
-      title: "Giá bán",
+      title: "Giá bán sau giảm giá",
       dataIndex: "price_sale",
       key: "price_sale",
+      render: (text, record) => (
+        <span>{record.price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
+      ),
     },
     // {
     //     title: 'Mô tả sản phẩm',
@@ -165,8 +172,8 @@ const ProductView = () => {
     // },
     {
       title: "Nội dung sản phẩm",
-      dataIndex: "content",
-      key: "content",
+      dataIndex: "description",
+      key: "description",
     },
 
     {
@@ -247,7 +254,7 @@ const ProductView = () => {
       <div className="row">
         <div className="col-lg-12 d-flex align-items-stretch">
           <div className="card w-100">
-            <div className="card-body mt-5">
+            <div className="card-body mt-7">
               <h5 className="card-title fw-semibold mb-4">Sản Phẩm</h5>
               <a className="text-white" href="/admin/product/add">
                 <button type="button" className="btn btn-success m-1">
@@ -271,7 +278,7 @@ const ProductView = () => {
                       ))}
                     </select>
                   </div>
-                  <div className="mt-2 col-5">
+                  <div className="mt-2 col-7">
                     <Input
                       type="text"
                       className="form-control"
@@ -283,7 +290,7 @@ const ProductView = () => {
                   </div>
                   <button
                     type="submit"
-                    className="col-4 p-2 btn btn-secondary mt-2"
+                    className="col-2 p-2 btn btn-secondary mt-2"
                   >
                     Tìm kiếm
                   </button>
@@ -294,7 +301,7 @@ const ProductView = () => {
                   columns={columns}
                   expandable={{
                     expandedRowRender: (record: any) => (
-                      <p style={{ margin: 0 }}>{record.description}</p>
+                      <p style={{ margin: 0 }}>{record.content}</p>
                     ),
                     rowExpandable: (record: any) =>
                       record.firstName !== "Not Expandable",

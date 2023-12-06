@@ -11,9 +11,6 @@ import EditProductModal from './CartModel';
 import { Link } from 'react-router-dom';
 
 const Cart = () => {
-    // 
-
-    // 
     const profileUser = JSON.parse(localStorage.getItem("user")!);
     const idUs = profileUser?.user;
     const [cartDetail, setCartDetail] = useState([]);
@@ -24,9 +21,11 @@ const Cart = () => {
     const [updateCartDetailMutation] = useUpdateCartDetailMutation();
     // const [cartDetailCheckbot, setCartDetailCheckbot] = useState([]);
 
+    console.log(cartDetail)
+    // console.log(cartUser)
     // sản phẩm dược chọn 
-    const productsWithTrueStatus = cartDetail.filter(product => product.status === true);
-    const totalCost = productsWithTrueStatus?.reduce((acc, product) => acc + (product.quantity * product.price), 0);
+    const productsWithTrueStatus = cartDetail.filter((product: any) => product.status === true);
+    const totalCost = productsWithTrueStatus?.reduce((acc, product: any) => acc + (product.quantity * product.price_sale), 0);
     // 
     useEffect(() => {
         if (cartUser && ProductDetailUser) {
@@ -43,7 +42,9 @@ const Cart = () => {
 
                 if (matchingProduct) {
                     const price = matchingProduct.price;
+                    const price_sale = matchingProduct.price_sale;
                     const status = cartUser?.products.find((product: any) => product.productDetailId === item._id).status;
+                    const cart_id = cartUser?.products.find((product: any) => product.productDetailId === item._id).cart_id;
                     // console.log(status)
                     const quantity = cartUser?.products.find((product: any) => product.productDetailId === item._id).quantity;
                     const idCartDetail = cartUser?.products.find((product: any) => product.productDetailId === item._id)._id;
@@ -52,10 +53,12 @@ const Cart = () => {
                         name: matchingProduct.name,
                         image: matchingProduct.images[0],
                         price: price,
+                        price_sale: price_sale,
                         quantity: quantity,
-                        total: price * quantity,
+                        total: price_sale * quantity,
                         idCartDetail: idCartDetail,
                         status: status,
+                        cart_id: cart_id,
                     };
                 } else {
                     return item;
@@ -313,7 +316,7 @@ const Cart = () => {
                                                 <h5>{item.quantity}</h5>
                                             </td>
                                             <td>
-                                                <h5>{item.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                                                <h5>{item.price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                             </td>
                                             <td>
                                                 <h5>{item.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>

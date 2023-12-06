@@ -20,7 +20,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <th scope="col">Đại chỉ nhận hàng</th>
                             <th scope="col">Trạng thái </th>
                             <th scope="col">SĐT</th>
-                            <th scope="col">shipping</th>
+                            <th scope="col">Phương thức thanh toán</th>
                             <th scope="col">Ngày mua hàng</th>
                         </tr>
                     </thead>
@@ -39,7 +39,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                                 <span>{roleMane?.tel}</span>
                             </th>
                             <th>
-                                <span>{roleMane?.shipping}</span>
+                                <span>{roleMane?.payment}</span>
                             </th>
                             <th>
                                 <span>{formattedTime} - {date}</span>
@@ -100,7 +100,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                                     <h5>{item?.quantity}</h5>
                                 </td>
                                 <td style={{ width: "100px" }}>
-                                    <h5>{item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                                    <h5>{item?.price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                 </td>
                                 <td style={{ width: "100px" }}>
                                     <h5>{item?.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>

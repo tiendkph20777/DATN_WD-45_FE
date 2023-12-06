@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import { useGetProductsQuery } from "../../../services/product.service";
-import { IProducts } from "../../../types/product.service";
+import { IProducts } from "../../../types/product2";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import { IProductDetail } from "../../../types/product";
 

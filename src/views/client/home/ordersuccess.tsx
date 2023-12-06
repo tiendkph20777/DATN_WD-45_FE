@@ -22,15 +22,18 @@ const Ordersuccess = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
 
+  console.log(cartDetail)
 
-  if(voucher && voucher.length > 0 ) {
-    voucher.map((items, index) => {
-      if(items && items.value){
-        console.log("Voucher value:", items.value);
-      }
-      return null;
-    })
-  }
+  // if(voucher && voucher.length > 0 ) {
+  //   voucher.map((items, index) => {
+  //     if(items && items.value){
+  //       // console.log("Voucher value:", items.value);
+  //     }
+  //     return null;
+  //   })
+  // }
+
+  // console.log(Product)
 
 
   useEffect(() => {
@@ -58,6 +61,7 @@ const Ordersuccess = () => {
 
           if (matchingProduct) {
             const price = matchingProduct.price;
+            const price_sale = matchingProduct.price_sale;
             const quantity = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).quantity;
@@ -72,8 +76,10 @@ const Ordersuccess = () => {
                 name: matchingProduct.name,
                 image: matchingProduct.images[0],
                 price: price,
+                price_sale: price_sale,
                 quantity: quantity,
-                total: price * quantity,
+                totalgoc: price_sale * quantity,
+                // total: total,
                 status: status,
               };
             } else {
@@ -110,10 +116,10 @@ const Ordersuccess = () => {
   const [addCheckout] = useCreateCheckoutMutation();
 
   const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
- 
+
   // console.log("voucher",voucher?.value);
   const totalSum = cartDetail.reduce(
-    (accumulator, item) => accumulator + item?.total,
+    (accumulator, item) => accumulator + item?.totalgoc,
     0
   );
   const total = totalSum - valueVoucher;
@@ -280,7 +286,7 @@ const Ordersuccess = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.price?.toLocaleString("vi-VN", {
+                          {item?.price_sale?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -288,7 +294,7 @@ const Ordersuccess = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.total?.toLocaleString("vi-VN", {
+                          {item?.totalgoc?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -304,7 +310,7 @@ const Ordersuccess = () => {
                           Tổng Thanh Toán
                         </label>
                         <h5 className="col-3 text-danger w-25 total-checkout">
-                          {total?.toLocaleString("vi-VN", {
+                          {totalSum?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}

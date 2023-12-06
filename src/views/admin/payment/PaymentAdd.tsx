@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button, Form, Input, notification } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { IPayment } from '../../../types/payment.service';
+import { IPayment } from '../../../types/payment';
 import { useAddPaymentMutation } from '../../../services/payment.service';
 
 const PaymentAdd: React.FC = () => {
