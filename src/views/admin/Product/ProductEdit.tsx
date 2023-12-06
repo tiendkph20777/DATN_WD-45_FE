@@ -202,20 +202,20 @@ const ProductEdit: React.FC = () => {
                     listType="picture-card"
                     fileList={selectedImages.map((url, index) => ({
                       uid: String(index),
-                      status: "done",
+                      status: 'done',
                       url: url,
                     }))}
                     beforeUpload={(file) => {
                       handleImageChange(file);
-                      return false;
+                      return false; // Prevent automatic upload
                     }}
                     onRemove={(file) => handleRemoveImage(file.url as string)}
+                    multiple // Enable multiple file selection
                   >
                     <div>
                       <i className="bx bx-image-add"></i> Upload ảnh
                     </div>
                   </Upload>
-             
                 </div>
 
                 <div className="form-group">

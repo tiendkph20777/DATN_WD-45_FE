@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IProducts } from "../../../../types/product.service";
+import { IProducts } from "../../../../types/product2";
 import { useGetProductsQuery } from "../../../../services/product.service";
 import { useGetBrandsQuery } from "../../../../services/brand.service";
 import { Pagination } from "antd";

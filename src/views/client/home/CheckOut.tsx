@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Popconfirm, message } from "antd";
+
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
@@ -7,6 +8,7 @@ import { useFetchOneUserQuery } from "../../../services/user.service";
 import {
   useCreateCheckoutMutation,
   useReductionProductMutation,
+  useRemoveCartIdMutation,
 } from "../../../services/checkout.service";
 import {
   useGetVoucherByCodeQuery,
@@ -31,8 +33,10 @@ const CheckOut = () => {
   const { data: Product } = useGetProductsQuery();
   const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
 
+  // console.log(cartDetail)
+  // console.log(cartUser)
   useEffect(() => {
-    console.log("All Vouchers:", allVouchers);
+    // console.log("All Vouchers:", allVouchers);
     if (allVouchersData) {
       setAllVouchers(allVouchersData);
     }
@@ -63,9 +67,13 @@ const CheckOut = () => {
 
           if (matchingProduct) {
             const price = matchingProduct.price;
+            const price_sale = matchingProduct.price_sale;
             const quantity = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).quantity;
+            const cart_id = cartUser.products.find(
+              (product: any) => product.productDetailId === item._id
+            ).cart_id;
             const status = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).status;
@@ -77,9 +85,11 @@ const CheckOut = () => {
                 name: matchingProduct.name,
                 image: matchingProduct.images[0],
                 price: price,
+                price_sale: price_sale,
                 quantity: quantity,
-                total: price * quantity,
+                total: price_sale * quantity,
                 status: status,
+                cart_id: cart_id,
               };
             } else {
               return null; // Exclude items with status false
@@ -113,6 +123,7 @@ const CheckOut = () => {
   const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
   const [addCheckout] = useCreateCheckoutMutation();
   const [quantityCheckout] = useReductionProductMutation();
+  const [removeCartCheckout] = useRemoveCartIdMutation();
   const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
   const totalSum = cartDetail.reduce(
     (accumulator, item: any) => accumulator + item.total,
@@ -131,6 +142,7 @@ const CheckOut = () => {
   const handlePaymentSelect = (paymentId: any) => {
     setSelectedPayment(paymentId);
     // Thêm logic xử lý khi phương thức thanh toán được chọn
+    console.log(paymentId);
   };
   const navigation = useNavigate();
   const handleOnClick = async () => {
@@ -155,24 +167,69 @@ const CheckOut = () => {
         const newData = {
           ...data,
           products: cartDetail,
-          payment_id: selectedPayment,
+          payment: selectedPayment,
           shipping: "",
-          total: totalSum - voucher?.value,
+          total: total,
           voucherCode,
           dateCreate: date,
           status: "Đang xác nhận đơn hàng",
         };
         localStorage.setItem("currentOrder", JSON.stringify(newData));
-        await addCheckout(newData);
-        if (newData) {
-          newData.products.map((item) => quantityCheckout(item));
+        console.log(newData);
+        if (newData.payment === "Thanh toán online") {
+          console.log("bạn chọn phương thức thanh toán online");
+          const s = (await addCheckout(newData)) as any;
+          console.log(s);
+          window.location.replace(s.data);
+          // await addCheckout(newData);
+          if (newData) {
+            newData.products.map((item) => quantityCheckout(item));
+          }
+          // xóa các sản phẩm đã được thanh toán ra khỏi giỏ hàng
+          if (newData) {
+            newData.products.map((item) => removeCartCheckout(item));
+          }
+          //
+          if (newData) {
+            newData.products.map((item) => quantityCheckout(item));
+          }
+          return;
+        } else if (newData.payment === "Thanh toán khi nhận hàng") {
+          console.log("bạn chọn phương thức thanh toán khi nhận hàng");
+          await addCheckout(newData);
+          navigation("/ordersuccess");
+          if (newData) {
+            newData.products.map((item) => quantityCheckout(item));
+          }
+          // xóa các sản phẩm đã được thanh toán ra khỏi giỏ hàng
+          if (newData) {
+            newData.products.map((item) => removeCartCheckout(item));
+          }
+          //
+          if (newData) {
+            newData.products.map((item) => quantityCheckout(item));
+          }
+          return;
+        } else {
+          console.log("bạn chưa chọn phương thức thanh toán");
+          messageApi.info({
+            type: "error",
+            content: "Bạn chưa chọn phương thức thanh toán ",
+            className: "custom-class",
+            style: {
+              marginTop: "0",
+              fontSize: "20px",
+              lineHeight: "50px",
+            },
+          });
+          return;
         }
-        navigation("/ordersuccess");
       } catch (error) {
         console.error("Lỗi khi tạo checkout:", error);
       }
     }
   };
+
   const addre =
     usersOne?.city +
     " , " +
@@ -181,36 +238,21 @@ const CheckOut = () => {
     usersOne?.commune +
     " , " +
     usersOne?.address;
-  //
-  // const amount = total;
-  // const language = "vn";
-  // const bankCode = "INTCARD"
-  // Gọi createPaymentUrl từ một chỗ khác
-  // createPaymentUrl(amount, language, bankCode)
-  //     .then((result) => {
-  //         console.log('Kết quả từ server:', result);
-  //         // Xử lý kết quả ở đây
-  //     })
-  //     .catch((error) => {
-  //         console.error('Lỗi khi gửi yêu cầu:', error.message);
-  //         // Xử lý lỗi ở đây
-  //     });
-  //
-  const handleVoucherSelect = (voucherCode) => {
+
+  const handleVoucherSelect = (voucherCode: any) => {
     console.log("Selected Voucher Code:", voucherCode);
 
     if (totalSum > 4000000) {
       setVoucherCode(voucherCode);
       setSelectedVoucher(voucherCode);
     } else {
-      if (voucherCode === "FREESHIP150K" || voucherCode === "THANHDZ") {
+      if (voucherCode === "FREESHIP150K" || voucherCode === "TTTTT") {
         message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
       } else {
         setVoucherCode(voucherCode);
         setSelectedVoucher(voucherCode);
       }
-    } 
-   
+    }
   };
   localStorage.setItem(
     "selectedVoucher",
@@ -219,6 +261,7 @@ const CheckOut = () => {
 
   console.log("Selected Voucher in Render:", selectedVoucher);
   console.log(valueVoucher);
+
   if (isLoading) {
     return (
       <div>
@@ -249,7 +292,6 @@ const CheckOut = () => {
                       name="user_id"
                       value={usersOne?._id}
                     />
-                    <span className="placeholder"></span>
                   </div>
                   <div className="col-md-12 form-group p_star">
                     <label htmlFor="">Họ và tên</label>
@@ -294,7 +336,6 @@ const CheckOut = () => {
                       name="address"
                       value={usersOne?.address}
                     />
-                    <span className="placeholder"></span>
                   </div>
                   <div className="col-md-12 form-group p_star">
                     <label htmlFor="">Địa chỉ</label>
@@ -305,7 +346,6 @@ const CheckOut = () => {
                       name="address"
                       value={addre}
                     ></textarea>
-                    <span className="placeholder"></span>
                   </div>
                   <div className="col-md-12 form-group">
                     <div className="creat_account">
@@ -366,7 +406,7 @@ const CheckOut = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.price?.toLocaleString("vi-VN", {
+                          {item?.price_sale?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -401,15 +441,16 @@ const CheckOut = () => {
                     </td>
                   </tr>
                   <div className="payment_item">
-                    <div className="radion_btn">
+                    {/* <div className="radion_btn">
                       <input type="radio" id="f-option5" name="selector" />
                       <label htmlFor="f-option5">Check payments</label>
                       <div className="check"></div>
-                    </div>
-                    <p>
+                    </div> */}
+                    {/* <br /> */}
+                    {/* <p>
                       Please send a check to Store Name, Store Street, Store
                       Town, Store State / County, Store Postcode.
-                    </p>
+                    </p> */}
                     <div className="payment_item active">
                       <form className="row mt-3">
                         <label htmlFor="" className="col-8 m-2">
@@ -421,7 +462,7 @@ const CheckOut = () => {
                           onChange={(e) => handleVoucherSelect(e.target.value)}
                         >
                           <option value="">-- Chọn mã khuyến mãi --</option>
-                          {allVouchers.map((voucher, index) => (
+                          {allVouchers.map((voucher: any, index) => (
                             <option key={index} value={voucher.code}>
                               {voucher.code} -{" "}
                               {voucher.value.toLocaleString("vi-VN", {
@@ -490,24 +531,33 @@ const CheckOut = () => {
                     </div>
 
                     <div className="row">
-                      <div className="payment_item active col-5 m-2">
+                      <div className="payment_item active col-6 m-2">
                         <div>
                           <select
                             onChange={(e) =>
                               handlePaymentSelect(e.target.value)
                             }
-                            name="payment_id"
+                            name="payment"
                             className="form-select"
                           >
-                            {paymentQuery?.map((item) => (
+                            <option value="">
+                              -- Chọn phương thức thanh toán --
+                            </option>
+                            <option value="Thanh toán khi nhận hàng">
+                              -- Thanh toán khi nhận hàng --
+                            </option>
+                            <option value="Thanh toán online">
+                              -- Thanh toán online --
+                            </option>
+                            {/* {paymentQuery?.map((item) => (
                               <option key={item._id} value={item._id}>
                                 {item.name}
                               </option>
-                            ))}
+                            ))} */}
                           </select>
                         </div>
                       </div>
-                      <div className="creat_account col-6">
+                      <div className="creat_account col-5">
                         <input
                           checked
                           disabled

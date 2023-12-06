@@ -2,10 +2,10 @@ import React from 'react';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
     console.log(roleMane)
-    const total = roleMane.products.reduce((acc: number, product: any) => {
-        const productTotal = product.total || 0;
-        return acc + productTotal;
-    }, 0);
+    // const total = roleMane.products.reduce((acc: number, product: any) => {
+    //     const productTotal = product.total || 0;
+    //     return acc + productTotal;
+    // }, 0);
     const date = new Date(roleMane?.dateCreate)?.toLocaleDateString('en-US');
     const formattedTime = new Date(roleMane?.dateCreate).toTimeString().slice(0, 5);
     // console.log(formattedTime);
@@ -21,6 +21,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <th scope="col">Trạng thái </th>
                             <th scope="col">SĐT</th>
                             <th scope="col">Phương thức thanh toán</th>
+                            <th scope="col">voucherCode</th>
                             <th scope="col">Ngày mua hàng</th>
                         </tr>
                     </thead>
@@ -39,7 +40,10 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                                 <span>{roleMane?.tel}</span>
                             </th>
                             <th>
-                                <span>{roleMane?.paymentCart}</span>
+                                <span>{roleMane?.payment}</span>
+                            </th>
+                            <th>
+                                <span>{roleMane?.voucherCode}</span>
                             </th>
                             <th>
                                 <span>{formattedTime} - {date}</span>
@@ -100,7 +104,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                                     <h5>{item?.quantity}</h5>
                                 </td>
                                 <td style={{ width: "100px" }}>
-                                    <h5>{item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
+                                    <h5>{item?.price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
                                 </td>
                                 <td style={{ width: "100px" }}>
                                     <h5>{item?.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h5>
@@ -114,7 +118,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <td> </td>
                             <td> </td>
                             <td> </td>
-                            <td style={{ color: "black", fontSize: "20px" }}>{total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                            <td style={{ color: "black", fontSize: "20px" }}>{roleMane?.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                         </tr>
                     </tbody>
                 </table>

@@ -22,6 +22,8 @@ const Ordersuccess = () => {
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
   const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
 
+  
+
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
       const cartDetailIds = cartUser?.products.map(
@@ -47,6 +49,7 @@ const Ordersuccess = () => {
 
           if (matchingProduct) {
             const price = matchingProduct.price;
+            const price_sale = matchingProduct.price_sale;
             const quantity = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).quantity;
@@ -61,8 +64,10 @@ const Ordersuccess = () => {
                 name: matchingProduct.name,
                 image: matchingProduct.images[0],
                 price: price,
+                price_sale: price_sale,
                 quantity: quantity,
-                total: price * quantity,
+                total: price_sale * quantity,
+                // total: total,
                 status: status,
               };
             } else {
@@ -88,6 +93,7 @@ const Ordersuccess = () => {
       setSelectedVoucherValue(selectedVoucher.value);
     }
   }, []);
+
 
   if (isLoading) {
     return (
@@ -254,7 +260,7 @@ const Ordersuccess = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.price?.toLocaleString("vi-VN", {
+                          {item?.price_sale?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -262,7 +268,7 @@ const Ordersuccess = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.total?.toLocaleString("vi-VN", {
+                          {item?.totalgoc?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
