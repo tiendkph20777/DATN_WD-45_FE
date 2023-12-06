@@ -123,9 +123,9 @@ const Bieudo = () => {
   const newData = generateData();
 
   return (
-    <div>
+    <div style={{ width: '100%' }}>
       <ChartViewToggle onViewChange={toggleViewMode} />
-      <LineChart width={1200} height={400} data={newData}>
+      <LineChart width={1000} height={400} data={newData}>
         <XAxis dataKey="time" />
         <YAxis />
         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
