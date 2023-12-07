@@ -21,6 +21,7 @@ const Ordersuccess = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
   const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
+  const [total, setTotal] = useState(0);
 
   
 
@@ -94,6 +95,21 @@ const Ordersuccess = () => {
     }
   }, []);
 
+  const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
+
+  const totalSum = cartDetail.reduce(
+    (accumulator, item) => accumulator + item?.total,
+    0
+  );
+
+  useEffect(() => {
+    const shippingFee = JSON.parse(localStorage.getItem('shippingFee')) || 0;
+
+    const calculatedTotal = totalSum - valueVoucher + shippingFee;
+    setTotal(calculatedTotal);
+
+
+  }, [cartDetail, valueVoucher, totalSum]);
 
   if (isLoading) {
     return (
@@ -107,14 +123,10 @@ const Ordersuccess = () => {
       </div>
     );
   }
+  
+  
+ 
 
-  const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
-
-  const totalSum = cartDetail.reduce(
-    (accumulator, item) => accumulator + item?.total,
-    0
-  );
-  const total = totalSum - valueVoucher;
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   const addre =

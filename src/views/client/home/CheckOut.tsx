@@ -32,6 +32,8 @@ const CheckOut = () => {
   const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
   const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
+  const [finalTotal, setFinalTotal] = useState(0);
+  const [shippingFee, setShippingFee] = useState(0);
 
   // console.log(cartDetail)
   // console.log(cartUser)
@@ -119,6 +121,14 @@ const CheckOut = () => {
   if (error) {
     console.error("Lỗi khi truy vấn mã khuyến mãi:", error);
   }
+  const address =
+    usersOne?.city +
+    " , " +
+    usersOne?.district +
+    " , " +
+    usersOne?.commune +
+    " , " +
+    usersOne?.address;
 
   const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
   const [addCheckout] = useCreateCheckoutMutation();
@@ -129,13 +139,20 @@ const CheckOut = () => {
     (accumulator, item: any) => accumulator + item.total,
     0
   );
-  const total = totalSum - valueVoucher;
   useEffect(() => {
-    // Bước 2: Cập nhật state dựa trên giá trị tổng đơn hàng
-    if (totalSum) {
+    if (usersOne?.city === "Thành phố Hà Nội") {
+      setShippingFee(25000);
+    } else {
+      setShippingFee(40000);
+    }
+  }, [usersOne?.city]);
+  useEffect(() => {
+    if (totalSum || shippingFee) {
+      setFinalTotal(totalSum + shippingFee);
       setIsOverFourMillion(totalSum > 4000000);
     }
-  }, [totalSum]);
+  }, [totalSum, shippingFee]);
+
   // Payment ID
   const [selectedPayment, setSelectedPayment] = useState(null);
 
@@ -144,6 +161,8 @@ const CheckOut = () => {
     // Thêm logic xử lý khi phương thức thanh toán được chọn
     console.log(paymentId);
   };
+  const total = finalTotal - valueVoucher;
+
   const navigation = useNavigate();
   const handleOnClick = async () => {
     const form = document.querySelector(
@@ -230,15 +249,6 @@ const CheckOut = () => {
     }
   };
 
-  const addre =
-    usersOne?.city +
-    " , " +
-    usersOne?.district +
-    " , " +
-    usersOne?.commune +
-    " , " +
-    usersOne?.address;
-
   const handleVoucherSelect = (voucherCode: any) => {
     console.log("Selected Voucher Code:", voucherCode);
 
@@ -246,7 +256,10 @@ const CheckOut = () => {
       setVoucherCode(voucherCode);
       setSelectedVoucher(voucherCode);
     } else {
-      if (voucherCode === "FREESHIP150K" || voucherCode === "TTTTT") {
+      if (
+        voucherCode === "FREESHIP150K" ||
+        voucherCode === "ĐẶC QUYỀN CỦA VIP"
+      ) {
         message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
       } else {
         setVoucherCode(voucherCode);
@@ -254,10 +267,12 @@ const CheckOut = () => {
       }
     }
   };
+  localStorage.setItem("shippingFee", JSON.stringify(shippingFee));
   localStorage.setItem(
     "selectedVoucher",
     JSON.stringify({ voucherCode, value: voucher?.value })
   );
+  console.log("totalSum", totalSum);
 
   console.log("Selected Voucher in Render:", selectedVoucher);
   console.log(valueVoucher);
@@ -344,7 +359,7 @@ const CheckOut = () => {
                       id="address"
                       placeholder="Địa chỉ giao hàng"
                       name="address"
-                      value={addre}
+                      value={address}
                     ></textarea>
                   </div>
                   <div className="col-md-12 form-group">
@@ -483,7 +498,7 @@ const CheckOut = () => {
                           type="text"
                           disabled
                           className="col-2 money-checkout w-25"
-                          value={totalSum?.toLocaleString("vi-VN", {
+                          value={finalTotal?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -493,7 +508,7 @@ const CheckOut = () => {
                     <div className="payment_item active">
                       <form className="row mt-3">
                         <label htmlFor="" className="col-8 m-2">
-                          Sau Khuyến Mại(*Voucher)
+                          Mã Giảm Giá
                         </label>
                         <input
                           type="text"
@@ -508,6 +523,23 @@ const CheckOut = () => {
                                 )
                               : ""
                           }
+                        />
+                      </form>
+                    </div>
+                    <div className="payment_item active">
+                      <form className="row mt-3">
+                        <label htmlFor="" className="col-8 m-2">
+                          Phí vận chuyển
+                        </label>
+                        <input
+                          type="text"
+                          disabled
+                          className="col-2 text-danger w-25 total-checkout"
+                          name="shippingFee"
+                          value={shippingFee?.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          })}
                         />
                       </form>
                     </div>
