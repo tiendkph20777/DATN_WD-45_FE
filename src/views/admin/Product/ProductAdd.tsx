@@ -3,7 +3,7 @@ import { useAddProductMutation } from "../../../services/product.service";
 import { Button, Form, Input, notification, Upload } from "antd";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import { IProducts } from "../../../types/product.service";
+import { IProducts } from "../../../types/product2";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
@@ -81,9 +81,8 @@ const ProductAdd: React.FC = () => {
                   </label>
                   <select
                     {...register("brand_id", { required: true })}
-                    className={`form-select ${
-                      errors.brand_id ? "is-invalid" : ""
-                    }`}
+                    className={`form-select ${errors.brand_id ? "is-invalid" : ""
+                      }`}
                     required
                   >
                     <option disabled value="">
@@ -106,9 +105,8 @@ const ProductAdd: React.FC = () => {
                   <input
                     {...register("name", { required: true })}
                     type="text"
-                    className={`form-control ${
-                      errors.name ? "is-invalid" : ""
-                    }`}
+                    className={`form-control ${errors.name ? "is-invalid" : ""
+                      }`}
                     id="productName"
                   />
                   {errors.name && (
@@ -117,7 +115,7 @@ const ProductAdd: React.FC = () => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="productPrice" className="form-label">
-                    Giá niêm yết
+                    Giá bán
                   </label>
                   <input
                     {...register("price", {
@@ -125,9 +123,8 @@ const ProductAdd: React.FC = () => {
                       valueAsNumber: true,
                     })}
                     type="number"
-                    className={`form-control ${
-                      errors.price ? "is-invalid" : ""
-                    }`}
+                    className={`form-control ${errors.price ? "is-invalid" : ""
+                      }`}
                     id="productPrice"
                   />
                   {errors.price && (
@@ -136,33 +133,30 @@ const ProductAdd: React.FC = () => {
                 </div>
                 <div className="mb-3">
                   <label htmlFor="productPrice" className="form-label">
-                    Giá bán
+                    Giá bán sau khi giảm giá
                   </label>
                   <input
                     {...register("price_sale", {
-                      required: true,
-                      valueAsNumber: true,
+                      // required: true,
+                      // valueAsNumber: true,
                     })}
                     type="number"
-                    className={`form-control ${
-                      errors.price ? "is-invalid" : ""
-                    }`}
+                    className={`form-control ${errors.price ? "is-invalid" : ""
+                      }`}
                     id="productPrice"
                   />
-                  {errors.price && (
-                    <div className="invalid-feedback">Không được bỏ trống!</div>
-                  )}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="productImage" className="form-label">
                     Ảnh sản phẩm
                   </label>
                   <Upload
-                    customRequest={() => {}}
+                    customRequest={() => { }}
                     onChange={onFileChange}
                     fileList={fileList}
                     listType="picture"
-                    beforeUpload={() => false}
+                    beforeUpload={() => false} // Always return true to allow uploading
+                    multiple // Enable multiple file selection
                   >
                     <Button>Chọn ảnh</Button>
                   </Upload>
@@ -176,9 +170,8 @@ const ProductAdd: React.FC = () => {
                     id="productDescription"
                     cols={30}
                     rows={5}
-                    className={`w-100 form-control p-2 ${
-                      errors.description ? "is-invalid" : ""
-                    }`}
+                    className={`w-100 form-control p-2 ${errors.description ? "is-invalid" : ""
+                      }`}
                   />
                   {errors.description && (
                     <div className="invalid-feedback">Không được bỏ trống!</div>
@@ -193,9 +186,8 @@ const ProductAdd: React.FC = () => {
                     id="productContent"
                     cols={30}
                     rows={5}
-                    className={`w-100 form-control p-2 ${
-                      errors.content ? "is-invalid" : ""
-                    }`}
+                    className={`w-100 form-control p-2 ${errors.content ? "is-invalid" : ""
+                      }`}
                   />
                   {errors.content && (
                     <div className="invalid-feedback">Không được bỏ trống!</div>

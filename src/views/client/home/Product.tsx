@@ -3,7 +3,7 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useGetBrandsQuery } from '../../../services/brand.service';
 import { useGetProductsQuery } from '../../../services/product.service';
-import { IProducts } from '../../../types/product.service';
+import { IProducts } from '../../../types/product2';
 import { useEffect, useState } from 'react';
 import useRefs from "react-use-refs";
 import PageProduct from "./homeProduct/PageProduct";

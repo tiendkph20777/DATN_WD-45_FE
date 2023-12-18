@@ -22,6 +22,7 @@ type FieldType = {
 };
 
 const ProductEdit: React.FC = () => {
+  const [previewImage, setPreviewImage] = useState(null);
   const { control, handleSubmit, setValue, register } = useForm<FieldType>();
   const [updateProduct] = useUpdateProductMutation();
   const { idProduct } = useParams<{ idProduct: string }>();
@@ -40,6 +41,16 @@ const ProductEdit: React.FC = () => {
       console.log("Product Images:", productData?.images);
     }
   }, [productData, setValue]);
+  const handleImagechange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreviewImage(reader.result);
+        };
+        reader.readAsDataURL(file);
+    }
+};
 
   const handleImageChange = async (file: File) => {
     try {
@@ -191,20 +202,20 @@ const ProductEdit: React.FC = () => {
                     listType="picture-card"
                     fileList={selectedImages.map((url, index) => ({
                       uid: String(index),
-                      status: "done",
+                      status: 'done',
                       url: url,
                     }))}
                     beforeUpload={(file) => {
                       handleImageChange(file);
-                      return false;
+                      return false; // Prevent automatic upload
                     }}
                     onRemove={(file) => handleRemoveImage(file.url as string)}
+                    multiple // Enable multiple file selection
                   >
                     <div>
                       <i className="bx bx-image-add"></i> Upload ảnh
                     </div>
                   </Upload>
-             
                 </div>
 
                 <div className="form-group">

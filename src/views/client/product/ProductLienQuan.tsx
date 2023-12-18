@@ -5,7 +5,7 @@ import {
 } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
 import "./styles.css";
-import { IProducts } from "../../../types/product.service";
+import { IProducts } from "../../../types/product2";
 import { useParams } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -95,9 +95,9 @@ const ProductLienQuan = () => {
                             {item.name}
                           </h4>
                           <div className="product-price row">
-                            <strong className="col-12">{item.price_sale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</strong>
+                            <strong className="col-12">{item.price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</strong>
                             <div className="d-flex">
-                              <del className="price-del">{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</del>
+                              <del className="price-del">{item.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</del>
                               <span className="product-discount">-{discount}%</span>
                             </div>
                           </div>
@@ -115,8 +115,6 @@ const ProductLienQuan = () => {
               }
             })}
           </Slider>
-          {/* </div> */}
-          {/* </div> */}
         </div>
       </section>
     </div>

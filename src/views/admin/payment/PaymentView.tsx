@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Table, Input, notification, Popconfirm } from 'antd';
-import { IPayment } from "../../../types/payment.service";
+import { IPayment } from "../../../types/payment";
 
 import { Link } from 'react-router-dom';
 import { CloseOutlined, EditOutlined } from '@ant-design/icons';
@@ -12,6 +12,7 @@ interface DataType {
     name: string,
 }
 const PaymentView: React.FC = () => {
+
     const { data: paymentData, isLoading } = useGetPaymentQuery();
     const [removePayment] = useRemovePaymentMutation();
     const [searchTerm, setSearchTerm] = useState('');

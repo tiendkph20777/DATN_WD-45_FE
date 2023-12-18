@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import useRefs from "react-use-refs";
 import { useGetProductsQuery } from "../../../../services/product.service";
 import { useGetBrandsQuery } from "../../../../services/brand.service";
-import { IProducts } from "../../../../types/product.service";
+import { IProducts } from "../../../../types/product2";
 
 const ProductSale = () => {
     const { data: productData, isLoading } = useGetProductsQuery();
