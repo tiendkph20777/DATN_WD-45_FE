@@ -1,14 +1,12 @@
 import React from 'react';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
-    console.log(roleMane)
     const total = roleMane.products.reduce((acc: number, product: any) => {
         const productTotal = product.total || 0;
         return acc + productTotal;
     }, 0);
     const date = new Date(roleMane?.dateCreate)?.toLocaleDateString('en-US');
     const formattedTime = new Date(roleMane?.dateCreate).toTimeString().slice(0, 5);
-    // console.log(formattedTime);
 
     return (
         <div className="col-lg-12">

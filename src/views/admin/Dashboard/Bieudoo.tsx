@@ -52,17 +52,16 @@ const Bieudo = () => {
     );
     const data = dateRange.map((date) => {
       //Theo ngày
-      const filteredDayOrders = successfulOrders?.filter((item) => item.date === format(date, 'MM/dd/yyyy'));
+      const filteredDayOrders = successfulOrders?.filter((item) => item.date === format(date, 'MM/d/yyyy'));
       let fullTotalDay = 0;
       filteredDayOrders?.forEach((item) => (fullTotalDay += item.totals));
-
       //Theo tháng
       const filteredMonthOrders = successfulOrders?.filter((item) => format(new Date(item.date), 'MM/yyyy') === format(date, 'MM/yyyy'));
       let fullTotalMonth = 0;
       filteredMonthOrders?.forEach((item) => (fullTotalMonth += item.totals));
 
       return {
-        time: format(date, viewMode === 'day' ? 'MM/dd/yyyy' : 'MM/yyyy'),
+        time: format(date, viewMode === 'day' ? 'MM/d/yyyy' : 'MM/yyyy'),
         value: viewMode === 'day' ? fullTotalDay : fullTotalMonth,
         date: date,
       };
