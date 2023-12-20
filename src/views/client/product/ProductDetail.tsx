@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetProductByIdQuery,
   useGetProductsQuery,
 } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import { useGetAllProductsDetailQuery, useGetAllsProductsDetailQuery } from "../../../services/productDetail.service";
+import { useGetAllsProductsDetailQuery } from "../../../services/productDetail.service";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";

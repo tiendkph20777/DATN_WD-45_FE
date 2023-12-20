@@ -79,44 +79,56 @@ const Index = () => {
         <div className="container">
           <div>
             <div className="d-flex justify-content-between">
-              <div className="mb-3 d-flex">
+              <div className="mb-3 d-flex" style={{ alignItems: 'center' }}>
                 <span style={{ color: "black", fontSize: "20px", padding: "10px" }}>Tìm kiếm theo : </span>
-                <select onChange={onHandleClick} className="form-select-product ">
-                  <option selected disabled >
-                    Thương hiệu
-                  </option>
-                  {brandData?.map((item) => {
-                    return (
-                      <option value={item._id} >
-                        {item.name}
+                <div className="selectdivhe">
+                  <label>
+                    <select onChange={onHandleClick}>
+                      <option selected disabled >
+                        Thương hiệu
                       </option>
-                    )
-                  })}
-                </select>
-                <select onChange={onHandleClick} className="form-select-product">
-                  <option selected disabled>
-                    Màu sắc
-                  </option>
-                  {color?.map((item) => {
-                    return (
-                      <option value={item}>
-                        {item}
+                      {brandData?.map((item) => {
+                        return (
+                          <option value={item._id} >
+                            {item.name}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </label>
+                </div>
+                <div className="selectdivhe">
+                  <label>
+                    <select onChange={onHandleClick}>
+                      <option selected disabled>
+                        Màu sắc
                       </option>
-                    )
-                  })}
-                </select>
-                <select onChange={onHandleClick} className="form-select-product">
-                  <option selected disabled>
-                    Kích cỡ
-                  </option>
-                  {Size?.map((item) => {
-                    return (
-                      <option value={item}>
-                        {item}
+                      {color?.map((item) => {
+                        return (
+                          <option value={item}>
+                            {item}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </label>
+                </div>
+                <div className="selectdivhe">
+                  <label>
+                    <select onChange={onHandleClick}>
+                      <option selected disabled>
+                        Kích cỡ
                       </option>
-                    )
-                  })}
-                </select>
+                      {Size?.map((item) => {
+                        return (
+                          <option value={item}>
+                            {item}
+                          </option>
+                        )
+                      })}
+                    </select>
+                  </label>
+                </div>
               </div>
             </div>
             <br />

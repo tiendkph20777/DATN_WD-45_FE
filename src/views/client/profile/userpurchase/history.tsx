@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Input, Modal, Table, Tag } from 'antd';
+import React, { useState } from 'react';
+import { Button, Modal, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery } from '../../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
@@ -146,13 +146,13 @@ const History: React.FC = () => {
             ),
         },
         {
-            title: "Bình luận",
+            title: "Đánh giá",
             dataIndex: '',
             key: 'action',
             render: (record: any) => (
                 <span>
                     <Button type='primary' onClick={() => handleCmtClick(record?._id)} >
-                        Bình luận
+                        Đánh giá
                     </Button>
                     {/* </Link> */}
                 </span>
@@ -184,7 +184,7 @@ const History: React.FC = () => {
                         <OrderDetails roleMane={roleMane} />
                     </Modal>
                     <Modal
-                        title="Bình luận"
+                        title="Đánh giá"
                         open={openCmt}
                         onOk={hideCmt}
                         onCancel={hideCmt}

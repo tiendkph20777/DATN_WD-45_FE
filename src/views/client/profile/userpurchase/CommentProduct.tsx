@@ -1,10 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Upload } from "antd";
-import { useGetProductByIdQuery } from '../../../../services/product.service';
 import axios from "axios";
 import { useForm } from 'react-hook-form';
 import { useAddCommentMutation } from '../../../../services/comment.service';
-import { Rate, message as messageApi } from "antd";
+import { message as messageApi } from "antd";
 interface DataType {
     _id: string;
     content: string;
@@ -18,7 +17,6 @@ type roleCmtType = {
     products: [];
 }
 const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
-    // console.log(roleCmt.products[0]._id)
     const { handleSubmit, register, setValue } = useForm<any>();
     const { user: id_user } = JSON.parse(localStorage.getItem("user") || "{}");
     const [fileList, setFileList] = useState<any[]>([]);
@@ -46,22 +44,19 @@ const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
     };
 
 
-    const onHandleSubmit = async ({ content, rate }: any) => {
+    const onHandleSubmit = async ({ content, rate, product_id }: any) => {
         const fileUrls = await SubmitImage();
-
         const dataCmt = {
-            // id_product: prodetailData?._id,
-            // id_product: roleCmt.products[0]._id,
+            id_product: product_id,
             id_user,
             rate,
             content,
             images: fileUrls
         };
 
-        // Call the mutation
-        const response = await addProduct(dataCmt);
+        const response: any = await addProduct(dataCmt);
 
-        const successMessage = `Cảm ơn bạn đã bình luận chúng tôi sẽ cố gắng để tốt lên mỗi ngày 🥰🥰🥰`;
+        const successMessage = `Cảm ơn bạn đã đánh giá chúng tôi sẽ cố gắng để tốt lên mỗi ngày 🥰🥰🥰`;
         messageApi.success({
             type: "success",
             content: successMessage,
@@ -73,12 +68,9 @@ const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
             },
         });
 
-        // If the mutation is successful, update the local state with the new comment
         if (response.data) {
             const newComment = response.data; // Assuming the mutation returns the new comment
             setDataSourceToRender(prevData => [newComment, ...prevData]); // Add the new comment to the beginning
-
-            // Clear the form values
             setValue("content", "");
             setValue("rate", "");
         }
@@ -91,11 +83,23 @@ const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
     return (
         <div className='col-11 my-5'>
             <form onSubmit={handleSubmit(onHandleSubmit)} className="form-floating">
+
+                <div className="selectdiv">
+                    <label>
+                        <select {...register("product_id")}>
+                            <option selected disabled>Sản phẩm</option>
+                            {roleCmt.products.map((item: any) => {
+                                return (
+                                    <option value={item.product_id}>{item.name}</option>
+                                )
+                            })}
+                        </select>
+                    </label>
+                </div>
                 <textarea
                     className="form-control"
                     {...register("content", { required: true, minLength: 2 })}
                 ></textarea>
-                <label className='fs-6  '>Bình luận</label>
                 <div className='my-2'>
                     <span>xấu 😭 </span>
                     <input className="form-check-input mx-1" type="radio" value="1" {...register("rate", { required: true })} />
@@ -120,7 +124,7 @@ const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
                     </Upload>
                 </div>
                 <button type="submit" className="w-100 btn btn-primary">
-                    Bình luận
+                    Đánh giá
                 </button>
             </form>
         </div>
