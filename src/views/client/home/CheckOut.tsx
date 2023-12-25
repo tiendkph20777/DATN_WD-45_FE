@@ -107,18 +107,20 @@ const CheckOut = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
 
-  const getCodeVoucher = () => {
-    if (!voucherCode) {
-      console.error("Mã khuyến mãi không được để trống");
-      return;
-    }
-  };
-  if (voucher) {
-    // console.log('Thông tin voucher:', voucher);
-  }
-  if (error) {
-    console.error("Lỗi khi truy vấn mã khuyến mãi:", error);
-  }
+  // console.log(voucherCode)
+
+  // const getCodeVoucher = () => {
+  //   if (!voucherCode) {
+  //     console.error("Mã khuyến mãi không được để trống");
+  //     return;
+  //   }
+  // };
+  // if (voucher) {
+  //   // console.log('Thông tin voucher:', voucher);
+  // }
+  // if (error) {
+  //   console.error("Lỗi khi truy vấn mã khuyến mãi:", error);
+  // }
 
   const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
   const [addCheckout] = useCreateCheckoutMutation();
@@ -259,8 +261,8 @@ const CheckOut = () => {
     JSON.stringify({ voucherCode, value: voucher?.value })
   );
 
-  console.log("Selected Voucher in Render:", selectedVoucher);
-  console.log(valueVoucher);
+  // console.log("Selected Voucher in Render:", selectedVoucher);
+  // console.log(valueVoucher);
 
   if (isLoading) {
     return (
@@ -503,9 +505,9 @@ const CheckOut = () => {
                           value={
                             voucher
                               ? parseFloat(voucher?.value).toLocaleString(
-                                  "vi-VN",
-                                  { style: "currency", currency: "VND" }
-                                )
+                                "vi-VN",
+                                { style: "currency", currency: "VND" }
+                              )
                               : ""
                           }
                         />

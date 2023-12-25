@@ -1,11 +1,8 @@
 import React from 'react';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
-    console.log(roleMane)
-    // const total = roleMane.products.reduce((acc: number, product: any) => {
-    //     const productTotal = product.total || 0;
-    //     return acc + productTotal;
-    // }, 0);
+    // console.log(roleMane)
+
     const date = new Date(roleMane?.dateCreate)?.toLocaleDateString('en-US');
     const formattedTime = new Date(roleMane?.dateCreate).toTimeString().slice(0, 5);
     // console.log(formattedTime);
@@ -21,7 +18,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <th scope="col">Trạng thái </th>
                             <th scope="col">SĐT</th>
                             <th scope="col">Phương thức thanh toán</th>
-                            <th scope="col">voucherCode</th>
+                            <th scope="col">Mã giảm giá</th>
                             <th scope="col">Ngày mua hàng</th>
                         </tr>
                     </thead>
