@@ -4,7 +4,6 @@ import {
   useGetProductsQuery,
 } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import "./styles.css";
 import { IProducts } from "../../../types/product2";
 import { useParams } from "react-router-dom";
 import Slider from "react-slick";

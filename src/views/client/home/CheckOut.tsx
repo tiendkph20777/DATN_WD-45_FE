@@ -258,7 +258,7 @@ const CheckOut = () => {
     } else {
       if (
         voucherCode === "FREESHIP150K" ||
-        voucherCode === "ĐẶC QUYỀN CỦA VIP"
+        voucherCode === "MYS200K"
       ) {
         message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
       } else {

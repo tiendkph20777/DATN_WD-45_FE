@@ -19,7 +19,7 @@ const Index = () => {
         ...IProducts,
       }));
       setDataSourceToRender(updatedDataSource);
-      setSearchResult(updatedDataSource)
+      setSearchResult(updatedDataSource);
     }
   }, [productData]);
 
@@ -29,49 +29,63 @@ const Index = () => {
         ...IProductDetail,
       }));
       setDataDTToRender(updatedDataDT);
-      setdataDThResult(updatedDataDT)
+      setdataDThResult(updatedDataDT);
     }
   }, [productDTData]);
+  console.log("data", dataSourceToRender)
 
-  let DTData = (itemm: any) => productDTData?.filter((item) => item.product_id === itemm._id);
+  let DTData = (itemm: any) =>
+    productDTData?.filter((item) => item.product_id === itemm._id);
   let filteredDataDT = dataDTToRender;
   let filteredData = dataSourceToRender;
-  let setColor = [dataDTToRender?.map((item: any) => item.color)]
+  let setColor = [dataDTToRender?.map((item: any) => item.color)];
   let color = [...new Set(setColor[0])];
-  let setSize = [dataDTToRender?.map((item: any) => item.size)]
+  let setSize = [dataDTToRender?.map((item: any) => item.size)];
   let Size = [...new Set(setSize[0])];
   const onHandleClick = ({ target: { value } }: any) => {
-    filteredData = filteredData.filter((itemm) => itemm.brand_id == value || DTData(itemm)?.find((itemd) => itemd.color == value) || DTData(itemm)?.find((itemd) => itemd.size == value))
+    filteredData = filteredData.filter(
+      (itemm) =>
+        itemm.brand_id == value ||
+        DTData(itemm)?.find((itemd) => itemd.color == value) ||
+        DTData(itemm)?.find((itemd) => itemd.size == value)
+    );
     if (filteredData.length > 1) {
       setDataSourceToRender(filteredData);
     } else {
       filteredData = searchResult;
-      filteredData = filteredData.filter((itemm) => itemm.brand_id == value || DTData(itemm)?.find((itemd) => itemd.color == value) || DTData(itemm)?.find((itemd) => itemd.size == value))
+      filteredData = filteredData.filter(
+        (itemm) =>
+          itemm.brand_id == value ||
+          DTData(itemm)?.find((itemd) => itemd.color == value) ||
+          DTData(itemm)?.find((itemd) => itemd.size == value)
+      );
       setDataSourceToRender(filteredData);
-
     }
-
-    filteredDataDT = filteredDataDT.filter((itemm) => filteredData?.find((item) => item._id == itemm.product_id)?._id)
+    filteredDataDT = filteredDataDT.filter(
+      (itemm) => filteredData?.find((item) => item._id == itemm.product_id)?._id
+    );
     if (filteredDataDT.length > 0) {
-      setDataDTToRender(filteredDataDT)
+      setDataDTToRender(filteredDataDT);
     } else {
       filteredDataDT = dataDTResult;
-      filteredDataDT = filteredDataDT.filter((itemm) => filteredData?.find((item) => item._id == itemm.product_id)?._id)
-      setDataDTToRender(filteredDataDT)
-
+      filteredDataDT = filteredDataDT.filter(
+        (itemm) =>
+          filteredData?.find((item) => item._id == itemm.product_id)?._id
+      );
+      setDataDTToRender(filteredDataDT);
     }
   };
   if (isLoading) {
-    return <div>
-      <div className="right-wrapper">
-        <div className="spinnerIconWrapper">
-          <div className="spinnerIcon"></div>
-        </div>
-        <div className="finished-text">
-          Xin vui lòng chờ một chút 🥰🥰🥰
+    return (
+      <div>
+        <div className="right-wrapper">
+          <div className="spinnerIconWrapper">
+            <div className="spinnerIcon"></div>
+          </div>
+          <div className="finished-text">Xin vui lòng chờ một chút 🥰🥰🥰</div>
         </div>
       </div>
-    </div>;
+    );
   }
   return (
     <div>
@@ -80,41 +94,42 @@ const Index = () => {
           <div>
             <div className="d-flex justify-content-between">
               <div className="mb-3 d-flex">
-                <span style={{ color: "black", fontSize: "20px", padding: "10px" }}>Tìm kiếm theo : </span>
-                <select onChange={onHandleClick} className="form-select-product ">
-                  <option selected disabled >
+                <span
+                  style={{ color: "black", fontSize: "20px", padding: "10px" }}
+                >
+                  Tìm kiếm theo :{" "}
+                </span>
+                <select
+                  onChange={onHandleClick}
+                  className="form-select-product "
+                >
+                  <option selected disabled>
                     Thương hiệu
                   </option>
                   {brandData?.map((item) => {
-                    return (
-                      <option value={item._id} >
-                        {item.name}
-                      </option>
-                    )
+                    return <option value={item._id}>{item.name}</option>;
                   })}
                 </select>
-                <select onChange={onHandleClick} className="form-select-product">
+                <select
+                  onChange={onHandleClick}
+                  className="form-select-product"
+                >
                   <option selected disabled>
                     Màu sắc
                   </option>
                   {color?.map((item) => {
-                    return (
-                      <option value={item}>
-                        {item}
-                      </option>
-                    )
+                    return <option value={item}>{item}</option>;
                   })}
                 </select>
-                <select onChange={onHandleClick} className="form-select-product">
+                <select
+                  onChange={onHandleClick}
+                  className="form-select-product"
+                >
                   <option selected disabled>
                     Kích cỡ
                   </option>
                   {Size?.map((item) => {
-                    return (
-                      <option value={item}>
-                        {item}
-                      </option>
-                    )
+                    return <option value={item}>{item}</option>;
                   })}
                 </select>
               </div>
@@ -155,10 +170,18 @@ const Index = () => {
                           {item.price_sale > 0 ? (
                             <div className="product-price row">
                               <strong className="col-12">
-                                {item.price_sale.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                {item.price_sale.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
                               </strong>
                               <div className="d-flex">
-                                <del className="price-del">{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</del>
+                                <del className="price-del">
+                                  {item.price.toLocaleString("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  })}
+                                </del>
                                 <span className="product-discount">
                                   -{discount}%
                                 </span>
@@ -166,14 +189,21 @@ const Index = () => {
                             </div>
                           ) : (
                             <div className="product-price row">
-                              <strong className="col-12">{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</strong>
+                              <strong className="col-12">
+                                {item.price.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
+                              </strong>
                             </div>
                           )}
                         </div>
                         <div className="product-action pt-5 row text-center justify-content-center">
-                          <div className="col-6"><img src="/src/assets/icons/read.svg" alt="" />
+                          <div className="col-6">
+                            <img src="/src/assets/icons/read.svg" alt="" />
                           </div>
-                          <div className="col-6"><img src="/src/assets/icons/cart.svg" alt="" />
+                          <div className="col-6">
+                            <img src="/src/assets/icons/cart.svg" alt="" />
                           </div>
                         </div>
                       </a>

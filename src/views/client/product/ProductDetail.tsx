@@ -5,7 +5,10 @@ import {
   useGetProductsQuery,
 } from "../../../services/product.service";
 import { useGetBrandsQuery } from "../../../services/brand.service";
-import { useGetAllProductsDetailQuery, useGetAllsProductsDetailQuery } from "../../../services/productDetail.service";
+import {
+  useGetAllProductsDetailQuery,
+  useGetAllsProductsDetailQuery,
+} from "../../../services/productDetail.service";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -37,7 +40,8 @@ const ProductDetail = () => {
   const brandName = brandData?.find(
     (brand) => brand._id === prodetailData?.brand_id
   )?.name;
-  const { data: productDataDetail, isLoading } = useGetAllsProductsDetailQuery(_id);
+  const { data: productDataDetail, isLoading } =
+    useGetAllsProductsDetailQuery(_id);
 
   const [productSizes, setProductSizes] = useState([]);
   const [selectedSize, setSelectedSize] = useState("");
@@ -49,9 +53,22 @@ const ProductDetail = () => {
   const [hasSelectedColor, setHasSelectedColor] = useState(false);
   const [mainImage, setMainImage] = useState(prodetailData?.images[0]);
   const [selectedSizeColors, setSelectedSizeColors] = useState([]);
+  const [remainingQuantity, setRemainingQuantity] = useState<number | null>(
+    null
+  );
+  const [quantityError, setQuantityError] = useState("");
+  const [totalQuantityForSelectedSize, setTotalQuantityForSelectedSize] =
+    useState(null);
+  const [quantityForColorsInSelectedSize, setQuantityForColorsInSelectedSize] =
+    useState({});
 
   useEffect(() => {
     if (selectedSize) {
+      const totalQuantityForSize = productDataDetail
+        ?.filter((detail: any) => detail?.size === selectedSize)
+        .reduce((total, detail: any) => total + detail.quantity, 0);
+      setTotalQuantityForSelectedSize(totalQuantityForSize);
+
       const detailsForSelectedSize = productDataDetail?.filter(
         (detail: any) => detail?.size === selectedSize
       );
@@ -66,6 +83,30 @@ const ProductDetail = () => {
   const handleThumbnailClick = (image: any) => {
     setMainImage(image);
   };
+  useEffect(() => {
+    if (selectedSize) {
+      // Lọc ra danh sách màu sắc cho kích thước đã chọn
+      const colorsForSize = productDataDetail
+        ?.filter((detail: any) => detail?.size === selectedSize)
+        .map((detail: any) => detail?.color);
+
+      // Tạo một đối tượng mới để lưu trữ số lượng còn lại của mỗi màu cho kích thước đã chọn
+      const quantityForColors = {};
+
+      // Tính toán số lượng còn lại cho mỗi màu
+      colorsForSize.forEach((color) => {
+        const totalQuantityForColor = productDataDetail
+          ?.filter(
+            (detail: any) =>
+              detail?.color === color && detail?.size === selectedSize
+          )
+          .reduce((total, detail: any) => total + detail.quantity, 0);
+        quantityForColors[color] = totalQuantityForColor;
+      });
+
+      setQuantityForColorsInSelectedSize(quantityForColors);
+    }
+  }, [selectedSize, productDataDetail]);
 
   useEffect(() => {
     if (productData && prodetailData && productDataDetail) {
@@ -96,6 +137,7 @@ const ProductDetail = () => {
       .map((detail: any) => detail?.color);
 
     setSelectedSizeColors(colorsForSize);
+    setRemainingQuantity(calculateRemainingQuantity(selectedSize, size));
   };
 
   const handleColorChange = (color: any) => {
@@ -107,12 +149,26 @@ const ProductDetail = () => {
       setSelectedColorName(selectedColorDetail?.color);
     }
     setHasSelectedColor(true);
+    setRemainingQuantity(calculateRemainingQuantity(selectedSize, color));
+  };
+  const calculateRemainingQuantity = (size, color) => {
+    // Tính toán số lượng còn lại dựa trên kích thước và màu đã chọn
+    const selectedSizeColorDetail = productDataDetail?.find(
+      (detail: any) => detail?.size === size && detail?.color === color
+    );
+
+    return selectedSizeColorDetail?.quantity || 0;
   };
 
   const handleQuantityChange = (event: any) => {
     const newQuantity = parseInt(event.target.value, 10);
     if (!isNaN(newQuantity) && newQuantity >= 1) {
+      // Ẩn thông báo khi người dùng chọn số lượng hợp lệ
+      setQuantityError("");
       setQuantity(newQuantity);
+    } else {
+      // Hiển thị thông báo lỗi nếu số lượng không hợp lệ
+      setQuantityError("Số lượng không hợp lệ");
     }
   };
 
@@ -137,7 +193,8 @@ const ProductDetail = () => {
           // Display an error message if size or color is not selected
           messageApi.error({
             type: "error",
-            content: "Vui lòng chọn màu và size trước khi thêm vào giỏ hàng !!!",
+            content:
+              "Vui lòng chọn màu và size trước khi thêm vào giỏ hàng !!!",
             className: "custom-class",
             style: {
               margin: "10px",
@@ -146,6 +203,15 @@ const ProductDetail = () => {
             },
           });
           return;
+        }
+        if (quantity > remainingQuantity) {
+          // Hiển thị thông báo lỗi khi số lượng lớn hơn số sản phẩm còn lại
+          setQuantityError(
+            `Chỉ còn ${remainingQuantity} sản phẩm. Vui lòng chọn số lượng nhỏ hơn hoặc bằng.`
+          );
+          return;
+        } else {
+          setQuantityError("");
         }
 
         setIsAddingToCart(true);
@@ -194,7 +260,6 @@ const ProductDetail = () => {
     }
   };
 
-
   const sliderSettings = {
     infinite: true,
     speed: 500,
@@ -210,16 +275,16 @@ const ProductDetail = () => {
     }
   });
   if (isLoading) {
-    return <div>
-      <div className="right-wrapper">
-        <div className="spinnerIconWrapper">
-          <div className="spinnerIcon"></div>
-        </div>
-        <div className="finished-text">
-          Xin vui lòng chờ một chút 🥰🥰🥰
+    return (
+      <div>
+        <div className="right-wrapper">
+          <div className="spinnerIconWrapper">
+            <div className="spinnerIcon"></div>
+          </div>
+          <div className="finished-text">Xin vui lòng chờ một chút 🥰🥰🥰</div>
         </div>
       </div>
-    </div>;
+    );
   }
   return (
     <div>
@@ -336,8 +401,9 @@ const ProductDetail = () => {
                     {productSizes?.map((size, index) => (
                       <button
                         key={index}
-                        className={`size-button ${selectedSize === size ? "active" : ""
-                          }`}
+                        className={`size-button ${
+                          selectedSize === size ? "active" : ""
+                        }`}
                         onClick={() => handleSizeChange(size)}
                       >
                         {size}
@@ -350,17 +416,46 @@ const ProductDetail = () => {
                       {[...uniqueColors].map((color, index) => (
                         <button
                           key={index}
-                          className={`color-button all-color ${selectedColor === color ? "active" : ""
-                            } ${selectedSizeColors.includes(color)
+                          className={`color-button all-color ${
+                            selectedColor === color ? "active" : ""
+                          } ${
+                            selectedSizeColors.includes(color)
                               ? "selected-size"
                               : ""
-                            }`}
+                          }`}
                           style={{ backgroundColor: color }}
                           onClick={() => handleColorChange(color)}
                         ></button>
                       ))}
                     </div>
                   </div>
+                  <div className="remaining-quantity mt-3">
+                    <p>
+                      {selectedSize &&
+                        `Tổng số lượng sản phẩm cho kích thước ${selectedSize}: ${
+                          totalQuantityForSelectedSize !== null
+                            ? totalQuantityForSelectedSize
+                            : "Loading..."
+                        }`}
+
+                      {selectedSize && (
+                        <ul>
+                          {Object.entries(quantityForColorsInSelectedSize).map(
+                            ([color, quantity]) => (
+                              <li key={color}>{`${color}: ${
+                                quantity !== null ? quantity : "Loading..."
+                              }`}</li>
+                            )
+                          )}
+                        </ul>
+                      )}
+                    </p>
+                  </div>
+                  {quantityError && (
+                    <div className="quantity-error mt-3">
+                      <p style={{ color: "red" }}>{quantityError}</p>
+                    </div>
+                  )}
                 </div>
                 <div className="product_count flex-1">
                   <label className="quantity">Số Lượng:</label>
@@ -409,7 +504,7 @@ const ProductDetail = () => {
         <ProductSale />
       </div>
       <div></div>
-    </div >
+    </div>
   );
 };
 
