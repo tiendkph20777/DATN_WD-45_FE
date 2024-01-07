@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useCreateCheckoutMutation } from "../../../services/checkout.service";
 import { useFetchOneUserQuery } from "../../../services/user.service";
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -18,13 +19,20 @@ const Ordersuccess = () => {
   const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
   const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
+
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
+
   const [voucherCode, setVoucherCode] = useState("");
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
-  const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
-  const [total, setTotal] = useState(0);
-
   
-
+  // if(voucher && voucher.length > 0 ) {
+  //   voucher.map((items, index) => {
+  //     if(items && items.value){
+  //       console.log("Voucher value:", items.value);
+  //     }
+  //     return null;
+  //   })
+  // }
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
       const cartDetailIds = cartUser?.products.map(
@@ -50,7 +58,6 @@ const Ordersuccess = () => {
 
           if (matchingProduct) {
             const price = matchingProduct.price;
-            const price_sale = matchingProduct.price_sale;
             const quantity = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).quantity;
@@ -65,10 +72,8 @@ const Ordersuccess = () => {
                 name: matchingProduct.name,
                 image: matchingProduct.images[0],
                 price: price,
-                price_sale: price_sale,
                 quantity: quantity,
-                total: price_sale * quantity,
-                // total: total,
+                total: price * quantity,
                 status: status,
               };
             } else {
@@ -84,32 +89,45 @@ const Ordersuccess = () => {
     }
   }, [cartUser, ProductDetailUser, Product]);
 
- 
+  // const getCodeVoucher = () => {
+  //   if (!voucherCode) {
+  //     console.error("Mã khuyến mãi không được để trống");
+  //     return;
+  //   }
+  //   setVoucherCode(voucherCode)
+  // };
+  // useEffect(() => {
+  //   getCodeVoucher();
+  // }, [voucherCode]);
   useEffect(() => {
-    const selectedVoucher = JSON.parse(localStorage.getItem("selectedVoucher"));
-
-    // Kiểm tra xem có voucher được chọn hay không
-    if (selectedVoucher && selectedVoucher.voucherCode) {
-      setVoucherCode(selectedVoucher.voucherCode);
-      setSelectedVoucherValue(selectedVoucher.value);
+    if (voucher) {
+      setSelectedVoucher(voucher);
     }
-  }, []);
+  }, [voucher]);
 
-  const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
+  const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
+  const [addCheckout] = useCreateCheckoutMutation();
 
-  const totalSum = cartDetail.reduce(
-    (accumulator, item) => accumulator + item?.total,
-    0
-  );
-
-  useEffect(() => {
-    const shippingFee = JSON.parse(localStorage.getItem('shippingFee')) || 0;
-
-    const calculatedTotal = totalSum - valueVoucher + shippingFee;
-    setTotal(calculatedTotal);
-
-
-  }, [cartDetail, valueVoucher, totalSum]);
+  const valueVoucher = selectedVoucher?.value !== undefined ? selectedVoucher.value : 0;
+  const totalSum = cartDetail.reduce((accumulator, item) => accumulator + item?.total, 0);
+  const total = totalSum - valueVoucher;
+  
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  // console.log("Tổng giá trị đơn hàng:", totalSum);
+  // console.log("Giá trị voucher:", valueVoucher);
+  // console.log("Tổng sau khi áp dụng mã giảm giá:", total);
+  // console.log(
+  //   "Trạng thái sản phẩm:",
+  //   cartDetail.map((item) => item.status)
+  // );
+  const addre =
+    usersOne?.city +
+    " , " +
+    usersOne?.district +
+    " , " +
+    usersOne?.commune +
+    " , " +
+    usersOne?.address;
 
   if (isLoading) {
     return (
@@ -123,21 +141,6 @@ const Ordersuccess = () => {
       </div>
     );
   }
-  
-  
- 
-
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-
-  const addre =
-    usersOne?.city +
-    " , " +
-    usersOne?.district +
-    " , " +
-    usersOne?.commune +
-    " , " +
-    usersOne?.address;
-
   return (
     <div>
       <div style={{ textAlign: "center", marginTop: "20px" }}>
@@ -272,7 +275,7 @@ const Ordersuccess = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.price_sale?.toLocaleString("vi-VN", {
+                          {item?.price?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -280,7 +283,7 @@ const Ordersuccess = () => {
                       </td>
                       <td style={{ width: "100px" }}>
                         <h5>
-                          {item?.totalgoc?.toLocaleString("vi-VN", {
+                          {item?.total?.toLocaleString("vi-VN", {
                             style: "currency",
                             currency: "VND",
                           })}
@@ -304,8 +307,6 @@ const Ordersuccess = () => {
                       </div>
                     </div>
                   </div>
-
-                 
                 </div>
               </div>
             </div>
