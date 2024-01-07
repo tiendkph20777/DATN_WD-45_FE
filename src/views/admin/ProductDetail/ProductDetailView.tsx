@@ -203,6 +203,7 @@ const Dashboard = (props: Props) => {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
+      // render:(quantity) => (quantity >= 0 ? quantity : 0)
     },
     {
       title: "Action",

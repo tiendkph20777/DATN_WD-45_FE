@@ -13,7 +13,7 @@ const VoucherView: React.FC = () => {
   const [removeVoucher] = useRemoveVoucherMutation();
   const [searchTerm, setSearchTerm] = useState("");
   const [dataSource, setDataSource] = useState<Array<any>>([]);
-  const confirm = async (id: any) => {
+  const confirm = async (id: any, status:boolean) => {
     try {
       // Gọi API xóa sản phẩm bất đồng bộ
       await removeVoucher(id);
@@ -74,6 +74,7 @@ const VoucherView: React.FC = () => {
               quantity,
               date_start,
               date_end,
+              status,
             }: IVouchers) => ({
               key: _id,
               code,
@@ -81,6 +82,7 @@ const VoucherView: React.FC = () => {
               quantity,
               date_start,
               date_end,
+              status,
             })
           );
 
@@ -146,6 +148,14 @@ const VoucherView: React.FC = () => {
       title: "Ngày kết thúc",
       dataIndex: "date_end",
       key: "date_end",
+    },
+    {
+      title:"Trạng thái",
+      dataIndex:"status",
+      key:"status",
+      render:(status:boolean) => (
+        <Tag color={status ? "green" : "red"}>{status ? "Hoạt Động" : "Tắt"}</Tag>
+      )
     },
     {
       render: ({ key: id }: { key: number | string }) => {

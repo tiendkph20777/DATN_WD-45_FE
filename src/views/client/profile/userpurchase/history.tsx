@@ -1,32 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Input, Modal, Table, Tag } from 'antd';
+import React, { useState } from 'react';
+import { Button, Modal, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFetchCheckoutQuery } from '../../../../services/checkout.service';
 import OrderDetails from './OrderDetails';
 import TopUserPurchase from '../../../../components/main/TopUserPurchase';
 import { useFetchOneUserQuery } from '../../../../services/user.service';
 import ProductSale from '../../home/homeProduct/ProductSale';
+import CommentProduct from './CommentProduct';
 
 const History: React.FC = () => {
     /////// modal
     const [open, setOpen] = useState(false);
+    const [openCmt, setOpenCmt] = useState(false);
     const showModal = () => {
         setOpen(true);
     };
     const hideModal = () => {
         setOpen(false);
     };
+
+    const showCmt = () => {
+        setOpenCmt(true);
+    };
+    const hideCmt = () => {
+        setOpenCmt(false);
+    }
     ///////
     const { data: orderDa, isLoading } = useFetchCheckoutQuery()
     const [roleMane, setRoleMane] = useState<any>({});
+    const [roleCmt, setRoleCmt] = useState<any>({});
 
     const handleEditClick = (id: string) => {
         const productToEdit = orderDa?.find((item) => item?._id === id);
         setRoleMane(productToEdit)
         showModal();
     };
-    // console.log(roleMane)
-    // bảng dữ liệu
+
+    const handleCmtClick = (id: string) => {
+        const productToCmt = orderDa?.find((item) => item?._id === id);
+        setRoleCmt(productToCmt)
+        showCmt();
+    };
     const [searchFullName, setSearchFullName] = useState<string | undefined>(undefined);
 
     const handleFullNameSearchChange = (value: string) => {
@@ -55,8 +69,6 @@ const History: React.FC = () => {
         ?.sort((orderA: any, orderB: any) => new Date(orderB.deliveryDate) - new Date(orderA.deliveryDate)) // Sort by delivery date in descending order
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
-
-    // console.log(successfulOrders)
     if (isLoading) {
         return <div>
             <div className="right-wrapper">
@@ -76,12 +88,6 @@ const History: React.FC = () => {
             key: 'index',
             render: (text) => <a>{text}</a>,
         },
-        // {
-        //     title: 'Tên người nhận',
-        //     dataIndex: 'fullName',
-        //     key: 'fullName',
-        //     render: (text) => <a>{text}</a>,
-        // },
         {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'total',
@@ -139,6 +145,19 @@ const History: React.FC = () => {
                 </span>
             ),
         },
+        {
+            title: "Đánh giá",
+            dataIndex: '',
+            key: 'action',
+            render: (record: any) => (
+                <span>
+                    <Button type='primary' onClick={() => handleCmtClick(record?._id)} >
+                        Đánh giá
+                    </Button>
+                    {/* </Link> */}
+                </span>
+            ),
+        },
     ];
 
     return (
@@ -163,6 +182,18 @@ const History: React.FC = () => {
                         style={{ top: 20 }}
                     >
                         <OrderDetails roleMane={roleMane} />
+                    </Modal>
+                    <Modal
+                        title="Đánh giá"
+                        open={openCmt}
+                        onOk={hideCmt}
+                        onCancel={hideCmt}
+                        okText="ok"
+                        cancelText="cancel"
+                        width={1000}
+                        style={{ top: 20 }}
+                    >
+                        <CommentProduct roleCmt={roleCmt} />
                     </Modal>
                 </div>
                 <ProductSale />

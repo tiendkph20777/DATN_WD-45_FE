@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {
   useGetProductByIdQuery,
@@ -12,7 +12,7 @@ import {
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Tabs, message as messageApi } from "antd";
+import { Tabs, message as messageApi, Space, Alert } from "antd";
 import CommentProductDetail from "./CommentProductDetail";
 import { useCreateCartMutation } from "../../../services/cart.service";
 import ProductLienQuan from "./ProductLienQuan";
@@ -56,11 +56,14 @@ const ProductDetail = () => {
   const [remainingQuantity, setRemainingQuantity] = useState<number | null>(
     null
   );
-  const [quantityError, setQuantityError] = useState("");
+  const [quantityError, setQuantityError] = useState(null);
+  const [errorDisplayed, setErrorDisplayed] = useState(false);
   const [totalQuantityForSelectedSize, setTotalQuantityForSelectedSize] =
     useState(null);
   const [quantityForColorsInSelectedSize, setQuantityForColorsInSelectedSize] =
     useState({});
+  const [sizeError, setSizeError] = useState(null);
+  const [isErrorVisible, setIsErrorVisible] = useState(false);
 
   useEffect(() => {
     if (selectedSize) {
@@ -157,8 +160,21 @@ const ProductDetail = () => {
       (detail: any) => detail?.size === size && detail?.color === color
     );
 
-    return selectedSizeColorDetail?.quantity || 0;
+    return Math.max(selectedSizeColorDetail?.quantity || 0);
   };
+  useEffect(() => {
+    if (selectedSize || selectedColor) {
+      // Đặt lỗi về null khi kích thước hoặc màu sắc thay đổi
+      setQuantityError(null);
+    }
+  }, [selectedSize, selectedColor]);
+
+  useEffect(() => {
+    // Nếu không có lỗi và người dùng vừa chọn số lượng hợp lệ, ẩn thông báo lỗi
+    if (!quantityError && isErrorVisible) {
+      setIsErrorVisible(false);
+    }
+  }, [quantityError, quantity]);
 
   const handleQuantityChange = (event: any) => {
     const newQuantity = parseInt(event.target.value, 10);
@@ -166,9 +182,15 @@ const ProductDetail = () => {
       // Ẩn thông báo khi người dùng chọn số lượng hợp lệ
       setQuantityError("");
       setQuantity(newQuantity);
+
+      // Đặt trạng thái hiển thị lỗi về false
+      setIsErrorVisible(false);
     } else {
       // Hiển thị thông báo lỗi nếu số lượng không hợp lệ
       setQuantityError("Số lượng không hợp lệ");
+
+      // Đặt trạng thái hiển thị lỗi về true
+      setIsErrorVisible(true);
     }
   };
 
@@ -190,7 +212,6 @@ const ProductDetail = () => {
     if (profileUser) {
       if (!isAddingToCart) {
         if (!selectedSize || !selectedColor) {
-          // Display an error message if size or color is not selected
           messageApi.error({
             type: "error",
             content:
@@ -205,13 +226,18 @@ const ProductDetail = () => {
           return;
         }
         if (quantity > remainingQuantity) {
+          // Đặt lỗi về null khi kích thước thay đổi
+          setSizeError(null);
+
           // Hiển thị thông báo lỗi khi số lượng lớn hơn số sản phẩm còn lại
           setQuantityError(
             `Chỉ còn ${remainingQuantity} sản phẩm. Vui lòng chọn số lượng nhỏ hơn hoặc bằng.`
           );
           return;
+        } else if (remainingQuantity === 0) {
+          setQuantityError("Sản phẩm đã hết ");
         } else {
-          setQuantityError("");
+          setQuantityError(null);
         }
 
         setIsAddingToCart(true);
@@ -448,6 +474,9 @@ const ProductDetail = () => {
                             )
                           )}
                         </ul>
+                      )}
+                      {quantityError && (
+                        <Alert type="error" message={quantityError} showIcon />
                       )}
                     </p>
                   </div>
