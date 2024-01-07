@@ -34,13 +34,16 @@ const CheckOut = () => {
   const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
+  const [voucherStatus, setVoucherStatus] = useState({});
 
-  // console.log(cartDetail)
-  // console.log(cartUser)
   useEffect(() => {
-    // console.log("All Vouchers:", allVouchers);
     if (allVouchersData) {
       setAllVouchers(allVouchersData);
+      // Lấy trạng thái voucher từ Local Storage
+      const storedVoucherStatus = JSON.parse(
+        localStorage.getItem("voucherStatus") || "{}"
+      );
+      setVoucherStatus(storedVoucherStatus);
     }
   }, [allVouchersData]);
 
@@ -194,6 +197,7 @@ const CheckOut = () => {
           status: "Đang xác nhận đơn hàng",
         };
         localStorage.setItem("currentOrder", JSON.stringify(newData));
+        localStorage.setItem("voucherStatus", JSON.stringify(voucherStatus));
         console.log(newData);
         if (newData.payment === "Thanh toán online") {
           console.log("bạn chọn phương thức thanh toán online");
@@ -255,18 +259,32 @@ const CheckOut = () => {
     if (totalSum > 4000000) {
       setVoucherCode(voucherCode);
       setSelectedVoucher(voucherCode);
+
+      // Cập nhật trạng thái voucher
+      if (voucherStatus[voucherCode] !== false) {
+        setVoucherStatus((prevStatus) => ({
+          ...prevStatus,
+          [voucherCode]: true,
+        }));
+      }
     } else {
-      if (
-        voucherCode === "FREESHIP150K" ||
-        voucherCode === "MYS200K"
-      ) {
-        message.error("Mã chỉ áp dùng cho đơn hàng trên 4 triệu đồng");
+      if (voucherCode === "FREESHIP150K" || voucherCode === "MYS200K") {
+        message.error("Mã chỉ áp dụng cho đơn hàng trên 4 triệu đồng");
       } else {
         setVoucherCode(voucherCode);
         setSelectedVoucher(voucherCode);
+
+        // Cập nhật trạng thái voucher
+        if (voucherStatus[voucherCode] !== false) {
+          setVoucherStatus((prevStatus) => ({
+            ...prevStatus,
+            [voucherCode]: true,
+          }));
+        }
       }
     }
   };
+
   localStorage.setItem("shippingFee", JSON.stringify(shippingFee));
   localStorage.setItem(
     "selectedVoucher",
@@ -477,15 +495,19 @@ const CheckOut = () => {
                           onChange={(e) => handleVoucherSelect(e.target.value)}
                         >
                           <option value="">-- Chọn mã khuyến mãi --</option>
-                          {allVouchers.map((voucher: any, index) => (
-                            <option key={index} value={voucher.code}>
-                              {voucher.code} -{" "}
-                              {voucher.value.toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              })}
-                            </option>
-                          ))}
+                          {allVouchers
+                            .filter(
+                              (voucher: any) => voucherStatus[voucher._id]
+                            ) // Lọc những mã hợp lệ
+                            .map((voucher: any, index) => (
+                              <option key={index} value={voucher.code}>
+                                {voucher.code} -{" "}
+                                {voucher.value.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
+                              </option>
+                            ))}
                         </select>
                       </form>
                     </div>

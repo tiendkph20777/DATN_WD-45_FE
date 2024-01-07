@@ -13,7 +13,43 @@ const VoucherView: React.FC = () => {
   const [removeVoucher] = useRemoveVoucherMutation();
   const [searchTerm, setSearchTerm] = useState("");
   const [dataSource, setDataSource] = useState<Array<any>>([]);
-  const confirm = async (id: any, status:boolean) => {
+
+  const toggleVoucherStatus = async (id: any, status: boolean) => {
+    try {
+      const updatedData = dataSource.map((item) =>
+        item.key === id ? { ...item, status: !status } : item
+      );
+      setDataSource(updatedData);
+
+      notification.success({
+        message: "Success",
+        description: `Đã ${status ? "tắt" : "bật"} mã giảm giá thành công!`,
+      });
+
+      saveStatusToLocalStorage(id, !status);
+    } catch (error) {
+      console.error("Error toggling voucher status", error);
+    }
+  };
+  const getStatusFromLocalStorage = (id) => {
+    const storedData = JSON.parse(localStorage.getItem("voucherStatus")) || {};
+    return storedData[id] || false; // Nếu không có trạng thái, trả về false
+  };
+  const saveStatusToLocalStorage = (id, status) => {
+    const storedData = JSON.parse(localStorage.getItem("voucherStatus")) || {};
+    storedData[id] = status;
+    localStorage.setItem("voucherStatus", JSON.stringify(storedData));
+  };
+  const restoreStatusFromLocalStorage = () => {
+    const updatedData = dataSource.map((item) => ({
+      ...item,
+      status: getStatusFromLocalStorage(item.key),
+    }));
+
+    setDataSource(updatedData);
+  };
+
+  const confirm = async (id: any, status: boolean) => {
     try {
       // Gọi API xóa sản phẩm bất đồng bộ
       await removeVoucher(id);
@@ -33,6 +69,15 @@ const VoucherView: React.FC = () => {
       console.error("Error deleting product", error);
     }
   };
+  useEffect(() => {
+    const fetchData = async () => {
+      await handleExpiredVouchers();
+      updateDataSource();
+      restoreStatusFromLocalStorage();
+    };
+
+    fetchData();
+  }, [voucherData, searchTerm]);
   useEffect(() => {
     const handleExpiredVouchers = async () => {
       try {
@@ -82,7 +127,7 @@ const VoucherView: React.FC = () => {
               quantity,
               date_start,
               date_end,
-              status,
+              status: status || getStatusFromLocalStorage(_id),
             })
           );
 
@@ -110,6 +155,7 @@ const VoucherView: React.FC = () => {
       </div>
     );
   }
+
   const columns = [
     {
       title: "Mã giảm giá",
@@ -150,13 +196,32 @@ const VoucherView: React.FC = () => {
       key: "date_end",
     },
     {
-      title:"Trạng thái",
-      dataIndex:"status",
-      key:"status",
-      render:(status:boolean) => (
-        <Tag color={status ? "green" : "red"}>{status ? "Hoạt Động" : "Tắt"}</Tag>
-      )
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status: boolean, record: any) => (
+        <Tag color={status ? "green" : "red"}>
+          {status ? "Hoạt Động" : "Tắt"}
+        </Tag>
+      ),
     },
+    {
+      title: "Hành động",
+      render: ({
+        key: id,
+        status,
+      }: {
+        key: number | string;
+        status: boolean;
+      }) => (
+        <>
+          <Button onClick={() => toggleVoucherStatus(id, status)}>
+            {status ? "Tắt" : "Bật"}
+          </Button>
+        </>
+      ),
+    },
+
     {
       render: ({ key: id }: { key: number | string }) => {
         return (
@@ -201,6 +266,7 @@ const VoucherView: React.FC = () => {
                   Thêm
                 </button>
               </a>
+
               <div className="col-lg-12 d-flex align-items-stretch"></div>
               <div className="table-responsive">
                 <Table dataSource={dataSource} columns={columns} />
