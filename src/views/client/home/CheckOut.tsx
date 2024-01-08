@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Popconfirm, message as messageApi } from "antd";
+import { Popconfirm, message as messageApi, message } from "antd";
 
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -35,17 +35,29 @@ const CheckOut = () => {
   const [finalTotal, setFinalTotal] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [voucherStatus, setVoucherStatus] = useState({});
+  const [visibleVouchers, setVisibleVouchers] = useState<string[]>([]);
 
   useEffect(() => {
     if (allVouchersData) {
       setAllVouchers(allVouchersData);
+
       // Lấy trạng thái voucher từ Local Storage
       const storedVoucherStatus = JSON.parse(
         localStorage.getItem("voucherStatus") || "{}"
       );
       setVoucherStatus(storedVoucherStatus);
+
+      // Lọc những mã voucher có trạng thái true
+      const visibleVouchers = allVouchersData
+        .filter((voucher) => storedVoucherStatus[voucher._id] !== false)
+        .map((voucher) => voucher.code);
+      setVisibleVouchers(visibleVouchers);
+
+      if (selectedVoucher && storedVoucherStatus[selectedVoucher] === false) {
+        setSelectedVoucher("");
+      }
     }
-  }, [allVouchersData]);
+  }, [allVouchersData,voucherStatus]);
 
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
@@ -255,6 +267,10 @@ const CheckOut = () => {
 
   const handleVoucherSelect = (voucherCode: any) => {
     console.log("Selected Voucher Code:", voucherCode);
+    if (voucherStatus[voucherCode] === false) {
+      messageApi.error("Mã khuyến mãi không còn khả dụng.");
+      return;
+    }
 
     if (totalSum > 4000000) {
       setVoucherCode(voucherCode);
@@ -495,19 +511,17 @@ const CheckOut = () => {
                           onChange={(e) => handleVoucherSelect(e.target.value)}
                         >
                           <option value="">-- Chọn mã khuyến mãi --</option>
-                          {allVouchers
-                            .filter(
-                              (voucher: any) => voucherStatus[voucher._id]
-                            ) // Lọc những mã hợp lệ
-                            .map((voucher: any, index) => (
-                              <option key={index} value={voucher.code}>
-                                {voucher.code} -{" "}
-                                {voucher.value.toLocaleString("vi-VN", {
+                          {visibleVouchers.map((voucherCode) => (
+                            <option key={voucherCode} value={voucherCode}>
+                              {voucherCode} -{" "}
+                              {allVouchersData
+                                .find((voucher) => voucher.code === voucherCode)
+                                ?.value.toLocaleString("vi-VN", {
                                   style: "currency",
                                   currency: "VND",
                                 })}
-                              </option>
-                            ))}
+                            </option>
+                          ))}
                         </select>
                       </form>
                     </div>
@@ -540,9 +554,9 @@ const CheckOut = () => {
                           value={
                             voucher
                               ? parseFloat(voucher?.value).toLocaleString(
-                                "vi-VN",
-                                { style: "currency", currency: "VND" }
-                              )
+                                  "vi-VN",
+                                  { style: "currency", currency: "VND" }
+                                )
                               : ""
                           }
                         />
