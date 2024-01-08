@@ -82,6 +82,7 @@ const Purchase: React.FC = () => {
     };
   });
 
+
   const [cancellationOrderId, setCancellationOrderId] = useState<string | null>(
     null
   );
@@ -101,6 +102,8 @@ const Purchase: React.FC = () => {
         new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime()
     )
     ?.map((order, index) => ({ ...order, index: index + 1 }));
+
+  console.log(nonSuccessfulOrders)
 
   const onFinish = async (values: any, id: string) => {
     try {
@@ -162,12 +165,6 @@ const Purchase: React.FC = () => {
       key: "index",
       render: (text) => <a>{text}</a>,
     },
-    // {
-    //     title: 'Tên người nhận',
-    //     dataIndex: 'fullName',
-    //     key: 'fullName',
-    //     render: (text) => <a>{text}</a>,
-    // },
     {
       title: "Tổng tiền đơn hàng",
       dataIndex: "total",

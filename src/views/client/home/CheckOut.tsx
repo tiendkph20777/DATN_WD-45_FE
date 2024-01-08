@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Popconfirm, message } from "antd";
+import { Popconfirm, message as messageApi } from "antd";
 
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -503,9 +503,9 @@ const CheckOut = () => {
                           value={
                             voucher
                               ? parseFloat(voucher?.value).toLocaleString(
-                                  "vi-VN",
-                                  { style: "currency", currency: "VND" }
-                                )
+                                "vi-VN",
+                                { style: "currency", currency: "VND" }
+                              )
                               : ""
                           }
                         />
