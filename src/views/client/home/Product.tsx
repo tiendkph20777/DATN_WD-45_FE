@@ -22,7 +22,6 @@ const Product = () => {
         }
     }, [productData]);
 
-
     const settings = {
         // dots: true,  Hiển thị dấu chấm chỉ định trang hiện tại
         infinite: true, // Lặp vô tận qua các ảnh
