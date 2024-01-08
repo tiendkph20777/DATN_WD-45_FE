@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useCreateCheckoutMutation } from "../../../services/checkout.service";
 import { useFetchOneUserQuery } from "../../../services/user.service";
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -12,18 +13,35 @@ import {
 const Ordersuccess = () => {
   const profileUser = JSON.parse(localStorage.getItem("user")!);
   const idUs = profileUser?.user;
+  const [selectedVoucherCode, setSelectedVoucherCode] = useState(null);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
   const [cartDetail, setCartDetail] = useState([]);
+  const [voucherCode, setVoucherCode] = useState("");
   const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs);
   const { data: cartUser } = useFetchOneCartQuery(idUs);
   const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
   const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
-  const [voucherCode, setVoucherCode] = useState("");
-  const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
-  const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
-  const [total, setTotal] = useState(0);
+  const { data: voucher, error } =
+    useGetVoucherByCodeQuery(selectedVoucherCode);
+  const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
+  const [addCheckout] = useCreateCheckoutMutation();
 
-  
+  useEffect(() => {
+    if (voucher) {
+      setSelectedVoucher(voucher);
+      console.log("voucher:", voucher);
+    }
+  }, [voucher]);
+
+  const saveCheckoutInfoToLocal = (total, selectedVoucherCode) => {
+    const checkoutInfo = {
+      total: total,
+      selectedVoucherCode: selectedVoucherCode,
+    
+    };
+    localStorage.setItem("checkoutInfo", JSON.stringify(checkoutInfo));
+  };
 
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
@@ -34,10 +52,12 @@ const Ordersuccess = () => {
       const matchingIds = cartDetailIds?.filter((id: any) =>
         ProductDetailUser.some((product) => product._id === id)
       );
+
       const productIds = ProductDetailUser?.map((item) => item.product_id);
       const filteredProducts = Product?.filter((product: any) =>
         productIds.includes(product?._id)
       );
+
       const matchingProductDetailUser = ProductDetailUser?.filter((item) =>
         matchingIds.includes(item._id)
       );
@@ -50,7 +70,6 @@ const Ordersuccess = () => {
 
           if (matchingProduct) {
             const price = matchingProduct.price;
-            const price_sale = matchingProduct.price_sale;
             const quantity = cartUser.products.find(
               (product: any) => product.productDetailId === item._id
             ).quantity;
@@ -59,57 +78,67 @@ const Ordersuccess = () => {
             ).status;
 
             if (status) {
-              // Check if status is true
               return {
                 ...item,
                 name: matchingProduct.name,
                 image: matchingProduct.images[0],
                 price: price,
-                price_sale: price_sale,
                 quantity: quantity,
-                total: price_sale * quantity,
-                // total: total,
+                total: price * quantity,
                 status: status,
               };
             } else {
-              return null; // Exclude items with status false
+              return null;
             }
           } else {
             return item;
           }
         })
-        .filter(Boolean); // Remove null values from the array
+        .filter(Boolean);
 
       setCartDetail(modifiedProductDetails);
+      saveCheckoutInfoToLocal(total, selectedVoucher);
     }
-  }, [cartUser, ProductDetailUser, Product]);
+  }, [cartUser, ProductDetailUser, Product, selectedVoucher]);
 
- 
   useEffect(() => {
-    const selectedVoucher = JSON.parse(localStorage.getItem("selectedVoucher"));
-
-    // Kiểm tra xem có voucher được chọn hay không
-    if (selectedVoucher && selectedVoucher.voucherCode) {
-      setVoucherCode(selectedVoucher.voucherCode);
-      setSelectedVoucherValue(selectedVoucher.value);
+    console.log("Type of selectedVoucherCode:", typeof selectedVoucherCode);
+    console.log("Selected Voucher Code:", selectedVoucherCode);
+  
+    const checkoutInfoString = localStorage.getItem("checkoutInfo");
+    
+    if (checkoutInfoString) {
+      const checkoutInfo = JSON.parse(checkoutInfoString);
+      
+      if (checkoutInfo && checkoutInfo.selectedVoucherCode) {
+        const selectedVoucherCodeFromStorage = checkoutInfo.selectedVoucherCode;
+        setSelectedVoucherCode(selectedVoucherCodeFromStorage);
+      }else{
+        console.log("Error")
+      }
     }
   }, []);
+  
+  
+  
 
-  const valueVoucher = voucher?.value !== undefined ? voucher.value : 0;
-
+  const valueVoucher =
+    selectedVoucher?.value !== undefined ? selectedVoucher.value : 0;
   const totalSum = cartDetail.reduce(
     (accumulator, item) => accumulator + item?.total,
     0
   );
+  console.log("giá trị voucher:", valueVoucher);
+  const total = totalSum - valueVoucher;
 
-  useEffect(() => {
-    const shippingFee = JSON.parse(localStorage.getItem('shippingFee')) || 0;
-
-    const calculatedTotal = totalSum - valueVoucher + shippingFee;
-    setTotal(calculatedTotal);
-
-
-  }, [cartDetail, valueVoucher, totalSum]);
+  const addre =
+    usersOne?.city +
+    " , " +
+    usersOne?.district +
+    " , " +
+    usersOne?.commune +
+    " , " +
+    usersOne?.address;
 
   if (isLoading) {
     return (
@@ -123,20 +152,6 @@ const Ordersuccess = () => {
       </div>
     );
   }
-  
-  
- 
-
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-
-  const addre =
-    usersOne?.city +
-    " , " +
-    usersOne?.district +
-    " , " +
-    usersOne?.commune +
-    " , " +
-    usersOne?.address;
 
   return (
     <div>
@@ -229,65 +244,83 @@ const Ordersuccess = () => {
               <div className="col-lg-8">
                 <div className="order_box">
                   <h2>Thông tin đơn hàng</h2>
-                  <tr>
-                    <th scope="col">Hình Ảnh</th>
-                    <th scope="col">| Tên Sản Phẩm</th>
-                    <th scope="col">| Kích Cỡ</th>
-                    <th scope="col">| Màu Sắc</th>
-                    <th scope="col">| Số Lượng</th>
-                    <th scope="col">| Giá</th>
-                    <th scope="col">| Tạm Tính</th>
-                  </tr>
-                  {cartDetail?.map((item: any) => (
-                    <tr key={item?._id} style={{ height: "100px" }}>
-                      <td style={{ width: "100px" }}>
-                        <img
-                          width={"100px"}
-                          height={"100px"}
-                          src={item?.image}
-                          alt=""
-                        />
-                      </td>
-                      <td style={{ width: "200px" }}>
-                        <h6>{item?.name}</h6>
-                      </td>
-                      <td style={{ width: "100px", textAlign: "center" }}>
-                        <h5>{item?.size}</h5>
-                      </td>
-                      <td style={{ width: "100px" }}>
-                        <div style={{ display: "flex", alignItems: "center" }}>
-                          <button
-                            style={{
-                              backgroundColor: item?.color,
-                              width: "20px",
-                              height: "20px",
-                              margin: "5px",
-                            }}
-                          ></button>
-                          <h5>{item?.color}</h5>
-                        </div>
-                      </td>
-                      <td style={{ width: "100px", textAlign: "center" }}>
-                        <h5>{item?.quantity}</h5>
-                      </td>
-                      <td style={{ width: "100px" }}>
-                        <h5>
-                          {item?.price_sale?.toLocaleString("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                        </h5>
-                      </td>
-                      <td style={{ width: "100px" }}>
-                        <h5>
-                          {item?.totalgoc?.toLocaleString("vi-VN", {
-                            style: "currency",
-                            currency: "VND",
-                          })}
-                        </h5>
-                      </td>
-                    </tr>
-                  ))}
+                  <table>
+                    <thead>
+                      <tr>
+                        <th scope="col">Hình Ảnh</th>
+                        <th scope="col">| Tên Sản Phẩm</th>
+                        <th scope="col">| Kích Cỡ</th>
+                        <th scope="col">| Màu Sắc</th>
+                        <th scope="col">| Số Lượng</th>
+                        <th scope="col">| Giá</th>
+                        <th scope="col">| Tạm Tính</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartDetail?.map((item: any) => (
+                        <tr key={item?._id} style={{ height: "100px" }}>
+                          <td style={{ width: "100px" }}>
+                            <img
+                              width={"100px"}
+                              height={"100px"}
+                              src={item?.image}
+                              alt=""
+                            />
+                          </td>
+                          <td style={{ width: "200px" }}>
+                            <h6>{item?.name}</h6>
+                          </td>
+                          <td style={{ width: "100px", textAlign: "center" }}>
+                            <h5>{item?.size}</h5>
+                          </td>
+                          <td style={{ width: "100px" }}>
+                            <div
+                              style={{ display: "flex", alignItems: "center" }}
+                            >
+                              <button
+                                style={{
+                                  backgroundColor: item?.color,
+                                  width: "20px",
+                                  height: "20px",
+                                  margin: "5px",
+                                }}
+                              ></button>
+                              <h5>{item?.color}</h5>
+                            </div>
+                          </td>
+                          <td style={{ width: "100px", textAlign: "center" }}>
+                            <h5>{item?.quantity}</h5>
+                          </td>
+                          <td style={{ width: "100px" }}>
+                            <h5>
+                              {item?.price?.toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
+                            </h5>
+                          </td>
+                          <td style={{ width: "100px" }}>
+                            <h5>
+                              {item?.total?.toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })}
+                            </h5>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <div className="payment_item">
+                    <div className="payment_item active">
+                      <div className="row mt-3">
+                        <label htmlFor="" className="col-8 m-2">
+                          Mã Giảm Giá Mà Bạn Đã Chọn là:
+                        </label>
+                      </div>
+                    </div>
+                  </div>
 
                   <div className="payment_item">
                     <div className="payment_item active">
@@ -304,8 +337,6 @@ const Ordersuccess = () => {
                       </div>
                     </div>
                   </div>
-
-                 
                 </div>
               </div>
             </div>
