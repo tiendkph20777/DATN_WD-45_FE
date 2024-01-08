@@ -41,21 +41,28 @@ const ProductAdd: React.FC = () => {
   };
 
   const onSubmit: SubmitHandler<IProducts> = async (product) => {
-    const fileUrls = await SubmitImage();
-    product.images = fileUrls;
-    addProduct(product)
-      .unwrap()
-      .then(() => {
-        notification.success({
-          message: "Success",
-          description: "Thêm Sản Phẩm Thành Công!",
-        });
-        navigate("/admin/product");
-      })
-      .catch((error) => {
-        console.error("Error adding product:", error);
+    try {
+      const fileUrls = await SubmitImage();
+      product.images = fileUrls;
+  
+      const newProduct = await addProduct(product);
+      const idPro = newProduct.data._id;
+  
+      notification.success({
+        message: "Success",
+        description: "Thêm Sản Phẩm Thành Công!",
       });
+      notification.warning({
+        message: "Success",
+        description: "Thêm Sản Phẩm Thành Công!",
+      });
+  
+      navigate(`/admin/product/detail/add/${idPro}`);
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
+  
 
   const onFileChange = ({ fileList }: any) => {
     setFileList(fileList);
@@ -66,6 +73,34 @@ const ProductAdd: React.FC = () => {
     setValue("brand_id", ""); // Đặt giá trị mặc định cho select
     form.resetFields(); // Đặt lại tất cả các trường trong form
   };
+
+
+  const validateSalePrice = (value) => {
+    const priceValue = parseFloat(document.getElementById('productPrice').value);
+  
+    // Kiểm tra nếu giá giảm là rỗng thì không thực hiện kiểm tra
+    if (value.trim() === '') {
+      return true;
+    }
+  
+    const salePriceValue = parseFloat(value);
+  
+    if (isNaN(priceValue) || isNaN(salePriceValue)) {
+      return "Vui lòng nhập số hợp lệ";
+    }
+  
+    if (salePriceValue < 0 || priceValue < 0) {
+      return "Giá không được âm";
+    }
+  
+    if (salePriceValue >= priceValue) {
+      return "Giá giảm phải nhỏ hơn giá bán";
+    }
+  
+    return true;
+  };
+  
+  
 
   return (
     <div className="container-fluid">
@@ -85,7 +120,7 @@ const ProductAdd: React.FC = () => {
                       }`}
                     required
                   >
-                    <option disabled value="">
+                    <option disabled selected value="">
                       [Chọn thương hiệu]
                     </option>
                     {categories?.map((category) => (
@@ -119,32 +154,40 @@ const ProductAdd: React.FC = () => {
                   </label>
                   <input
                     {...register("price", {
-                      required: true,
-                      valueAsNumber: true,
+                      required: "Không được bỏ trống!",
+                      min: {
+                        value: 1000,
+                        message: "Giá tối thiểu là 1000!"
+                      },
+                      pattern: {
+                        value: /^[1-9][0-9]*$/, // Pattern để ngăn số âm
+                        message: "Không được nhập số âm!"
+                      }
                     })}
                     type="number"
-                    className={`form-control ${errors.price ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${errors.price ? "is-invalid" : ""}`}
                     id="productPrice"
                   />
                   {errors.price && (
-                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                    <div className="invalid-feedback">{errors.price.message}</div>
                   )}
                 </div>
                 <div className="mb-3">
-                  <label htmlFor="productPrice" className="form-label">
+                  <label htmlFor="productPriceSale" className="form-label">
                     Giá bán sau khi giảm giá
                   </label>
                   <input
                     {...register("price_sale", {
-                      // required: true,
-                      // valueAsNumber: true,
+                      validate: validateSalePrice
                     })}
                     type="number"
-                    className={`form-control ${errors.price ? "is-invalid" : ""
-                      }`}
-                    id="productPrice"
+                    value={0}
+                    className={`form-control ${errors.price_sale ? "is-invalid" : ""}`}
+                    id="productPriceSale"
                   />
+                  {errors.price_sale && (
+                    <div className="invalid-feedback">{errors.price_sale.message}</div>
+                  )}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="productImage" className="form-label">

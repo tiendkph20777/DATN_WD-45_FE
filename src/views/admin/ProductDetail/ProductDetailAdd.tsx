@@ -83,6 +83,7 @@ const ProductAdd = () => {
                   <select
                     className="form-select"
                     defaultValue={id}
+                    disabled
                     {...register("product_id")}
                   >
                     {productData &&
@@ -96,7 +97,7 @@ const ProductAdd = () => {
 
                 <div className="mb-3">
                   <label htmlFor="productSize" className="form-label">
-                    Size
+                    Kích Cỡ
                   </label>
                   <input
                     type="number"
@@ -112,8 +113,24 @@ const ProductAdd = () => {
                 </div>
 
                 <div className="mb-3">
+                  <label htmlFor="productColor" className="form-label">
+                    Màu Sắc
+                  </label>
+                  <input
+                  placeholder="*vui lòng nhập màu bằng tiếng anh và không sai chính tả, xin cảm ơn"
+                    {...register("color")}
+                    className={`form-control ${errors.color ? "is-invalid" : ""}`}
+                  />
+                  {errors.color && (
+                    <div id="emailHelp" className="form-text text-danger">
+                      {errors.color.message}
+                    </div>
+                  )}
+                </div>
+
+                <div className="mb-3">
                   <label htmlFor="productQuantity" className="form-label">
-                    Quantity
+                    Số Lượng
                   </label>
                   <input
                     type="number"
@@ -127,20 +144,7 @@ const ProductAdd = () => {
                   )}
                 </div>
 
-                <div className="mb-3">
-                  <label htmlFor="productColor" className="form-label">
-                    Color
-                  </label>
-                  <input
-                    {...register("color")}
-                    className={`form-control ${errors.color ? "is-invalid" : ""}`}
-                  />
-                  {errors.color && (
-                    <div id="emailHelp" className="form-text text-danger">
-                      {errors.color.message}
-                    </div>
-                  )}
-                </div>
+                
 
                 <div className="mb-3">
                   <Button type="primary" htmlType="submit">

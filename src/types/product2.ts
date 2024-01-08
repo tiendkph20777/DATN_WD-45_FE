@@ -8,5 +8,4 @@ export interface IProducts {
     content: string,
     description: string
     rate: string,
-
 }
