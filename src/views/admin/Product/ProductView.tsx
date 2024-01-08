@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Popconfirm, notification } from "antd";
-import {
-  useGetProductsQuery,
-} from "../../../services/product.service";
+import { Button, Input, Popconfirm, notification, Tag } from "antd";
+import { useGetProductsQuery } from "../../../services/product.service";
 import { IProducts } from "../../../types/product2";
 import { Link } from "react-router-dom";
 import { useGetBrandsQuery } from "../../../services/brand.service";
@@ -20,6 +18,7 @@ interface DataType {
   rate: string;
   description: string;
   content: string;
+  status:boolean
 }
 
 const ProductView = () => {
@@ -32,6 +31,51 @@ const ProductView = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const { data: categories } = useGetBrandsQuery();
   const [removeProduct] = useRemoveProductMutation();
+  const [productStatus, setProductStatus] = useState<Record<string, boolean>>(
+    {}
+  );
+
+  const toggleProductStatus = async (id: number | string, status: boolean) => {
+    try {
+      const updatedData = dataSource.map((item) =>
+        item.key === id ? { ...item, status: !status } : item
+      );
+      setDataSource(updatedData);
+
+      notification.success({
+        message: "Success",
+        description: `Đã ${status ? "tắt" : "bật"} sản phẩm thành công!`,
+      });
+
+      saveProductStatusToLocalStorage(id, !status);
+    } catch (error) {
+      console.error("Error toggling product status", error);
+    }
+  };
+
+  const getProductStatusFromLocalStorage = (id: number | string) => {
+    const storedData = JSON.parse(localStorage.getItem("productStatus")) || {};
+    return storedData[id] || false; // Nếu không có trạng thái, trả về false
+  };
+
+  const saveProductStatusToLocalStorage = (
+    id: number | string,
+    status: boolean
+  ) => {
+    const storedData = JSON.parse(localStorage.getItem("productStatus")) || {};
+    storedData[id] = status;
+    localStorage.setItem("productStatus", JSON.stringify(storedData));
+  };
+
+  const restoreProductStatusFromLocalStorage = () => {
+    const updatedData = dataSource.map((item) => ({
+      ...item,
+      status: getProductStatusFromLocalStorage(item.key),
+    }));
+
+    setDataSource(updatedData);
+  };
+ 
 
   const confirm = async (id: number | string) => {
     try {
@@ -72,12 +116,12 @@ const ProductView = () => {
         price_sale: product.price_sale,
         description: product.description,
         content: product.content,
+        status: getProductStatusFromLocalStorage(product._id),
       }));
 
       setDataSource(updatedDataSource);
     }
   }, [productData, searchTerm]);
-
 
   // lọc theo danh mục
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -100,22 +144,26 @@ const ProductView = () => {
         price_sale: product.price_sale,
         description: product.description,
         content: product.content,
+        status: getProductStatusFromLocalStorage(product._id),
       }));
       setDataSource(updatedDataSource);
     }
   };
-  // 
+  useEffect(() => {
+    restoreProductStatusFromLocalStorage();
+  }, []);
+  //
   if (isLoading) {
-    return <div>
-      <div className="right-wrapper" style={{ paddingTop: "100px" }}>
-        <div className="spinnerIconWrapper">
-          <div className="spinnerIcon"></div>
-        </div>
-        <div className="finished-text">
-          Xin vui lòng chờ một chút 🥰🥰🥰
+    return (
+      <div>
+        <div className="right-wrapper" style={{ paddingTop: "100px" }}>
+          <div className="spinnerIconWrapper">
+            <div className="spinnerIcon"></div>
+          </div>
+          <div className="finished-text">Xin vui lòng chờ một chút 🥰🥰🥰</div>
         </div>
       </div>
-    </div>;
+    );
   }
   const columns: ColumnsType<DataType> = [
     {
@@ -153,7 +201,12 @@ const ProductView = () => {
       dataIndex: "price",
       key: "price",
       render: (text, record) => (
-        <span>{record.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
+        <span>
+          {record.price?.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </span>
       ),
     },
 
@@ -162,7 +215,12 @@ const ProductView = () => {
       dataIndex: "price_sale",
       key: "price_sale",
       render: (text, record) => (
-        <span>{record.price_sale?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>
+        <span>
+          {record.price_sale?.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          })}
+        </span>
       ),
     },
     // {
@@ -175,7 +233,32 @@ const ProductView = () => {
       dataIndex: "description",
       key: "description",
     },
-
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status: boolean, record: DataType) => (
+        <Tag color={status ? "green" : "red"}>
+          {status ? "Hoạt Động" : "Tắt"}
+        </Tag>
+      ),
+    },
+    {
+      title: "Hành động",
+      render: ({
+        key: id,
+        status,
+      }: {
+        key: number | string;
+        status: boolean;
+      }) => (
+        <>
+          <Button onClick={() => toggleProductStatus(id, status)}>
+            {status ? "Tắt" : "Bật"}
+          </Button>
+        </>
+      ),
+    },
     {
       title: "Hành động",
       key: "action",

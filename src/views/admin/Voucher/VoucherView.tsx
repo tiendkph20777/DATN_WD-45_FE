@@ -16,6 +16,17 @@ const VoucherView: React.FC = () => {
 
   const toggleVoucherStatus = async (id: any, status: boolean) => {
     try {
+      const voucher = dataSource.find((item) => item.key === id);
+
+      // Kiểm tra xem mã giảm giá có hết hạn không
+      if (voucher && !status && isExpired(voucher.date_end)) {
+        notification.warning({
+          message: "Cảnh báo",
+          description: "Mã giảm giá đã hết hạn. Vui lòng gia hạn để sử dụng!",
+        });
+        return;
+      }
+
       const updatedData = dataSource.map((item) =>
         item.key === id ? { ...item, status: !status } : item
       );
@@ -26,11 +37,21 @@ const VoucherView: React.FC = () => {
         description: `Đã ${status ? "tắt" : "bật"} mã giảm giá thành công!`,
       });
 
+  
+
       saveStatusToLocalStorage(id, !status);
     } catch (error) {
       console.error("Error toggling voucher status", error);
     }
   };
+
+  
+  const isExpired = (date_end: string): boolean => {
+    const currentDate = new Date();
+    const expirationDate = new Date(date_end);
+    return expirationDate <= currentDate;
+  };
+
   const getStatusFromLocalStorage = (id) => {
     const storedData = JSON.parse(localStorage.getItem("voucherStatus")) || {};
     return storedData[id] || false; // Nếu không có trạng thái, trả về false
@@ -81,8 +102,8 @@ const VoucherView: React.FC = () => {
   useEffect(() => {
     const handleExpiredVouchers = async () => {
       try {
-        if (voucherData) {
-          const expiredVouchers = voucherData.filter(
+        if (dataSource) {
+          const expiredVouchers = dataSource.filter(
             ({ date_end }: IVouchers) => {
               const currentDate = new Date();
               const expirationDate = new Date(date_end);
@@ -93,7 +114,7 @@ const VoucherView: React.FC = () => {
           if (expiredVouchers.length > 0) {
             await Promise.all(
               expiredVouchers.map(async (voucher) => {
-                await removeVoucher(voucher._id);
+                await toggleVoucherStatus(voucher.key, voucher.status);
               })
             );
           }
