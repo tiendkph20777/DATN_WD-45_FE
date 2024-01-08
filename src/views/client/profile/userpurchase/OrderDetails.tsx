@@ -19,7 +19,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <th scope="col">Trạng thái </th>
                             <th scope="col">SĐT</th>
                             <th scope="col">Phương thức thanh toán</th>
-                            <th scope="col">Mã giảm giá</th>
+                            <th scope="col">Mã Giảm Giá</th>
                             <th scope="col">Ngày mua hàng</th>
                         </tr>
                     </thead>
