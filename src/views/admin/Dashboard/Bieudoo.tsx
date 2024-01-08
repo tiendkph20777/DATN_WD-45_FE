@@ -23,7 +23,7 @@ const ChartViewToggle: React.FC<{ onViewChange: (mode: string) => void }> = ({
     <div>
       <button
         style={{
-          width: "150px",
+          width: "250px",
           fontSize: "15px",
           padding: "10px 15px",
           margin: "10px 10px",
@@ -31,11 +31,11 @@ const ChartViewToggle: React.FC<{ onViewChange: (mode: string) => void }> = ({
         className="btn btn-warning"
         onClick={() => onViewChange("day")}
       >
-        Xem theo ngày
+        Xem theo doanh thu ngày
       </button>
       <button
         style={{
-          width: "150px",
+          width: "250px",
           fontSize: "15px",
           padding: "10px 15px",
           margin: "10px 10px",
@@ -43,7 +43,7 @@ const ChartViewToggle: React.FC<{ onViewChange: (mode: string) => void }> = ({
         className="btn btn-warning"
         onClick={() => onViewChange("month")}
       >
-        Xem theo tháng
+        Xem theo doanh thu tháng
       </button>
     </div>
   );
@@ -94,23 +94,22 @@ const Bieudo = () => {
     );
     const data = dateRange.map((date) => {
       //Theo ngày
-      const filteredDayOrders = successfulOrders?.filter(
-        (item) => item.date === format(date, "MM/dd/yyyy")
-      );
+      const filteredDayOrders = successfulOrders?.filter((item) => item.datehis === format(date, 'MM/d/yyyy'));
+      // console.log(successfulOrders);
+
       let fullTotalDay = 0;
       filteredDayOrders?.forEach((item) => (fullTotalDay += item.totals));
-
       //Theo tháng
       const filteredMonthOrders = successfulOrders?.filter(
         (item) =>
-          format(new Date(item.date), "MM/yyyy") === format(date, "MM/yyyy")
+          format(new Date(item.datehis), "MM/yyyy") === format(date, "MM/yyyy")
       );
       let fullTotalMonth = 0;
       filteredMonthOrders?.forEach((item) => (fullTotalMonth += item.totals));
 
       return {
-        time: format(date, viewMode === "day" ? "MM/dd/yyyy" : "MM/yyyy"),
-        value: viewMode === "day" ? fullTotalDay : fullTotalMonth,
+        time: format(date, viewMode === 'day' ? 'MM/d/yyyy' : 'MM/yyyy'),
+        value: viewMode === 'day' ? fullTotalDay : fullTotalMonth,
         date: date,
       };
     });
@@ -125,7 +124,7 @@ const Bieudo = () => {
   return (
     <div style={{ width: '100%' }}>
       <ChartViewToggle onViewChange={toggleViewMode} />
-      <LineChart width={1000} height={400} data={newData}>
+      <LineChart width={950} height={400} data={newData} style={{ width: '100%', paddingTop: '20px' }}>
         <XAxis dataKey="time" />
         <YAxis />
         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
