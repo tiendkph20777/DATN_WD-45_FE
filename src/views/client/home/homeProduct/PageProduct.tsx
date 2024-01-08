@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { IProducts } from "../../../../types/product2";
 import { useGetProductsQuery } from "../../../../services/product.service";
 import { useGetBrandsQuery } from "../../../../services/brand.service";
-import { Pagination } from "antd";
 
 const PageProduct = () => {
     const { data: productData, isLoading } = useGetProductsQuery();
@@ -12,12 +11,12 @@ const PageProduct = () => {
     const [searchResult, setSearchResult] = useState<IProducts[]>([]);
     const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 10;
+    const productsPerPage = 20;
 
     useEffect(() => {
         if (productData) {
             // Sort products by the creation date in descending order (newest first)
-            const sortedProductData = [...productData].sort((a, b) => {
+            const sortedProductData = [...productData].sort((a: any, b: any) => {
                 const dateA = new Date(a.createdAt).getTime();
                 const dateB = new Date(b.createdAt).getTime();
                 return dateB - dateA;
@@ -62,8 +61,7 @@ const PageProduct = () => {
             </div>
         </div>;
     }
-
-    return (
+        return (
         <div>
             <section className="our-team position-relative">
                 <div className="container_home">
@@ -76,9 +74,9 @@ const PageProduct = () => {
                                 {brandData?.map((item) => {
                                     return (
                                         <div className="brandIcon " key={item._id}>
-                                            {/* <div onClick={() => onHandleClick(item._id)} > */}
-                                            {item.name}
-                                            {/* </div> */}
+                                            <div onClick={() => onHandleClick(item._id)} >
+                                                {item.name}
+                                            </div>
                                         </div>
                                     )
                                 })}
@@ -86,8 +84,7 @@ const PageProduct = () => {
                         </div>
                     </div>
                     <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
-                        {/* <div className="row row-cols-lg-5 g-2 g-lg-3"> */}
-                        {dataSourceToRender.slice(0, 15).map((item) => {
+                        {dataSourceToRender.slice(0, 30).map((item) => {
                             return (
                                 <div className="product border-2 p-2" key={item._id}>
                                     <div className="card product-main">
@@ -98,7 +95,8 @@ const PageProduct = () => {
                                             <div className="bg-white content-product w-100 p-2 pt-4">
                                                 <div className="product-detail px-3 row ">
                                                     <div className="col-12 row px-2">
-                                                        <div className="col-1 m-1 product-color color-1" />
+                                                        {/* <div className="col-1 m-1 product-color " style={{ backgroundColor: color }} /> */}
+
                                                         <div className="col-1 m-1 product-color color-2" />
                                                         <div className="col-1 m-1 product-color color-3" />
                                                     </div>
@@ -134,13 +132,7 @@ const PageProduct = () => {
                             )
                         })}
                     </div>
-                    <Pagination
-                        defaultCurrent={1}
-                        total={productData?.length || 0}
-                        pageSize={productsPerPage}
-                        onChange={handlePageChange}
-                        style={{ display: "flex", justifyContent: "center", fontSize: "24px", margin: "20px" }}
-                    />
+
                 </div>
             </section>
         </div>
