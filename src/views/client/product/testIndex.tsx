@@ -15,8 +15,6 @@ const Index = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [dataDTToRender, setDataDTToRender] = useState<IProductDetail[]>([]);
   const [dataDTResult, setdataDThResult] = useState<IProductDetail[]>([]);
-  const [visibleProducts, setVisibleProducts] = useState([]);
-
 
   // Đọc trạng thái sản phẩm từ localStorage khi component được tải
   useEffect(() => {
@@ -61,20 +59,16 @@ const Index = () => {
     const productStatus: Record<string, boolean> = productStatusString
       ? JSON.parse(productStatusString)
       : {};
-  
+
     productStatus[productId] = status;
     localStorage.setItem("productStatus", JSON.stringify(productStatus));
-  
-    // Ẩn sản phẩm có trạng thái false
-    const updatedVisibleProducts = visibleProducts.map((product) =>
+    const updatedDataSource = dataSourceToRender.map((product) =>
       product._id === productId ? { ...product, status } : product
     );
-  
-    setVisibleProducts(updatedVisibleProducts);
-    setSearchResult(updatedVisibleProducts);
+
+    setDataSourceToRender(updatedDataSource);
+    setSearchResult(updatedDataSource);
   };
-  
-  
 
   console.log("data", dataSourceToRender);
 

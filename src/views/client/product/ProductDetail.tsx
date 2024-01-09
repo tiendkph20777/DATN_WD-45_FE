@@ -439,7 +439,7 @@ const ProductDetail = () => {
                   <div className="all-colors">
                     <p>Màu Sắc</p>
                     <div className="color-buttons">
-                      {[...uniqueColors].map((color, index) => (
+                      {[...uniqueColors].map((color:any, index) => (
                         <button
                           key={index}
                           className={`color-button all-color ${
