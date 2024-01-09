@@ -117,6 +117,12 @@ const Transport: React.FC = () => {
             render: (text) => <a>{text}</a>,
         },
         {
+            title: "Mã đơn hàng",
+            dataIndex: "_id",
+            key: "_id",
+            render: (_id: any) => <span className="container">{_id}</span>,
+        },
+        {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'total',
             key: 'total',
@@ -126,6 +132,16 @@ const Transport: React.FC = () => {
                         {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </Tag>
                 </>
+            ),
+        },
+        {
+            title: 'Ngày mua hàng',
+            dataIndex: 'date',
+            key: 'date',
+            render: (date: any) => (
+                <span className='container'>
+                    {date}
+                </span>
             ),
         },
         {
@@ -157,16 +173,7 @@ const Transport: React.FC = () => {
                 </>
             ),
         },
-        {
-            title: 'Ngày mua hàng',
-            dataIndex: 'date',
-            key: 'date',
-            render: (date: any) => (
-                <span className='container'>
-                    {date}
-                </span>
-            ),
-        },
+
         {
             title: "Xem chi tiết",
             dataIndex: '',

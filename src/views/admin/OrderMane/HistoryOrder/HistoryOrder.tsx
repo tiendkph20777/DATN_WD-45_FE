@@ -29,9 +29,16 @@ const HistoryOrder: React.FC = () => {
     const handleFullNameSearchChange = (value: string) => {
         setSearchFullName(value.toLowerCase());
     };
+
+    const [searchID, setSearchID] = useState<string | undefined>(undefined);
+
+    const handleIDSearchChange = (value: string) => {
+        setSearchID(value.toLowerCase());
+    };
+
     const nonSuccessfulOrder = orderDa?.map((order: any, index) => {
         const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
-        const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');    
+        const datehis = new Date(order?.updatedAt)?.toLocaleDateString('en-US');
         const totals = order.products.reduce((acc: number, product: any) => acc + (product.total || 0), 0);
         return {
             ...order,
@@ -45,6 +52,7 @@ const HistoryOrder: React.FC = () => {
     const successfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status === 'Giao hàng thành công')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
+        ?.filter((order) => !searchID || order._id.toLowerCase().includes(searchID))
         ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
@@ -67,6 +75,12 @@ const HistoryOrder: React.FC = () => {
             dataIndex: 'index',
             key: 'index',
             render: (text) => <a>{text}</a>,
+        },
+        {
+            title: 'Mã đơn hàng',
+            dataIndex: '_id',
+            key: '_id',
+            render: (_id) => <a>{_id}</a>,
         },
         {
             title: 'Tên người nhận',
@@ -135,6 +149,11 @@ const HistoryOrder: React.FC = () => {
 
     return (
         <div style={{ paddingTop: "70px" }}>
+            <Input
+                placeholder="Search by mã đơn hàng"
+                style={{ width: 400, marginBottom: 16, marginLeft: 30 }}
+                onChange={(e) => handleIDSearchChange(e.target.value)}
+            />
             <Input
                 placeholder="Search by full name"
                 style={{ width: 400, marginBottom: 16, marginLeft: 30 }}

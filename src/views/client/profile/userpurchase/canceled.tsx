@@ -50,7 +50,7 @@ const Abortorder: React.FC = () => {
         ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
-    // console.log(successfulOrders)
+    console.log(successfulOrders)
     if (isLoading) {
         return <div>
             <div className="right-wrapper">
@@ -71,6 +71,12 @@ const Abortorder: React.FC = () => {
             render: (text) => <a>{text}</a>,
         },
         {
+            title: "Mã đơn hàng",
+            dataIndex: "_id",
+            key: "_id",
+            render: (_id: any) => <span className="container">{_id}</span>,
+        },
+        {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'totals',
             key: 'totals',
@@ -78,18 +84,6 @@ const Abortorder: React.FC = () => {
                 <>
                     <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>
                         {totals?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                    </Tag>
-                </>
-            ),
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            key: 'status',
-            render: (_, { status }) => (
-                <>
-                    <Tag className='py-1' color='red'>
-                        {status}
                     </Tag>
                 </>
             ),
@@ -114,6 +108,19 @@ const Abortorder: React.FC = () => {
                 </span>
             ),
         },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            render: (_, { status }) => (
+                <>
+                    <Tag className='py-1' color='red'>
+                        {status}
+                    </Tag>
+                </>
+            ),
+        },
+
         {
             title: "Xem chi tiết",
             dataIndex: '',

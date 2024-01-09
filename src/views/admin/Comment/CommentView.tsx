@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Select, Table } from 'antd';
+import { Rate, Select, Table } from 'antd';
 import { Button, Input, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { CloseOutlined } from '@ant-design/icons';
@@ -90,7 +90,12 @@ export default function CommentView() {
         {
             title: 'Đánh giá',
             dataIndex: 'rate',
-            key: 'rate'
+            key: 'rate',
+            render: (rate) => {
+                return (
+                    <p><Rate disabled defaultValue={rate} /></p>
+                )
+            }
         },
         {
             title: "",
