@@ -1,6 +1,7 @@
 import React from 'react';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
+
     const total = roleMane.products.reduce((acc: number, product: any) => {
         const productTotal = product.total || 0;
         return acc + productTotal;

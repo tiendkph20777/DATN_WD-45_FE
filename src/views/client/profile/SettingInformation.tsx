@@ -34,10 +34,7 @@ const SettingInformation = () => {
 
     const onSubmit = (information: any) => {
         // console.log(information);
-        localStorage.setItem('successMessage', "Chúc mừng bạn đã cập nhật thành công 🎉🎉🎉");
-        setTimeout(() => {
-            window.location.reload();
-        }, 500);
+
         updateUser(information)
     }
     useEffect(() => {

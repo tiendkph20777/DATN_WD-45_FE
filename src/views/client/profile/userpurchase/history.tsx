@@ -89,6 +89,12 @@ const History: React.FC = () => {
             render: (text) => <a>{text}</a>,
         },
         {
+            title: "Mã đơn hàng",
+            dataIndex: "_id",
+            key: "_id",
+            render: (_id: any) => <span className="container">{_id}</span>,
+        },
+        {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'total',
             key: 'total',
@@ -96,18 +102,6 @@ const History: React.FC = () => {
                 <>
                     <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>
                         {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                    </Tag>
-                </>
-            ),
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'status',
-            key: 'status',
-            render: (_, { status }) => (
-                <>
-                    <Tag className='py-1' color='green'>
-                        {status}
                     </Tag>
                 </>
             ),
@@ -130,6 +124,18 @@ const History: React.FC = () => {
                 <span className='container'>
                     {datehis}
                 </span>
+            ),
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'status',
+            key: 'status',
+            render: (_, { status }) => (
+                <>
+                    <Tag className='py-1' color='green'>
+                        {status}
+                    </Tag>
+                </>
             ),
         },
         {
