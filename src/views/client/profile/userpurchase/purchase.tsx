@@ -145,6 +145,24 @@ const Purchase: React.FC = () => {
       },
     });
   };
+  // 
+  useEffect(() => {
+    const successMessage = localStorage.getItem('successMessage');
+    if (successMessage) {
+      messageApi.info({
+        type: 'error',
+        content: successMessage,
+        className: 'custom-class',
+        style: {
+          marginTop: '0',
+          fontSize: "20px",
+          lineHeight: "50px"
+        }
+      });
+      localStorage.removeItem('successMessage');
+    }
+  }, []);
+
   // bảng dữ liệu
   if (isLoading) {
     return (
@@ -166,6 +184,12 @@ const Purchase: React.FC = () => {
       render: (text) => <a>{text}</a>,
     },
     {
+      title: "Mã đơn hàng",
+      dataIndex: "_id",
+      key: "_id",
+      render: (_id: any) => <span className="container">{_id}</span>,
+    },
+    {
       title: "Tổng tiền đơn hàng",
       dataIndex: "total",
       key: "total",
@@ -182,6 +206,12 @@ const Purchase: React.FC = () => {
           </Tag>
         </>
       ),
+    },
+    {
+      title: "Ngày mua hàng",
+      dataIndex: "date",
+      key: "date",
+      render: (date: any) => <span className="container">{date}</span>,
     },
     {
       title: "Trạng thái",
@@ -214,12 +244,6 @@ const Purchase: React.FC = () => {
           </Form>
         </>
       ),
-    },
-    {
-      title: "Ngày mua hàng",
-      dataIndex: "date",
-      key: "date",
-      render: (date: any) => <span className="container">{date}</span>,
     },
     {
       title: "Xem chi tiết",

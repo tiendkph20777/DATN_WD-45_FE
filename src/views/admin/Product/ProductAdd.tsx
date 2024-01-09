@@ -44,10 +44,10 @@ const ProductAdd: React.FC = () => {
     try {
       const fileUrls = await SubmitImage();
       product.images = fileUrls;
-  
+
       const newProduct = await addProduct(product);
       const idPro = newProduct.data._id;
-  
+
       notification.success({
         message: "Success",
         description: "Thêm Sản Phẩm Thành Công!",
@@ -56,13 +56,13 @@ const ProductAdd: React.FC = () => {
         message: "Success",
         description: "Thêm Sản Phẩm Thành Công!",
       });
-  
+
       navigate(`/admin/product/detail/add/${idPro}`);
     } catch (error) {
       console.error("Error adding product:", error);
     }
   };
-  
+
 
   const onFileChange = ({ fileList }: any) => {
     setFileList(fileList);
@@ -77,30 +77,30 @@ const ProductAdd: React.FC = () => {
 
   const validateSalePrice = (value) => {
     const priceValue = parseFloat(document.getElementById('productPrice').value);
-  
+
     // Kiểm tra nếu giá giảm là rỗng thì không thực hiện kiểm tra
     if (value.trim() === '') {
       return true;
     }
-  
+
     const salePriceValue = parseFloat(value);
-  
+
     if (isNaN(priceValue) || isNaN(salePriceValue)) {
       return "Vui lòng nhập số hợp lệ";
     }
-  
+
     if (salePriceValue < 0 || priceValue < 0) {
       return "Giá không được âm";
     }
-  
+
     if (salePriceValue >= priceValue) {
       return "Giá giảm phải nhỏ hơn giá bán";
     }
-  
+
     return true;
   };
-  
-  
+
+
 
   return (
     <div className="container-fluid">
@@ -181,6 +181,9 @@ const ProductAdd: React.FC = () => {
                       validate: validateSalePrice
                     })}
                     type="number"
+                    //                     className={`form-control ${errors.price_sale ? "" : ""
+                    //                       }`}
+                    //                     id="productPrice"
                     value={0}
                     className={`form-control ${errors.price_sale ? "is-invalid" : ""}`}
                     id="productPriceSale"

@@ -44,6 +44,11 @@ const OrderMane: React.FC = () => {
         setSearchFullName(value.toLowerCase());
     };
     // console.log(dateCreateArray);
+    const [searchID, setSearchID] = useState<string | undefined>(undefined);
+
+    const handleIDSearchChange = (value: string) => {
+        setSearchID(value.toLowerCase());
+    };
 
     const nonSuccessfulOrder = orderDa?.map((order: any, index: number) => {
         const date = new Date(order?.dateCreate)?.toLocaleDateString('en-US');
@@ -95,6 +100,7 @@ const OrderMane: React.FC = () => {
     const nonSuccessfulOrders = nonSuccessfulOrder
         ?.filter((order: any) => order.status !== 'Giao hàng thành công' && order.status !== 'Hủy đơn hàng')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
+        ?.filter((order) => !searchID || order._id.toLowerCase().includes(searchID))
         ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
@@ -183,6 +189,12 @@ const OrderMane: React.FC = () => {
             render: (text) => <a>{text}</a>,
         },
         {
+            title: 'Mã đơn hàng',
+            dataIndex: '_id',
+            key: '_id',
+            render: (_id) => <a>{_id}</a>,
+        },
+        {
             title: 'Tên người nhận',
             dataIndex: 'fullName',
             key: 'fullName',
@@ -268,6 +280,11 @@ const OrderMane: React.FC = () => {
 
     return (
         <div style={{ paddingTop: "70px" }}>
+            <Input
+                placeholder="Search by mã đơn hàng"
+                style={{ width: 400, marginBottom: 16, marginLeft: 30 }}
+                onChange={(e) => handleIDSearchChange(e.target.value)}
+            />
             <Input
                 placeholder="Search by full name"
                 style={{ width: 400, marginBottom: 16, marginLeft: 30 }}

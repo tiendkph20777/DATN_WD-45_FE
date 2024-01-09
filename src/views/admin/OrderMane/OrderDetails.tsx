@@ -1,14 +1,11 @@
 import React from 'react';
 
 const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
-    // console.log(roleMane)
-    const total = roleMane.products.reduce((acc: number, product: any) => {
-        const productTotal = product.total || 0;
-        return acc + productTotal;
-    }, 0);
+    console.log(roleMane?.voucherCode)
+    // const [vacherCode, isLoading] = use
+
     const date = new Date(roleMane?.dateCreate)?.toLocaleDateString('en-US');
     const formattedTime = new Date(roleMane?.dateCreate).toTimeString().slice(0, 5);
-    // console.log(formattedTime);
 
     return (
         <div className="col-lg-12">
@@ -21,6 +18,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <th scope="col">Trạng thái </th>
                             <th scope="col">SĐT</th>
                             <th scope="col">Phương thức thanh toán</th>
+                            <th scope="col">Mã giảm giá</th>
                             <th scope="col">Ngày mua hàng</th>
                         </tr>
                     </thead>
@@ -40,6 +38,9 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             </th>
                             <th>
                                 <span>{roleMane?.payment}</span>
+                            </th>
+                            <th>
+                                <span>{roleMane?.voucherCode}</span>
                             </th>
                             <th>
                                 <span>{formattedTime} - {date}</span>
@@ -114,7 +115,7 @@ const OrderDetails: React.FC<{ roleMane: any }> = ({ roleMane }) => {
                             <td> </td>
                             <td> </td>
                             <td> </td>
-                            <td style={{ color: "black", fontSize: "20px" }}>{total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
+                            <td style={{ color: "black", fontSize: "20px" }}>{roleMane?.total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</td>
                         </tr>
                     </tbody>
                 </table>
