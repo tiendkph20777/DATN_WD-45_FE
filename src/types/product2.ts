@@ -8,9 +8,7 @@ export interface IProducts {
     content: string,
     description: string
     rate: string,
-<<<<<<< HEAD
     status: boolean,
 
-=======
->>>>>>> b93cc154bd70e3061bf4c64b07ce4d1443eb515c
+
 }

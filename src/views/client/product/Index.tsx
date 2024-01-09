@@ -5,7 +5,6 @@ import { IProducts } from "../../../types/product2";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import { IProductDetail } from "../../../types/product";
 
-
 const Index = () => {
   const { data: productData, isLoading } = useGetProductsQuery();
   const { data: productDTData } = useGetAllProductsDetailQuery();
@@ -16,8 +15,7 @@ const Index = () => {
   const [dataDTToRender, setDataDTToRender] = useState<IProductDetail[]>([]);
   const [dataDTResult, setdataDThResult] = useState<IProductDetail[]>([]);
   const [visibleProducts, setVisibleProducts] = useState([]);
-
-
+  
   // Đọc trạng thái sản phẩm từ localStorage khi component được tải
   useEffect(() => {
     const productStatusString = localStorage.getItem("productStatus");
@@ -56,25 +54,23 @@ const Index = () => {
   }, [productDTData]);
 
   // Lưu trạng thái sản phẩm vào localStorage khi nó thay đổi
-  const updateProductStatus = (productId: string, status: boolean) => {
-    const productStatusString = localStorage.getItem("productStatus");
-    const productStatus: Record<string, boolean> = productStatusString
-      ? JSON.parse(productStatusString)
-      : {};
-  
-    productStatus[productId] = status;
-    localStorage.setItem("productStatus", JSON.stringify(productStatus));
-  
-    // Ẩn sản phẩm có trạng thái false
-    const updatedVisibleProducts = visibleProducts.map((product) =>
-      product._id === productId ? { ...product, status } : product
-    );
-  
-    setVisibleProducts(updatedVisibleProducts);
-    setSearchResult(updatedVisibleProducts);
-  };
-  
-  
+  // const updateProductStatus = (productId: string, status: boolean) => {
+  //   const productStatusString = localStorage.getItem("productStatus");
+  //   const productStatus: Record<string, boolean> = productStatusString
+  //     ? JSON.parse(productStatusString)
+  //     : {};
+
+  //   productStatus[productId] = status;
+  //   localStorage.setItem("productStatus", JSON.stringify(productStatus));
+
+  //   // Ẩn sản phẩm có trạng thái false
+  //   const updatedVisibleProducts = visibleProducts.map((product) =>
+  //     product._id === productId ? { ...product, status } : product
+  //   );
+
+  //   setVisibleProducts(updatedVisibleProducts);
+  //   setSearchResult(updatedVisibleProducts);
+  // };
 
   console.log("data", dataSourceToRender);
 
