@@ -229,7 +229,7 @@ const VoucherView: React.FC = () => {
             <Link to={`/admin/voucher/${id}/edit`}>
               <Button>Update</Button>
             </Link>
-            <Popconfirm
+            {/* <Popconfirm
               title="Bạn có chắc chắn muốn xóa voucher này ?"
               onConfirm={() => {
                 confirm(id);
@@ -247,7 +247,7 @@ const VoucherView: React.FC = () => {
               >
                 <CloseOutlined /> Remove
               </Button>
-            </Popconfirm>
+            </Popconfirm> */}
           </>
         );
       },

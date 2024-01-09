@@ -4,7 +4,7 @@ import { Popconfirm, message as messageApi } from "antd";
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
-import { useFetchOneUserQuery } from "../../../services/user.service";
+import { useFetchOneUserQuery, useUpdateUserMutation } from "../../../services/user.service";
 import {
   useCreateCheckoutMutation,
   useReductionProductMutation,
@@ -16,6 +16,7 @@ import {
 } from "../../../services/voucher.service";
 import { useGetPaymentQuery } from "../../../services/payment.service";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const CheckOut = () => {
   const [allVouchers, setAllVouchers] = useState([]);
@@ -33,6 +34,7 @@ const CheckOut = () => {
   const { data: Product } = useGetProductsQuery();
   const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
+  const [finalTotal1, setFinalTotal1] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [voucherStatus, setVoucherStatus] = useState({});
 
@@ -112,40 +114,102 @@ const CheckOut = () => {
   const [voucherCode, setVoucherCode] = useState("");
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
 
-  // console.log(voucherCode)
-
-  // const getCodeVoucher = () => {
-  //   if (!voucherCode) {
-  //     console.error("Mã khuyến mãi không được để trống");
-  //     return;
-  //   }
-  // };
-  // if (voucher) {
-  //   // console.log('Thông tin voucher:', voucher);
-  // }
-  // if (error) {
-  //   console.error("Lỗi khi truy vấn mã khuyến mãi:", error);
-  // }
-  const getCodeVoucher = () => {
-    if (!voucherCode) {
-      console.error("Mã khuyến mãi không được để trống");
-      return;
-    }
-  };
-  if (voucher) {
-    // console.log('Thông tin voucher:', voucher);
-  }
   if (error) {
     console.error("Lỗi khi truy vấn mã khuyến mãi:", error);
   }
+
+  // 
+  const host = 'https://provinces.open-api.vn/api/';
+  const [cities, setCities] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedWard, setSelectedWard] = useState('');
+  const [selectedAdd, setSelectedAddress] = useState('');
+  const [updateUser] = useUpdateUserMutation();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${host}?depth=1`);
+        setCities(response.data);
+      } catch (error) {
+        console.error('Error fetching cities:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const callApiDistrict = async (cityCode: string) => {
+    try {
+      const response = await axios.get(`${host}p/${cityCode}?depth=2`);
+      setDistricts(response.data.districts);
+    } catch (error) {
+      console.error('Error fetching districts:', error);
+    }
+  };
+
+  const callApiWard = async (districtCode: string) => {
+    try {
+      const response = await axios.get(`${host}d/${districtCode}?depth=2`);
+      setWards(response.data.wards);
+    } catch (error) {
+      console.error('Error fetching wards:', error);
+    }
+  };
+
+  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedCityCode = event.target.value;
+    setSelectedCity(selectedCityCode);
+    callApiDistrict(selectedCityCode);
+    setSelectedDistrict('');
+    setSelectedWard('');
+    setSelectedAddress('');
+    printResult();
+  };
+
+  const handleDistrictChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedDistrictCode = event.target.value;
+    setSelectedDistrict(selectedDistrictCode);
+    callApiWard(selectedDistrictCode);
+    setSelectedWard('');
+    setSelectedAddress('');
+    printResult();
+  };
+
+  const handleWardChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedWardCode = event.target.value;
+    setSelectedWard(selectedWardCode);
+    setSelectedAddress('');
+    printResult();
+  };
+
+  const handleWardAddress = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedWardCodeadd = event.target.value;
+    setSelectedAddress(selectedWardCodeadd);
+    printResult();
+  };
+
+
+  const printResult = () => {
+    if (selectedCity && selectedDistrict && selectedWard) {
+      const result =
+        `${selectedCity} | ${selectedDistrict} | ${selectedWard}`;
+      console.log("adress : ", result);
+    }
+  };
+
+  const foundItem = cities?.find((item: any) => item?.code == selectedCity);
+  const foundItem1 = districts?.find((item: any) => item?.code == selectedDistrict);
+  const foundItem2 = wards?.find((item: any) => item?.code == selectedWard);
+
   const address =
-    usersOne?.city +
-    " , " +
-    usersOne?.district +
-    " , " +
-    usersOne?.commune +
-    " , " +
-    usersOne?.address;
+    `${foundItem?.name} , ${foundItem1?.name} , ${foundItem2?.name} , ${selectedAdd}`;
+  console.log("adress : ", address);
+  // 
+
 
   const [isAddingToCheckout, setIsAddingToCheckout] = useState(false);
   const [addCheckout] = useCreateCheckoutMutation();
@@ -157,15 +221,16 @@ const CheckOut = () => {
     0
   );
   useEffect(() => {
-    if (usersOne?.city === "Thành phố Hà Nội") {
+    if (foundItem?.name === "Thành phố Hà Nội") {
       setShippingFee(25000);
     } else {
       setShippingFee(40000);
     }
-  }, [usersOne?.city]);
+  }, [foundItem?.name]);
   useEffect(() => {
+    setFinalTotal(totalSum)
     if (totalSum || shippingFee) {
-      setFinalTotal(totalSum + shippingFee);
+      setFinalTotal1(totalSum + shippingFee);
       setIsOverFourMillion(totalSum > 4000000);
     }
   }, [totalSum, shippingFee]);
@@ -178,7 +243,7 @@ const CheckOut = () => {
     // Thêm logic xử lý khi phương thức thanh toán được chọn
     console.log(paymentId);
   };
-  const total = finalTotal - valueVoucher;
+  const total = finalTotal1 - valueVoucher;
 
   const navigation = useNavigate();
   const handleOnClick = async () => {
@@ -202,12 +267,14 @@ const CheckOut = () => {
         const date = new Date();
         const newData = {
           ...data,
+          address: address,
           products: cartDetail,
           payment: selectedPayment,
           shipping: "",
           total: total,
           voucherCode,
           dateCreate: date,
+          // note: Note,
           status: "Đang xác nhận đơn hàng",
         };
         localStorage.setItem("currentOrder", JSON.stringify(newData));
@@ -283,7 +350,7 @@ const CheckOut = () => {
       }
     } else {
       if (voucherCode === "FREESHIP150K" || voucherCode === "MYS200K") {
-        message.error("Mã chỉ áp dụng cho đơn hàng trên 4 triệu đồng");
+        messageApi.error("Mã chỉ áp dụng cho đơn hàng trên 4 triệu đồng");
       } else {
         setVoucherCode(voucherCode);
         setSelectedVoucher(voucherCode);
@@ -304,7 +371,7 @@ const CheckOut = () => {
     "selectedVoucher",
     JSON.stringify({ voucherCode, value: voucher?.value })
   );
-  console.log("totalSum", totalSum);
+  // console.log("totalSum", totalSum);
 
   // console.log("Selected Voucher in Render:", selectedVoucher);
   // console.log(valueVoucher);
@@ -372,38 +439,92 @@ const CheckOut = () => {
                       name="tel"
                       value={usersOne?.tel}
                     />
-                    <span className="placeholder"></span>
                   </div>
                   <div className="col-md-12 form-group p_star">
+                    <label htmlFor="">Số điện thoại</label>
                     <input
-                      hidden
                       type="text"
                       className="form-control"
-                      id="address"
-                      name="address"
-                      value={usersOne?.address}
+                      value={usersOne?.tel}
                     />
                   </div>
-                  <div className="col-md-12 form-group p_star">
-                    <label htmlFor="">Địa chỉ</label>
-                    <textarea
-                      className="form-control"
-                      id="address"
-                      placeholder="Địa chỉ giao hàng"
-                      name="address"
-                      value={address}
-                    ></textarea>
-                  </div>
-                  <div className="col-md-12 form-group">
-                    <div className="creat_account">
-                      <label htmlFor="">Ghi chú</label>
+                  <div className="col-lg-12">
+                    <div className="form-group">
+                      <label className="form-control-label" htmlFor="input-country">Địa chỉ cụ thể</label>
+                      <textarea
+                        onChange={handleWardAddress}
+                        className="form-control"
+                        required
+                        value={selectedAdd}
+                        rows={2} // Số hàng bạn muốn hiển thị
+                      />
                     </div>
-                    <textarea
-                      className="form-control"
-                      name="Note"
-                      id="Note"
-                      placeholder="#giao giờ hàng chính"
-                    ></textarea>
+                  </div>
+                  <div className="row">
+                    <div className="col-lg-12">
+                      <div className="form-group focused">
+                        <label className="form-control-label" htmlFor="input-city">Thành phố</label>
+                        <select
+                          id="city"
+                          onChange={handleCityChange}
+                          value={selectedCity}
+                          className='form-select form-control-alternative form-control-label text-black'
+                          required
+                        >
+                          <option value="" disabled>Chọn tỉnh thành</option>
+                          {cities?.map((city: any) => (
+                            <option key={city.code} value={city.code}>{city.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-lg-12">
+                      <div className="form-group focused">
+                        <label className="form-control-label" htmlFor="input-country">Huyện</label>
+                        <select
+                          id="district"
+                          onChange={handleDistrictChange}
+                          value={selectedDistrict}
+                          className='form-select form-control-alternative form-control-label text-black'
+                          required
+                        >
+                          <option value="" disabled>Chọn quận huyện</option>
+                          {districts?.map((district: any) => (
+                            <option key={district.code} value={district.code}>{district.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-lg-12">
+                      <div className="form-group">
+                        <label className="form-control-label" htmlFor="input-country">Xã</label>
+                        <select
+                          id="ward"
+                          onChange={handleWardChange}
+                          value={selectedWard}
+                          className='form-select form-control-alternative form-control-label text-black'
+                          required
+                        >
+                          <option value="" disabled>Chọn phường xã</option>
+                          {wards?.map((ward: any) => (
+                            <option key={ward.code} value={ward.code}>{ward.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="col-lg-12">
+                      <div className="form-group">
+                        <label className="form-control-label" htmlFor="input-country">Địa chỉ cụ thể</label>
+                        <textarea
+                          onChange={handleWardAddress}
+                          className="form-control"
+                          required
+                          value={selectedAdd}
+                          rows={2} // Số hàng bạn muốn hiển thị
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -488,16 +609,6 @@ const CheckOut = () => {
                     </td>
                   </tr>
                   <div className="payment_item">
-                    {/* <div className="radion_btn">
-                      <input type="radio" id="f-option5" name="selector" />
-                      <label htmlFor="f-option5">Check payments</label>
-                      <div className="check"></div>
-                    </div> */}
-                    {/* <br /> */}
-                    {/* <p>
-                      Please send a check to Store Name, Store Street, Store
-                      Town, Store State / County, Store Postcode.
-                    </p> */}
                     <div className="payment_item active">
                       <form className="row mt-3">
                         <label htmlFor="" className="col-8 m-2">
@@ -653,6 +764,17 @@ const CheckOut = () => {
                         {isAddingToCheckout ? "Ordering..." : "Đặt Hàng"}
                       </button>
                     </div>
+                  </div>
+                  <div className="col-md-12 form-group">
+                    <div className="creat_account">
+                      <label htmlFor="">Ghi chú</label>
+                    </div>
+                    <textarea
+                      className="form-control"
+                      name="Note"
+                      id="Note"
+                      placeholder="#giao giờ hàng chính"
+                    ></textarea>
                   </div>
                 </div>
               </div>
