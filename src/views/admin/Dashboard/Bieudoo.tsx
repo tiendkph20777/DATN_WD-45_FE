@@ -94,8 +94,7 @@ const Bieudo = () => {
     );
     const data = dateRange.map((date) => {
       //Theo ngày
-      const filteredDayOrders = successfulOrders?.filter((item) => item.datehis === format(date, 'MM/d/yyyy'));
-      // console.log(successfulOrders);
+      const filteredDayOrders = successfulOrders?.filter((item) => item.datehis === format(date, 'MM/d/yyyy') || item.datehis === format(date, 'M/d/yyyy'));
 
       let fullTotalDay = 0;
       filteredDayOrders?.forEach((item) => (fullTotalDay += item.totals));
