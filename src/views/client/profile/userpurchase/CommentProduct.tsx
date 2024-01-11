@@ -4,6 +4,7 @@ import axios from "axios";
 import { useForm } from 'react-hook-form';
 import { useAddCommentMutation } from '../../../../services/comment.service';
 import { message as messageApi } from "antd";
+import { useNavigate } from 'react-router-dom';
 interface DataType {
     _id: string;
     content: string;
@@ -16,7 +17,9 @@ interface DataType {
 type roleCmtType = {
     products: [];
 }
+
 const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
+    const navigate = useNavigate();
     const { handleSubmit, register, setValue } = useForm<any>();
     const { user: id_user } = JSON.parse(localStorage.getItem("user") || "{}");
     const [fileList, setFileList] = useState<any[]>([]);
@@ -53,7 +56,7 @@ const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
             content,
             images: fileUrls
         };
-
+        navigate('/product/' + product_id + '/detail')
         const response: any = await addProduct(dataCmt);
 
         const successMessage = `Cảm ơn bạn đã đánh giá chúng tôi sẽ cố gắng để tốt lên mỗi ngày 🥰🥰🥰`;
@@ -100,15 +103,7 @@ const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
                     className="form-control"
                     {...register("content", { required: true, minLength: 2 })}
                 ></textarea>
-                <div className='my-2'>
-                    <span>xấu 😭 </span>
-                    <input className="form-check-input mx-1" type="radio" value="1" {...register("rate", { required: true })} />
-                    <input className="form-check-input mx-1" type="radio" value="2" {...register("rate", { required: true })} />
-                    <input className="form-check-input mx-1" type="radio" value="3" {...register("rate", { required: true })} />
-                    <input className="form-check-input mx-1" type="radio" value="4" {...register("rate", { required: true })} />
-                    <input className="form-check-input mx-1" type="radio" value="5" {...register("rate", { required: true })} />
-                    <span> tuyệt vời 🥰 </span>
-                </div>
+
                 <div className="mb-3">
                     <label htmlFor="productImage" className="form-label">
                         Ảnh sản phẩm
@@ -122,6 +117,15 @@ const CommentProduct: React.FC<{ roleCmt: roleCmtType }> = ({ roleCmt }) => {
                     >
                         <Button>Chọn ảnh</Button>
                     </Upload>
+                </div>
+                <div className='my-2'>
+                    <span>1⭐</span>
+                    <input className="form-check-input mx-1" type="radio" value="1" {...register("rate", { required: true })} />
+                    <input className="form-check-input mx-1" type="radio" value="2" {...register("rate", { required: true })} />
+                    <input className="form-check-input mx-1" type="radio" value="3" {...register("rate", { required: true })} />
+                    <input className="form-check-input mx-1" type="radio" value="4" {...register("rate", { required: true })} />
+                    <input className="form-check-input mx-1" type="radio" value="5" {...register("rate", { required: true })} />
+                    <span>5⭐</span>
                 </div>
                 <button type="submit" className="w-100 btn btn-primary">
                     Đánh giá

@@ -14,6 +14,28 @@ const Product = () => {
     const [dataSourceToRender, setDataSourceToRender] = useState<IProducts[]>([]);
     const brandName = (item: any) => brandData?.find((brand: any) => brand._id == item.brand_id)?.name
     const discount = (item: any) => Math.round(100 - (item.price_sale / item.price * 100))
+    const [visibleProducts, setVisibleProducts] = useState<IProducts[]>([]);
+
+
+    useEffect(() => {
+        if (productData) {
+            const productStatusString = localStorage.getItem("productStatus");
+            const productStatus: Record<string, boolean> = productStatusString
+                ? JSON.parse(productStatusString)
+                : {};
+    
+            const updatedDataSource = productData.map((product: IProducts) => ({
+                ...product,
+                status: productStatus[product._id] !== undefined ? productStatus[product._id] : true,
+            }));
+    
+            // Lọc và chỉ lấy các sản phẩm có trạng thái true
+            const visibleProducts = updatedDataSource.filter((product) => product.status);
+    
+            setDataSourceToRender(visibleProducts);
+            setVisibleProducts(visibleProducts);
+        }
+    }, [productData]);
 
     useEffect(() => {
         if (productData) {
@@ -109,7 +131,7 @@ const Product = () => {
                 <div className="container_home">
                     <div className="d-flex justify-content-between py-5">
                         <div className="fs-5  text-uppercase fw-bold text-center">
-                            - Sản phẩm bán chạy
+                            - Sản phẩm bán chạy 
                         </div>
                         <div>
                             <button className="button_slide" onClick={() => gotoPrev(sliderRef)}><img src="/src/assets/icons/prev.svg" /></button>
@@ -117,7 +139,7 @@ const Product = () => {
                         </div>
                     </div>
                     <Slider ref={sliderRef as any} {...settings}>
-                        {dataSourceToRender?.slice(0, 6).map((item) => {
+                        {visibleProducts?.slice(0, 6).map((item) => {
                             return (
                                 <div className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2" key={item._id}>
                                     <div className="card product-main">
