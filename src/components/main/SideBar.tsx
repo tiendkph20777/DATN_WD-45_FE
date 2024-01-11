@@ -11,7 +11,7 @@ const SideBar = () => {
             data-sidebar-position="fixed" data-header-position="fixed">
             <aside className="left-sidebar">
                 {/* <!-- Sidebar scroll--> */}
-                
+
                 <div className="brand-logo d-flex align-items-center justify-content-between">
                     <Link to="/" className="text-nowrap logo-img">
                         <img src="" width="180" alt="" />
@@ -107,14 +107,14 @@ const SideBar = () => {
                                 <span className="hide-menu">Đơn Hàng Bị Hủy</span>
                             </Link>
                         </li>
-                        <li className="sidebar-item">
+                        {/* <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/payment" aria-expanded="false">
                                 <span>
                                     <i className="ti ti-mood-happy"></i>
                                 </span>
                                 <span className="hide-menu">Phương thức thanh toán</span>
                             </Link>
-                        </li>
+                        </li> */}
                         <li className="nav-small-cap">
                             <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
                             <span className="hide-menu">Tài khoản</span>
@@ -127,14 +127,14 @@ const SideBar = () => {
                                 <span className="hide-menu">Người dùng</span>
                             </Link>
                         </li>
-                        <li className="sidebar-item">
+                        {/* <li className="sidebar-item">
                             <Link className="sidebar-link" to="#" aria-expanded="false">
                                 <span>
                                     <i className="ti ti-aperture"></i>
                                 </span>
                                 <span className="hide-menu">Danh Sách</span>
                             </Link>
-                        </li>
+                        </li> */}
                         <li className="nav-small-cap">
                             <i className="ti ti-dots nav-small-cap-icon fs-4"></i>
                             <span className="hide-menu">Lịch Sử Giao Dịch</span>
@@ -149,7 +149,7 @@ const SideBar = () => {
                         </li>
                     </ul>
                 </nav>
-                
+
             </aside>
         </div >
     )
