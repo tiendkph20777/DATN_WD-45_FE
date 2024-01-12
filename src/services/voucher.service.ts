@@ -65,6 +65,21 @@ const voucherAPI = createApi({
         },
       }),
     }),
+
+    updateVoucherStatus: builder.mutation<
+      void,
+      { id: string; status: boolean }
+    >({
+      query: ({ id, status }) => ({
+        url: `/voucher/${id}/updateStatus/${status}`,
+        method: "PUT",
+        body: { status },
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -75,6 +90,7 @@ export const {
   useRemoveVoucherMutation,
   useAddVoucherMutation,
   useUpdateVoucherMutation,
+  useUpdateVoucherStatusMutation,
 } = voucherAPI;
 
 export default voucherAPI;

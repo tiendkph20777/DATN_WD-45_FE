@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { IProducts } from "../../../../types/product2";
-import { useGetProductsQuery } from "../../../../services/product.service";
+import {
+  useGetProductsQuery,
+  useUpdateProductStatusMutation,
+} from "../../../../services/product.service";
 import { useGetBrandsQuery } from "../../../../services/brand.service";
 
 const PageProduct = () => {
@@ -17,23 +20,10 @@ const PageProduct = () => {
   const [productStatus, setProductStatus] = useState<Record<string, boolean>>(
     {}
   );
+  const [updateProductStatus] = useUpdateProductStatusMutation();
 
   useEffect(() => {
-    const productStatusString = localStorage.getItem("productStatus");
-    const parsedProductStatus: Record<string, boolean> = productStatusString
-      ? JSON.parse(productStatusString)
-      : {};
-    setProductStatus(parsedProductStatus);
-  }, []);
-
-  // Lấy trạng thái sản phẩm từ Local Storage khi component được tải
-  useEffect(() => {
-    const productStatusString = localStorage.getItem("productStatus");
-    const productStatus: Record<string, boolean> = productStatusString
-      ? JSON.parse(productStatusString)
-      : {};
-
-    // Nếu có dữ liệu, cập nhật trạng thái sản phẩm
+    // Lấy trạng thái sản phẩm từ Server khi component được tải
     if (productData) {
       const updatedDataSource = productData.map((product: IProducts) => ({
         ...product,
@@ -51,8 +41,8 @@ const PageProduct = () => {
       setDataSourceToRender(visibleProducts);
       setSearchResult(visibleProducts);
     }
-  }, [productData]);
-
+  }, [productData, productStatus]);
+  
   useEffect(() => {
     if (productData) {
       // Sort products by the creation date in descending order (newest first)
@@ -125,76 +115,78 @@ const PageProduct = () => {
           </div>
           <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
             {dataSourceToRender.slice(0, 30).map((item) => {
-                if (productStatus[item._id]) {
-              return (
-                <div className="product border-2 p-2" key={item._id}>
-                  <div className="card product-main">
-                    <a
-                      href={"/product/" + item._id + "/detail"}
-                      className="d-block overflow-hidden no-underline"
-                    >
-                      <div className="position-relative product-image overflow-hidden">
-                        <img
-                          src={item.images[0]}
-                          alt=""
-                          width="100%"
-                          height="300"
-                          className=" inset-0 object-cover"
-                        />
-                      </div>
-                      <div className="bg-white content-product w-100 p-2 pt-4">
-                        <div className="product-detail px-3 row ">
-                          <div className="col-12 row px-2">
-                            {/* <div className="col-1 m-1 product-color " style={{ backgroundColor: color }} /> */}
-                            <div className="col-1 m-1 product-color color-2" />
-                            <div className="col-1 m-1 product-color color-3" />
-                          </div>
+              if (item.status) {
+                return (
+                  <div className="product border-2 p-2" key={item._id}>
+                    <div className="card product-main">
+                      <a
+                        href={"/product/" + item._id + "/detail"}
+                        className="d-block overflow-hidden no-underline"
+                      >
+                        <div className="position-relative product-image overflow-hidden">
+                          <img
+                            src={item.images[0]}
+                            alt=""
+                            width="100%"
+                            height="300"
+                            className=" inset-0 object-cover"
+                          />
                         </div>
-                        <div className="product-vendor">{brandName(item)}</div>
-                        <h4 className="product-name ellipsis">{item.name}</h4>
-                        {item.price_sale > 0 ? (
-                          <div className="product-price row">
-                            <strong className="col-12">
-                              {item.price_sale.toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              })}
-                            </strong>
-                            <div className="d-flex">
-                              <del className="price-del">
+                        <div className="bg-white content-product w-100 p-2 pt-4">
+                          <div className="product-detail px-3 row ">
+                            <div className="col-12 row px-2">
+                              {/* <div className="col-1 m-1 product-color " style={{ backgroundColor: color }} /> */}
+                              <div className="col-1 m-1 product-color color-2" />
+                              <div className="col-1 m-1 product-color color-3" />
+                            </div>
+                          </div>
+                          <div className="product-vendor">
+                            {brandName(item)}
+                          </div>
+                          <h4 className="product-name ellipsis">{item.name}</h4>
+                          {item.price_sale > 0 ? (
+                            <div className="product-price row">
+                              <strong className="col-12">
+                                {item.price_sale.toLocaleString("vi-VN", {
+                                  style: "currency",
+                                  currency: "VND",
+                                })}
+                              </strong>
+                              <div className="d-flex">
+                                <del className="price-del">
+                                  {item.price.toLocaleString("vi-VN", {
+                                    style: "currency",
+                                    currency: "VND",
+                                  })}
+                                </del>
+                                <span className="product-discount">
+                                  -{discount(item)}%
+                                </span>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="product-price row">
+                              <strong className="col-12">
                                 {item.price.toLocaleString("vi-VN", {
                                   style: "currency",
                                   currency: "VND",
                                 })}
-                              </del>
-                              <span className="product-discount">
-                                -{discount(item)}%
-                              </span>
+                              </strong>
                             </div>
-                          </div>
-                        ) : (
-                          <div className="product-price row">
-                            <strong className="col-12">
-                              {item.price.toLocaleString("vi-VN", {
-                                style: "currency",
-                                currency: "VND",
-                              })}
-                            </strong>
-                          </div>
-                        )}
-                      </div>
-                      <div className="product-action pt-5 row text-center justify-content-center">
-                        <div className="col-6">
-                          <img src="/src/assets/icons/read.svg" alt="" />
+                          )}
                         </div>
-                        <div className="col-6">
-                          <img src="/src/assets/icons/cart.svg" alt="" />
+                        <div className="product-action pt-5 row text-center justify-content-center">
+                          <div className="col-6">
+                            <img src="/src/assets/icons/read.svg" alt="" />
+                          </div>
+                          <div className="col-6">
+                            <img src="/src/assets/icons/cart.svg" alt="" />
+                          </div>
                         </div>
-                      </div>
-                    </a>
+                      </a>
+                    </div>
                   </div>
-                </div>
-              );
+                );
               }
               return null;
             })}

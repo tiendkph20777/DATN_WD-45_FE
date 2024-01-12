@@ -15,22 +15,13 @@ const Index = () => {
   const [dataDTToRender, setDataDTToRender] = useState<IProductDetail[]>([]);
   const [dataDTResult, setdataDThResult] = useState<IProductDetail[]>([]);
   const [visibleProducts, setVisibleProducts] = useState([]);
-  
-  // Đọc trạng thái sản phẩm từ localStorage khi component được tải
-  useEffect(() => {
-    const productStatusString = localStorage.getItem("productStatus");
-    const productStatus: Record<string, boolean> = productStatusString
-      ? JSON.parse(productStatusString)
-      : {};
 
-    // Nếu có dữ liệu, cập nhật trạng thái sản phẩm
+  useEffect(() => {
     if (productData) {
+      // Sử dụng trạng thái trực tiếp từ dữ liệu sản phẩm
       const updatedDataSource = productData.map((product: IProducts) => ({
         ...product,
-        status:
-          productStatus[product._id] !== undefined
-            ? productStatus[product._id]
-            : true,
+        status: product.status !== undefined ? product.status : true,
       }));
 
       // Ẩn các sản phẩm có trạng thái false
@@ -52,25 +43,6 @@ const Index = () => {
       setdataDThResult(updatedDataDT);
     }
   }, [productDTData]);
-
-  // Lưu trạng thái sản phẩm vào localStorage khi nó thay đổi
-  // const updateProductStatus = (productId: string, status: boolean) => {
-  //   const productStatusString = localStorage.getItem("productStatus");
-  //   const productStatus: Record<string, boolean> = productStatusString
-  //     ? JSON.parse(productStatusString)
-  //     : {};
-
-  //   productStatus[productId] = status;
-  //   localStorage.setItem("productStatus", JSON.stringify(productStatus));
-
-  //   // Ẩn sản phẩm có trạng thái false
-  //   const updatedVisibleProducts = visibleProducts.map((product) =>
-  //     product._id === productId ? { ...product, status } : product
-  //   );
-
-  //   setVisibleProducts(updatedVisibleProducts);
-  //   setSearchResult(updatedVisibleProducts);
-  // };
 
   console.log("data", dataSourceToRender);
 
