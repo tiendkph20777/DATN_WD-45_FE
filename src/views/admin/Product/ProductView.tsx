@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Popconfirm, notification, Tag } from "antd";
-import { useGetProductsQuery } from "../../../services/product.service";
+import {
+  useGetProductsQuery,
+  useUpdateProductStatusMutation,
+} from "../../../services/product.service";
 import { IProducts } from "../../../types/product2";
 import { Link } from "react-router-dom";
 import { useGetBrandsQuery } from "../../../services/brand.service";
@@ -18,86 +21,23 @@ interface DataType {
   rate: string;
   description: string;
   content: string;
-  status:boolean
+  status: boolean;
 }
 
 const ProductView = () => {
   const { data: productData, isLoading } = useGetProductsQuery();
-  // console.log(productData)
   const { data: brands } = useGetBrandsQuery();
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [dataSource, setDataSource] = useState<Array<any>>([]);
+  const [dataSource, setDataSource] = useState<Array<DataType>>([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const { data: categories } = useGetBrandsQuery();
   const [removeProduct] = useRemoveProductMutation();
-  const [productStatus, setProductStatus] = useState<Record<string, boolean>>(
-    {}
-  );
+  const [updateProductStatus] = useUpdateProductStatusMutation();
 
-  const toggleProductStatus = async (id: number | string, status: boolean) => {
-    try {
-      const updatedData = dataSource.map((item) =>
-        item.key === id ? { ...item, status: !status } : item
-      );
-      setDataSource(updatedData);
-
-      notification.success({
-        message: "Success",
-        description: `Đã ${status ? "tắt" : "bật"} sản phẩm thành công!`,
-      });
-
-      saveProductStatusToLocalStorage(id, !status);
-    } catch (error) {
-      console.error("Error toggling product status", error);
-    }
-  };
-
-  const getProductStatusFromLocalStorage = (id: number | string) => {
-    const storedData = JSON.parse(localStorage.getItem("productStatus")) || {};
-    return storedData[id] || false; // Nếu không có trạng thái, trả về false
-  };
-
-  const saveProductStatusToLocalStorage = (
-    id: number | string,
-    status: boolean
-  ) => {
-    const storedData = JSON.parse(localStorage.getItem("productStatus")) || {};
-    storedData[id] = status;
-    localStorage.setItem("productStatus", JSON.stringify(storedData));
-  };
-
-  const restoreProductStatusFromLocalStorage = () => {
-    const updatedData = dataSource.map((item) => ({
-      ...item,
-      status: getProductStatusFromLocalStorage(item.key),
-    }));
-
-    setDataSource(updatedData);
-  };
- 
-
-  const confirm = async (id: number | string) => {
-    try {
-      // Gọi API xóa sản phẩm bất đồng bộ
-      await removeProduct(id);
-
-      // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
-      const updatedDataSource = dataSource.filter((item) => item.key !== id);
-      setDataSource(updatedDataSource);
-
-      notification.success({
-        message: "Success",
-        description: "Xóa sản phẩm thành công!",
-      });
-    } catch (error) {
-      console.error("Error deleting product", error);
-    }
-  };
   useEffect(() => {
     if (productData) {
-      const filteredData = productData.filter((brand: IProducts) =>
-        brand.name.toLowerCase().includes(searchTerm.toLowerCase())
+      const filteredData = productData.filter((product: IProducts) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
 
       // Sort by creation date in descending order
@@ -116,14 +56,13 @@ const ProductView = () => {
         price_sale: product.price_sale,
         description: product.description,
         content: product.content,
-        status: getProductStatusFromLocalStorage(product._id),
+        status: product.status,
       }));
 
       setDataSource(updatedDataSource);
     }
   }, [productData, searchTerm]);
 
-  // lọc theo danh mục
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (productData) {
@@ -135,6 +74,7 @@ const ProductView = () => {
           selectedCategory === "" || product.brand_id === selectedCategory;
         return productNameMatches && categoryMatches;
       });
+
       const updatedDataSource = filteredData.map((product: IProducts) => ({
         key: product._id,
         name: product.name,
@@ -144,15 +84,65 @@ const ProductView = () => {
         price_sale: product.price_sale,
         description: product.description,
         content: product.content,
-        status: getProductStatusFromLocalStorage(product._id),
+        status: product.status,
       }));
+
       setDataSource(updatedDataSource);
     }
   };
-  useEffect(() => {
-    restoreProductStatusFromLocalStorage();
-  }, []);
-  //
+
+  const [selectedProduct, setSelectedProduct] = useState<DataType | null>(null);
+
+  const toggleProductStatus = async (id: number | string, status: boolean) => {
+    try {
+      console.log("Toggle Product Status - Start:", id, status);
+
+      // Gửi mutation để cập nhật trạng thái trong cơ sở dữ liệu
+      const result = await updateProductStatus({ id, status: !status });
+
+      console.log("Update product status result:", result);
+
+      notification.success({
+        message: "Success",
+        description: `Đã ${!status ? "Bật" : "Tắt"} sản phẩm thành công!`,
+      });
+
+      const updatedData = dataSource.map((item) =>
+        item.key === id ? { ...item, status: !status } : item
+      );
+      setDataSource(updatedData);
+
+      // Cập nhật trạng thái sản phẩm trực tiếp trong state
+
+      console.log("Toggle Product Status - End");
+    } catch (error) {
+      console.error("Error toggling product status", error);
+    }
+  };
+
+  const confirm = async (id: number | string) => {
+    try {
+      // Gọi API xóa sản phẩm bất đồng bộ
+      await removeProduct(id);
+
+      // Cập nhật dữ liệu sau khi xóa sản phẩm thành công
+      const updatedDataSource = dataSource.filter((item) => item.key !== id);
+      setDataSource(updatedDataSource);
+
+      notification.success({
+        message: "Success",
+        description: "Xóa sản phẩm thành công!",
+      });
+
+      // Clear the selected product if it's the one being deleted
+      if (selectedProduct && selectedProduct.key === id) {
+        setSelectedProduct(null);
+      }
+    } catch (error) {
+      console.error("Error deleting product", error);
+    }
+  };
+
   if (isLoading) {
     return (
       <div>
