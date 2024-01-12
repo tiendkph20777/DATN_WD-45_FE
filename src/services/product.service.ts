@@ -18,7 +18,6 @@ const productAPI = createApi({
     getProductById: builder.query<IProducts, any>({
       query: (id) => `/product/${id}`,
       providesTags: ["Product"],
-
     }),
     removeProduct: builder.mutation<IProducts, number | string>({
       query: (id) => ({
@@ -56,10 +55,27 @@ const productAPI = createApi({
       }),
       invalidatesTags: ["Product"],
     }),
+
+    updateProductStatus: builder.mutation<
+      IProducts,
+      { id: number | string; status: boolean }
+    >({
+      query: ({ id, status }) => ({
+        url: `/product/${id}/updateStatus/${status}`,
+        method: "PUT",
+        body: { status },
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
+      }),
+      invalidatesTags: ["Product"],
+    }),
   }),
 });
 
 export const {
+  useUpdateProductStatusMutation,
   useGetProductsQuery,
   useGetProductByIdQuery,
   useRemoveProductMutation,

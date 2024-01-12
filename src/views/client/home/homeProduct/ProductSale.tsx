@@ -3,7 +3,10 @@ import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
 import { useEffect, useState } from "react";
 import useRefs from "react-use-refs";
-import { useGetProductsQuery } from "../../../../services/product.service";
+import {
+  useGetProductsQuery,
+  useUpdateProductStatusMutation,
+} from "../../../../services/product.service";
 import { useGetBrandsQuery } from "../../../../services/brand.service";
 import { IProducts } from "../../../../types/product2";
 
@@ -15,6 +18,28 @@ const ProductSale = () => {
   const [productStatus, setProductStatus] = useState<Record<string, boolean>>(
     {}
   );
+  const [updateProductStatus] = useUpdateProductStatusMutation();
+
+  useEffect(() => {
+    if (productData) {
+      const updatedDataSource = productData.map((product: IProducts) => ({
+        ...product,
+        status:
+          productStatus[product._id] !== undefined
+            ? productStatus[product._id]
+            : true,
+      }));
+      console.log("updatedDataSource", updatedDataSource);
+
+      // Ẩn các sản phẩm có trạng thái false
+      const visibleProducts = updatedDataSource.filter(
+        (product) => product.status
+      );
+
+      setDataSourceToRender(visibleProducts);
+      setSearchResult(visibleProducts);
+    }
+  }, [productData]);
 
   const brandName = (item: any) =>
     brandData?.find((brand: any) => brand._id == item.brand_id)?.name;
@@ -27,41 +52,6 @@ const ProductSale = () => {
         ...IProducts,
       }));
       setDataSourceToRender(updatedDataSource);
-    }
-  }, [productData]);
-
-  useEffect(() => {
-    const productStatusString = localStorage.getItem("productStatus");
-    const parsedProductStatus: Record<string, boolean> = productStatusString
-      ? JSON.parse(productStatusString)
-      : {};
-    setProductStatus(parsedProductStatus);
-  }, []);
-
-  // Lấy trạng thái sản phẩm từ Local Storage khi component được tải
-  useEffect(() => {
-    const productStatusString = localStorage.getItem("productStatus");
-    const productStatus: Record<string, boolean> = productStatusString
-      ? JSON.parse(productStatusString)
-      : {};
-
-    // Nếu có dữ liệu, cập nhật trạng thái sản phẩm
-    if (productData) {
-      const updatedDataSource = productData.map((product: IProducts) => ({
-        ...product,
-        status:
-          productStatus[product._id] !== undefined
-            ? productStatus[product._id]
-            : true,
-      }));
-
-      // Ẩn các sản phẩm có trạng thái false
-      const visibleProducts = updatedDataSource.filter(
-        (product) => product.status
-      );
-
-      setDataSourceToRender(visibleProducts);
-      setSearchResult(visibleProducts);
     }
   }, [productData]);
 
@@ -144,7 +134,7 @@ const ProductSale = () => {
             </div>
             <Slider ref={sliderRef as any} {...settings}>
               {dataSourceToRender?.slice(0, 6).map((item) => {
-                if (item.price_sale > 0) {
+                if (item.status && item.price_sale > 0) {
                   return (
                     <div
                       className="product col-xxl-3 border-2 col-xl-3 col-lg-6 col-sm-6 col-12 p-2"
@@ -211,6 +201,7 @@ const ProductSale = () => {
                     </div>
                   );
                 }
+                return null;
               })}
             </Slider>
           </div>
