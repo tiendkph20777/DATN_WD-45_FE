@@ -105,12 +105,28 @@ const ProductAdd: React.FC = () => {
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="col-md-6 offset-md-3">
+        <div className="col-md-12">
           <div className="card">
             <div className="card-body">
-              <h5 className="card-title fw-semibold mb-4">Thêm Sản Phẩm</h5>
-              <Form onFinish={handleSubmit(onSubmit)} className="custom-form">
-                <div className="mb-3">
+              <h5 className="card-title text-uppercase add-new p-4 border-1 fw-semibold mb-4">Thêm Sản Phẩm</h5>
+              <Form onFinish={handleSubmit(onSubmit)} className="row custom-form">
+                
+                <div className="mb-3 col-md-8 col-sm-12">
+                  <label htmlFor="productName" className="form-label">
+                    Tên sản phẩm
+                  </label>
+                  <input
+                    {...register("name", { required: true })}
+                    type="text"
+                    className={`form-control ${errors.name ? "is-invalid" : ""
+                      }`}
+                    id="productName"
+                  />
+                  {errors.name && (
+                    <div className="invalid-feedback">Không được bỏ trống!</div>
+                  )}
+                </div>
+                <div className="mb-3 col-md-4 col-sm-12">
                   <label htmlFor="productCategory" className="form-label">
                     Thương Hiệu
                   </label>
@@ -133,22 +149,7 @@ const ProductAdd: React.FC = () => {
                     <div className="invalid-feedback">Không được bỏ trống!</div>
                   )}
                 </div>
-                <div className="mb-3">
-                  <label htmlFor="productName" className="form-label">
-                    Tên sản phẩm
-                  </label>
-                  <input
-                    {...register("name", { required: true })}
-                    type="text"
-                    className={`form-control ${errors.name ? "is-invalid" : ""
-                      }`}
-                    id="productName"
-                  />
-                  {errors.name && (
-                    <div className="invalid-feedback">Không được bỏ trống!</div>
-                  )}
-                </div>
-                <div className="mb-3">
+                <div className="mb-3 col-md-6 col-sm-12">
                   <label htmlFor="productPrice" className="form-label">
                     Giá bán
                   </label>
@@ -172,7 +173,7 @@ const ProductAdd: React.FC = () => {
                     <div className="invalid-feedback">{errors.price.message}</div>
                   )}
                 </div>
-                <div className="mb-3">
+                <div className="mb-3 col-md-6 col-sm-12">
                   <label htmlFor="productPriceSale" className="form-label">
                     Giá bán sau khi giảm giá
                   </label>

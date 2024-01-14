@@ -30,15 +30,15 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-layout-dashboard"></i>
+                                    <i className="ti ti-home"></i>
                                 </span>
-                                <span className="hide-menu">Quay lại trang chủ</span>
+                                <span className="hide-menu">Trang Chủ</span>
                             </Link>
                         </li>
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-layout-dashboard"></i>
+                                    <i className="ti ti-chart-line"></i>
                                 </span>
                                 <span className="hide-menu">Tổng Quan</span>
                             </Link>
@@ -50,7 +50,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/product" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-alert-circle"></i>
+                                    <i className="ti ti-building-store"></i>
                                 </span>
                                 <span className="hide-menu">Quản lí sản phẩm</span>
                             </Link>
@@ -58,7 +58,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/category" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-article"></i>
+                                    <i className="ti ti-list-details"></i>
                                 </span>
                                 <span className="hide-menu">Danh Mục sản phẩm</span>
                             </Link>
@@ -66,7 +66,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/voucher" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-article"></i>
+                                    <i className="ti ti-ticket"></i>
                                 </span>
                                 <span className="hide-menu">Mã giảm giá</span>
                             </Link>
@@ -74,7 +74,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/comment" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-article"></i>
+                                    <i className="ti ti-brand-hipchat"></i>
                                 </span>
                                 <span className="hide-menu">Bình luận</span>
                             </Link>
@@ -86,7 +86,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/orderManagement" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-mood-happy"></i>
+                                    <i className="ti ti-barcode"></i>
                                 </span>
                                 <span className="hide-menu">Quản Lý Đơn Hàng</span>
                             </Link>
@@ -94,7 +94,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/historyOrder" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-mood-happy"></i>
+                                    <i className="ti ti-history-toggle"></i>
                                 </span>
                                 <span className="hide-menu">Lịch Sử Đơn Hàng</span>
                             </Link>
@@ -102,7 +102,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/abortOrder" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-mood-happy"></i>
+                                    <i className="ti ti-truck-return"></i>
                                 </span>
                                 <span className="hide-menu">Đơn Hàng Bị Hủy</span>
                             </Link>
@@ -122,7 +122,7 @@ const SideBar = () => {
                         <li className="sidebar-item">
                             <Link className="sidebar-link" to="/admin/user" aria-expanded="false">
                                 <span>
-                                    <i className="ti ti-mood-happy"></i>
+                                    <i className="ti ti-users"></i>
                                 </span>
                                 <span className="hide-menu">Người dùng</span>
                             </Link>

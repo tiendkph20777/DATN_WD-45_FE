@@ -218,60 +218,64 @@ const ProductView = () => {
     //     dataIndex: 'description',
     //     key: 'description',
     // },
+    // {
+    //   title: "Nội dung sản phẩm",
+    //   dataIndex: "description",
+    //   key: "description",
+    // },
+    // {
+    //   title: "Trạng thái",
+    //   dataIndex: "status",
+    //   key: "status",
+    //   render: (status: boolean, record: DataType) => (
+    //     <Tag color={status ? "green" : "red"}>
+    //       {status ? "Hoạt Động" : "Tắt"}
+    //     </Tag>
+    //   ),
+    // },
+    // {
+    //   title: "Hành động",
+    //   render: ({
+    //     key: id,
+    //     status,
+    //   }: {
+    //     key: number | string;
+    //     status: boolean;
+    //   }) => (
+    //     <>
+    //       <Button onClick={() => toggleProductStatus(id, status)}>
+    //         {status ? "Tắt" : "Bật"}
+    //       </Button>
+    //     </>
+    //   ),
+    // },
     {
-      title: "Nội dung sản phẩm",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status: boolean, record: DataType) => (
-        <Tag color={status ? "green" : "red"}>
-          {status ? "Hoạt Động" : "Tắt"}
-        </Tag>
-      ),
-    },
-    {
-      title: "Hành động",
-      render: ({
-        key: id,
-        status,
-      }: {
-        key: number | string;
-        status: boolean;
-      }) => (
-        <>
-          <Button onClick={() => toggleProductStatus(id, status)}>
-            {status ? "Tắt" : "Bật"}
-          </Button>
-        </>
-      ),
-    },
-    {
-      title: "Hành động",
+      title: <a className="text-white" href="/admin/product/add">
+        <button type="button" className="btn add-new btn-success m-1">
+          Thêm Sản Phẩm
+        </button>
+      </a>,
       key: "action",
       render: ({ key: id }: any) => {
         return (
           <>
             <div>
               <Popconfirm
-                title="Xóa sản phẩm này!"
-                description="Bạn có chắc chắn muốn xóa sản phẩm này ?"
+                title="Sản phẩm vào kho hàng!"
+                description="Bạn có chắc chắn muốn cho sản phẩm này vào kho hàng?"
                 onConfirm={() => confirm(id)}
-                okText="Xóa"
-                cancelText="Hủy"
+                okText="Đồng Ý"
+                cancelText="Quay Lại"
               >
                 <Button
-                  type="primary"
+                  className="text-light m-1"
                   style={{
-                    backgroundColor: "red",
+                    background: "red",
                     margin: "4px",
                     minWidth: "4em",
                   }}
                 >
-                  <CloseOutlined />
+                  <i className="ti ti-power m-1"></i> Trạng Thái
                 </Button>
               </Popconfirm>
               <Link to={`${id}/edit`}>
@@ -283,7 +287,7 @@ const ProductView = () => {
                     minWidth: "4em",
                   }}
                 >
-                  <EditOutlined />
+                  <i className="ti ti-edit m-1"></i> Chi tiết
                 </Button>
               </Link>
               <Link to={`detail/${id}`}>
@@ -295,19 +299,18 @@ const ProductView = () => {
                     minWidth: "4em",
                   }}
                 >
-                  Chi tiết màu size
+                  <i className="ti ti-eye m-1"></i> Chi tiết biến thể
                 </Button>
               </Link>
               <Link to={`detail/add/${id}`}>
                 <Button
-                  type="primary"
+                className="bg-dark text-light"
                   style={{
-                    backgroundColor: "green", // Change the color as needed
                     margin: "4px",
                     minWidth: "4em",
                   }}
                 >
-                  Thêm màu size
+                  <i className="ti ti-plus m-1"></i>Thêm biến thể
                 </Button>
               </Link>
             </div>
@@ -329,11 +332,7 @@ const ProductView = () => {
           <div className="card w-100">
             <div className="card-body mt-7">
               <h5 className="card-title fw-semibold mb-4">Sản Phẩm</h5>
-              <a className="text-white" href="/admin/product/add">
-                <button type="button" className="btn btn-success m-1">
-                  Thêm
-                </button>
-              </a>
+
               <div className="col-lg-12 d-flex align-items-stretch">
                 <form onSubmit={handleSearch} action="" className="row w-100">
                   <div className="mt-2 col-3">

@@ -125,13 +125,20 @@ const ProductEdit: React.FC = () => {
   return (
     <div className="container-xxl">
       <div className="row">
-        <div className="col-md-6 offset-md-3">
+        <div className="col-md-12">
           <div className="card custom-card">
             <div className="card-body">
-              <h5 className="card-title fw-semibold mb-4">Sửa Sản Phẩm</h5>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="form-group">
-                  <label>Category</label>
+              <h5 className="card-title fw-semibold add-new p-4 border-1 mb-4">Sửa Sản Phẩm</h5>
+              <form onSubmit={handleSubmit(onSubmit)} className="row">
+                <div className="form-group col-md-8 col-sm-12">
+                  <label>Tên sản phẩm</label>
+                  <input
+                    {...register("name", { required: true })}
+                    className={`form-control`}
+                  />
+                </div>
+                <div className="form-group col-md-4 col-sm-12">
+                  <label>Danh Mục</label>
                   <Controller
                     name="brand_id"
                     control={control}
@@ -152,15 +159,7 @@ const ProductEdit: React.FC = () => {
                   />
                 </div>
 
-                <div className="form-group">
-                  <label>Tên sản phẩm</label>
-                  <input
-                    {...register("name", { required: true })}
-                    className={`form-control`}
-                  />
-                </div>
-
-                <div className="form-group">
+                <div className="form-group col-md-6 col-sm-12">
                   <label>Giá niêm yết</label>
                   <input
                     {...register("price", { required: true })}
@@ -169,7 +168,7 @@ const ProductEdit: React.FC = () => {
                   />
                 </div>
 
-                <div className="form-group">
+                <div className="form-group col-md-6 col-sm-12">
                   <label>Giá bán</label>
                   <input
                     {...register("price_sale", { required: true })}
@@ -177,25 +176,6 @@ const ProductEdit: React.FC = () => {
                     className={`form-control`}
                   />
                 </div>
-
-                <div className="form-group">
-                  <label>Mô tả sản phẩm</label>
-                  <input
-                    {...register("description", { required: true })}
-                    type="text"
-                    className={`form-control`}
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Nội dung</label>
-                  <input
-                    {...register("content", { required: true })}
-                    type="textarea"
-                    className={`form-control`}
-                  />
-                </div>
-
                 <div className="form-group">
                   <label>Ảnh</label>
                   <Upload
@@ -217,6 +197,24 @@ const ProductEdit: React.FC = () => {
                     </div>
                   </Upload>
                 </div>
+
+                <div className="form-group">
+                  <label>Mô tả sản phẩm</label>
+                  <textarea
+                    {...register("description", { required: true })}
+                    className={`form-control`}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Nội dung</label>
+                  <textarea
+                    {...register("content", { required: true })}
+                    className={`form-control`}
+                  />
+                </div>
+
+                
 
                 <div className="form-group">
                   <Space>

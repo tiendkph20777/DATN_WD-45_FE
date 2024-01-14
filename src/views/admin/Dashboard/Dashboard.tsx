@@ -335,7 +335,7 @@ const Dashboard = () => {
                                 <div className="col-xl-12 col-md-6 mb-4">
                                     <button
                                         style={{
-                                            width: "150px",
+                                            width: "200px",
                                             fontSize: "15px",
                                             padding: "5px 10px",
                                             margin: "10px 10px",
@@ -347,7 +347,7 @@ const Dashboard = () => {
                                     </button>
                                     <button
                                         style={{
-                                            width: "150px",
+                                            width: "200px",
                                             fontSize: "15px",
                                             padding: "5px 10px",
                                             margin: "10px 10px",
@@ -359,7 +359,7 @@ const Dashboard = () => {
                                     </button>
                                     <button
                                         style={{
-                                            width: "150px",
+                                            width: "200px",
                                             fontSize: "15px",
                                             padding: "5px 10px",
                                             margin: "10px 10px",

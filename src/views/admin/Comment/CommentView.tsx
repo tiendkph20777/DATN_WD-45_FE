@@ -117,7 +117,7 @@ export default function CommentView() {
                                 minWidth: "4em",
                             }}
                         >
-                            <CloseOutlined />
+                            <i className="ti ti-x"></i>
                         </Button>
                     </Popconfirm>
                 );

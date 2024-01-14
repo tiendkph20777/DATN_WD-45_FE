@@ -50,7 +50,7 @@ const CategoryEdit: React.FC = () => {
         <div className="container-fluid">
             <div className="row">
                 <div className="card-body">
-                    <h5 className="card-title fw-semibold mb-4">Cập nhật Danh Mục</h5>
+                    <h5 className="card-title add-new p-4 border-1 fw-semibold mb-4">Cập nhật Danh Mục</h5>
                     {contextHolder}
                     <Form
                         form={form}
@@ -73,7 +73,7 @@ const CategoryEdit: React.FC = () => {
                             <Input />
                         </Form.Item>
                         <Form.Item label="Ảnh" name="image" valuePropName="file">
-                            <div>
+                            <div className='mt-5'>
                                 <div className="image-upload">
                                     <label htmlFor="file-input">
                                         <i className="bx bx-image-add"></i>
@@ -88,7 +88,8 @@ const CategoryEdit: React.FC = () => {
                             </div>
                         </Form.Item>
                         <Form.Item
-                            label="Mô tả sản phẩm"
+                        className='mt-5'
+                            label="Mô tả thương hiệu"
                             name="description"
                             rules={[
                                 { required: true, message: 'Vui lòng nhập mô tả!' },

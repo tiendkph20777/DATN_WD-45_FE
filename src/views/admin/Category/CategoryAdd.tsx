@@ -66,7 +66,7 @@ const CategoryAdd: React.FC = () => {
         <div className="container-fluid">
             <div className="row">
                 <div className="card-body">
-                    <h5 className="card-title fw-semibold mb-4">Thêm Danh Mục</h5>
+                    <h5 className="card-title add-new p-4 border-1 fw-semibold mb-4">Thêm Danh Mục</h5>
                     {/* {contextHolder} */}
                     <Form
                         form={form}
@@ -79,7 +79,7 @@ const CategoryAdd: React.FC = () => {
                         autoComplete="off"
                     >
                         <Form.Item
-                            label="Name"
+                            label="Tên Thương Hiệu"
                             name="name"
                             rules={[{ required: true, message: 'Vui lòng nhập tên Thương Hiệu!' }, { min: 3, message: "ít nhất 3 ký tự" },]}
                         >
@@ -111,7 +111,7 @@ const CategoryAdd: React.FC = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Mô tả sản phẩm"
+                            label="Mô tả thương hiệu"
                             name="description"
                             rules={[
                                 { required: true, message: 'Vui lòng nhập mô tả!' },
@@ -123,9 +123,9 @@ const CategoryAdd: React.FC = () => {
 
                         <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
                             <Button type="primary" htmlType="submit" >
-                                Submit
+                                Thêm
                             </Button>
-                            <Button htmlType="reset">reset</Button>
+                            <Button htmlType="reset">Xóa Nội Dung</Button>
                         </Form.Item>
                     </Form>
                 </div>

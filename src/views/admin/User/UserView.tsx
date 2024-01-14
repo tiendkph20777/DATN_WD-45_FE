@@ -165,7 +165,7 @@ const App: React.FC = () => {
                 <span>
                     <Link to={record.key + '/edit'}>
                         <Button type='primary' >
-                            <EditOutlined />
+                        <i className="ti ti-pencil-plus"></i>
                         </Button>
                     </Link>
                     <Popconfirm
@@ -177,7 +177,7 @@ const App: React.FC = () => {
                         cancelText="Hủy"
                     >
                         <Button type="primary" style={{ backgroundColor: 'red', margin: '4px' }}>
-                            <CloseOutlined />
+                        <i className="ti ti-x"></i>
                         </Button>
                     </Popconfirm>
                 </span>
@@ -192,9 +192,7 @@ const App: React.FC = () => {
                 <div className='col-5'>
                     <Search placeholder="Nhập email người dùng" value={searchText} onChange={(e) => onSearch(e.target.value)} enterButton />
                 </div>
-                <div className='col-5'>
-                    <Search placeholder="Nhập tên người dùng " value={searchText1} onChange={(e) => onSearch1(e.target.value)} enterButton />
-                </div>
+                
                 <Table
                     columns={columns}
                     expandable={{
