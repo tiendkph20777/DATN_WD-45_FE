@@ -90,41 +90,46 @@ const CategoryView: React.FC = () => {
             key: 'description',
         },
         {
-            title: "Hành động",
+            title: <a className="text-white" href="/admin/category/add">
+            <button type="button" className="btn add-new btn-success m-1">Thêm</button>
+        </a>,
             key: "action",
             render: ({ key: id }: any) => {
                 return (
                     <>
-                        <div>
+                        <div className='row'>
                             <Popconfirm
-                                title="Delete the task"
+                            className='col-6'
+                                title="Xóa thương hiệu"
                                 description="Bạn có chắc chắn muốn xóa thương Hiệu này ?"
                                 onConfirm={() => confirm(id)}
                                 okText="Xóa"
-                                cancelText="Hủy"
+                                cancelText="Quay Lại"
                             >
                                 <Button
-                                    type="primary"
-                                    style={{
-                                        backgroundColor: "red",
-                                        margin: "4px",
-                                        minWidth: "4em",
-                                    }}
+                                className='bg-danger text-light'
+                                    // type="primary"
+                                    // style={{
+                                    //     backgroundColor: "red",
+                                    //     margin: "4px",
+                                    //     minWidth: "4em",
+                                    // }}
                                 >
-                                    <CloseOutlined />
+                                    <i className="ti ti-power"></i>
                                 </Button>
                             </Popconfirm>
 
                             <Button
+                            className='col-6'
                                 type="primary"
-                                style={{
-                                    backgroundColor: "blue",
-                                    margin: "4px",
-                                    minWidth: "4em",
-                                }}
+                                // style={{
+                                //     backgroundColor: "blue",
+                                //     margin: "4px",
+                                //     minWidth: "4em",
+                                // }}
                             >
                                 <Link to={`${id}/edit`} >
-                                    <EditOutlined />
+                                <i className="ti ti-edit"></i>
                                 </Link>
                             </Button>
                         </div>
@@ -146,10 +151,8 @@ const CategoryView: React.FC = () => {
                 <div className="col-lg-12 d-flex align-items-stretch">
                     <div className="card w-100">
                         <div className="card-body mt-5" >
-                            <h5 className="card-title fw-semibold mb-4">Thương Hiệu</h5>
-                            <a className="text-white" href="/admin/category/add">
-                                <button type="button" className="btn btn-success m-1">Thêm</button>
-                            </a>
+                            <h5 className="card-title add-new p-4 border-1 fw-semibold mb-4">Thương Hiệu</h5>
+                            
                             <div className="col-lg-12 d-flex align-items-stretch">
                                 <form onSubmit={handleSearch} className="d-flex w-100" method='POST'>
                                     <div className="m-2 w-75">
@@ -162,7 +165,7 @@ const CategoryView: React.FC = () => {
                                             onChange={(e) => setSearchTerm(e.target.value)}
                                         />
                                     </div>
-                                    <button type="submit" className="p-2 btn btn-secondary m-2">Tìm kiếm</button>
+                                    <button type="submit" className="p-2 w-25 btn btn-secondary m-2">Tìm kiếm</button>
                                 </form>
                             </div>
                             <div className="table-responsive">

@@ -267,11 +267,11 @@ const Dashboard = (props: Props) => {
           onChange={(e) => setSearchProductId(e.target.value)}
         />
         <Select
-          style={{ width: 200, marginRight: 8 }}
+          // style={{ width: 200, marginRight: 8 }}
           placeholder="Chọn Màu"
           value={selectedColor}
           onChange={(value) => setSelectedColor(value)}
-          style={{ marginBottom: "20px", marginTop: "40px" }}
+          // style={{ marginBottom: "20px", marginTop: "40px" }}
         >
           <Option value={undefined}>All Color</Option>
           {dataSourceToRender && dataSourceToRender.length > 0 ? (
@@ -285,7 +285,7 @@ const Dashboard = (props: Props) => {
           )}
         </Select>
         <Select
-          style={{ width: 200, marginRight: 8 }}
+          // style={{ width: 200, marginRight: 8 }}
           placeholder="Chọn Kích Thước"
           value={selectedSize}
           onChange={(value) => setSelectedSize(value)}

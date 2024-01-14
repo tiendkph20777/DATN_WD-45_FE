@@ -227,7 +227,11 @@ const VoucherView: React.FC = () => {
       ),
     },
     {
-      title: "Hành động",
+      title: <a className="text-white" href="/admin/voucher/add">
+      <button type="button" className="btn add-new btn-success m-1">
+        Thêm
+      </button>
+    </a>,
       render: ({
         key: id,
         status,
@@ -281,12 +285,8 @@ const VoucherView: React.FC = () => {
         <div className="col-lg-12 d-flex align-items-stretch">
           <div className="card w-100">
             <div className="card-body" style={{ paddingTop: "70px" }}>
-              <h5 className="card-title fw-semibold ">Mã giảm giá</h5>
-              <a className="text-white" href="/admin/voucher/add">
-                <button type="button" className="btn btn-success m-1">
-                  Thêm
-                </button>
-              </a>
+              <h5 className="card-title add-new p-4 border-1 fw-semibold ">Mã giảm giá</h5>
+              
 
               <div className="col-lg-12 d-flex align-items-stretch"></div>
               <div className="table-responsive">
