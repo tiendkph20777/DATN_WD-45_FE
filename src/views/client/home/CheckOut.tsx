@@ -48,6 +48,8 @@ const CheckOut = () => {
       setVoucherStatus(storedVoucherStatus);
     }
   }, [allVouchersData]);
+  // //////////
+  console.log(voucherStatus)
 
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
