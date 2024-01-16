@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Popconfirm, message as messageApi } from "antd";
+import { Modal, message as messageApi } from "antd";
 
 import { useFetchOneCartQuery } from "../../../services/cart.service";
 import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
@@ -14,9 +14,9 @@ import {
   useGetVoucherByCodeQuery,
   useGetVouchersQuery,
 } from "../../../services/voucher.service";
-import { useGetPaymentQuery } from "../../../services/payment.service";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
+// 
+import { firebase, auth } from "./../user/Firebase";
 
 const CheckOut = () => {
   const [allVouchers, setAllVouchers] = useState([]);
@@ -30,26 +30,33 @@ const CheckOut = () => {
   const { data: usersOne, isLoading } = useFetchOneUserQuery(idUs);
   const { data: cartUser } = useFetchOneCartQuery(idUs);
   const { data: ProductDetailUser } = useGetAllProductsDetailQuery();
-  const { data: paymentQuery } = useGetPaymentQuery();
   const { data: Product } = useGetProductsQuery();
   const [selectedVoucherValue, setSelectedVoucherValue] = useState(0);
   const [finalTotal, setFinalTotal] = useState(0);
   const [finalTotal1, setFinalTotal1] = useState(0);
   const [shippingFee, setShippingFee] = useState(0);
   const [voucherStatus, setVoucherStatus] = useState({});
+  // 
 
+  console.log(voucherStatus)
+
+  // useEffect(() => {
+  //   if (allVouchersData) {
+  //     // setAllVouchers(allVouchersData);
+
+  //     setVoucherStatus(allVouchersData)
+  //   }
+  // }, [allVouchersData]);
   useEffect(() => {
     if (allVouchersData) {
-      setAllVouchers(allVouchersData);
-      // Lấy trạng thái voucher từ Local Storage
-      const storedVoucherStatus = JSON.parse(
-        localStorage.getItem("voucherStatus") || "{}"
-      );
-      setVoucherStatus(storedVoucherStatus);
+      const activeVouchers = allVouchersData.filter((voucher) => voucher.status === true);
+      setVoucherStatus(activeVouchers);
     }
   }, [allVouchersData]);
+
   // //////////
-  console.log(voucherStatus)
+  // console.log(voucherStatus)
+  // console.log(allVouchers)
 
   useEffect(() => {
     if (cartUser && ProductDetailUser) {
@@ -115,6 +122,8 @@ const CheckOut = () => {
 
   const [voucherCode, setVoucherCode] = useState("");
   const { data: voucher, error } = useGetVoucherByCodeQuery(voucherCode);
+
+  console.log(voucherCode)
 
   if (error) {
     console.error("Lỗi khi truy vấn mã khuyến mãi:", error);
@@ -247,9 +256,70 @@ const CheckOut = () => {
   };
   const total = finalTotal1 - valueVoucher;
 
+  // 
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [step, setStep] = useState("INPUT_PHONE_NUMBER");
+  const [result, setResult] = useState("");
+  // const [a1, seta1] = useState("0")
 
+  // ////////////////////////
+  function convertToInternationalFormat(phoneNumber: any) {
+    // Loại bỏ các ký tự không phải số
+    const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
 
-  const navigation = useNavigate();
+    // Kiểm tra xem số điện thoại có bắt đầu bằng "0" hay không
+    if (numericPhoneNumber.startsWith('0')) {
+      // Nếu có, thì thay thế "0" bằng "+84"
+      return `+84${numericPhoneNumber.substring(1)}`;
+    } else {
+      // Nếu không, thêm dấu "+" vào đầu số điện thoại
+      return `+${numericPhoneNumber}`;
+    }
+  }
+  const internationalPhoneNumber = convertToInternationalFormat(phoneNumber);
+
+  // console.log(internationalPhoneNumber);
+  const signin = () => {
+    if (internationalPhoneNumber === "") return;
+    const verify = new firebase.auth.RecaptchaVerifier("recaptcha-container", {
+      size: "invisible",
+    });
+
+    const promise = auth.signInWithPhoneNumber(internationalPhoneNumber, verify);
+    promise
+      .then((result) => {
+        setResult(result);
+        setStep("VERIFY_OTP");
+        setIsModalOpen(true);
+      })
+      .catch((err) => {
+        // alert(err);
+        messageApi.info({
+          type: "error",
+          content: "Vui không để trống số điện thoại và nhập đúng đinh dạng để nhận OTP ",
+          className: "custom-class",
+          style: {
+            marginTop: "0",
+            fontSize: "20px",
+            lineHeight: "50px",
+          },
+        });
+      });
+    return promise;
+  };
+
+  const [data1, setdat1] = useState();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+  // console.log(a1)
+
+  // /////////////////////////////////////////////
+
   const handleOnClick = async () => {
     const form = document.querySelector(
       "#form_checkout"
@@ -266,11 +336,44 @@ const CheckOut = () => {
           }
         }
       });
+      console.log("data", phoneNumber)
+      setPhoneNumber(phoneNumber)
+
+      const internationalPhoneNumber = convertToInternationalFormat(phoneNumber);
+
+      console.log(internationalPhoneNumber);
+      if (internationalPhoneNumber === "") return;
+      const verify = new firebase.auth.RecaptchaVerifier("recaptcha-container", {
+        size: "invisible",
+      });
+
+      const promise = auth.signInWithPhoneNumber(internationalPhoneNumber, verify);
+      promise
+        .then((result) => {
+          setResult(result);
+          setStep("VERIFY_OTP");
+          setIsModalOpen(true);
+        })
+        .catch((err) => {
+          messageApi.info({
+            type: "error",
+            content: "Bạn chưa chọn phương thức thanh toán 1",
+            className: "custom-class",
+            style: {
+              marginTop: "0",
+              fontSize: "20px",
+              lineHeight: "50px",
+            },
+          });
+          alert(err);
+        });
+      // return promise;
 
       try {
         const date = new Date();
         const newData = {
           ...data,
+          tel: phoneNumber,
           address: address,
           products: cartDetail,
           payment: selectedPayment,
@@ -281,7 +384,7 @@ const CheckOut = () => {
           // note: Note,
           status: "Đang xác nhận đơn hàng",
         };
-
+        setdat1(newData)
 
         if (foundItem?.name === undefined || foundItem1?.name === undefined || foundItem2?.name === undefined || selectedAdd === "") {
           // console.log("bạn chưa nhập đủ thông tin1")
@@ -297,7 +400,6 @@ const CheckOut = () => {
           });
           return
         } else {
-          // console.log("bạn đã nhập đủ thông tin")
           localStorage.setItem("currentOrder", JSON.stringify(newData));
           localStorage.setItem("voucherStatus", JSON.stringify(voucherStatus));
           // console.log(newData);
@@ -322,21 +424,54 @@ const CheckOut = () => {
             return;
           } else if (newData.payment === "Thanh toán khi nhận hàng") {
             // console.log("bạn chọn phương thức thanh toán khi nhận hàng");
-            await addCheckout(newData);
-            window.location.href = '/purchase';
-            if (newData) {
-              newData.products.map((item) => quantityCheckout(item));
-            }
-            // xóa các sản phẩm đã được thanh toán ra khỏi giỏ hàng
-            if (newData) {
-              newData.products.map((item) => removeCartCheckout(item));
-            }
-            //
-            if (newData) {
-              newData.products.map((item) => quantityCheckout(item));
-            }
-            localStorage.setItem('successMessage', "Chúc mừng bạn đã đặt hàng thành công , đơn hàng sẽ được chuyển đi sớm nhất 🎉🎉🎉");
-            return;
+            if (internationalPhoneNumber === "") return;
+            const verify = new firebase.auth.RecaptchaVerifier("recaptcha-container", {
+              size: "invisible",
+            });
+
+            const promise = auth.signInWithPhoneNumber(internationalPhoneNumber, verify);
+            promise
+              .then((result) => {
+                setResult(result);
+                setStep("VERIFY_OTP");
+                setIsModalOpen(true);
+                console.log("ok")
+              })
+              .catch((err) => {
+                alert(err);
+                messageApi.info({
+                  type: "error",
+                  content: "Vui lòng nhập số điện thoại",
+                  className: "custom-class",
+                  style: {
+                    marginTop: "0",
+                    fontSize: "20px",
+                    lineHeight: "50px",
+                  },
+                });
+                console.log("a")
+              });
+            // if (step === "VERIFY_OTP") {
+            //   console.log("ok")
+            //   await addCheckout(newData);
+            //   window.location.href = '/purchase';
+            //   if (newData) {
+            //     newData.products.map((item) => quantityCheckout(item));
+            //   }
+            //   // xóa các sản phẩm đã được thanh toán ra khỏi giỏ hàng
+            //   if (newData) {
+            //     newData.products.map((item) => removeCartCheckout(item));
+            //   }
+            //   //
+            //   if (newData) {
+            //     newData.products.map((item) => quantityCheckout(item));
+            //   }
+            //   localStorage.setItem('successMessage', "Chúc mừng bạn đã đặt hàng thành công , đơn hàng sẽ được chuyển đi sớm nhất 🎉🎉🎉");
+            //   return;
+            // }
+            // else {
+            //   console.log("lỗi")
+            // }
           } else {
             console.log("bạn chưa chọn phương thức thanh toán");
             messageApi.info({
@@ -357,6 +492,59 @@ const CheckOut = () => {
       }
     }
   };
+
+  const ValidateOtp = async () => {
+    if (otp === "") {
+      // alert("Please enter an OTP");
+      messageApi.info({
+        type: "error",
+        content: "Vui lòng nhập OTP ",
+        className: "custom-class",
+        style: {
+          marginTop: "0",
+          fontSize: "20px",
+          lineHeight: "50px",
+        },
+      });
+      return;
+    }
+
+    try {
+      await result.confirm(otp);
+      setStep("VERIFY_SUCCESS");
+      // seta1("1");
+
+      // Check if step is VERIFY_OTP and execute additional logic
+      if (step === "VERIFY_OTP") {
+        console.log("ok");
+
+        // Additional logic after successful OTP verification
+        await addCheckout(data1);
+        window.location.href = '/purchase';
+
+        // Perform other operations such as quantity updates, cart removal, etc.
+        if (data1) {
+          data1.products.map((item) => quantityCheckout(item));
+          data1.products.map((item) => removeCartCheckout(item));
+          data1.products.map((item) => quantityCheckout(item));
+        }
+
+        localStorage.setItem('successMessage', "Chúc mừng bạn đã đặt hàng thành công, đơn hàng sẽ được chuyển đi sớm nhất 🎉🎉🎉");
+      }
+    } catch (err) {
+      messageApi.info({
+        type: "error",
+        content: "Mã otp bị sai vui lòng nhập lại",
+        className: "custom-class",
+        style: {
+          marginTop: "0",
+          fontSize: "20px",
+          lineHeight: "50px",
+        },
+      });
+    }
+  };
+
 
   const handleVoucherSelect = (voucherCode: any) => {
     console.log("Selected Voucher Code:", voucherCode);
@@ -390,11 +578,8 @@ const CheckOut = () => {
     }
   };
 
-  localStorage.setItem("shippingFee", JSON.stringify(shippingFee));
-  localStorage.setItem(
-    "selectedVoucher",
-    JSON.stringify({ voucherCode, value: voucher?.value })
-  );
+
+
 
   if (isLoading) {
     return (
@@ -410,10 +595,33 @@ const CheckOut = () => {
   }
   return (
     <div>
-      <section className="checkout_area section_gap">
+      <div>
+        <center>
+          {step === "VERIFY_OTP" && (
+            <div>
+              <Modal title="Vui lòng nhập mã otp đã được gửi về máy của bạn." open={isModalOpen} onOk={ValidateOtp} onCancel={handleCancel}>
+                <br />
+                <br />
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder={"Enter your OTP"}
+                  onChange={(e) => {
+                    setOtp(e.target.value);
+                  }}
+                />
+                <br />
+              </Modal>
+
+            </div>
+          )}
+        </center>
+      </div>
+      <section className="checkout_area section_gap" style={{ fontSize: "17px" }}>
         <div className="container">
           <div className="billing_details">
             <form className="row" id="form_checkout" noValidate>
+
               <div className="col-lg-4">
                 <h3>Billing Details</h3>
                 <div className="row contact_form">
@@ -451,14 +659,23 @@ const CheckOut = () => {
                   </div>
                   <div className="col-md-12 pb-4">
                     <label htmlFor="">Số điện thoại</label>
-                    <input
+                    {/* <input
                       type="text"
                       className="form-control"
                       // id="number"
                       placeholder="Số điện thoại"
                       name="tel"
-                    // value={usersOne.tel}
+                      value={usersOne.tel}
+                    /> */}
+                    <input
+                      value={phoneNumber}
+                      className="form-control"
+                      onChange={(e) => {
+                        setPhoneNumber(e.target.value);
+                      }}
+                      placeholder="Số điện thoại"
                     />
+                    <div id="recaptcha-container"></div>
                   </div>
 
                   {/* <div className="row"> */}
@@ -620,22 +837,27 @@ const CheckOut = () => {
                           onChange={(e) => handleVoucherSelect(e.target.value)}
                         >
                           <option value="">-- Chọn mã khuyến mãi --</option>
-                          {allVouchers
-                            .filter(
-                              (voucher: any) => voucherStatus[voucher._id]
-                            ) // Lọc những mã hợp lệ
-                            .map((voucher: any, index) => (
-                              <option key={index} value={voucher.code}>
+                          {Array.isArray(voucherStatus) && voucherStatus.length > 0 ? (
+                            voucherStatus.map((voucher: any) => (
+                              <option key={voucher._id} value={voucher.code}>
+                                <img src="https://tse3.mm.bing.net/th?id=OIP.gYaHEu5aZY4P2dsWyYoflQHaDW&pid=Api&P=0&h=180" alt="" width={50} />
                                 {voucher.code} -{" "}
                                 {voucher.value.toLocaleString("vi-VN", {
                                   style: "currency",
                                   currency: "VND",
                                 })}
                               </option>
-                            ))}
+                            ))
+                          ) : (
+                            <option value="" disabled>
+                              Bạn đã dùng mã khuyến mại không thể chọn mã khuyến mại khác được nữa .
+                            </option>
+                          )}
                         </select>
                       </form>
                     </div>
+
+
                     <div className="payment_item active">
                       <form className="row mt-3"  >
                         <label htmlFor="" className="col-8 m-2">
@@ -663,12 +885,12 @@ const CheckOut = () => {
                           className="col-2 money-checkout w-25"
                           placeholder="*Giá trị voucher"
                           value={
-                            voucher
-                              ? parseFloat(voucher?.value).toLocaleString(
-                                "vi-VN",
-                                { style: "currency", currency: "VND" }
-                              )
-                              : ""
+                            !isNaN(parseFloat(voucher?.value))
+                              ? parseFloat(voucher?.value).toLocaleString("vi-VN", {
+                                style: "currency",
+                                currency: "VND",
+                              })
+                              : "0 đ"
                           }
                         />
                       </form>
@@ -709,34 +931,74 @@ const CheckOut = () => {
                       </form>
                     </div>
 
-                    <div className="row">
-                      <div className="payment_item active col-6 m-2">
-                        <div>
-                          <select
-                            onChange={(e) =>
-                              handlePaymentSelect(e.target.value)
-                            }
-                            name="payment"
-                            className="form-select"
-                          >
-                            <option value="">
-                              -- Chọn phương thức thanh toán --
-                            </option>
-                            <option value="Thanh toán khi nhận hàng">
-                              -- Thanh toán khi nhận hàng --
-                            </option>
-                            <option value="Thanh toán online">
-                              -- Thanh toán online --
-                            </option>
-                            {/* {paymentQuery?.map((item) => (
-                              <option key={item._id} value={item._id}>
-                                {item.name}
-                              </option>
-                            ))} */}
-                          </select>
-                        </div>
+                    <div className="row pt-3">
+                      <div className="payment_item active col-12 m-2">
+                        <form className="">
+                          <p className="fw-bold row">
+                            <label htmlFor="" className="col-12 pb-2">--- Chọn phương thức thanh toán ---</label>
+                            <div className="form-check col-12" style={{ border: "2px solid #ccc", padding: "15px", paddingLeft: "50px", borderRadius: "5px", fontSize: "20px" }}>
+                              <label className="form-check-label row">
+                                <div className="row align-items-center col-9">
+                                  <div className="">
+                                    <input
+                                      type="radio"
+                                      className="form-check-input"
+                                      name="paymentMethod"
+                                      onChange={(e) => handlePaymentSelect("Thanh toán khi nhận hàng", e.target.checked)}
+                                    />
+                                    Thanh toán khi nhận hàng
+                                  </div>
+                                </div>
+                                <div className="col-1 pl-3">
+                                  <div>
+                                    <img src="https://sv0.vacdn.link/user_libraries/shipcod.png" alt="" width={45} height={40} />
+                                  </div>
+                                </div>
+                                <div className="col-1 pl-3">
+                                  <div>
+                                    <img src="https://tse2.mm.bing.net/th?id=OIP.T_ss1FeFSZplTsGcqpH40AHaHa&pid=Api&P=0&h=180" alt="" width={50} height={30} />
+                                  </div>
+                                </div>
+                              </label>
+                            </div>
+
+                            <div className="form-check col-12" style={{ border: "2px solid #ccc", padding: "15px", paddingLeft: "50px", borderRadius: "5px", fontSize: "20px" }}>
+                              <label className="form-check-label row">
+                                <div className="row align-items-center col-9">
+                                  <div className="">
+                                    <input
+                                      type="radio"
+                                      className="form-check-input"
+                                      name="paymentMethod"
+                                      onChange={(e) => handlePaymentSelect("Thanh toán online", e.target.checked)}
+                                    />
+                                    Thanh toán online
+                                  </div>
+                                </div>
+                                <div className="col-1 pl-3">
+                                  <div>
+                                    <img src="https://media.loveitopcdn.com/3807/logo-ncb-dongphucsongphu.png" alt="" width={50} height={30} />
+                                  </div>
+                                </div>
+                                <div className="col-1 ml-3">
+                                  <div>
+                                    <img src="https://assets.topdev.vn/images/2020/08/25/VNPAY-Logo-yGapP.png" alt="" width={50} height={30} />
+                                  </div>
+                                </div>
+                                <div className="col-1 pl-3">
+                                  <div>
+                                    <img src="https://logos-world.net/wp-content/uploads/2020/04/Visa-Emblem.jpg" alt="" width={50} height={30} />
+                                  </div>
+                                </div>
+                              </label>
+                            </div>
+
+                          </p>
+                        </form>
                       </div>
-                      <div className="creat_account col-5">
+
+
+                      <div className="creat_account col-12">
                         <input
                           checked
                           disabled

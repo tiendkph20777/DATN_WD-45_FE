@@ -223,32 +223,32 @@ const ProductView = () => {
     //   dataIndex: "description",
     //   key: "description",
     // },
-    // {
-    //   title: "Trạng thái",
-    //   dataIndex: "status",
-    //   key: "status",
-    //   render: (status: boolean, record: DataType) => (
-    //     <Tag color={status ? "green" : "red"}>
-    //       {status ? "Hoạt Động" : "Tắt"}
-    //     </Tag>
-    //   ),
-    // },
-    // {
-    //   title: "Hành động",
-    //   render: ({
-    //     key: id,
-    //     status,
-    //   }: {
-    //     key: number | string;
-    //     status: boolean;
-    //   }) => (
-    //     <>
-    //       <Button onClick={() => toggleProductStatus(id, status)}>
-    //         {status ? "Tắt" : "Bật"}
-    //       </Button>
-    //     </>
-    //   ),
-    // },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status: boolean, record: DataType) => (
+        <Tag color={status ? "green" : "red"}>
+          {status ? "Hoạt Động" : "Tắt"}
+        </Tag>
+      ),
+    },
+    {
+      title: "Hành động",
+      render: ({
+        key: id,
+        status,
+      }: {
+        key: number | string;
+        status: boolean;
+      }) => (
+        <>
+          <Button onClick={() => toggleProductStatus(id, status)}>
+            {status ? "Tắt" : "Bật"}
+          </Button>
+        </>
+      ),
+    },
     {
       title: <a className="text-white" href="/admin/product/add">
         <button type="button" className="btn add-new btn-success m-1">
@@ -304,7 +304,7 @@ const ProductView = () => {
               </Link>
               <Link to={`detail/add/${id}`}>
                 <Button
-                className="bg-dark text-light"
+                  className="bg-dark text-light"
                   style={{
                     margin: "4px",
                     minWidth: "4em",
