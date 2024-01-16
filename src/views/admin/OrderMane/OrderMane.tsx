@@ -407,9 +407,7 @@ const OrderMane: React.FC = () => {
         onOk={onFinish1}
         onCancel={handleCancel}
       >
-        <Button type="danger" onClick={() => setIsModalOpen(true)}>
-          Hủy đơn hàng
-        </Button>
+       
 
         <Form
           name="nest-messages"
