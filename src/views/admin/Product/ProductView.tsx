@@ -37,7 +37,7 @@ const ProductView = () => {
   useEffect(() => {
     if (productData) {
       const filteredData = productData.filter((product: IProducts) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) && product.status === true
       );
 
       // Sort by creation date in descending order
@@ -62,6 +62,7 @@ const ProductView = () => {
       setDataSource(updatedDataSource);
     }
   }, [productData, searchTerm]);
+
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -104,7 +105,7 @@ const ProductView = () => {
 
       notification.success({
         message: "Success",
-        description: `Đã ${!status ? "Bật" : "Tắt"} sản phẩm thành công!`,
+        description: `Đã đưa sản phẩm vào kho!`,
       });
 
       const updatedData = dataSource.map((item) =>
@@ -233,22 +234,22 @@ const ProductView = () => {
         </Tag>
       ),
     },
-    {
-      title: "Hành động",
-      render: ({
-        key: id,
-        status,
-      }: {
-        key: number | string;
-        status: boolean;
-      }) => (
-        <>
-          <Button onClick={() => toggleProductStatus(id, status)}>
-            {status ? "Tắt" : "Bật"}
-          </Button>
-        </>
-      ),
-    },
+    // {
+    //   title: "Hành động",
+    //   render: ({
+    //     key: id,
+    //     status,
+    //   }: {
+    //     key: number | string;
+    //     status: boolean;
+    //   }) => (
+    //     <>
+    //       <Button onClick={() => toggleProductStatus(id, status)}>
+    //         {status ? "Tắt" : "Bật"}
+    //       </Button>
+    //     </>
+    //   ),
+    // },
     {
       title: <a className="text-white" href="/admin/product/add">
         <button type="button" className="btn add-new btn-success m-1">
@@ -256,14 +257,32 @@ const ProductView = () => {
         </button>
       </a>,
       key: "action",
-      render: ({ key: id }: any) => {
+      render: ({ key: id, status }: any) => {
         return (
           <>
             <div>
-              <Popconfirm
+              {/* <Popconfirm
                 title="Sản phẩm vào kho hàng!"
                 description="Bạn có chắc chắn muốn cho sản phẩm này vào kho hàng?"
                 onConfirm={() => confirm(id)}
+                okText="Đồng Ý"
+                cancelText="Quay Lại"
+              >
+                <Button
+                  className="text-light m-1"
+                  style={{
+                    background: "red",
+                    margin: "4px",
+                    minWidth: "4em",
+                  }}
+                >
+                  <i className="ti ti-power m-1"></i> Trạng Thái
+                </Button>
+              </Popconfirm> */}
+              <Popconfirm
+                title="Sản phẩm vào kho hàng!"
+                description="Bạn có chắc chắn muốn cho sản phẩm này vào kho hàng?"
+                onConfirm={() => toggleProductStatus(id, status)}
                 okText="Đồng Ý"
                 cancelText="Quay Lại"
               >
