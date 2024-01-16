@@ -182,11 +182,6 @@ const VoucherView: React.FC = () => {
       ),
     },
     {
-      title: "Số lượng",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
       title: "Ngày bắt đầu",
       dataIndex: "date_start",
       key: "date_start",

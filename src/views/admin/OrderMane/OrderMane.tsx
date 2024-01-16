@@ -38,8 +38,9 @@ const OrderMane: React.FC = () => {
   const [increaseProduct] = useIncreaseProductMutation();
   const [searchResult, setSearchResult] = useState<any>([]);
   const [previousStatus, setPreviousStatus] = useState<string | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
-
+  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(
+    undefined
+  );
 
   const handleEditClick = (id: string) => {
     const productToEdit = orderDa?.find((item) => item?._id === id);
@@ -110,8 +111,6 @@ const OrderMane: React.FC = () => {
         });
       }
       setSearchResult(filteredData);
-      
-
     }
   };
 
@@ -290,45 +289,36 @@ const OrderMane: React.FC = () => {
                   >
                     {status !== "Tiếp nhận đơn hàng" &&
                       status !== "Đã giao cho đơn vị vận chuyển" &&
-                      status !== "Đang giao hàng" &&
-                      status !== "Hủy đơn hàng" && (
+                      status !== "Đang giao hàng" && (
                         <Select.Option value="Đang xác nhận đơn hàng">
                           Đang xác nhận đơn hàng
                         </Select.Option>
                       )}
 
                     {status !== "Đã giao cho đơn vị vận chuyển" &&
-                      status !== "Đang giao hàng" &&
-                      status !== "Hủy đơn hàng" && (
+                      status !== "Đang giao hàng" && (
                         <Select.Option value="Tiếp nhận đơn hàng">
                           Tiếp nhận đơn hàng
                         </Select.Option>
                       )}
-                    {status !== "Đang giao hàng" &&
-                      status !== "Hủy đơn hàng" && (
-                        <Select.Option value="Đã giao cho đơn vị vận chuyển">
-                          Đã giao cho đơn vị vận chuyển
-                        </Select.Option>
-                      )}
-                    {status !== "Giao hàng thành công" &&
-                      status !== "Hủy đơn hàng" && (
-                        <Select.Option value="Đang giao hàng">
-                          Đang giao hàng
-                        </Select.Option>
-                      )}
-                    {status !== "Hủy đơn hàng" && (
-                      <Select.Option value="Giao hàng thành công">
-                        Giao hàng thành công
+                    {status !== "Đang giao hàng" && (
+                      <Select.Option value="Đã giao cho đơn vị vận chuyển">
+                        Đã giao cho đơn vị vận chuyển
                       </Select.Option>
                     )}
-                    {status !== "Tiếp nhận đơn hàng" &&
-                      status !== "Đã giao cho đơn vị vận chuyển" &&
-                      status !== "Đang giao hàng" &&
-                      status !== "Giao hàng thành công" && (
-                        <Select.Option value="Hủy đơn hàng">
-                          Hủy đơn hàng
-                        </Select.Option>
-                      )}
+                    {status !== "Giao hàng thành công" && (
+                      <Select.Option value="Đang giao hàng">
+                        Đang giao hàng
+                      </Select.Option>
+                    )}
+
+                    <Select.Option value="Giao hàng thành công">
+                      Giao hàng thành công
+                    </Select.Option>
+
+                    <Select.Option value="Hủy đơn hàng">
+                      Hủy đơn hàng
+                    </Select.Option>
                   </Select>
                 </Form.Item>
               </Space.Compact>
@@ -410,12 +400,15 @@ const OrderMane: React.FC = () => {
         <OrderDetails roleMane={roleMane} />
       </Modal>
       {/* modal hủy hàng */}
+
       <Modal
         title="Lý do hủy đơn hàng"
         open={isModalOpen}
         onOk={onFinish1}
         onCancel={handleCancel}
       >
+       
+
         <Form
           name="nest-messages"
           onFinish={onFinish1}
