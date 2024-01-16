@@ -57,20 +57,18 @@ const productAPI = createApi({
     }),
 
     updateProductStatus: builder.mutation<
-      IProducts,
-      { id: number | string; status: boolean }
-    >({
-      query: ({ id, status }) => ({
-        url: `/product/${id}/updateStatus/${status}`,
-        method: "PUT",
-        body: { status },
-        headers: {
-          "content-type": "application/json",
-          authorization: `Bearer ${token}`,
-        },
+      IProducts, { id: number | string; status: boolean }>({
+        query: ({ id, status }) => ({
+          url: `/product/${id}/updateStatus/${status}`,
+          method: "PUT",
+          body: { status },
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+        }),
+        invalidatesTags: ["Product"],
       }),
-      invalidatesTags: ["Product"],
-    }),
   }),
 });
 

@@ -94,7 +94,6 @@ const ProductAdd = () => {
                       ))}
                   </select>
                 </div>
-
                 <div className="mb-3">
                   <label htmlFor="productSize" className="form-label">
                     Kích Cỡ
@@ -102,12 +101,14 @@ const ProductAdd = () => {
                   <input
                     type="number"
                     id="size"
-                    {...register("size", { required: true })}
+                    {...register("size", { required: true, min: 1 })}
                     className={`form-control ${errors.size ? "is-invalid" : ""}`}
                   />
                   {errors.size && (
                     <div id="emailHelp" className="form-text text-danger">
-                      {errors.size.message}
+                      {errors.size.type === "required"
+                        ? "Vui lòng nhập giá trị."
+                        : "Giá trị phải lớn hơn 0."}
                     </div>
                   )}
                 </div>
@@ -117,13 +118,15 @@ const ProductAdd = () => {
                     Màu Sắc
                   </label>
                   <input
-                  placeholder="*vui lòng nhập màu bằng tiếng anh và không sai chính tả, xin cảm ơn"
-                    {...register("color")}
+                    placeholder="*vui lòng nhập màu bằng tiếng anh và không sai chính tả, xin cảm ơn"
+                    {...register("color", { required: true })}
                     className={`form-control ${errors.color ? "is-invalid" : ""}`}
                   />
                   {errors.color && (
                     <div id="emailHelp" className="form-text text-danger">
-                      {errors.color.message}
+                      {errors.color.type === "required"
+                        ? "Vui lòng nhập giá trị."
+                        : "Giá trị phải lớn hơn 0."}
                     </div>
                   )}
                 </div>
@@ -134,17 +137,19 @@ const ProductAdd = () => {
                   </label>
                   <input
                     type="number"
-                    {...register("quantity", { required: true })}
+                    {...register("quantity", { required: true, min: 0 })}
                     className={`form-control ${errors.quantity ? "is-invalid" : ""}`}
                   />
                   {errors.quantity && (
                     <div id="emailHelp" className="form-text text-danger">
-                      {errors.quantity.message}
+                      {errors.quantity.type === "required"
+                        ? "Vui lòng nhập giá trị."
+                        : "Giá trị phải lớn hơn 0."}
                     </div>
                   )}
                 </div>
 
-                
+
 
                 <div className="mb-3">
                   <Button type="primary" htmlType="submit">

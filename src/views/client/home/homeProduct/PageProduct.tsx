@@ -42,7 +42,7 @@ const PageProduct = () => {
       setSearchResult(visibleProducts);
     }
   }, [productData, productStatus]);
-  
+
   useEffect(() => {
     if (productData) {
       // Sort products by the creation date in descending order (newest first)
@@ -114,7 +114,7 @@ const PageProduct = () => {
             </div>
           </div>
           <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
-            {dataSourceToRender.slice(0, 30).map((item) => {
+            {dataSourceToRender.slice(0, 17).map((item) => {
               if (item.status) {
                 return (
                   <div className="product border-2 p-2" key={item._id}>

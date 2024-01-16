@@ -39,7 +39,7 @@ interface DataType {
 
 const Dashboard = (props: Props) => {
   const { id } = useParams();
-  console.log("ID:", id);
+  // console.log("ID:", id);
   const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     undefined
@@ -88,7 +88,7 @@ const Dashboard = (props: Props) => {
           (product) => product.product_id === productIdToFind
         );
 
-        console.log(filteredProducts);
+        // console.log(filteredProducts);
 
         const updatedDataSource = filteredProducts?.map(
           ({ _id, size, color, quantity, product_id }: IProduct) => ({
@@ -206,7 +206,18 @@ const Dashboard = (props: Props) => {
       // render:(quantity) => (quantity >= 0 ? quantity : 0)
     },
     {
-      title: "Action",
+      title: <Link to={`/admin/product/detail/add/${id}`}>
+        <Button
+          type="primary"
+          style={{
+            backgroundColor: "blue",
+            margin: "4px",
+            minWidth: "4em",
+          }}
+        >
+          Thêm biến thể
+        </Button>
+      </Link>,
       key: "action",
       render: ({ key: id }: any) => (
         <>
