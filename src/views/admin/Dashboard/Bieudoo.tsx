@@ -94,7 +94,11 @@ const Bieudo = () => {
     );
     const data = dateRange.map((date) => {
       //Theo ngày
-      const filteredDayOrders = successfulOrders?.filter((item) => item.datehis === format(date, 'MM/d/yyyy') || item.datehis === format(date, 'M/d/yyyy'));
+      const filteredDayOrders = successfulOrders?.filter(
+        (item) =>
+          item.datehis === format(date, "MM/d/yyyy") ||
+          item.datehis === format(date, "M/d/yyyy")
+      );
 
       let fullTotalDay = 0;
       filteredDayOrders?.forEach((item) => (fullTotalDay += item.totals));
@@ -107,8 +111,8 @@ const Bieudo = () => {
       filteredMonthOrders?.forEach((item) => (fullTotalMonth += item.totals));
 
       return {
-        time: format(date, viewMode === 'day' ? 'MM/d/yyyy' : 'MM/yyyy'),
-        value: viewMode === 'day' ? fullTotalDay : fullTotalMonth,
+        time: format(date, viewMode === "day" ? "MM/d/yyyy" : "MM/yyyy"),
+        value: viewMode === "day" ? fullTotalDay : fullTotalMonth,
         date: date,
       };
     });
@@ -121,9 +125,14 @@ const Bieudo = () => {
   const newData = generateData();
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: "100%" }}>
       <ChartViewToggle onViewChange={toggleViewMode} />
-      <LineChart width={950} height={400} data={newData} style={{ width: '100%', paddingTop: '20px' }}>
+      <LineChart
+        width={950}
+        height={400}
+        data={newData}
+        style={{ width: "100%", paddingTop: "20px" }}
+      >
         <XAxis dataKey="time" />
         <YAxis />
         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />

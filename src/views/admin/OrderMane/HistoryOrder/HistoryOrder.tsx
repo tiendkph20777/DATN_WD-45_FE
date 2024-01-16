@@ -92,10 +92,10 @@ const HistoryOrder: React.FC = () => {
             title: 'Tổng tiền đơn hàng',
             dataIndex: 'totals',
             key: 'totals',
-            render: (_, { totals }) => (
+            render: (_, { total }) => (
                 <>
                     <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>
-                        {totals?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                        {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                     </Tag>
                 </>
             ),
