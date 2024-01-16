@@ -25,8 +25,64 @@ const Dashboard = () => {
 
     const successfulOrders = nonSuccessfulOrder?.filter((order: any) => order.status === 'Giao hàng thành công');
 
+    // console.log(successfulOrders)
+    const allProducts = successfulOrders?.map(order => order.products).flat();
+
+    console.log(allProducts)
+    // Create an object to store counts and groups
+    const productGroups = allProducts?.reduce((groups, order) => {
+        const { product_id, quantity1, ...rest } = order;
+
+        if (!groups[product_id]) {
+            groups[product_id] = {
+                count: 0,
+                quantity1,
+                products: [],
+            };
+        }
+
+        groups[product_id].count += 1;
+        groups[product_id].products.push(rest);
+
+        return groups;
+    }, {});
+
+    console.log(productGroups)
+
+    // const productGroupsWithTotalQuantity = Object.keys(productGroups).map((productId) => {
+    //     const group = productGroups[productId];
+    //     const totalQuantity = group.products.reduce((total, product) => total + product.quantity, 0);
+    //     return { ...group, totalQuantity };
+    // });
+
+    // console.log(productGroupsWithTotalQuantity);
+
+    // const groupedProducts = Object?.values(productGroups);
+    // const groupedProducts = productGroups?.values ? Object.values(productGroups) : [];
 
 
+    // console.log(groupedProducts);
+
+    // const sortedProducts = groupedProducts.sort((a, b) => b.count - a.count);
+
+    // // Take the top 3 products
+    // const top3Products = sortedProducts.slice(0, 3);
+
+    // console.log(top3Products);
+
+    // const productsWithTotalQuantity = groupedProducts?.map(group => {
+    //     const totalQuantity = group.products.reduce((total, product) => total + product.quantity, 0);
+    //     return { ...group, totalQuantity };
+    // });
+
+    // console.log(productsWithTotalQuantity);
+
+    // const sortedProducts = productsWithTotalQuantity?.sort((a, b) => b.totalQuantity - a.totalQuantity);
+
+    // // Take the top 3 products
+    // const top3Products = sortedProducts?.slice(0, 3);
+
+    // console.log(top3Products);
 
     //// Tất cả
     let fullTotal = 0;
