@@ -4,7 +4,10 @@ import {
   useRemoveCartDetailMutation,
   useUpdateCartDetailMutation,
 } from "../../../services/cart.service";
-import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
+import {
+  useGetAllProductsDetailQuery,
+  useGetProductDetailQuery,
+} from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
 import { Button, Popconfirm, notification } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
@@ -24,6 +27,20 @@ const Cart = () => {
   const [removeCartDetailMutation] = useRemoveCartDetailMutation();
   const [updateCartDetailMutation] = useUpdateCartDetailMutation();
   // const [cartDetailCheckbot, setCartDetailCheckbot] = useState([]);
+  const { data: productDetail } = useGetProductDetailQuery();
+  const [productQuantities, setProductQuantities] = useState({});
+  
+
+  useEffect(() => {
+    // Lấy số lượng sản phẩm từ useGetProductDetailQuery
+    if (ProductDetailUser) {
+      const quantities = {};
+      ProductDetailUser.forEach((item) => {
+        quantities[item._id] = item.quantity;
+      });
+      setProductQuantities(quantities);
+    }
+  }, [ProductDetailUser]);
 
   console.log(cartDetail);
   // console.log(cartUser)
@@ -41,7 +58,7 @@ const Cart = () => {
       const cartDetailIds = cartUser?.products.map(
         (item: any) => item.productDetailId
       );
-      const matchingIds = cartDetailIds?.filter((id: any) => 
+      const matchingIds = cartDetailIds?.filter((id: any) =>
         ProductDetailUser.some((product) => product._id === id)
       );
       //
@@ -232,30 +249,45 @@ const Cart = () => {
   // console.log(matchingProduct)
   const onSubmit = async (cartUs: any) => {
     if (matchingProduct) {
-      cartUs._id = matchingProduct?._id;
-      try {
-        const modifiedCartDetail = {
-          idCartDetail: cartUs.idCartDetail,
-          productDetailId: cartUs._id,
-          quantity: quantity,
-        };
-        // console.log("cartUs", modifiedCartDetail);
-        await updateCartDetailMutation(modifiedCartDetail);
-        messageApi.info({
-          type: "success",
-          content: "Cập nhật giỏ hàng thành công 🎉🎉🎉",
-          className: "custom-class",
-          style: {
-            marginTop: "0",
-            fontSize: "20px",
-            lineHeight: "50px",
-          },
+      const productId = matchingProduct.product_id;
+      const newQuantity = parseInt(watch("quantity"), 10);
+
+      if (newQuantity > productQuantities[productId]) {
+        // Số lượng mới lớn hơn số lượng trong kho
+        // Hiển thị thông báo hoặc thực hiện các xử lý khác tùy ý
+        console.log("Số lượng mới lớn hơn số lượng trong kho");
+        // Ví dụ hiển thị thông báo
+        notification.warning({
+          message: "Cảnh báo",
+          description: "Số lượng chỉnh sửa vượt quá số lượng trong kho.",
         });
-        setOpen(false);
-      } catch (error) {
-        console.error("Lỗi khi submit hoặc cập nhật", error);
+      } else {
+        // Số lượng hợp lệ, tiến hành cập nhật giỏ hàng
+        cartUs._id = matchingProduct._id;
+        try {
+          const modifiedCartDetail = {
+            idCartDetail: cartUs.idCartDetail,
+            productDetailId: cartUs._id,
+            quantity: newQuantity, // Sử dụng số lượng mới
+          };
+          await updateCartDetailMutation(modifiedCartDetail);
+          messageApi.info({
+            type: "success",
+            content: "Cập nhật giỏ hàng thành công 🎉🎉🎉",
+            className: "custom-class",
+            style: {
+              marginTop: "0",
+              fontSize: "20px",
+              lineHeight: "50px",
+            },
+          });
+          setOpen(false);
+        } catch (error) {
+          console.error("Lỗi khi submit hoặc cập nhật", error);
+        }
       }
     } else {
+      // Xử lý khi không tìm thấy sản phẩm phù hợp
       console.log("Không tìm thấy sản phẩm phù hợp");
       messageApi.info({
         type: "error",
