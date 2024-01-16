@@ -38,6 +38,8 @@ const OrderMane: React.FC = () => {
   const [increaseProduct] = useIncreaseProductMutation();
   const [searchResult, setSearchResult] = useState<any>([]);
   const [previousStatus, setPreviousStatus] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
+
 
   const handleEditClick = (id: string) => {
     const productToEdit = orderDa?.find((item) => item?._id === id);
@@ -108,6 +110,8 @@ const OrderMane: React.FC = () => {
         });
       }
       setSearchResult(filteredData);
+      
+
     }
   };
 
