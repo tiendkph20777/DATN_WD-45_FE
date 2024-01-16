@@ -247,6 +247,24 @@ const ProductWarehouse = () => {
                 return (
                     <>
                         <div>
+                            <Popconfirm
+                                title="Sản phẩm vào kho hàng!"
+                                description="Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này không ?"
+                                onConfirm={() => confirm(id)}
+                                okText="Đồng Ý"
+                                cancelText="Quay Lại"
+                            >
+                                <Button
+                                    className="text-light m-1"
+                                    style={{
+                                        background: "red",
+                                        margin: "4px",
+                                        minWidth: "4em",
+                                    }}
+                                >
+                                    <i className="ti ti-power m-1"></i> Xóa
+                                </Button>
+                            </Popconfirm>
                             <Link to={`/admin/product/detail/${id}`}>
                                 <Button
                                     type="primary"

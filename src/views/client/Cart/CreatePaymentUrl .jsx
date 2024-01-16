@@ -1,20 +1,3 @@
-// // api.js
-// import axios from 'axios';
-
-// const apiUrl = 'http://localhost:8888/order/create_payment_url';
-
-// export const createPaymentUrl = async (amount: any, language: any, bankCode: any) => {
-//     try {
-//         const response = await axios.post(apiUrl, { amount, language, bankCode });
-//         console.log("vnpayurrl: " + response)
-
-//         return response.data;
-//     } catch (error: any) {
-//         console.log("vnpayurrl: " + error.message)
-
-//         throw new Error(`Error sending request: ${error.message}`);
-//     }
-// };
 import React, { useState } from 'react';
 
 const PaymentComponent = () => {

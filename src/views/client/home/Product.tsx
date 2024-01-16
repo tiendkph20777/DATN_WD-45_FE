@@ -141,7 +141,7 @@ const Product = () => {
         <div className="container_home">
           <div className="d-flex justify-content-between py-5">
             <div className="fs-5  text-uppercase fw-bold text-center">
-              - Sản phẩm bán chạy
+              - Sản phẩm mới
             </div>
             <div>
               <button
