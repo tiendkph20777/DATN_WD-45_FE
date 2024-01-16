@@ -88,8 +88,8 @@ const Abortorder: React.FC = () => {
         },
         {
             title: 'Tổng tiền đơn hàng',
-            dataIndex: 'totals',
-            key: 'totals',
+            dataIndex: 'total',
+            key: 'total',
             render: (_, { total }) => (
                 <>
                     <Tag className='py-1' style={{ display: "flex", justifyContent: "center" }}>

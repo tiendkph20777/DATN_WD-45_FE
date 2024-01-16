@@ -403,6 +403,32 @@ const ProductDetail = () => {
                                   <div className="info-block">
                                     <div className="info-block-content">
                                       <div className="info-block-title">
+                                        MỌI THẮC MẮC VUI LÒNG LIÊN HỆ ZALO : 0332573175
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="product-blocks-details product-blocks-443 grid-rows">
+                  <div className="grid-row grid-row-443-1">
+                    <div className="grid-cols">
+                      <div className="grid-col grid-col-443-1-1">
+                        <div className="grid-items">
+                          <div className="grid-item grid-item-443-1-1-1">
+                            <div className="module module-info_blocks module-info_blocks-361">
+                              <div className="module-body">
+                                <div className="module-item module-item-1 info-blocks info-blocks-icon">
+                                  <div className="info-block">
+                                    <div className="info-block-content">
+                                      <div className="info-block-title">
                                         KHUYẾN MẠI ĐẶC BIỆT EXTRA SALE
                                       </div>
                                       <div className="info-block-text">
@@ -421,15 +447,15 @@ const ProductDetail = () => {
                   </div>
                 </div>
 
+
                 <div className="product-detail  size">
                   <p>Kích Cỡ</p>
                   <div className="size-buttons">
                     {productSizes?.map((size, index) => (
                       <button
                         key={index}
-                        className={`size-button ${
-                          selectedSize === size ? "active" : ""
-                        }`}
+                        className={`size-button ${selectedSize === size ? "active" : ""
+                          }`}
                         onClick={() => handleSizeChange(size)}
                       >
                         {size}
@@ -439,16 +465,14 @@ const ProductDetail = () => {
                   <div className="all-colors">
                     <p>Màu Sắc</p>
                     <div className="color-buttons">
-                      {[...uniqueColors].map((color:any, index) => (
+                      {[...uniqueColors].map((color: any, index) => (
                         <button
                           key={index}
-                          className={`color-button all-color ${
-                            selectedColor === color ? "active" : ""
-                          } ${
-                            selectedSizeColors.includes(color)
+                          className={`color-button all-color ${selectedColor === color ? "active" : ""
+                            } ${selectedSizeColors.includes(color)
                               ? "selected-size"
                               : ""
-                          }`}
+                            }`}
                           style={{ backgroundColor: color }}
                           onClick={() => handleColorChange(color)}
                         ></button>
@@ -458,19 +482,17 @@ const ProductDetail = () => {
                   <div className="remaining-quantity mt-3">
                     <p>
                       {selectedSize &&
-                        `Tổng số lượng sản phẩm cho kích thước ${selectedSize}: ${
-                          totalQuantityForSelectedSize !== null
-                            ? totalQuantityForSelectedSize
-                            : "Loading..."
+                        `Tổng số lượng sản phẩm cho kích thước ${selectedSize}: ${totalQuantityForSelectedSize !== null
+                          ? totalQuantityForSelectedSize
+                          : "Loading..."
                         }`}
 
                       {selectedSize && (
                         <ul>
                           {Object.entries(quantityForColorsInSelectedSize).map(
                             ([color, quantity]) => (
-                              <li key={color}>{`${color}: ${
-                                quantity !== null ? quantity : "Loading..."
-                              }`}</li>
+                              <li key={color}>{`${color}: ${quantity !== null ? quantity : "Loading..."
+                                }`}</li>
                             )
                           )}
                         </ul>

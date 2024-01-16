@@ -66,7 +66,7 @@ const History: React.FC = () => {
         ?.filter((order) => order.user_id === usersOne?._id)
         ?.filter((order: any) => order.status === 'Giao hàng thành công')
         ?.filter((order) => !searchFullName || order.fullName.toLowerCase().includes(searchFullName))
-        ?.sort((orderA: any, orderB: any) => new Date(orderB.deliveryDate) - new Date(orderA.deliveryDate)) // Sort by delivery date in descending order
+        ?.sort((a, b) => new Date(b.dateCreate).getTime() - new Date(a.dateCreate).getTime())
         ?.map((order, index) => ({ ...order, index: index + 1 }));
 
     if (isLoading) {

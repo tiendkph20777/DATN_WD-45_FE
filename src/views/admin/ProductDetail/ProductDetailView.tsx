@@ -261,17 +261,17 @@ const Dashboard = (props: Props) => {
         />
       )}
       <div className="search-bar">
-        <Input
+        {/* <Input
           placeholder="Tìm kiếm sản phẩm"
           value={searchProductId}
           onChange={(e) => setSearchProductId(e.target.value)}
-        />
+        /> */}
         <Select
-          // style={{ width: 200, marginRight: 8 }}
+          style={{ width: 200, height: 40, marginRight: 8, margin: 5 }}
           placeholder="Chọn Màu"
           value={selectedColor}
           onChange={(value) => setSelectedColor(value)}
-          // style={{ marginBottom: "20px", marginTop: "40px" }}
+        // style={{ marginBottom: "20px", marginTop: "40px" }}
         >
           <Option value={undefined}>All Color</Option>
           {dataSourceToRender && dataSourceToRender.length > 0 ? (
@@ -285,7 +285,7 @@ const Dashboard = (props: Props) => {
           )}
         </Select>
         <Select
-          // style={{ width: 200, marginRight: 8 }}
+          style={{ width: 200, height: 40, marginRight: 8, margin: 5 }}
           placeholder="Chọn Kích Thước"
           value={selectedSize}
           onChange={(value) => setSelectedSize(value)}
@@ -301,7 +301,7 @@ const Dashboard = (props: Props) => {
           type="primary"
           icon={<SearchOutlined />}
           onClick={onSearch}
-          style={{ backgroundColor: "#33CCFF" }}
+          style={{ backgroundColor: "#33CCFF", margin: 5 }}
         >
           Tìm Kiếm
         </Button>

@@ -43,6 +43,7 @@ import Shipway from "../views/client/profile/userpurchase/shipway";
 import Transport from "../views/client/profile/userpurchase/transport";
 import Receive from "../views/client/profile/userpurchase/receive";
 import Canceled from "../views/client/profile/userpurchase/canceled";
+import ProductWarehouse from "../views/admin/Product/ProductWarehouse";
 
 const routes: RouteObject[] = [
     {
@@ -63,6 +64,9 @@ const routes: RouteObject[] = [
                 path: 'category/:idBrand/edit', element: <CategoryEdit />
             },
             // Product
+            {
+                path: 'product/warehouse', element: <ProductWarehouse />
+            },
             {
                 path: 'product', element: <ProductView />
             },
@@ -127,7 +131,7 @@ const routes: RouteObject[] = [
                 path: 'abortOrder', element: <Abortorder />
             },
             //status
-            
+
         ],
     },
     {
