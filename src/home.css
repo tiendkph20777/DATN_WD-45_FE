@@ -14074,8 +14074,14 @@ fieldset:disabled .btn {
   font-family: "DM Sans", sans-serif;
 }
 
+.add-new{
+  color: #fff !important;
+  font-size: 18px !important;
+  background-color: #5d87ff !important;
+}
+
 .btn {
-  padding: 10px 30px;
+  padding: 5px 30px !important;
   border-radius: 10px;
   font-weight: 500;
   font-size: 20px;
@@ -14154,7 +14160,7 @@ label {
 }
 
 .form-control {
-  padding: 15px 20px;
+  padding: 7px 20px;
   border-radius: 10px;
   color: #000;
   font-size: 16px;
