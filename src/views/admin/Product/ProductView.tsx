@@ -234,22 +234,6 @@ const ProductView = () => {
         </Tag>
       ),
     },
-    // {
-    //   title: "Hành động",
-    //   render: ({
-    //     key: id,
-    //     status,
-    //   }: {
-    //     key: number | string;
-    //     status: boolean;
-    //   }) => (
-    //     <>
-    //       <Button onClick={() => toggleProductStatus(id, status)}>
-    //         {status ? "Tắt" : "Bật"}
-    //       </Button>
-    //     </>
-    //   ),
-    // },
     {
       title: <a className="text-white" href="/admin/product/add">
         <button type="button" className="btn add-new btn-success m-1">
