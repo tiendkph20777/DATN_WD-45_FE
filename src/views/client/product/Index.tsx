@@ -14,7 +14,6 @@ const Index = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [dataDTToRender, setDataDTToRender] = useState<IProductDetail[]>([]);
   const [dataDTResult, setdataDThResult] = useState<IProductDetail[]>([]);
-  const [visibleProducts, setVisibleProducts] = useState([]);
 
   useEffect(() => {
     if (productData) {
@@ -25,7 +24,7 @@ const Index = () => {
       }));
 
       // Ẩn các sản phẩm có trạng thái false
-      const visibleProducts = updatedDataSource.filter(
+      const visibleProducts: any = updatedDataSource.filter(
         (product) => product.status
       );
 
@@ -44,38 +43,72 @@ const Index = () => {
     }
   }, [productDTData]);
 
-  console.log("data", dataSourceToRender);
-
   let DTData = (itemm: any) =>
     productDTData?.filter((item) => item.product_id === itemm._id);
   let filteredDataDT = dataDTToRender;
-  let filteredData = dataSourceToRender;
+  let filteredData: any = dataSourceToRender;
   let setColor = [dataDTToRender?.map((item: any) => item.color)];
   let color = [...new Set(setColor[0])];
   let setSize = [dataDTToRender?.map((item: any) => item.size)];
   let Size = [...new Set(setSize[0])];
 
-  const onHandleClick = ({ target: { value } }: any) => {
+  const [role, setRole] = useState('');
+  const [hehe, setHehe] = useState('color');
+  const [huhu, setHuhu] = useState('size');
+
+  const handleSubmit = (event: any) => {
+    event.preventDefault();
+
     filteredData = filteredData.filter(
-      (itemm) =>
+      (itemm: any) =>
+        itemm.brand_id == role &&
+        DTData(itemm)?.find((itemd) => itemd.color == hehe) &&
+        DTData(itemm)?.find((itemd: any) => itemd.size == huhu)
+    );
+    if (filteredData.length > 1) {
+      setDataSourceToRender(filteredData);
+    }
+    else {
+      filteredData = searchResult;
+      filteredData = filteredData.filter(
+        (itemm: any) =>
+          itemm.brand_id == role &&
+          DTData(itemm)?.find((itemd) => itemd.color == hehe) &&
+          DTData(itemm)?.find((itemd: any) => itemd.size == huhu)
+      );
+      setDataSourceToRender(filteredData);
+    }
+
+    if (filteredData.length == 0) {
+      alert('Sản phẩm không có vui lòng nhập lại')
+      filteredData = searchResult;
+      setDataSourceToRender(filteredData);
+      setRole('Thương hiệu');
+      setHehe('Màu sắc');
+      setHuhu('Kích cỡ');
+    }
+  };
+
+  const onHandleClick = (value: any) => {
+    filteredData = filteredData.filter(
+      (itemm: any) =>
         itemm.brand_id == value ||
         DTData(itemm)?.find((itemd) => itemd.color == value) ||
         DTData(itemm)?.find((itemd) => itemd.size == value)
     );
     if (filteredData.length > 1) {
-      setDataSourceToRender(filteredData);
     } else {
       filteredData = searchResult;
       filteredData = filteredData.filter(
-        (itemm) =>
+        (itemm: any) =>
           itemm.brand_id == value ||
           DTData(itemm)?.find((itemd) => itemd.color == value) ||
           DTData(itemm)?.find((itemd) => itemd.size == value)
       );
-      setDataSourceToRender(filteredData);
     }
+
     filteredDataDT = filteredDataDT.filter(
-      (itemm) => filteredData?.find((item) => item._id == itemm.product_id)?._id
+      (itemm) => filteredData?.find((item: any) => item._id == itemm.product_id)?._id
     );
     if (filteredDataDT.length > 0) {
       setDataDTToRender(filteredDataDT);
@@ -83,12 +116,21 @@ const Index = () => {
       filteredDataDT = dataDTResult;
       filteredDataDT = filteredDataDT.filter(
         (itemm) =>
-          filteredData?.find((item) => item._id == itemm.product_id)?._id
+          filteredData?.find((item: any) => item._id == itemm.product_id)?._id
       );
       setDataDTToRender(filteredDataDT);
     }
+
   };
 
+
+  const handleReset = () => {
+    filteredData = searchResult;
+    setDataSourceToRender(filteredData);
+    setRole('Thương hiệu');
+    setHehe('Màu sắc');
+    setHuhu('Kích cỡ');
+  }
   if (isLoading) {
     return (
       <div>
@@ -112,46 +154,72 @@ const Index = () => {
                 <span
                   style={{ color: "black", fontSize: "20px", padding: "10px" }}
                 >
-                  Tìm kiếm theo :{" "}
+                  Tìm kiếm theo
+                  <form onSubmit={handleSubmit}>
+                    <select
+                      id="role"
+                      name="role"
+                      value={role}
+                      style={{ width: '200px' }}
+                      className="form-select-product"
+                      onChange={(e) => {
+                        setRole(e.target.value),
+                          onHandleClick(e.target.value)
+                      }}
+                    >
+                      <option selected >
+                        Thương hiệu
+                      </option>
+                      {brandData?.map((item) => {
+                        return <option value={item._id}>{item.name}</option>;
+                      })}
+                    </select>
+                    <select
+                      id="hehe"
+                      name="hehe"
+                      value={hehe}
+                      className="form-select-product"
+                      onChange={(e) => {
+                        setHehe(e.target.value)
+                          , onHandleClick(e.target.value)
+                      }}
+                    >
+                      <option selected >
+                        Màu sắc
+                      </option>
+                      {color?.map((item) => {
+                        return <option value={item}>{item}</option>;
+                      })}
+                    </select>
+                    <select
+                      id="huhu"
+                      name="huhu"
+                      value={huhu}
+                      className="form-select-product"
+                      onChange={(e) => {
+                        setHuhu(e.target.value)
+                          , onHandleClick(e.target.value)
+                      }}
+                    >
+                      <option selected>
+                        Kích cỡ
+                      </option>
+                      {Size?.map((item) => {
+                        return <option value={item}>{item}</option>;
+                      })}
+                    </select>
+
+
+                    <button type="submit" className="btn btn-primary">Lọc</button>
+                    <button onClick={handleReset} type="button" className="btn btn-info mx-3">Reset</button>
+                  </form>
                 </span>
-                <select
-                  onChange={onHandleClick}
-                  className="form-select-product "
-                >
-                  <option selected disabled>
-                    Thương hiệu
-                  </option>
-                  {brandData?.map((item) => {
-                    return <option value={item._id}>{item.name}</option>;
-                  })}
-                </select>
-                <select
-                  onChange={onHandleClick}
-                  className="form-select-product"
-                >
-                  <option selected disabled>
-                    Màu sắc
-                  </option>
-                  {color?.map((item) => {
-                    return <option value={item}>{item}</option>;
-                  })}
-                </select>
-                <select
-                  onChange={onHandleClick}
-                  className="form-select-product"
-                >
-                  <option selected disabled>
-                    Kích cỡ
-                  </option>
-                  {Size?.map((item) => {
-                    return <option value={item}>{item}</option>;
-                  })}
-                </select>
+
               </div>
             </div>
             <br />
             <div className="row row-cols-2 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-2 g-lg-3">
-              {dataSourceToRender?.map((item) => {
+              {dataSourceToRender?.map((item: any) => {
                 const brandName = brandData?.find(
                   (brand: any) => brand._id == item.brand_id
                 )?.name;

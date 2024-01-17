@@ -28,61 +28,77 @@ const Dashboard = () => {
     // console.log(successfulOrders)
     const allProducts = successfulOrders?.map(order => order.products).flat();
 
-    console.log(allProducts)
     // Create an object to store counts and groups
     const productGroups = allProducts?.reduce((groups, order) => {
-        const { product_id, quantity1, ...rest } = order;
-
+        const { product_id, name, image, ...rest } = order;
         if (!groups[product_id]) {
             groups[product_id] = {
+                name,
                 count: 0,
-                quantity1,
+                countFull: 0,
+                image,
                 products: [],
             };
         }
-
         groups[product_id].count += 1;
         groups[product_id].products.push(rest);
+        let hehe = 0
+        groups[product_id].products.map((item: any) => hehe = hehe + item.quantity)
+        groups[product_id].countFull = hehe
 
         return groups;
+
     }, {});
 
-    console.log(productGroups)
+    const hehe = () => {
+        let filteredGroups: any = [];
+        if (productGroups) {
+            // Lọc các nhóm
+            filteredGroups = Object.keys(productGroups)
+                .map(key => productGroups[key])
+                .filter(group => group.countFull !== undefined);
 
-    // const productGroupsWithTotalQuantity = Object.keys(productGroups).map((productId) => {
-    //     const group = productGroups[productId];
-    //     const totalQuantity = group.products.reduce((total, product) => total + product.quantity, 0);
-    //     return { ...group, totalQuantity };
-    // });
+            // Sắp xếp filteredGroups theo countFull giảm dần
+            filteredGroups.sort((a: any, b: any) => b.countFull - a.countFull);
 
-    // console.log(productGroupsWithTotalQuantity);
-
-    // const groupedProducts = Object?.values(productGroups);
-    // const groupedProducts = productGroups?.values ? Object.values(productGroups) : [];
+            // Lấy top 3
+            const top3Groups = filteredGroups.slice(0, 3);
 
 
-    // console.log(groupedProducts);
+            console.log(top3Groups)
+            return (
+                <div className="container">
+                    <h2>Top 3 sản phẩm bán chạy</h2>
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>Top</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Ảnh sản phẩm</th>
+                                <th>Số lượng bán ra</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {top3Groups.map((item: any, index: any) => {
+                                return (
+                                    <tr>
+                                        <td>{index + 1}</td>
+                                        <td>{item.name}</td>
+                                        <td><img src={item.image} width={100} alt="" /> </td>
+                                        <td>{item.countFull}</td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+        return null;
+    }
 
-    // const sortedProducts = groupedProducts.sort((a, b) => b.count - a.count);
+    const huhuu = hehe()
 
-    // // Take the top 3 products
-    // const top3Products = sortedProducts.slice(0, 3);
-
-    // console.log(top3Products);
-
-    // const productsWithTotalQuantity = groupedProducts?.map(group => {
-    //     const totalQuantity = group.products.reduce((total, product) => total + product.quantity, 0);
-    //     return { ...group, totalQuantity };
-    // });
-
-    // console.log(productsWithTotalQuantity);
-
-    // const sortedProducts = productsWithTotalQuantity?.sort((a, b) => b.totalQuantity - a.totalQuantity);
-
-    // // Take the top 3 products
-    // const top3Products = sortedProducts?.slice(0, 3);
-
-    // console.log(top3Products);
 
     //// Tất cả
     let fullTotal = 0;
@@ -291,63 +307,63 @@ const Dashboard = () => {
             color: 'pink',
 
         },
-        {
-            content: dataCt[i += 1],
+        // {
+        //     content: dataCt[i += 1],
 
-            contentAll: 'Số đơn hàng đang chờ xác nhận',
-            contentDay: 'Số đơn hàng đang chờ xác nhận theo ngày',
-            contentMonth: 'Số đơn hàng đang chờ xác nhận theo tháng',
+        //     contentAll: 'Số đơn hàng đang chờ xác nhận',
+        //     contentDay: 'Số đơn hàng đang chờ xác nhận theo ngày',
+        //     contentMonth: 'Số đơn hàng đang chờ xác nhận theo tháng',
 
-            length: datadd[j += 1],
+        //     length: datadd[j += 1],
 
-            lengthAll: lengthAllData('Đang xác nhận đơn hàng'),
-            lengthDay: lengthDayData('Đang xác nhận đơn hàng'),
-            lengthMonth: lengthMonthData('Đang xác nhận đơn hàng'),
-            color: 'green',
-        },
-        {
-            content: dataCt[i += 1],
+        //     lengthAll: lengthAllData('Đang xác nhận đơn hàng'),
+        //     lengthDay: lengthDayData('Đang xác nhận đơn hàng'),
+        //     lengthMonth: lengthMonthData('Đang xác nhận đơn hàng'),
+        //     color: 'green',
+        // },
+        // {
+        //     content: dataCt[i += 1],
 
-            contentAll: 'Số đơn đã tiếp nhận',
-            contentDay: 'Số đơn đã tiếp nhận theo ngày',
-            contentMonth: 'Số đơn đã tiếp nhận theo tháng',
+        //     contentAll: 'Số đơn đã tiếp nhận',
+        //     contentDay: 'Số đơn đã tiếp nhận theo ngày',
+        //     contentMonth: 'Số đơn đã tiếp nhận theo tháng',
 
-            length: datadd[j += 1],
+        //     length: datadd[j += 1],
 
-            lengthAll: lengthAllData('Tiếp nhận đơn hàng'),
-            lengthDay: lengthDayData('Tiếp nhận đơn hàng'),
-            lengthMonth: lengthMonthData('Tiếp nhận đơn hàng'),
-            color: 'blue',
-        },
-        {
-            content: dataCt[i += 1],
+        //     lengthAll: lengthAllData('Tiếp nhận đơn hàng'),
+        //     lengthDay: lengthDayData('Tiếp nhận đơn hàng'),
+        //     lengthMonth: lengthMonthData('Tiếp nhận đơn hàng'),
+        //     color: 'blue',
+        // },
+        // {
+        //     content: dataCt[i += 1],
 
-            contentAll: 'Số đơn đã giao cho đơn vị vận chuyển',
-            contentDay: 'Số đơn đã giao cho đơn vị vận chuyển theo ngày',
-            contentMonth: 'Số đơn đã giao cho đơn vị vận chuyển theo tháng',
+        //     contentAll: 'Số đơn đã giao cho đơn vị vận chuyển',
+        //     contentDay: 'Số đơn đã giao cho đơn vị vận chuyển theo ngày',
+        //     contentMonth: 'Số đơn đã giao cho đơn vị vận chuyển theo tháng',
 
-            length: datadd[j += 1],
+        //     length: datadd[j += 1],
 
-            lengthAll: lengthAllData('Đã giao cho đơn vị vận chuyển'),
-            lengthDay: lengthDayData('Đã giao cho đơn vị vận chuyển'),
-            lengthMonth: lengthMonthData('Đã giao cho đơn vị vận chuyển'),
-            color: 'black',
-        },
-        {
-            content: dataCt[i += 1],
+        //     lengthAll: lengthAllData('Đã giao cho đơn vị vận chuyển'),
+        //     lengthDay: lengthDayData('Đã giao cho đơn vị vận chuyển'),
+        //     lengthMonth: lengthMonthData('Đã giao cho đơn vị vận chuyển'),
+        //     color: 'black',
+        // },
+        // {
+        //     content: dataCt[i += 1],
 
-            contentAll: ' Số đơn hàng đang trên đường giao',
-            contentDay: ' Số đơn hàng đang trên đường giao theo ngày',
-            contentMonth: ' Số đơn hàng đang trên đường giao theo tháng',
+        //     contentAll: ' Số đơn hàng đang trên đường giao',
+        //     contentDay: ' Số đơn hàng đang trên đường giao theo ngày',
+        //     contentMonth: ' Số đơn hàng đang trên đường giao theo tháng',
 
-            length: datadd[j += 1],
+        //     length: datadd[j += 1],
 
-            lengthAll: lengthAllData('Đang giao hàng'),
-            lengthDay: lengthDayData('Đang giao hàng'),
-            lengthMonth: lengthMonthData('Đang giao hàng'),
-            color: 'gray',
+        //     lengthAll: lengthAllData('Đang giao hàng'),
+        //     lengthDay: lengthDayData('Đang giao hàng'),
+        //     lengthMonth: lengthMonthData('Đang giao hàng'),
+        //     color: 'gray',
 
-        },
+        // },
         {
             content: dataCt[i += 1],
 
@@ -357,7 +373,7 @@ const Dashboard = () => {
 
             length: datadd[j += 1],
 
-            lengthAll: lengthAllData('Hủy đơn hàng'),
+            lengthAll: lengthDayData('Hủy đơn hàng'),
             lengthDay: lengthDayData('Hủy đơn hàng'),
             lengthMonth: lengthMonthData('Hủy đơn hàng'),
             color: 'red',
@@ -448,6 +464,9 @@ const Dashboard = () => {
                                     )
                                 })
                                 }
+                            </div>
+                            <div>
+                                {huhuu}
                             </div>
                             <div>
                                 <Bieudo />

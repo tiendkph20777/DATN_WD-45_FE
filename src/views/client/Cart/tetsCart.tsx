@@ -4,12 +4,9 @@ import {
   useRemoveCartDetailMutation,
   useUpdateCartDetailMutation,
 } from "../../../services/cart.service";
-import {
-  useGetAllProductsDetailQuery,
-  useGetProductDetailQuery,
-} from "../../../services/productDetail.service";
+import { useGetAllProductsDetailQuery } from "../../../services/productDetail.service";
 import { useGetProductsQuery } from "../../../services/product.service";
-import { Button, Popconfirm, notification,message } from "antd";
+import { Button, Popconfirm, notification } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
 import { message as messageApi } from "antd";
 import { useForm } from "react-hook-form";
@@ -27,26 +24,6 @@ const Cart = () => {
   const [removeCartDetailMutation] = useRemoveCartDetailMutation();
   const [updateCartDetailMutation] = useUpdateCartDetailMutation();
   // const [cartDetailCheckbot, setCartDetailCheckbot] = useState([]);
-  const { data: productDetail } = useGetProductDetailQuery();
-  const [productQuantities, setProductQuantities] = useState({});
-
-  useEffect(() => {
-    if (ProductDetailUser) {
-      const quantities = {};
-      ProductDetailUser.forEach((item) => {
-        quantities[item._id] = item.quantity;
-      });
-      setProductQuantities(quantities);
-    }
-  }, [ProductDetailUser]);
-  useEffect(() => {
-    console.log("All product quantities:", productQuantities);
-  }, [productQuantities]);
-  console.log("productQuantities:", productQuantities);
-
-  const getQuantityInStock = (productDetailId) => {
-    return productQuantities[productDetailId] || 0;
-  };
 
   console.log(cartDetail);
   // console.log(cartUser)
@@ -67,7 +44,7 @@ const Cart = () => {
       const matchingIds = cartDetailIds?.filter((id: any) =>
         ProductDetailUser.some((product) => product._id === id)
       );
-
+      //
       const productIds = ProductDetailUser?.map((item) => item.product_id);
       const filteredProducts = Product?.filter((product: any) =>
         productIds.includes(product?._id)
@@ -92,16 +69,13 @@ const Cart = () => {
             const cart_id = cartUser?.products.find(
               (product: any) => product.productDetailId === item._id
             ).cart_id;
+            // console.log(status)
             const quantity = cartUser?.products.find(
               (product: any) => product.productDetailId === item._id
             ).quantity;
             const idCartDetail = cartUser?.products.find(
               (product: any) => product.productDetailId === item._id
             )._id;
-
-            // Lấy số lượng trong kho từ state productQuantities
-            const quantityInStock = productQuantities[item._id] || 0;
-
             return {
               ...item,
               name: matchingProduct.name,
@@ -113,18 +87,17 @@ const Cart = () => {
               idCartDetail: idCartDetail,
               status: status,
               cart_id: cart_id,
-              quantityInStock: quantityInStock, // Thêm thông tin số lượng trong kho
             };
           } else {
             return item;
           }
         }
       );
-
       setCartDetail(modifiedProductDetails);
     }
-  }, [cartUser, ProductDetailUser, productQuantities]);
-
+  }, [cartUser, ProductDetailUser]);
+  // console.log(cartDetail)
+  // remove
   const removeProduct = async (id: string) => {
     try {
       const response = await removeCartDetailMutation(id);
@@ -156,7 +129,7 @@ const Cart = () => {
   // console.log(editingProduct)
   const setQuantityForEditingProduct = () => {
     if (editingProduct) {
-      setQuantity(editingProduct.quantityInStock || 0);
+      setQuantity(editingProduct.quantity);
     }
   };
 
@@ -184,15 +157,7 @@ const Cart = () => {
         idCartDetail: editingProduct?.idCartDetail,
         quantity: watch("quantity"),
       };
-  
-      if (parseInt(editedProduct.quantity, 10) > editingProduct?.quantityInStock) {
-        // Hiển thị thông báo lỗi nếu số lượng mới vượt quá số lượng còn lại
-        message.warning("Số lượng trong kho đã hết :)).");
-      } else {
-        // Tiến hành cập nhật giỏ hàng
-        await onSubmit(editedProduct);
-      }
-  
+      await onSubmit(editedProduct);
       setConfirmLoading(false);
       setOpen(false);
     } catch (error) {
@@ -200,9 +165,6 @@ const Cart = () => {
       setConfirmLoading(false);
     }
   };
-  
-  
-  
 
   const handleCancel = () => {
     setOpen(false);
@@ -270,41 +232,30 @@ const Cart = () => {
   // console.log(matchingProduct)
   const onSubmit = async (cartUs: any) => {
     if (matchingProduct) {
-      const productQuantities: { [productId: string]: number } = {}; 
-      const productId = matchingProduct.product_id;
-      const newQuantity = parseInt(watch("quantity"), 10);
-
-      if (newQuantity > productQuantities[productId]) {
-        console.log("Số lượng mới lớn hơn số lượng trong kho");
-        message.warning("Số lượng chỉnh sửa vượt quá số lượng còn lại.");
-        return;
-      } else {
-        // Số lượng hợp lệ, tiến hành cập nhật giỏ hàng
-        cartUs._id = matchingProduct._id;
-        try {
-          const modifiedCartDetail = {
-            idCartDetail: cartUs.idCartDetail,
-            productDetailId: cartUs._id,
-            quantity: newQuantity, // Sử dụng số lượng mới
-          };
-          await updateCartDetailMutation(modifiedCartDetail);
-          messageApi.info({
-            type: "success",
-            content: "Cập nhật giỏ hàng thành công 🎉🎉🎉",
-            className: "custom-class",
-            style: {
-              marginTop: "0",
-              fontSize: "20px",
-              lineHeight: "50px",
-            },
-          });
-          setOpen(false);
-        } catch (error) {
-          console.error("Lỗi khi submit hoặc cập nhật", error);
-        }
+      cartUs._id = matchingProduct?._id;
+      try {
+        const modifiedCartDetail = {
+          idCartDetail: cartUs.idCartDetail,
+          productDetailId: cartUs._id,
+          quantity: quantity,
+        };
+        // console.log("cartUs", modifiedCartDetail);
+        await updateCartDetailMutation(modifiedCartDetail);
+        messageApi.info({
+          type: "success",
+          content: "Cập nhật giỏ hàng thành công 🎉🎉🎉",
+          className: "custom-class",
+          style: {
+            marginTop: "0",
+            fontSize: "20px",
+            lineHeight: "50px",
+          },
+        });
+        setOpen(false);
+      } catch (error) {
+        console.error("Lỗi khi submit hoặc cập nhật", error);
       }
     } else {
-      // Xử lý khi không tìm thấy sản phẩm phù hợp
       console.log("Không tìm thấy sản phẩm phù hợp");
       messageApi.info({
         type: "error",
@@ -354,8 +305,6 @@ const Cart = () => {
                     <th>#</th>
                     <th scope="col">Hình Ảnh</th>
                     <th scope="col">Tên Sản Phẩm</th>
-                    <th scope="col">Số lượng còn lại</th>
-
                     <th scope="col">Kích Cỡ</th>
                     <th scope="col">Màu Sắc</th>
                     <th scope="col">Số Lượng</th>
@@ -400,7 +349,6 @@ const Cart = () => {
                       <td>
                         <h5>{item.quantity}</h5>
                       </td>
-
                       <td>
                         <h5>
                           {item.price_sale?.toLocaleString("vi-VN", {
@@ -508,7 +456,6 @@ const Cart = () => {
                 editingProduct={editingProduct}
                 setValue={setValue}
                 onSubmit={onSubmit}
-                quantityInStock={editingProduct?.quantityInStock || 0}
               />
             </div>
           </div>

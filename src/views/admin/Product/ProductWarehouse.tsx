@@ -36,8 +36,10 @@ const ProductWarehouse = () => {
 
     useEffect(() => {
         if (productData) {
-            const filteredData = productData.filter((product: IProducts) =>
-                product.name.toLowerCase().includes(searchTerm.toLowerCase()) && product.status === false
+            const filteredData = productData.filter(
+                (product: IProducts) =>
+                    product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+                    product.status === false
             );
 
             // Sort by creation date in descending order
@@ -63,8 +65,6 @@ const ProductWarehouse = () => {
         }
     }, [productData, searchTerm]);
 
-
-
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (productData) {
@@ -77,6 +77,107 @@ const ProductWarehouse = () => {
                 return productNameMatches && categoryMatches;
             });
 
+            // <<<<<<< HEAD
+            //         {
+            //             title: "Giá bán sau giảm giá",
+            //             dataIndex: "price_sale",
+            //             key: "price_sale",
+            //             render: (text, record) => (
+            //                 <span>
+            //                     {record.price_sale?.toLocaleString("vi-VN", {
+            //                         style: "currency",
+            //                         currency: "VND",
+            //                     })}
+            //                 </span>
+            //             ),
+            //         },
+            //         {
+            //             title: "Trạng thái",
+            //             dataIndex: "status",
+            //             key: "status",
+            //             render: (status: boolean, record: DataType) => (
+            //                 <Tag color={status ? "green" : "red"}>
+            //                     {status ? "Hoạt Động" : "Tắt"}
+            //                 </Tag>
+            //             ),
+            //         },
+            //         // {
+            //         //     title: "Hành động",
+            //         //     render: ({
+            //         //         key: id,
+            //         //         status,
+            //         //     }: {
+            //         //         key: number | string;
+            //         //         status: boolean;
+            //         //     }) => (
+            //         //         <>
+            //         //             <Button onClick={() => toggleProductStatus(id, status)}>
+            //         //                 {status ? "Tắt" : "Bật"}
+            //         //             </Button>
+            //         //         </>
+            //         //     ),
+            //         // },
+            //         {
+            //             key: "action",
+            //             render: ({ key: id }: any) => {
+            //                 return (
+            //                     <>
+            //                         <div>
+            //                             <Popconfirm
+            //                                 title="Kích hoạt lại !"
+            //                                 description="Bạn có chắc chắn muốn kích hoạt lại sản phẩm này không ?"
+            //                                 onConfirm={() => toggleProductStatus(id, status)}
+            //                                 okText="Đồng Ý"
+            //                                 cancelText="Quay Lại"
+            //                             >
+            //                                 <Button
+            //                                     className="text-light m-1"
+            //                                     style={{
+            //                                         background: "#0866ff",
+            //                                         margin: "4px",
+            //                                         minWidth: "4em",
+            //                                     }}
+            //                                 >
+            //                                     <i className="ti ti-power m-1"></i> Kích Hoạt
+            //                                 </Button>
+            //                             </Popconfirm>
+            //                             <Popconfirm
+            //                                 title="Sản phẩm vào kho hàng!"
+            //                                 description="Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này không ?"
+            //                                 onConfirm={() => confirm(id)}
+            //                                 okText="Đồng Ý"
+            //                                 cancelText="Quay Lại"
+            //                             >
+            //                                 <Button
+            //                                     className="text-light m-1"
+            //                                     style={{
+            //                                         background: "red",
+            //                                         margin: "4px",
+            //                                         minWidth: "4em",
+            //                                     }}
+            //                                 >
+            //                                     <i className="ti ti-power m-1"></i> Xóa
+            //                                 </Button>
+            //                             </Popconfirm>
+            //                             <Link to={`/admin/product/detail/${id}`}>
+            //                                 <Button
+            //                                     type="primary"
+            //                                     style={{
+            //                                         backgroundColor: "green", // Change the color as needed
+            //                                         margin: "4px",
+            //                                         minWidth: "4em",
+            //                                     }}
+            //                                 >
+            //                                     <i className="ti ti-eye m-1"></i> Chi tiết biến thể
+            //                                 </Button>
+            //                             </Link>
+            //                         </div>
+            //                     </>
+            //                 );
+            //             },
+            //         },
+            //     ];
+            // =======
             const updatedDataSource = filteredData.map((product: IProducts) => ({
                 key: product._id,
                 name: product.name,
@@ -243,28 +344,10 @@ const ProductWarehouse = () => {
         // },
         {
             key: "action",
-            render: ({ key: id }: any) => {
+            render: ({ key: id, status }: any) => {
                 return (
                     <>
                         <div>
-                            <Popconfirm
-                                title="Kích hoạt lại !"
-                                description="Bạn có chắc chắn muốn kích hoạt lại sản phẩm này không ?"
-                                onConfirm={() => toggleProductStatus(id, status)}
-                                okText="Đồng Ý"
-                                cancelText="Quay Lại"
-                            >
-                                <Button
-                                    className="text-light m-1"
-                                    style={{
-                                        background: "#0866ff",
-                                        margin: "4px",
-                                        minWidth: "4em",
-                                    }}
-                                >
-                                    <i className="ti ti-power m-1"></i> Kích Hoạt
-                                </Button>
-                            </Popconfirm>
                             <Popconfirm
                                 title="Sản phẩm vào kho hàng!"
                                 description="Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này không ?"
@@ -281,6 +364,24 @@ const ProductWarehouse = () => {
                                     }}
                                 >
                                     <i className="ti ti-power m-1"></i> Xóa
+                                </Button>
+                            </Popconfirm>
+                            <Popconfirm
+                                title="Sản phẩm vào kho hàng!"
+                                description="Bạn có chắc chắn muốn cho sản phẩm này xuất kho hàng?"
+                                onConfirm={() => toggleProductStatus(id, status)}
+                                okText="Đồng Ý"
+                                cancelText="Quay Lại"
+                            >
+                                <Button
+                                    className="text-light m-1"
+                                    style={{
+                                        background: "red",
+                                        margin: "4px",
+                                        minWidth: "4em",
+                                    }}
+                                >
+                                    <i className="ti ti-power m-1"></i> Trạng Thái
                                 </Button>
                             </Popconfirm>
                             <Link to={`/admin/product/detail/${id}`}>

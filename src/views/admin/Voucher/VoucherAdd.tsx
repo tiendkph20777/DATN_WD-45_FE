@@ -79,15 +79,6 @@ const VoucherAdd: React.FC = () => {
             >
               <Input />
             </Form.Item>
-
-            <Form.Item<FieldType>
-              label="quantity"
-              name="quantity"
-              rules={[{ required: true, message: "Please input the quantity" }]}
-            >
-              <Input />
-            </Form.Item>
-
             <Form.Item
               label="date_start"
               name="date_start"

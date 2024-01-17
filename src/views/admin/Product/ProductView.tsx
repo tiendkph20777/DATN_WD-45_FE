@@ -245,24 +245,6 @@ const ProductView = () => {
         return (
           <>
             <div>
-              {/* <Popconfirm
-                title="Sản phẩm vào kho hàng!"
-                description="Bạn có chắc chắn muốn cho sản phẩm này vào kho hàng?"
-                onConfirm={() => confirm(id)}
-                okText="Đồng Ý"
-                cancelText="Quay Lại"
-              >
-                <Button
-                  className="text-light m-1"
-                  style={{
-                    background: "red",
-                    margin: "4px",
-                    minWidth: "4em",
-                  }}
-                >
-                  <i className="ti ti-power m-1"></i> Trạng Thái
-                </Button>
-              </Popconfirm> */}
               <Popconfirm
                 title="Sản phẩm vào kho hàng!"
                 description="Bạn có chắc chắn muốn cho sản phẩm này vào kho hàng?"
@@ -322,12 +304,7 @@ const ProductView = () => {
       },
     },
   ];
-  // const data = productData?.map((product: any) => {
-  //   return {
-  //     key: product._id,
-  //     ...product,
-  //   };
-  // });
+
   return (
     <div className="">
       <div className="row">
