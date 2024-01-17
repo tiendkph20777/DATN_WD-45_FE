@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Form, Select } from "antd";
+import { Modal, Form, Select, message } from "antd";
 import { Controller } from "react-hook-form";
 
 const EditProductModal = ({
@@ -21,11 +21,12 @@ const EditProductModal = ({
   editingProduct,
   setValue,
   onSubmit,
+  quantityInStock,
 }) => {
   return (
     <Modal
       title="Chỉnh sửa sản phẩm"
-      open={open}
+      visible={open}
       onOk={handleOk}
       confirmLoading={confirmLoading}
       onCancel={onCancel}
@@ -49,70 +50,13 @@ const EditProductModal = ({
         <div className="row">
           <Form.Item
             label=""
-            name="size"
-            rules={[{ required: true, message: "Please input your username!" }]}
-            className="col-xl-5 col-lg-5 col-sm-5 col-12"
-          >
-            <Controller
-              render={({ field }) => (
-                <div style={{ display: "flex" }}>
-                  <label className="p-1">Size:</label>
-                  <Select
-                    {...field}
-                    style={{ width: "100%" }}
-                    className="form-control p-0"
-                    onChange={(newSize) => handleSizeChange(newSize)}
-                  >
-                    {selectedProductSizes?.map((size) => (
-                      <option key={size} value={size}>
-                        {size}
-                      </option>
-                    ))}
-                  </Select>
-                </div>
-              )}
-              name="size"
-              control={control}
-            />
-          </Form.Item>
-          <Form.Item
-            label=""
-            name="color"
-            rules={[{ required: true, message: "Please input your color!" }]}
-            className="col-xl-7 col-lg-7 col-sm-7 col-12"
-          >
-            <Controller
-              render={({ field }) => (
-                <div style={{ display: "flex" }}>
-                  <label className="p-1">Color:</label>
-                  <Select
-                    {...field}
-                    style={{ width: "100%" }}
-                    className="form-control p-0"
-                  >
-                    {targetProduct
-                      ?.filter((product) => product.size === watch("size"))
-                      .map((product) => (
-                        <option key={product.color} value={product.color}>
-                          {product.color}
-                        </option>
-                      ))}
-                  </Select>
-                </div>
-              )}
-              name="color"
-              control={control}
-            />
-          </Form.Item>
-          <Form.Item
-            label=""
             name="quantity"
             rules={[{ message: "Please input your quantity!" }]}
           >
             <Controller
               name="quantity"
               control={control}
-              defaultValue={editingProduct?.quantity || 1} // Set the default value to 1
+              defaultValue={editingProduct?.quantity || 1}
               render={({ field }) => (
                 <div className="product_count1 flex-1">
                   <label className="quantity p-2">Số Lượng:</label>
@@ -124,7 +68,7 @@ const EditProductModal = ({
                     </span>
                     <input
                       min="1"
-                      maxLength={10}
+                      max={quantityInStock} // Đặt giá trị tối đa là số lượng còn lại
                       value={field.value}
                       onChange={(e) => {
                         field.onChange(e);
@@ -143,6 +87,11 @@ const EditProductModal = ({
             />
           </Form.Item>
         </div>
+        {quantityInStock !== undefined && quantityInStock !== null && (
+          <p style={{ color: "red" }}>
+            {`Chỉnh sửa số lượng không được vượt quá ${quantityInStock}`}
+          </p>
+        )}
       </form>
     </Modal>
   );
