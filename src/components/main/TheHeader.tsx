@@ -119,6 +119,7 @@ const TheHeader = () => {
               <input
                 type="text"
                 placeholder="Tìm kiếm sản phẩm"
+
                 list="name_product"
                 {...register("product")}
               />
