@@ -24,7 +24,7 @@ interface DataType {
   status: boolean;
 }
 
-const ProductView = () => {
+const ProductWarehouse = () => {
   const { data: productData, isLoading } = useGetProductsQuery();
   const { data: brands } = useGetBrandsQuery();
   const [searchTerm, setSearchTerm] = useState("");
@@ -36,15 +36,17 @@ const ProductView = () => {
 
   useEffect(() => {
     if (productData) {
-      const filteredData = productData.filter((product: IProducts) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) && product.status === true
+      const filteredData = productData.filter(
+        (product: IProducts) =>
+          product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          product.status === false
       );
 
       // Sort by creation date in descending order
       const sortedData = filteredData.sort((a, b) => {
         const dateA = new Date(a.createdAt).getTime();
         const dateB = new Date(b.createdAt).getTime();
-        return dateB - dateA;
+        return dateA - dateB;
       });
 
       const updatedDataSource = sortedData.map((product: IProducts) => ({
@@ -62,7 +64,6 @@ const ProductView = () => {
       setDataSource(updatedDataSource);
     }
   }, [productData, searchTerm]);
-
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -105,7 +106,7 @@ const ProductView = () => {
 
       notification.success({
         message: "Success",
-        description: `Đã đưa sản phẩm vào kho!`,
+        description: `Đã ${!status ? "Bật" : "Tắt"} sản phẩm thành công!`,
       });
 
       const updatedData = dataSource.map((item) =>
@@ -214,16 +215,6 @@ const ProductView = () => {
         </span>
       ),
     },
-    // {
-    //     title: 'Mô tả sản phẩm',
-    //     dataIndex: 'description',
-    //     key: 'description',
-    // },
-    // {
-    //   title: "Nội dung sản phẩm",
-    //   dataIndex: "description",
-    //   key: "description",
-    // },
     {
       title: "Trạng thái",
       dataIndex: "status",
@@ -234,20 +225,31 @@ const ProductView = () => {
         </Tag>
       ),
     },
+    // {
+    //     title: "Hành động",
+    //     render: ({
+    //         key: id,
+    //         status,
+    //     }: {
+    //         key: number | string;
+    //         status: boolean;
+    //     }) => (
+    //         <>
+    //             <Button onClick={() => toggleProductStatus(id, status)}>
+    //                 {status ? "Tắt" : "Bật"}
+    //             </Button>
+    //         </>
+    //     ),
+    // },
     {
-      title: <a className="text-white" href="/admin/product/add">
-        <button type="button" className="btn add-new btn-success m-1">
-          Thêm Sản Phẩm
-        </button>
-      </a>,
       key: "action",
-      render: ({ key: id, status }: any) => {
+      render: ({ key: id,status }: any) => {
         return (
           <>
             <div>
-              {/* <Popconfirm
+              <Popconfirm
                 title="Sản phẩm vào kho hàng!"
-                description="Bạn có chắc chắn muốn cho sản phẩm này vào kho hàng?"
+                description="Bạn có chắc chắn muốn xóa vĩnh viễn sản phẩm này không ?"
                 onConfirm={() => confirm(id)}
                 okText="Đồng Ý"
                 cancelText="Quay Lại"
@@ -260,12 +262,12 @@ const ProductView = () => {
                     minWidth: "4em",
                   }}
                 >
-                  <i className="ti ti-power m-1"></i> Trạng Thái
+                  <i className="ti ti-power m-1"></i> Xóa
                 </Button>
-              </Popconfirm> */}
+              </Popconfirm>
               <Popconfirm
                 title="Sản phẩm vào kho hàng!"
-                description="Bạn có chắc chắn muốn cho sản phẩm này vào kho hàng?"
+                description="Bạn có chắc chắn muốn cho sản phẩm này xuất kho hàng?"
                 onConfirm={() => toggleProductStatus(id, status)}
                 okText="Đồng Ý"
                 cancelText="Quay Lại"
@@ -281,19 +283,7 @@ const ProductView = () => {
                   <i className="ti ti-power m-1"></i> Trạng Thái
                 </Button>
               </Popconfirm>
-              <Link to={`${id}/edit`}>
-                <Button
-                  type="primary"
-                  style={{
-                    backgroundColor: "blue",
-                    margin: "4px",
-                    minWidth: "4em",
-                  }}
-                >
-                  <i className="ti ti-edit m-1"></i> Chi tiết
-                </Button>
-              </Link>
-              <Link to={`detail/${id}`}>
+              <Link to={`/admin/product/detail/${id}`}>
                 <Button
                   type="primary"
                   style={{
@@ -305,29 +295,12 @@ const ProductView = () => {
                   <i className="ti ti-eye m-1"></i> Chi tiết biến thể
                 </Button>
               </Link>
-              <Link to={`detail/add/${id}`}>
-                <Button
-                  className="bg-dark text-light"
-                  style={{
-                    margin: "4px",
-                    minWidth: "4em",
-                  }}
-                >
-                  <i className="ti ti-plus m-1"></i>Thêm biến thể
-                </Button>
-              </Link>
             </div>
           </>
         );
       },
     },
   ];
-  // const data = productData?.map((product: any) => {
-  //   return {
-  //     key: product._id,
-  //     ...product,
-  //   };
-  // });
   return (
     <div className="">
       <div className="row">
@@ -393,4 +366,4 @@ const ProductView = () => {
   );
 };
 
-export default ProductView;
+export default ProductWarehouse;

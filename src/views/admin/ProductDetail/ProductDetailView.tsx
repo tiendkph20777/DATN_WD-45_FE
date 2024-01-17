@@ -39,7 +39,7 @@ interface DataType {
 
 const Dashboard = (props: Props) => {
   const { id } = useParams();
-  console.log("ID:", id);
+  // console.log("ID:", id);
   const [dataSourceToRender, setDataSourceToRender] = useState<DataType[]>([]);
   const [selectedColor, setSelectedColor] = useState<string | undefined>(
     undefined
@@ -88,7 +88,7 @@ const Dashboard = (props: Props) => {
           (product) => product.product_id === productIdToFind
         );
 
-        console.log(filteredProducts);
+        // console.log(filteredProducts);
 
         const updatedDataSource = filteredProducts?.map(
           ({ _id, size, color, quantity, product_id }: IProduct) => ({
@@ -206,7 +206,18 @@ const Dashboard = (props: Props) => {
       // render:(quantity) => (quantity >= 0 ? quantity : 0)
     },
     {
-      title: "Action",
+      title: <Link to={`/admin/product/detail/add/${id}`}>
+        <Button
+          type="primary"
+          style={{
+            backgroundColor: "blue",
+            margin: "4px",
+            minWidth: "4em",
+          }}
+        >
+          Thêm biến thể
+        </Button>
+      </Link>,
       key: "action",
       render: ({ key: id }: any) => (
         <>
@@ -261,17 +272,17 @@ const Dashboard = (props: Props) => {
         />
       )}
       <div className="search-bar">
-        <Input
+        {/* <Input
           placeholder="Tìm kiếm sản phẩm"
           value={searchProductId}
           onChange={(e) => setSearchProductId(e.target.value)}
-        />
+        /> */}
         <Select
-          // style={{ width: 200, marginRight: 8 }}
+          style={{ width: 200, height: 40, marginRight: 8, margin: 5 }}
           placeholder="Chọn Màu"
           value={selectedColor}
           onChange={(value) => setSelectedColor(value)}
-          // style={{ marginBottom: "20px", marginTop: "40px" }}
+        // style={{ marginBottom: "20px", marginTop: "40px" }}
         >
           <Option value={undefined}>All Color</Option>
           {dataSourceToRender && dataSourceToRender.length > 0 ? (
@@ -285,7 +296,7 @@ const Dashboard = (props: Props) => {
           )}
         </Select>
         <Select
-          // style={{ width: 200, marginRight: 8 }}
+          style={{ width: 200, height: 40, marginRight: 8, margin: 5 }}
           placeholder="Chọn Kích Thước"
           value={selectedSize}
           onChange={(value) => setSelectedSize(value)}
@@ -301,7 +312,7 @@ const Dashboard = (props: Props) => {
           type="primary"
           icon={<SearchOutlined />}
           onClick={onSearch}
-          style={{ backgroundColor: "#33CCFF" }}
+          style={{ backgroundColor: "#33CCFF", margin: 5 }}
         >
           Tìm Kiếm
         </Button>

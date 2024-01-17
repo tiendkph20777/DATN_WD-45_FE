@@ -27,9 +27,6 @@ const OrderMane: React.FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const setOrderDa = (updatedOrderDa) => {
-    setRoleMane(updatedOrderDa);
-  };
 
   ///////
   const { data: orderDa, isLoading, isFetching } = useFetchCheckoutQuery();
@@ -38,9 +35,6 @@ const OrderMane: React.FC = () => {
   const [increaseProduct] = useIncreaseProductMutation();
   const [searchResult, setSearchResult] = useState<any>([]);
   const [previousStatus, setPreviousStatus] = useState<string | null>(null);
-  const [selectedStatus, setSelectedStatus] = useState<string | undefined>(
-    undefined
-  );
 
   const handleEditClick = (id: string) => {
     const productToEdit = orderDa?.find((item) => item?._id === id);
@@ -88,17 +82,10 @@ const OrderMane: React.FC = () => {
     } else {
       let filteredData = nonSuccessfulOrders;
       filteredData = filteredData?.filter((item: any) => {
+        // console.log(item?.status)
         return item?.status === value;
       });
-
-      // Ẩn trạng thái "Đang xác nhận đơn hàng" khi chọn "Tiếp nhận đơn hàng"
-      if (value === "Tiếp nhận đơn hàng") {
-        filteredData = filteredData.filter(
-          (item: any) => item?.status !== "Đang xác nhận đơn hàng"
-        );
-      }
-
-      if (filteredData?.length === 0) {
+      if (filteredData?.length == 0) {
         messageApi.error({
           type: "error",
           content: "Không có đơn hàng nào trạng thái này",
@@ -113,7 +100,6 @@ const OrderMane: React.FC = () => {
       setSearchResult(filteredData);
     }
   };
-
   // console.log(searchResult)
 
   //
@@ -176,19 +162,11 @@ const OrderMane: React.FC = () => {
         });
         await updateCheck(updatedData).unwrap();
       }
-
-      // Cập nhật lại danh sách đơn hàng sau khi cập nhật thành công
-      const updatedOrderDa = orderDa?.map((order) =>
-        order._id === id ? { ...order, status: values.status } : order
-      );
-      setOrderDa(updatedOrderDa);
-
       hideModal();
     } catch (error) {
       console.error("Error updating checkout status:", error);
     }
   };
-
   // modal xóa
   const onFinish1 = (value: any) => {
     const orderId = cancellationOrderId;
@@ -287,35 +265,21 @@ const OrderMane: React.FC = () => {
                     placeholder="Select province"
                     style={{ width: "250px" }}
                   >
-                    {status !== "Tiếp nhận đơn hàng" &&
-                      status !== "Đã giao cho đơn vị vận chuyển" &&
-                      status !== "Đang giao hàng" && (
-                        <Select.Option value="Đang xác nhận đơn hàng">
-                          Đang xác nhận đơn hàng
-                        </Select.Option>
-                      )}
-
-                    {status !== "Đã giao cho đơn vị vận chuyển" &&
-                      status !== "Đang giao hàng" && (
-                        <Select.Option value="Tiếp nhận đơn hàng">
-                          Tiếp nhận đơn hàng
-                        </Select.Option>
-                      )}
-                    {status !== "Đang giao hàng" && (
-                      <Select.Option value="Đã giao cho đơn vị vận chuyển">
-                        Đã giao cho đơn vị vận chuyển
-                      </Select.Option>
-                    )}
-                    {status !== "Giao hàng thành công" && (
-                      <Select.Option value="Đang giao hàng">
-                        Đang giao hàng
-                      </Select.Option>
-                    )}
-
+                    <Select.Option value="Đang xác nhận đơn hàng">
+                      Đang xác nhận đơn hàng
+                    </Select.Option>
+                    <Select.Option value="Tiếp nhận đơn hàng">
+                      Tiếp nhận đơn hàng
+                    </Select.Option>
+                    <Select.Option value="Đã giao cho đơn vị vận chuyển">
+                      Đã giao cho đơn vị vận chuyển
+                    </Select.Option>
+                    <Select.Option value="Đang giao hàng">
+                      Đang giao hàng
+                    </Select.Option>
                     <Select.Option value="Giao hàng thành công">
                       Giao hàng thành công
                     </Select.Option>
-
                     <Select.Option value="Hủy đơn hàng">
                       Hủy đơn hàng
                     </Select.Option>
@@ -400,15 +364,12 @@ const OrderMane: React.FC = () => {
         <OrderDetails roleMane={roleMane} />
       </Modal>
       {/* modal hủy hàng */}
-
       <Modal
         title="Lý do hủy đơn hàng"
         open={isModalOpen}
         onOk={onFinish1}
         onCancel={handleCancel}
       >
-       
-
         <Form
           name="nest-messages"
           onFinish={onFinish1}

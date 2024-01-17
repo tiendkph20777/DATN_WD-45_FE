@@ -177,9 +177,9 @@ const TheHeader = () => {
                     Giới Thiệu
                   </Link>
                 </li>
-                {/* <li className="nav-item">
-                                    <Link to="#" className='nav-link'>Liên Hệ</Link>
-                                </li> */}
+                <li className="nav-item">
+                  <Link to="#" className='nav-link'>Liên Hệ</Link>
+                </li>
               </ul>
               <div className="d-flex align-items-center">
                 <Link to={"/cart"} className="cart">

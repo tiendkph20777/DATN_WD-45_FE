@@ -102,24 +102,6 @@ const ProductProductEdit = () => {
                 >
                   <Input disabled />
                 </Form.Item>
-
-                <Form.Item<FieldType> name="size" label="Size">
-                  
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      errors.size ? "is-invalid" : ""
-                    }`}
-                  />
-                </Form.Item>
-                <Form.Item label="Quantity" name="quantity" rules={[]}>
-                  <input
-                    type="number"
-                    className={`form-control ${
-                      errors.quantity ? "is-invalid" : ""
-                    }`}
-                  />
-                </Form.Item>
                 <Form.Item label="Tên sản Phẩm" name="product_id">
                   <Select disabled placeholder="Chọn Sản Phẩm">
                     {productsData &&
@@ -130,12 +112,27 @@ const ProductProductEdit = () => {
                       ))}
                   </Select>
                 </Form.Item>
+                <Form.Item<FieldType> name="size" label="Size">
+
+                  <input
+                    type="number"
+                    className={`form-control ${errors.size ? "is-invalid" : ""
+                      }`}
+                  />
+                </Form.Item>
+                <Form.Item label="Quantity" name="quantity" rules={[]}>
+                  <input
+                    type="number"
+                    className={`form-control ${errors.quantity ? "is-invalid" : ""
+                      }`}
+                  />
+                </Form.Item>
+
                 <Form.Item label="Color" name="color">
                   <input
                     type="text"
-                    className={`form-control ${
-                      errors.color ? "is-invalid" : ""
-                    }`}
+                    className={`form-control ${errors.color ? "is-invalid" : ""
+                      }`}
                   />
                 </Form.Item>
 

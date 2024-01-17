@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Button, Table, Input, Popconfirm, notification, Tag } from "antd";
+import { Button, Table, notification, Tag } from "antd";
 import { IVouchers } from "../../../types/voucher";
 import {
   useGetVouchersQuery,
   useRemoveVoucherMutation,
+  useUpdateVoucherStatusMutation,
 } from "../../../services/voucher.service";
 import { Link } from "react-router-dom";
-import { CloseOutlined } from "@ant-design/icons";
 
 const VoucherView: React.FC = () => {
   const { data: voucherData, isLoading } = useGetVouchersQuery();
   const [removeVoucher] = useRemoveVoucherMutation();
+  const [updateVoucherStatus] = useUpdateVoucherStatusMutation();
   const [searchTerm, setSearchTerm] = useState("");
   const [dataSource, setDataSource] = useState<Array<any>>([]);
 
@@ -27,50 +28,103 @@ const VoucherView: React.FC = () => {
         return;
       }
 
-      const updatedData = dataSource.map((item) =>
-        item.key === id ? { ...item, status: !status } : item
-      );
-      setDataSource(updatedData);
+      // Gọi API để cập nhật trạng thái trong cơ sở dữ liệu
+      const response = await updateVoucherStatus({ id, status });
 
-      notification.success({
-        message: "Success",
-        description: `Đã ${status ? "tắt" : "bật"} mã giảm giá thành công!`,
-      });
+      if (response.error) {
+        console.error("Error updating voucher status:", response.error);
+        // Hiển thị thông báo lỗi nếu cần
+        notification.error({
+          message: "Error",
+          description: "Có lỗi xảy ra khi cập nhật trạng thái.",
+        });
+      } else {
+        // Nếu mutation thành công, cập nhật dataSource
+        const updatedData = dataSource.map((item) =>
+          item.key === id ? { ...item, status: !status } : item
+        );
+        setDataSource(updatedData);
 
-  
-
-      saveStatusToLocalStorage(id, !status);
+        notification.success({
+          message: "Success",
+          description: `Đã ${status ? "tắt" : "bật"} mã giảm giá thành công!`,
+        });
+      }
     } catch (error) {
       console.error("Error toggling voucher status", error);
     }
   };
 
-  
   const isExpired = (date_end: string): boolean => {
     const currentDate = new Date();
     const expirationDate = new Date(date_end);
     return expirationDate <= currentDate;
   };
 
-  const getStatusFromLocalStorage = (id) => {
-    const storedData = JSON.parse(localStorage.getItem("voucherStatus")) || {};
-    return storedData[id] || false; // Nếu không có trạng thái, trả về false
-  };
-  const saveStatusToLocalStorage = (id, status) => {
-    const storedData = JSON.parse(localStorage.getItem("voucherStatus")) || {};
-    storedData[id] = status;
-    localStorage.setItem("voucherStatus", JSON.stringify(storedData));
-  };
-  const restoreStatusFromLocalStorage = () => {
-    const updatedData = dataSource.map((item) => ({
-      ...item,
-      status: getStatusFromLocalStorage(item.key),
-    }));
+  useEffect(() => {
+    const fetchData = async () => {
+      await handleExpiredVouchers();
+      updateDataSource();
+    };
 
-    setDataSource(updatedData);
+    fetchData();
+  }, [voucherData, searchTerm]);
+
+  const handleExpiredVouchers = async () => {
+    try {
+      if (dataSource) {
+        const expiredVouchers = dataSource.filter(({ date_end }: IVouchers) => {
+          const currentDate = new Date();
+          const expirationDate = new Date(date_end);
+          return expirationDate <= currentDate;
+        });
+
+        if (expiredVouchers.length > 0) {
+          await Promise.all(
+            expiredVouchers.map(async (voucher) => {
+              await toggleVoucherStatus(voucher.key, voucher.status);
+            })
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Lỗi khi xử lý mã giảm giá hết hạn:", error);
+    }
   };
 
-  const confirm = async (id: any, status: boolean) => {
+  const updateDataSource = () => {
+    if (voucherData) {
+      const updatedDataSource = voucherData
+        .filter(({ date_end }: IVouchers) => {
+          const currentDate = new Date();
+          const expirationDate = new Date(date_end);
+          return expirationDate > currentDate;
+        })
+        .map(
+          ({
+            _id,
+            code,
+            value,
+            quantity,
+            date_start,
+            date_end,
+            status,
+          }: IVouchers) => ({
+            key: _id,
+            code,
+            value,
+            quantity,
+            date_start,
+            date_end,
+            status: status || false,
+          })
+        );
+
+      setDataSource(updatedDataSource);
+    }
+  };
+
+  const confirm = async (id: any) => {
     try {
       // Gọi API xóa sản phẩm bất đồng bộ
       await removeVoucher(id);
@@ -84,85 +138,11 @@ const VoucherView: React.FC = () => {
         message: "Success",
         description: "Xóa voucher thành công!",
       });
-      window.location.reload();
     } catch (error) {
       // Xử lý lỗi nếu cần
       console.error("Error deleting product", error);
     }
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      await handleExpiredVouchers();
-      updateDataSource();
-      restoreStatusFromLocalStorage();
-    };
-
-    fetchData();
-  }, [voucherData, searchTerm]);
-  useEffect(() => {
-    const handleExpiredVouchers = async () => {
-      try {
-        if (dataSource) {
-          const expiredVouchers = dataSource.filter(
-            ({ date_end }: IVouchers) => {
-              const currentDate = new Date();
-              const expirationDate = new Date(date_end);
-              return expirationDate <= currentDate;
-            }
-          );
-
-          if (expiredVouchers.length > 0) {
-            await Promise.all(
-              expiredVouchers.map(async (voucher) => {
-                await toggleVoucherStatus(voucher.key, voucher.status);
-              })
-            );
-          }
-        }
-      } catch (error) {
-        console.error("Lỗi khi xử lý mã giảm giá hết hạn:", error);
-      }
-    };
-
-    const updateDataSource = () => {
-      if (voucherData) {
-        const updatedDataSource = voucherData
-          .filter(({ date_end }: IVouchers) => {
-            const currentDate = new Date();
-            const expirationDate = new Date(date_end);
-            return expirationDate > currentDate;
-          })
-          .map(
-            ({
-              _id,
-              code,
-              value,
-              quantity,
-              date_start,
-              date_end,
-              status,
-            }: IVouchers) => ({
-              key: _id,
-              code,
-              value,
-              quantity,
-              date_start,
-              date_end,
-              status: status || getStatusFromLocalStorage(_id),
-            })
-          );
-
-        setDataSource(updatedDataSource);
-      }
-    };
-
-    const fetchData = async () => {
-      await handleExpiredVouchers();
-      updateDataSource();
-    };
-
-    fetchData();
-  }, [voucherData, searchTerm]);
 
   if (isLoading) {
     return (
@@ -202,11 +182,6 @@ const VoucherView: React.FC = () => {
       ),
     },
     {
-      title: "Số lượng",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
       title: "Ngày bắt đầu",
       dataIndex: "date_start",
       key: "date_start",
@@ -227,11 +202,7 @@ const VoucherView: React.FC = () => {
       ),
     },
     {
-      title: <a className="text-white" href="/admin/voucher/add">
-      <button type="button" className="btn add-new btn-success m-1">
-        Thêm
-      </button>
-    </a>,
+      title: "Hành động",
       render: ({
         key: id,
         status,
@@ -248,34 +219,14 @@ const VoucherView: React.FC = () => {
     },
 
     {
-      render: ({ key: id }: { key: number | string }) => {
-        return (
-          <>
-            <Link to={`/admin/voucher/${id}/edit`}>
-              <Button>Update</Button>
-            </Link>
-            {/* <Popconfirm
-              title="Bạn có chắc chắn muốn xóa voucher này ?"
-              onConfirm={() => {
-                confirm(id);
-              }}
-              okText="Xóa"
-              cancelText="Hủy"
-            >
-              <Button
-                type="primary"
-                style={{
-                  backgroundColor: "red",
-                  margin: "4px",
-                  minWidth: "8em",
-                }}
-              >
-                <CloseOutlined /> Remove
-              </Button>
-            </Popconfirm> */}
-          </>
-        );
-      },
+      render: ({ key: id }: { key: number | string }) => (
+        <>
+          <Link to={`/admin/voucher/${id}/edit`}>
+            <Button>Update</Button>
+          </Link>
+          <Button onClick={() => confirm(id)}>Xóa</Button>
+        </>
+      ),
     },
   ];
 
@@ -285,8 +236,12 @@ const VoucherView: React.FC = () => {
         <div className="col-lg-12 d-flex align-items-stretch">
           <div className="card w-100">
             <div className="card-body" style={{ paddingTop: "70px" }}>
-              <h5 className="card-title add-new p-4 border-1 fw-semibold ">Mã giảm giá</h5>
-              
+              <h5 className="card-title fw-semibold ">Mã giảm giá</h5>
+              <Link to="/admin/voucher/add">
+                <button type="button" className="btn btn-success m-1">
+                  Thêm
+                </button>
+              </Link>
 
               <div className="col-lg-12 d-flex align-items-stretch"></div>
               <div className="table-responsive">
