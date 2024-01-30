@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 import { subDays, startOfDay, format, subMonths, startOfMonth } from "date-fns";
 import { useFetchCheckoutQuery } from "../../../services/checkout.service";
 
@@ -22,28 +14,16 @@ const ChartViewToggle: React.FC<{ onViewChange: (mode: string) => void }> = ({
   return (
     <div>
       <button
-        style={{
-          width: "250px",
-          fontSize: "15px",
-          padding: "10px 15px",
-          margin: "10px 10px",
-        }}
-        className="btn btn-warning"
+        className="btn btn-warning btn_dashboard"
         onClick={() => onViewChange("day")}
       >
-        Xem theo doanh thu ngày
+        Doanh thu theo tuần
       </button>
       <button
-        style={{
-          width: "250px",
-          fontSize: "15px",
-          padding: "10px 15px",
-          margin: "10px 10px",
-        }}
-        className="btn btn-warning"
+        className="btn btn-warning btn_dashboard"
         onClick={() => onViewChange("month")}
       >
-        Xem theo doanh thu tháng
+        Doanh thu theo tháng
       </button>
     </div>
   );

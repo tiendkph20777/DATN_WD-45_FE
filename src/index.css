@@ -20757,3 +20757,8 @@ ul {
     text-decoration: none;
     cursor: pointer;
   }
+.btn_dashboard{
+    width: 200px;
+    font-size: 15px !important;
+    margin: 0px 10px !important;
+}

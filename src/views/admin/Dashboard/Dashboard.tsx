@@ -25,10 +25,8 @@ const Dashboard = () => {
 
     const successfulOrders = nonSuccessfulOrder?.filter((order: any) => order.status === 'Giao hàng thành công');
 
-    // console.log(successfulOrders)
     const allProducts = successfulOrders?.map(order => order.products).flat();
 
-    // Create an object to store counts and groups
     const productGroups = allProducts?.reduce((groups, order) => {
         const { product_id, name, image, ...rest } = order;
         if (!groups[product_id]) {
@@ -42,15 +40,16 @@ const Dashboard = () => {
         }
         groups[product_id].count += 1;
         groups[product_id].products.push(rest);
-        let hehe = 0
-        groups[product_id].products.map((item: any) => hehe = hehe + item.quantity)
-        groups[product_id].countFull = hehe
+
+        let total = 0
+        groups[product_id].products.map((item: any) => total = total + item.quantity)
+        groups[product_id].countFull = total
 
         return groups;
 
     }, {});
 
-    const hehe = () => {
+    const Top3product = () => {
         let filteredGroups: any = [];
         if (productGroups) {
             // Lọc các nhóm
@@ -64,8 +63,6 @@ const Dashboard = () => {
             // Lấy top 3
             const top3Groups = filteredGroups.slice(0, 3);
 
-
-            console.log(top3Groups)
             return (
                 <div className="container">
                     <h2>Top 3 sản phẩm bán chạy</h2>
@@ -96,9 +93,7 @@ const Dashboard = () => {
         }
         return null;
     }
-
-    const huhuu = hehe()
-
+    const currentTime = new Date();
 
     //// Tất cả
     let fullTotal = 0;
@@ -121,9 +116,7 @@ const Dashboard = () => {
 
 
 
-    const currentTime = new Date();
     ////// Theo ngày
-
     const filteredDayOrders = successfulOrders?.filter((item) => item.datehis === format(currentTime, 'MM/d/yyyy') || item.datehis === format(currentTime, 'M/d/yyyy'));
 
     let fullTotal1Day = 0;
@@ -178,8 +171,8 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 // Thực hiện công việc bất đồng bộ ở đây
-                const DataLength = await huhu.map((item) => item.lengthAll);
-                const DataContent = await huhu.map((item) => item.contentAll);
+                const DataLength = await statics.map((item) => item.lengthAll);
+                const DataContent = await statics.map((item) => item.contentAll);
                 // Cập nhật state khi dữ liệu đã được lấy về thành công
                 setData(DataLength);
                 setataCt(DataContent)
@@ -192,22 +185,21 @@ const Dashboard = () => {
     }, [lengthAllData('Hủy đơn hàng')]);
 
     const handleClickAll = () => {
-        setData(huhu.map((item) => item.lengthAll));
-        setataCt(huhu.map((item) => item.contentAll));
-
+        setData(statics.map((item) => item.lengthAll));
+        setataCt(statics.map((item) => item.contentAll));
     };
     const handleClickDay = () => {
-        setData(huhu.map((item) => item.lengthDay));
-        setataCt(huhu.map((item) => item.contentDay));
+        setData(statics.map((item) => item.lengthDay));
+        setataCt(statics.map((item) => item.contentDay));
     };
     const handleClickMonth = () => {
-        setData(huhu.map((item) => item.lengthMonth));
-        setataCt(huhu.map((item) => item.contentMonth));
+        setData(statics.map((item) => item.lengthMonth));
+        setataCt(statics.map((item) => item.contentMonth));
     };
 
     let i = 0;
     let j = 0;
-    const huhu = [
+    const statics = [
         {
             content: dataCt[i],
 
@@ -307,6 +299,21 @@ const Dashboard = () => {
             color: 'pink',
 
         },
+        {
+            content: dataCt[i += 1],
+
+            contentAll: 'Số đơn hàng đã bị hủy',
+            contentDay: 'Số đơn hàng đã bị hủy theo ngày',
+            contentMonth: 'Số đơn hàng đã bị hủy theo tháng',
+
+            length: datadd[j += 1],
+
+            lengthAll: lengthAllData('Hủy đơn hàng'),
+            lengthDay: lengthDayData('Hủy đơn hàng'),
+            lengthMonth: lengthMonthData('Hủy đơn hàng'),
+            color: 'red',
+
+        }
         // {
         //     content: dataCt[i += 1],
 
@@ -364,21 +371,6 @@ const Dashboard = () => {
         //     color: 'gray',
 
         // },
-        {
-            content: dataCt[i += 1],
-
-            contentAll: 'Số đơn hàng đã bị hủy',
-            contentDay: 'Số đơn hàng đã bị hủy theo ngày',
-            contentMonth: 'Số đơn hàng đã bị hủy theo tháng',
-
-            length: datadd[j += 1],
-
-            lengthAll: lengthDayData('Hủy đơn hàng'),
-            lengthDay: lengthDayData('Hủy đơn hàng'),
-            lengthMonth: lengthMonthData('Hủy đơn hàng'),
-            color: 'red',
-
-        }
     ];
 
 
@@ -402,48 +394,28 @@ const Dashboard = () => {
                     <div id="content">
                         <div className="container-fluid text-center">
                             <div className="row">
-
-
                                 <div className="col-xl-12 col-md-6 mb-4">
                                     <button
-                                        style={{
-                                            width: "200px",
-                                            fontSize: "15px",
-                                            padding: "5px 10px",
-                                            margin: "10px 10px",
-                                        }}
-                                        className="btn btn-warning"
+                                        className="btn btn-warning btn_dashboard"
                                         onClick={() => handleClickAll()}
                                     >
                                         Xem theo tất cả
                                     </button>
                                     <button
-                                        style={{
-                                            width: "200px",
-                                            fontSize: "15px",
-                                            padding: "5px 10px",
-                                            margin: "10px 10px",
-                                        }}
-                                        className="btn btn-warning"
+                                        className="btn btn-warning btn_dashboard"
                                         onClick={() => handleClickDay()}
                                     >
                                         Xem theo ngày
                                     </button>
                                     <button
-                                        style={{
-                                            width: "200px",
-                                            fontSize: "15px",
-                                            padding: "5px 10px",
-                                            margin: "10px 10px",
-                                        }}
-                                        className="btn btn-warning"
+                                        className="btn btn-warning btn_dashboard"
                                         onClick={() => handleClickMonth()}
                                     >
                                         Xem theo tháng
                                     </button>
                                 </div>
 
-                                {huhu.map((item) => {
+                                {statics.map((item) => {
                                     return (
                                         <div className="col-xl-3 col-md-6 mb-4">
                                             <div className="card border-left-warning shadow h-100 py-2">
@@ -466,7 +438,7 @@ const Dashboard = () => {
                                 }
                             </div>
                             <div>
-                                {huhuu}
+                                {Top3product()}
                             </div>
                             <div>
                                 <Bieudo />
